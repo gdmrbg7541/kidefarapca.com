@@ -6,8 +6,10 @@
 
    1) ÖĞRENCİ KATEGORİ KISITI
       Site kilidi "🎓 Sadece Girişliler" (kilit: 'girisli') kademesindeyken
-      ÖĞRENCİ hesapları ana sayfada yalnız üç kategoriyi görür:
-          Oyunlar · Değerler Eğitimi · Sosyal Hesaplar
+      ÖĞRENCİ hesapları ana sayfada yalnız şunları görür:
+          Sınıfım · Değerler Eğitimi · Sosyal Hesaplar
+      (26.10.2026: Oyunlar da kapandı — öğrencinin oyunları Sınıfım'da, o
+      sınıfın kartları. Sınıfım: sistem/sinifim.js.)
       Öğretmen ve yönetici hesapları bütün kategorileri görmeye devam eder;
       kilit "açık" kademesindeyken kimse kısıtlanmaz. Kısıt <body> üzerine
       "erisim-ogrenci-kisit" sınıfı basılarak uygulanır — bölümler sonradan
@@ -38,7 +40,7 @@
     var E = window.KidefErisim = {};
 
     /* Öğrencinin kilitli sitede görebileceği bölümler (index.html id'leri) */
-    var OGRENCI_BOLUM = ['oyunlar', 'degerler-egitimi', 'youtube-kanallari'];
+    var OGRENCI_BOLUM = ['degerler-egitimi', 'youtube-kanallari'];   /* 26.10.2026: 'oyunlar' çıktı */
     E.OGRENCI_BOLUM = OGRENCI_BOLUM;
 
     /* ------------------------------------------- WHATSAPP BİLDİRİMİ

@@ -64,7 +64,8 @@
 
     /* Ders kitapları: kitap/8-sinif-2026-2027/… (site kökü ya da bilgisayardaki
        kopya fark etmez). Kidef Arapça 2. Baskı bu kalıba girmez; etkinlik
-       kartı olarak sayılır. */
+       olarak sayılır (26.10.2026'dan beri kart değil, belge ızgarasında A4
+       kitap — bkz. turBul ve kartAdi). */
     var KITAP_DESEN = /(?:^|\/)kitap\/(\d+)-sinif-(\d{4}-\d{4})\//;
     var BELGE_UZANTI = /\.(pdf|docx?|pptx?|xlsx?|odt|ods|odp|rtf|zip|rar|jpe?g|png|gif|webp)$/i;
 
@@ -143,6 +144,9 @@
         if (kitapMi(yol)) return 'kitap';
         var kart = a.closest ? a.closest('.a4-kart') : null;
         if (kart && /ders kitab/i.test(yazi(kart.querySelector('.a4-ad')))) return 'kitap';
+        /* Kidef Arapça kitabı belge ızgarasında duruyor ama eskisi gibi
+           etkinlik sayılır, süresi ölçülür (26.10.2026) */
+        if (/(?:^|\/)kitap\/kidef-arapca-2-baski\//.test(yol)) return 'etkinlik';
         if (a.closest && a.closest('.ihdoc-acc')) return 'belge';       /* sınıf belgeleri bloğu */
         if (BELGE_UZANTI.test(yol) || /(?:^|\/)dosyalar\//.test(yol)) return 'belge';
         return 'etkinlik';
@@ -160,6 +164,9 @@
        Kitap Etkinliklerinde etkinlik adı ve kitaptaki sayfası. */
     function kartAdi(a) {
         try {
+            /* Kidef Arapça kitabı: eski kartın adıyla (rapor satırları birleşsin) */
+            if (a.classList.contains('a4-kart') && /kidef-arapca-2-baski/.test(a.getAttribute('href') || ''))
+                return 'Kidef Arapça 📒 2. Baskı';
             if (a.classList.contains('game-card')) {
                 var h = yazi(a.querySelector('h3'));
                 if (h) return kisalt(h);

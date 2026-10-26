@@ -26,7 +26,8 @@
         «Öğretmenimin kodu var» → OH.kodModalAc().
 
    İÇERİK — öğretmen belgeleri (plan, sınav, defter, BEP…) YOK:
-     · Ders Kitabı kartı (sayfa çevirmeli kitap; index.html → ihKitapKur)
+     · Ders Kitabı ve yanında Kidef Arapça kitabı (A4 kitaplar; index.html
+       → ihKitapKur)
      · Etkinlik kartları (Muhâdese, Alfabe, Kelime Listeleri…; index.html
        → ihIcKur — İmam Hatip ve sınıf panelindeki Materyaller ile AYNI
        kaynak; öğretmene özel kartlar kendini zaten gizliyor)
@@ -225,8 +226,8 @@
         s.textContent = [
             B + '{ display:none; }',
             B + '.gor{ display:block; }',
-            /* Kilitli sitede öğrenci ana sayfada yalnız Oyunlar · Değerler
-               Eğitimi · Sosyal Hesaplar'ı görüyor (sistem/erisim.js,
+            /* Kilitli sitede öğrenci ana sayfada yalnız Değerler Eğitimi ·
+               Sosyal Hesaplar'ı görüyor (26.10: Oyunlar da kapalı; sistem/erisim.js,
                body.erisim-ogrenci-kisit). Sınıfım bu kısıtın dışında: kendi
                sınıfının kitabı ve etkinlikleri. Seçici o kuraldan özgül. */
             'body.erisim-ogrenci-kisit #home-hub-section ' + B + '.gor{ display:block !important; }',

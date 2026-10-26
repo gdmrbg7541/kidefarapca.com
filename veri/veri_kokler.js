@@ -25141,7 +25141,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
     "شبك": {
         1: { base: { emoji: "🪢", arText: "شَبَكَ", trText: "Birbirine geçirdi, ördü", ornek: { ar: "شَبَكَ أَصَابِعَهُ وَانْتَظَرَ", tr: "Parmaklarını birbirine geçirip bekledi." } } },
         4: { base: { emoji: "🔗", arText: "يَشْبِكُ", trText: "Birbirine geçirir, örer", ornek: { ar: "يَشْبِكُ الصَّيَّادُ خُيُوطَ الشَّبَكَةِ", tr: "Balıkçı ağın iplerini örüyor." } } },
-        19: { base: { emoji: "🕸️", arText: "شَبَكَة", trText: "Ağ; şebeke, network", ornek: { ar: "شَبَكَةُ الإِنْتَرْنِتْ تَرْبِطُ العَالَمَ", tr: "İnternet ağı dünyayı birbirine bağlar." }, cogul: "شِبَاك" } },
+        17: { base: { emoji: "🕸️", arText: "شَبَكَة", trText: "Ağ; şebeke, network", ornek: { ar: "شَبَكَةُ الإِنْتَرْنِتْ تَرْبِطُ العَالَمَ", tr: "İnternet ağı dünyayı birbirine bağlar." }, cogul: "شِبَاك" } },
         34: { base: { emoji: "🪟", arText: "شُبَّاك", trText: "Pencere (kafesli pencere)", ornek: { ar: "اَلشُّبَّاكُ مَفْتُوحٌ وَالْجَوُّ جَمِيلٌ", tr: "Pencere açık ve hava güzel." }, cogul: "شَبَابِيك" }, not: "Not: شُبَّاك aslen «kafesli, ağ gibi örülmüş pencere»dir; şebeke (شَبَكَة) ile aynı «örgü» fikrinden gelir. Günlük dilde نَافِذَة ile eş anlamlı kullanılır." },
         36: { base: { emoji: "🧶", arText: "مَشْبُوك", trText: "Birbirine geçmiş, örülmüş", ornek: { ar: "خُيُوطٌ مَشْبُوكَةٌ بِإِحْكَامٍ", tr: "Sıkıca örülmüş ipler." } } },
         77: { base: { emoji: "🤝", arText: "اِشْتَبَكَ", trText: "Birbirine girdi, kapıştı; (kablo) bağlandı", ornek: { ar: "اِشْتَبَكَتِ الأَيْدِي فِي التَّحِيَّةِ", tr: "Selâmlaşmada eller birbirine kenetlendi." } } },

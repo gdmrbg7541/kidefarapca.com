@@ -276,7 +276,8 @@
     html.dusuk-guc .kb-og-kok,
     html.dusuk-guc .ik-rozet,
     html.dusuk-guc .ik-grafik, html.dusuk-guc .ik-yildiz,
-    html.dusuk-guc .ik-mercek { animation: none !important; }
+    html.dusuk-guc .ik-mercek,
+    html.dusuk-guc .ik-kdf-kapak, html.dusuk-guc .ik-kdf-isik, html.dusuk-guc .ik-kdf-kurdele { animation: none !important; }
     html.dusuk-guc .kb-og-kok { opacity: 1; transform: none; }
     /* Sözlük kartı: mercek kelimenin üstünde gezinir, kapak hafif aralanır */
     .kga-szmercek { transform-box: fill-box; transform-origin: 50% 50%; animation: kgaSzMercek 4.6s ease-in-out infinite; }
@@ -443,7 +444,7 @@
     <script src="sistem/karekodyedek.js?v=20a3ba23"></script>
     <script src="sistem/kilit.js?v=c39831ce"></script>
     <!-- Erişim katmanı: kilitli sitede öğrenci kategori kısıtı + öğretmen onay kapısı -->
-    <script src="sistem/erisim.js?v=0786e682"></script>
+    <script src="sistem/erisim.js?v=83372b2c"></script>
     <!-- ONAYDAN SONRA PAYLAŞILACAK MESAJ (07.10.2026) — öğretmen:
          "bi öğretmeni onayladıktan sonra onun ismiyle bi hoşgeldin
          mesajı ve tavsiyelerini isteyen, eleştirilerini bekleyen bi
@@ -455,16 +456,20 @@
 <style>
 /* ==== ERİŞİM KATMANI (sistem/erisim.js) ================================
    1) ÖĞRENCİ KATEGORİ KISITI — site "Sadece Girişliler" kademesindeyken
-      öğrenci hesabında ana sayfada yalnız üç kategori kalır. Kural gövde
-      sınıfına bağlı; bölümler sonradan yeniden çizilse de yerinde durur.
+      öğrenci hesabında ana sayfada yalnız Sınıfım (sistem/sinifim.js),
+      Değerler Eğitimi ve Sosyal Hesaplar kalır. Kural gövde sınıfına bağlı;
+      bölümler sonradan yeniden çizilse de yerinde durur.
    2) ÖĞRETMEN ONAY PERDESİ — onayı bekleyen öğretmen hesabında iner. */
 /* DİKKAT — çocuk (>) değil TORUN seçici: "Etkileşimli Kitaplar | Akademi"
    ile "Sınıfiçi Materyaller" bölümleri doğrudan hub'ın çocuğu değil,
    .ikili-bolum sarmalının içinde duruyor; ">" ile yazılınca ikisi de
    kısıttan kaçıyordu. Sarmal da kapanır (içinde izinli bölüm yoksa). */
 body.erisim-ogrenci-kisit #home-hub-section .content-section { display: none !important; }
-body.erisim-ogrenci-kisit #home-hub-section .ikili-bolum:not(:has(#oyunlar, #degerler-egitimi, #youtube-kanallari)) { display: none !important; }
-body.erisim-ogrenci-kisit #home-hub-section #oyunlar,
+body.erisim-ogrenci-kisit #home-hub-section .ikili-bolum:not(:has(#degerler-egitimi, #youtube-kanallari)) { display: none !important; }
+/* OYUNLAR DA KAPALI (26.10.2026) — öğretmen: "öğrenci giriş yapınca ve site
+   sadece girişlilere açıksa zaten o sınıfla ilgili tüm materyal ve oyunlar
+   sınıf materyallerine tanımlı olduğu için oyun kategorisi de görünmesin".
+   Öğrencinin oyunları Sınıfım'da: o sınıfın kartları (sistem/sinifoyun.js). */
 body.erisim-ogrenci-kisit #home-hub-section #degerler-egitimi,
 body.erisim-ogrenci-kisit #home-hub-section #youtube-kanallari { display: block !important; }
 /* Sarf Motoru: yüzen düğme de üç kapılı seçim penceresi de kapanır.
@@ -1998,14 +2003,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
                     temel dilbilgisi, kalıplar, kelime çalışmaları ve 5-10. sınıf metin
                     tahlilleri tek kitapta. Sayfa çevirmeli; içindekilerden derse,
                     simgelerden sunulara ve çıktılara gider.</p>
-                  <div class="game-grid mobile-scroll-grid-single">
-                    <a href="kitap/kidef-arapca-2-baski/index.html" target="_blank" rel="opener" class="game-card kss-card">
-                      <div class="default-game-content">
-                        <img src="kidef.jpg" data-i18n-alt="kit.kapak_alt" alt="Kidef Arapça kitap kapağı" class="book-cover-img">
-                        <h3 data-i18n="kit.baski">Kidef Arapça 📒 2. Baskı</h3>
-                        <span class="status-badge available" data-i18n="g.ac">Aç</span>
-                      </div>
-                    </a>
+                  <!-- 26.10.2026 — öğretmen: "kidef arapça flipbooku kart şeklinde olmasın
+                       hiç bir zaman": oyun kartı yerine Ders Kitabı gibi A4 kitap
+                       (index.html → kidefKitapKur). Betik çalışmazsa düz bağlantı kalır. -->
+                  <div data-kidef-kitap>
+                    <a href="kitap/kidef-arapca-2-baski/index.html" target="_blank" rel="opener">Kidef Arapça · 2. Baskı</a>
                   </div>
                 </div></div>
               </div>
@@ -2817,13 +2819,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         
         <!-- 01.10.2026: eski FlipHTML5 kitabı (flipbookkidef.html) kaldırıldı; yerine
              sıfırdan yapılan flipbook. flipbookkidef.html artık buraya yönlendiriyor. -->
-        <a href="kitap/kidef-arapca-2-baski/index.html" target="_blank" rel="opener" class="game-card kss-card">
-          <div class="default-game-content">
-            <img src="kidef.jpg" data-i18n-alt="kit.kapak_alt" alt="Kidef Arapça Etkileşimli Kitap Kapak" class="book-cover-img" />
-            <h3 data-i18n="kit.baski">Kidef Arapça 📒 2. Baskı</h3>
-            <span class="status-badge available" data-i18n="g.incele">İncele</span>
-          </div>
-        </a>
+        <!-- 26.10.2026: Kidef Arapça kart değil, Ders Kitabı gibi A4 kitap; yuvayı
+             kidefKitapKur tek kitapla değiştirir (betik çalışmazsa düz bağlantı). -->
+        <a data-kidef-kitap="tek" href="kitap/kidef-arapca-2-baski/index.html" target="_blank" rel="opener">Kidef Arapça · 2. Baskı</a>
 
         <a href="flipbooks/pratiksayfalar/flipbookpratiksayfalar.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
@@ -3836,6 +3834,34 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       .ik-grafik { stroke-dasharray:46; animation:a4CizUzun 4.8s ease-in-out infinite; }
       .ik-yildiz { transform-box:fill-box; transform-origin:center; animation:a4Parla 4.8s ease-in-out infinite; }
       .ik-mercek { transform-box:fill-box; transform-origin:center; animation:a4Ara 5.2s ease-in-out infinite; }
+      /* --- KİDEF ARAPÇA KİTABI (26.10.2026) — öğretmen: "ders kitabı tasarımına benzer ama
+             üstünde kidef arapça yazan güzel bi animasyonlu svg". Kapak arada bir aralanır,
+             üstünden ışık geçer, kurdele sallanır; ikon kapaktaki yazı okunsun diye büyük. --- */
+      @keyframes a4KdfAc      { 0%,56%,100%{ transform:none } 66%{ transform:scaleX(.7) skewY(-5deg) }
+                                74%{ transform:scaleX(.74) skewY(-4deg) } 84%{ transform:none } }
+      @keyframes a4KdfIsik    { 0%,12%{ transform:translateX(-12px); opacity:0 } 16%{ opacity:.42 }
+                                40%{ transform:translateX(46px); opacity:.42 } 44%,100%{ transform:translateX(46px); opacity:0 } }
+      @keyframes a4KdfKurdele { 0%,100%{ transform:rotate(-8deg) } 50%{ transform:rotate(8deg) } }
+      .ik-kdf-kapak   { transform-box:fill-box; transform-origin:0% 50%; animation:a4KdfAc 6.6s ease-in-out infinite; }
+      .ik-kdf-isik    { opacity:0; animation:a4KdfIsik 6.6s ease-in-out infinite; }
+      .ik-kdf-kurdele { transform-box:fill-box; transform-origin:50% 0%; animation:a4KdfKurdele 2.6s ease-in-out infinite; }
+      .a4-ikon.a4-ikon-kidef { width:86px; height:86px; margin:4px 0 3px; }
+      /* büyük kapak yer kaplar: süs çizgileri gizli, «2. BASKI» etiketi ezilmez */
+      .a4-sheet:has(> .a4-ikon-kidef) .a4-satirlar { display:none; }
+      .a4-sheet:has(> .a4-ikon-kidef) .a4-sayac { flex-shrink:0; }
+      @media (max-width:600px){ .a4-ikon.a4-ikon-kidef { width:70px; height:70px; margin:1px 0 0; } }
+      /* İmam Hatip, sınıfın Materyaller sekmesi ve Sınıfım kağıtları daha küçük
+         (#imam-hatip .a4-ikon 64px, telefonda 32px): Kidef kapağı orada da büyük kalsın */
+      #imam-hatip .a4-ikon.a4-ikon-kidef, #llMateryalKap .a4-ikon.a4-ikon-kidef,
+      #sinifimKap .a4-ikon.a4-ikon-kidef { width:80px; height:80px; margin:1px 0 0; }
+      @media (max-width:600px){
+        #imam-hatip .a4-ikon.a4-ikon-kidef, #llMateryalKap .a4-ikon.a4-ikon-kidef,
+        #sinifimKap .a4-ikon.a4-ikon-kidef { width:46px; height:46px; margin:0; } }
+      /* tek başına duran kitap: anasayfadaki kart şeridinde kartlar kadar yer tutar */
+      .mobile-scroll-grid-single > a.a4-kart { flex:0 0 165px; max-width:165px; align-self:flex-start; scroll-snap-align:center; }
+      @media (max-width:768px){ .mobile-scroll-grid-single > a.a4-kart { flex:0 0 136px; max-width:136px; } }
+      /* İmam Hatip «Kidef Arapça · Yardımcı» panelindeki tek kitap ortada */
+      .ih-yardimci [data-kidef-kitap] .a4-grid { grid-template-columns:repeat(auto-fit,minmax(168px,214px)); justify-content:center; }
 
       /* --- kartın altında açılan PDF paneli (dosya çekmecesi) --- */
       .a4-panel { max-height:0; overflow:hidden; transition:max-height .36s cubic-bezier(.4,0,.2,1); }
@@ -3870,7 +3896,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       @media (prefers-reduced-motion: reduce){
         .a4-muhur-g, .a4-imza-yol, .a4-satirlar b::after, .a4-grid.acildi .a4-kart,
         .ik-sayfa, .ik-halka, .ik-tik, .ik-damga, .ik-kalem, .ik-yazi3, .ik-rozet, .ik-kapak,
-        .ik-grafik, .ik-yildiz, .ik-mercek { animation:none !important }
+        .ik-grafik, .ik-yildiz, .ik-mercek, .ik-kdf-kapak, .ik-kdf-isik, .ik-kdf-kurdele { animation:none !important }
         .a4-imza-yol { stroke-dashoffset:0 } .ik-tik, .ik-yazi3, .ik-grafik { stroke-dashoffset:0 }
         .ik-yildiz { opacity:1 }
         .a4-muhur-g, .ik-damga { opacity:.95 }
@@ -3891,7 +3917,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Metin Tahlilleri kartı: hangi sınıfın hangi kitabında metin var?
          (küçük özet; bütün ders listesi yüklenmiyor) -->
     <script src="metintahlili/ozet.js?v=51bd2b6d"></script>
-    <script src="sistem/sinifmodul.js?v=5ad9440e"></script>
+    <script src="sistem/sinifmodul.js?v=bc7efb14"></script>
     <!-- YAZI SAYFASI (19.10.2026): kart yok — Sınıflarım'da bir sınıf açılınca %98'lik
          pencere kendiliğinden açılır, sınıf kapanınca kaydedip kapanır (yalnız öğretmen).
          5 renk, kalem, silgi, Arapça büyük/küçük harf çizgileri, sayfalar; geçmiş bu
@@ -5544,6 +5570,46 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             '<rect x="28.5" y="21" width="8.5" height="2.6" rx="1.3" opacity=".34"/></g>' +
           '<path class="ik-kapak" d="M24 16 a8 8 0 0 1 8 -8 h8 v25 h-8 a7 7 0 0 0 -8 5 Z" fill="#FDE6C4" stroke="#D97706" stroke-width="1.8" stroke-linejoin="round"/>';
       }
+      /* KİDEF ARAPÇA KİTABI (26.10.2026) — kapağında «Kidef Arapça» yazan kitap.
+         Kapak arada bir aralanır (arkasından yazılı sayfalar görünür), üstünden
+         ışık geçer, kurdele sallanır, köşede yıldız parlar. Kapaktaki küçük tablo
+         gerçek kapaktaki «Temel Arapça Dilbilgisi» tablosunu anar. Sayfada birden
+         çok kopyası olduğu için kimlikler her çizimde benzersiz. */
+      var a4KdfNo = 0;
+      function a4IkonKidef() {
+        var n = ++a4KdfNo, g = 'a4kdfG' + n, k = 'a4kdfK' + n;
+        return '<defs><linearGradient id="' + g + '" x1="0" y1="0" x2="1" y2="1">' +
+            '<stop offset="0" stop-color="#F7C75A"/><stop offset=".55" stop-color="#E9A93A"/>' +
+            '<stop offset="1" stop-color="#D98E1C"/></linearGradient>' +
+            '<clipPath id="' + k + '"><rect x="9" y="4" width="29" height="38" rx="2.8"/></clipPath></defs>' +
+          /* sayfalar: kapak aralanınca görünür */
+          '<rect x="11" y="5.6" width="29.6" height="37.6" rx="2.4" fill="#FFFDF7" stroke="#E2CB98" stroke-width="1"/>' +
+          '<path d="M40.6 9v31.6M39.4 8.4v32.4" stroke="#EADBB6" stroke-width=".6"/>' +
+          '<g fill="#E9D7AE"><rect x="25" y="11" width="11.5" height="1.6" rx=".8"/>' +
+            '<rect x="25" y="15" width="9" height="1.6" rx=".8"/><rect x="25" y="19" width="11.5" height="1.6" rx=".8"/>' +
+            '<rect x="25" y="23" width="7.5" height="1.6" rx=".8"/><rect x="25" y="27" width="10.5" height="1.6" rx=".8"/>' +
+            '<rect x="25" y="31" width="8.5" height="1.6" rx=".8"/></g>' +
+          /* kurdele sayfaların arasından sarkar */
+          '<path class="ik-kdf-kurdele" d="M31.2 42.6v4.8l1.8-1.4 1.8 1.4v-4.8z" fill="#EE5253"/>' +
+          /* kapak */
+          '<g class="ik-kdf-kapak">' +
+            '<rect x="9" y="4" width="29" height="38" rx="2.8" fill="url(#' + g + ')" stroke="#B9770E" stroke-width="1.1"/>' +
+            '<rect x="9" y="4" width="4.4" height="38" rx="2" fill="#C98616"/>' +
+            '<path d="M9.8 9.4h2.8M9.8 36.6h2.8" stroke="#F7C75A" stroke-width="1" stroke-linecap="round"/>' +
+            '<rect x="15.6" y="7.4" width="19.4" height="31.2" rx="1.8" fill="none" stroke="#FFF3D6" stroke-width=".7" opacity=".8"/>' +
+            '<rect x="19" y="10.4" width="12.6" height="6.4" rx="1" fill="#FFF8E9"/>' +
+            '<path d="M19 12.6h12.6M23.2 10.4v6.4M27.4 10.4v6.4" stroke="#E3A02A" stroke-width=".55"/>' +
+            '<text x="25.3" y="26" text-anchor="middle" font-family="Marhey, Segoe UI, sans-serif" font-size="8.2"' +
+              ' font-weight="800" fill="#fff">Kidef</text>' +
+            '<text x="25.3" y="32.2" text-anchor="middle" font-family="Marhey, Segoe UI, sans-serif" font-size="5.5"' +
+              ' font-weight="700" fill="#5C3A06">Arapça</text>' +
+            '<text x="25.3" y="37.6" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="3.1"' +
+              ' font-weight="800" letter-spacing=".5" fill="#FFF3D6">2. BASKI</text>' +
+            '<g clip-path="url(#' + k + ')"><g transform="rotate(22 24 24)">' +
+              '<rect class="ik-kdf-isik" x="0" y="-8" width="4.6" height="64" fill="#fff"/></g></g>' +
+          '</g>' +
+          '<path class="ik-yildiz" d="M42.6 4.2l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z" fill="#F39C12"/>';
+      }
       /* dış bağlantı oku — "↗" karakteri bazı tarayıcılarda emoji olarak
          çiziliyordu, onun yerine çizgi ok */
       function a4DisOkSvg() {
@@ -5581,7 +5647,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       function a4IkonOzel(ad, cls) {
         var p = String(ad || '').split(':');
         var ic = (p[0] === 'kitap') ? a4IkonKitap()
+               : (p[0] === 'kidef') ? a4IkonKidef()
                : (p[0] === 'defter') ? a4IkonDefter(p[1]) : '';
+        /* Kidef kitabının kapağındaki yazı okunsun: ikon biraz büyük (a4-ikon-kidef) */
+        if (p[0] === 'kidef') cls += ' ' + cls.split(' ')[0] + '-kidef';
         return '<svg class="' + cls + '" viewBox="0 0 48 48" aria-hidden="true">' + ic + '</svg>';
       }
       /* ik = {ozel:'kitap'} ya da {i:sıra} */
@@ -5959,6 +6028,36 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         return { ad: 'Ders Kitabı', renk: '#D97706', ikon: 'kitap', bag: k.url,
                  etiket: k.etiket, ipucu: k.ipucu, antet: sinif + '. SINIF · KİTAP' };
       }
+      /* KİDEF ARAPÇA KİTABI (26.10.2026) — öğretmen: "kidef arapça kitap flipbooku
+         ders kitabının yanında kart olarak değil ders kitabı tasarımına benzer ama
+         üstünde kidef arapça yazan güzel bi animasyonlu svg olarak yazılsın" ·
+         "kidef arapça flipbooku kart şeklinde olmasın hiç bir zaman".
+         Her yerde aynı A4 kitap (ikon: a4IkonKidef):
+           · sınıf belgelerinde Ders Kitabı'nın hemen yanında (ihdocKur — İmam
+             Hatip ve sınıfın Materyaller sekmesi)
+           · öğrencinin Sınıfım bölümünde (ihKitapKur)
+           · İmam Hatip'teki «Kidef Arapça · Yardımcı» panelinde ve anasayfadaki
+             Etkileşimli Kitaplar şeridinde ([data-kidef-kitap] yuvaları)
+         Eski oyun kartı (sistem/sinifmodul.js → kidefyardimci) kaldırıldı. */
+      var KIDEF_KITAP = 'kitap/kidef-arapca-2-baski/index.html';
+      function kidefKarti() {
+        return { ad: 'Kidef Arapça', renk: '#E3A02A', ikon: 'kidef', bag: KIDEF_KITAP,
+                 etiket: '2. BASKI', antet: 'YARDIMCI KİTAP',
+                 ipucu: 'Kidef Arapça 2. Baskı — temel dilbilgisi, kalıplar, kelime çalışmaları ve ' +
+                        '5-10. sınıf metin tahlilleri tek kitapta; sayfa çevirmeli kitap; yeni sekmede açılır' };
+      }
+      /* data-kidef-kitap="tek" → yuvanın yerine tek kitap (şeritteki kartların
+         arasında); boş değer → yuvanın içine kitap ızgarası. */
+      window.kidefKitapKur = function (kok) {
+        [].forEach.call((kok || document).querySelectorAll('[data-kidef-kitap]'), function (m) {
+          if (m.getAttribute('data-kidef-kitap') === 'tek') {
+            m.outerHTML = a4KartHtml('YARDIMCI KİTAP', kidefKarti(), 'sinif', { ozel: 'kidef' }, []);
+          } else if (!m.__kidef) {
+            m.__kidef = 1;
+            a4IzgaraKur(m, 'YARDIMCI KİTAP', 'sinif', [kidefKarti()], function () { return []; });
+          }
+        });
+      };
       /* SINIF DEFTERİ KARTI (15.10.2026) — öğretmen: "sınıf defterlerini
          imam hatip kategorilerinde ders kitabının yanında ... olsun".
          Panel açar (dış bağlantı değil): içinde defterin ne olduğu ve
@@ -6004,8 +6103,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         var sec = (sinif === '10' && seciliKitap('10') === 'secmeli');
         var kk = sec ? null : kitapKarti(sinif);
         var turler = sinifTurleri(sinif);
-        /* Sınıf defteri ders kitabının hemen yanında duruyor. */
-        var liste = (kk ? [kk] : []).concat([defterKarti(sinif)], turler);
+        /* Ders kitabının hemen yanında Kidef Arapça kitabı (26.10.2026), sonra
+           sınıf defteri. */
+        var liste = (kk ? [kk] : []).concat([kidefKarti(), defterKarti(sinif)], turler);
         a4IzgaraKur(mount, sinif + '. SINIF · BELGE', 'sinif', liste, function (t) {
           if (sec && SEC10_PDF[t.ad]) return SEC10_PDF[t.ad];
           /* "kitap" alanı taşıyan satır yalnız o kitap seçiliyken görünür
@@ -6277,16 +6377,18 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         try { [].forEach.call(item.querySelectorAll('.ihdoc-acc'), ihdocKur); } catch (e) { }
       }
       window.ihIcKur = ihIcKur;
+      try { window.kidefKitapKur(); } catch (e) { }
       /* ÖĞRENCİNİN SINIFIM BÖLÜMÜ (26.10.2026 — sistem/sinifim.js): o sınıfın
-         YALNIZ Ders Kitabı kartı (sayfa çevirmeli kitap), İmam Hatip'teki kartın
-         aynısı. Öğretmen belgeleri (defter, plan, sınav…) öğrenciye çizilmez.
-         Kitap yoksa (10. sınıf seçmeli) kabı boşaltır, false döner. */
+         Ders Kitabı kartı (sayfa çevirmeli kitap), İmam Hatip'teki kartın
+         aynısı; yanında Kidef Arapça kitabı (26.10.2026). Öğretmen belgeleri
+         (defter, plan, sınav…) öğrenciye çizilmez. 10. sınıf seçmelide ders
+         kitabı yok, yalnız Kidef Arapça durur. */
       window.ihKitapKur = function (mount, sinif) {
         if (!mount) return false;
         var s = String(sinif);
         var kk = (s === '10' && seciliKitap('10') === 'secmeli') ? null : kitapKarti(s);
-        if (!kk) { mount.innerHTML = ''; return false; }
-        a4IzgaraKur(mount, s + '. SINIF · KİTAP', 'sinif', [kk], function () { return []; });
+        a4IzgaraKur(mount, s + '. SINIF · KİTAP', 'sinif', (kk ? [kk] : []).concat([kidefKarti()]),
+          function () { return []; });
         return true;
       };
       /* «Maarif» etiketi kapalı sınıfta da doğru görünsün: kart kurulumunu
@@ -8103,7 +8205,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sistem/kullanimsure.js?v=c876df2f"></script>
     <!-- Materyal kullanım raporu: Materyaller sekmesinde açılan dosyaları ve
          sekmenin açık kaldığı süreyi ölçer; sınıf listesindeki oktan açılır. -->
-    <script src="sistem/materyalrapor.js?v=433371c2"></script>
+    <script src="sistem/materyalrapor.js?v=c7270733"></script>
     <!-- Başlıktaki sözlük simgesinin açtığı pencere -->
     <script src="sarf/sozlukpop.js?v=9c572bdc"></script>
     <!-- Karekodla giriş: auth.js firebase.initializeApp yaptıktan SONRA yüklenmeli -->
@@ -8219,7 +8321,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- ÖĞRENCİ · SINIFIM (26.10.2026): giriş yapmış öğrenciye kendi sınıfının
          ders kitabı ve etkinlik kartları (öğretmen belgeleri yok). Öğretmen bağı
          hesap/ogrencihesap.js'ten (OH) gelir; ondan SONRA yüklenmeli. -->
-    <script src="sistem/sinifim.js?v=17b63315"></script>
+    <script src="sistem/sinifim.js?v=b1242d4a"></script>
     <script src="sistem/gorev.js?v=ccd7693c"></script>
 
     <!-- CHECKOUT GİRİŞ İÇİN KÜÇÜK YARDIMCI SCRIPT -->
