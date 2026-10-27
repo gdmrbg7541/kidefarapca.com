@@ -5119,7 +5119,7 @@ function llOkulPopupAc() {
             var _bos = !_dolu[n];
             _rak += '<button type="button" class="okul-hizli okul-raf-tus' + (_bos ? ' bos' : '') + '" data-raf="' + n + '"' +
                 ' title="' + n + '. sınıfın kitaplığı — ' + (_bos
-                    ? 'henüz sınıfın yok: materyallere bak, buradan sınıf ekle'
+                    ? 'henüz sınıfın yok: buradan sınıf ekle, materyaller sınıf ekleyince açılır'   /* MATERYAL YOK — YÖNETİCİ DE (27.10.2026) */
                     : 'ders kitabı, belgeler, etkinlik kartları') + '"' +
                 ' aria-expanded="false"' +
                 ' onclick="llOkulKitaplikAc(\'' + _kHedef + '\',' + n + ')">' +

@@ -39,7 +39,8 @@
    SINIF EKLEMEDEN MATERYAL YOK (27.10.2026) — öğretmen: "sınıf eklemeden
    materyaller kısmı açılmasın" · "öğretmenlere". Sınıfı olmayan seviyenin
    (soluk rakam) rafında öğretmene yalnız plaka ve «+ N. sınıf ekle» çıkar;
-   belgeler ve kartlar sınıf eklenince açılır. Yönetici eskisi gibi göz atar.
+   belgeler ve kartlar sınıf eklenince açılır. MATERYAL YOK — YÖNETİCİ DE (27.10.2026):
+   "bende 5 6 var ama 7 ye tıklayınca tüm materyaller çıkıyor" — yönetici hesabı da aynı.
 
    PENCERE YENİDEN ÇİZİLİNCE (sınıf eklendi, ad değişti…) açık raf
    hatırlanır ve yeniden açılır (listelerim.js → yenile). kelimeler.html
@@ -53,10 +54,6 @@
     var RENK = { 5: '#16A085', 6: '#F39C12', 7: '#2563EB', 8: '#7C3AED', 9: '#EE5253', 10: '#0E9E86' };
     var acik = null;          /* { kurum, n }  n: 5–10 ya da 'dok' */
     var dokYuva = null;       /* #dokAccordion'un asıl yeri */
-    function yoneticiMi() {
-        try { return typeof appState !== 'undefined' && !!appState && appState.userRole === 'admin'; }
-        catch (e) { return false; }
-    }
 
     function kac(s) {
         return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -170,9 +167,9 @@
             return kap;
         }
         kap.style.cssText = renkler(n);
-        /* SINIF EKLEMEDEN MATERYAL YOK (27.10.2026): sınıfı olmayan seviyede öğretmene
-           yalnız plaka ve «+ N. sınıf ekle»; içerik kurulmaz (belge/kart okunmaz). */
-        if (bosMu(row, n) && !yoneticiMi()) {
+        /* SINIF EKLEMEDEN MATERYAL YOK (27.10.2026): sınıfı olmayan seviyede herkese
+           (yönetici dahil) yalnız plaka ve «+ N. sınıf ekle»; içerik kurulmaz. */
+        if (bosMu(row, n)) {
             kap.classList.add('kd-raf-kilit');
             kap.innerHTML = plaka(n + '. Sınıf Kitaplığı',
                 'Bu seviyede henüz sınıfın yok. Materyaller sınıf ekleyince açılır; kapıyı açınca ' +
@@ -180,10 +177,8 @@
             row.appendChild(kap);
             return kap;
         }
-        kap.innerHTML = plaka(n + '. Sınıf Kitaplığı', bosMu(row, n)
-            ? 'Bu seviyede henüz sınıfın yok. Materyallere göz atabilirsin; sınıf ekleyince ' +
-              'aynı kitaplık kapıyı açınca sınıfın içinde hazır olur, «Nerde kalmıştık?» orada tutulur.'
-            : 'Ders kitabı, belgeler ve etkinlik kartları — bu seviyedeki her sınıfın ortak rafı. ' +
+        kap.innerHTML = plaka(n + '. Sınıf Kitaplığı',
+            'Ders kitabı, belgeler ve etkinlik kartları — bu seviyedeki her sınıfın ortak rafı. ' +
               'Kapıyı açınca aynı kitaplık sınıfın içinde; «Nerde kalmıştık?» orada tutulur.', ekleTusu(row, n)) +
             '<div class="ihsec-item ihsec-bassiz"><div class="ihsec-panel"><div class="ihsec-panel-in">' +
             '<div class="ihdoc-acc" data-sinif="' + n + '"></div>' +
