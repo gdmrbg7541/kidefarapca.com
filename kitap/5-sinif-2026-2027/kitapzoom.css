@@ -598,3 +598,81 @@ button.kk-ay-sat:hover { background: #F1F5F9; }
 @media (pointer: coarse) and (min-width: 1100px) {
   .kk-silmenu { width: 292px; } .kk-sm { font-size: 16px; padding: 12px; } .kk-sm svg { width: 26px; height: 26px; }
 }
+
+/* ============================================================================
+   11) AYRAÇ İPİ (27.10.2026) — kitapzoom.js 11. bölüm
+   Öğretmen: "her sayfada gri bi iz olsun oraya tıklandığında kırmızıya
+   dönüşecek ... en son ki yerde işaretlenmiş olacak". Her sayfanın üstünde,
+   dış kenara yakın gri iz; ip konunca kırmızı kurdele aşağı iner (kitapta
+   tek ip). Ölçüler sayfaya göre: büyütünce birlikte büyür.
+   ============================================================================ */
+.yuz > .kip {
+  position: absolute; top: 0; z-index: 12;
+  width: 8%; height: 7%; min-width: 24px; min-height: 26px;
+  margin: 0; padding: 0; border: 0; background: none; cursor: pointer;
+  display: flex; justify-content: center; align-items: flex-start;
+  -webkit-tap-highlight-color: transparent;
+}
+.yuz.on > .kip { right: 6%; }
+.yuz.arka > .kip { left: 6%; }
+.kitap.rtl .yuz.on > .kip { right: auto; left: 6%; }
+.kitap.rtl .yuz.arka > .kip { left: auto; right: 6%; }
+.yuz > .kip > i {
+  display: block; width: 34%; height: 70%; pointer-events: none;
+  background: linear-gradient(90deg, #8A939D 0%, #B4BCC5 40%, #D2D8DE 52%, #B4BCC5 64%, #8A939D 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+  box-shadow: inset 0 6px 6px -4px rgba(0, 0, 0, .35);
+  opacity: .58;
+  transition: height .32s ease, width .32s ease, opacity .2s ease;
+}
+.yuz > .kip:hover > i,
+.yuz > .kip:focus-visible > i { opacity: .92; height: 92%; }
+.yuz > .kip:focus-visible { outline: none; }
+.yuz > .kip.secili {
+  height: 17%; min-height: 54px;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .38));
+}
+.yuz > .kip.secili > i {
+  width: 44%; height: 100%; opacity: 1;
+  background: linear-gradient(90deg, #7A0F0F 0%, #B01C1C 20%, #D63131 44%, #EC6060 52%, #D63131 60%, #B01C1C 82%, #7A0F0F 100%);
+}
+.yuz > .kip.secili:hover > i { height: 104%; }
+.yuz > .kip.parla { animation: kipParla .85s ease-in-out 2; }
+@keyframes kipParla {
+  50% { filter: drop-shadow(0 0 7px rgba(255, 196, 92, .95)) drop-shadow(0 3px 3px rgba(0, 0, 0, .38)); }
+}
+/* görünmeyen yüzün izi öne sızmasın (ek.css "SIZMASIN", .kk-m ile aynı) */
+.yaprak .yuz > .kip { transition: visibility 0s linear .36s, height .38s cubic-bezier(.2, .9, .3, 1.15); }
+.yaprak.cevrildi > .yuz.on > .kip,
+.yaprak:not(.cevrildi) > .yuz.arka > .kip { visibility: hidden; }
+.yaprak.suruklenen .yuz > .kip { transition: none; }
+.yaprak.suruklenen:not(.yari) > .yuz.on > .kip,
+.yaprak.suruklenen.yari > .yuz.arka > .kip { visibility: visible; }
+.yaprak.suruklenen.yari > .yuz.on > .kip,
+.yaprak.suruklenen:not(.yari) > .yuz.arka > .kip { visibility: hidden; }
+.kitap.atla .yuz > .kip { transition: none !important; }
+/* kalem yazarken iz dokunulmaz (sayfadaki öbür düğmeler gibi) */
+.sahne.kk-acik:not(.kk-gez):not(.kk-parmak) .kitap .yuz > .kip,
+.sahne.kk-acik:not(.kk-gez):not(.kk-parmak) .kitap > .kip-kuyruk { pointer-events: none !important; }
+/* cildin üstünde ipin ucu: ip başka sayfadayken */
+.kitap > .kip-kuyruk {
+  position: absolute; top: -9px; left: 50%; z-index: 400;
+  width: 20px; height: 38px; margin: 0 0 0 -10px; padding: 0; border: 0; background: none; cursor: pointer;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .42));
+  -webkit-tap-highlight-color: transparent;
+}
+.kitap > .kip-kuyruk[hidden] { display: none; }
+.kitap > .kip-kuyruk > i {
+  display: block; width: 100%; height: 100%; pointer-events: none;
+  background: linear-gradient(90deg, #7A0F0F 0%, #B01C1C 20%, #D63131 44%, #EC6060 52%, #D63131 60%, #B01C1C 82%, #7A0F0F 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+  transition: height .2s ease;
+}
+.kitap > .kip-kuyruk:hover > i,
+.kitap > .kip-kuyruk:focus-visible > i { height: 118%; }
+.kitap > .kip-kuyruk:focus-visible { outline: none; }
+.kk-ipucu.kip-ipucu svg { color: #C62828; }
+@media (prefers-reduced-motion: reduce) {
+  .yuz > .kip > i, .kitap > .kip-kuyruk > i { transition: none; }
+  .yuz > .kip.parla { animation: none; }
+}

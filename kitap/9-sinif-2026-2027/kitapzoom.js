@@ -38,6 +38,8 @@
      sayfa parmakları birebir izler, bırakınca kademeye oturur (5. bölüm).
    · METİN KATMANI (24.10.2026): veri.js'te metin varsa yazılar PDF'ten
      çizgi olarak sayfanın üstünde durur, her büyütmede net (9. bölüm).
+   · AYRAÇ İPİ (27.10.2026): her sayfanın üstünde gri iz; dokununca kırmızı
+     ip o sayfada kalır, kitapta tek ip (11. bölüm).
 
    SAĞDAN SOLA KİTAPLAR (rtl: true)
    --------------------------------
@@ -718,7 +720,8 @@
              '<path d="M9.6 17.4 12 19.8l2.4-2.4"/>',
       kalem: '<path d="M15.2 4.8l4 4L8.4 19.6 3.6 20.4l.8-4.8z"/><path d="M13.6 6.4l4 4"/>',
       tus:   '<rect x="2.6" y="5.6" width="18.8" height="12.8" rx="2.4"/>' +
-             '<path d="M6.4 9.6h.01M10 9.6h.01M13.6 9.6h.01M17.2 9.6h.01M8.4 14.2h7.2"/>'
+             '<path d="M6.4 9.6h.01M10 9.6h.01M13.6 9.6h.01M17.2 9.6h.01M8.4 14.2h7.2"/>',
+      ip:    '<path d="M7.4 2.8h9.2v18.4L12 17.4l-4.6 3.8z"/>'
     };
 
     /* Altı bölge şeması. Numaralar OKUMA SIRASINA göre: sağdan sola
@@ -787,6 +790,10 @@
          '<b>Otomatik takip</b> ile kapatılır). Şeritteki <b>imleçle</b> (<b>V</b>) kalemi kapatmadan sayfada ' +
          'gezersin, bir renge dokununca yine yazarsın. Şeridi baştaki tutamaktan istediğin yere taşı; kenara ' +
          'bırakınca dikey olur.'],
+        [IK.ip, 'Ayraç ipi',
+         'Her sayfanın üstünde gri bir iz var: dokununca <b>kırmızı ip</b> o sayfaya iner. Kitapta tek ip ' +
+         'var — başka sayfaya koyunca eskisinden kalkar; kırmızı ipe yeniden dokununca kalkar. İp başka ' +
+         'sayfadayken kitabın üst ortasında kırmızı ucu görünür: ona dokununca o sayfa açılır.'],
         [IK.tus, 'Tuşlar',
          '<b>+</b> <b>−</b> yakınlaştırma, <b>0</b> eski hâli, <b>Esc</b> çıkış, <b>F</b> tam ekran.']
       ].map(function (x) {
@@ -960,6 +967,8 @@
     function tkAnlik() {                                         /* kabuk t:'h' koyar */
       var m = tkGorunum(), k = kkAnlik();                        /* + açık yayılımın yazısı (8. bölüm) */
       if (k) m.k = k;
+      var ip = ipAnlik();                                        /* + ayraç ipi (11. bölüm) */
+      if (ip) m.ip = ip;
       return m;
     }
     /* lider: değişim bitince (en çok 90 ms'de bir) yazar */
@@ -976,10 +985,12 @@
     }
     /* izleyen: liderin görünümü */
     function tkGelen(m) {
+      if (m && m.t === 'ip') { TK.canli = true; ipGelen(m); return; }                                     /* ayraç ipi (11. bölüm) */
       if (m && typeof m.t === 'string' && m.t.charAt(0) === 'k') { TK.canli = true; kkGelen(m); return; }   /* kalem (8. bölüm) */
       if (!m || (m.t !== 'g' && m.t !== 'h')) return;
       TK.canli = true;
       if (m.t === 'h' && m.k) kkGelen({ t: 'kb', bk: m.k.bk, L: m.k.L });
+      if (m.t === 'h' && m.ip) ipGelen(m.ip);
       kkKipEsitle(m);
       TK.son = '';
       TK.bek = m;
@@ -3093,6 +3104,180 @@
       flip.degisti = function () { var r = onceki.apply(this, arguments); duzAyarla(); return r; };
     })();
 
+    /* --------------------------------------------------------------
+       11) AYRAÇ İPİ                                         (27.10.2026)
+       Öğretmen: "flipbook motorlarına her sayfada yukardan görünecek bi
+       ip olsun oraya basılırsa kitapta sadece orada ip sabit kalacak, her
+       sayfada gri bi iz olsun oraya tıklandığında kırmızıya dönüşecek
+       eğer başka bi yerde işaretlenmişse orasında kalmayacak en son ki
+       yerde işaretlenmiş olacak".
+       · Her sayfanın üstünde, dış kenara yakın gri bir iz (.kip). Dokununca
+         kırmızı ip o sayfaya iner; kitapta TEK ip var: başka sayfaya
+         konunca eskisinden kalkar. Kırmızı ipe yeniden dokununca kalkar.
+         Kapaklarda (ilk ve son sayfa) iz yok.
+       · İp başka sayfadayken kitabın üst ortasında (cilt) ipin kırmızı
+         ucu (.kip-kuyruk) görünür; dokununca ipli sayfa açılır. Kitap
+         açılınca ip açık sayfada değilse bir kez «Oraya git» önerisi çıkar
+         (kalemin «en son yazdığın yer» önerisinden önce).
+       · Bu tarayıcıda kitaba göre saklanır: localStorage kitapIp|<kitap>
+         (kitap = klasör adı, kalemle aynı). Öbür sekmede değişince burada
+         da değişir.
+       · TAHTA (kanal 'kitap', t:'ip'): kumandada (lider) konan ip Sınıf
+         Ekranı'nda da görünür ve orada da saklanır; anlık durumda (h) da
+         gider. İzleyende kabuğun yinelediği tık (isTrusted: false) ipi
+         değiştirmez — ip kanaldan gelir.
+       · Kalem yazarken iz dokunulmaz (sayfadaki öbür düğmeler gibi;
+         kitapzoom.css); imleçte ve parmakla gezerken çalışır.
+       -------------------------------------------------------------- */
+    var IP = { s: 0, t: 0, kuyruk: null, anahtar: 'kitapIp|' + KK_KITAP };
+    function ipSayfaMi(s) { return s > 1 && s < (flip.toplam || 0); }
+    function ipOku() {
+      var o = null;
+      try { o = JSON.parse(localStorage.getItem(IP.anahtar) || 'null'); } catch (e) { o = null; }
+      if (o && ipSayfaMi(+o.s)) { IP.s = +o.s; IP.t = +o.t || 0; } else { IP.s = 0; IP.t = 0; }
+    }
+    function ipYaz() {
+      try {
+        if (IP.s) localStorage.setItem(IP.anahtar, JSON.stringify({ s: IP.s, t: IP.t }));
+        else localStorage.removeItem(IP.anahtar);
+      } catch (e) { }
+    }
+    function ipAd(s) { return kkSayfaAdi(s); }
+    /* bütün izler + cildin ucu */
+    function ipCiz() {
+      if (!flip.kitap) return;
+      [].forEach.call(flip.kitap.querySelectorAll('.yuz > .kip'), function (b) {
+        var s = +b.getAttribute('data-kip'), sec = s === IP.s;
+        if (b.classList.contains('secili') !== sec) b.classList.toggle('secili', sec);
+        b.setAttribute('aria-pressed', sec ? 'true' : 'false');
+        var t = sec ? 'Kırmızı ip bu sayfada — kaldırmak için dokun' : 'Ayraç ipi: ' + ipAd(s) + ' sayfasına koy';
+        if (b.title !== t) { b.title = t; b.setAttribute('aria-label', t); }
+      });
+      ipKuyruk();
+    }
+    function ipKuyruk() {
+      var k = IP.kuyruk;
+      if (!k) return;
+      var gizle = !IP.s || kkGorunen().indexOf(IP.s) >= 0;
+      if (k.hidden !== gizle) k.hidden = gizle;
+      if (IP.s) {
+        var t = 'Kırmızı ip: ' + ipAd(IP.s) + ' — oraya git';
+        if (k.title !== t) { k.title = t; k.setAttribute('aria-label', t); }
+      }
+    }
+    function ipParlat(s) {
+      var b = flip.kitap && flip.kitap.querySelector('.yuz > .kip[data-kip="' + s + '"]');
+      if (!b) return;
+      b.classList.remove('parla'); void b.offsetWidth; b.classList.add('parla');
+      setTimeout(function () { b.classList.remove('parla'); }, 1700);
+    }
+    /* s: ipin konacağı sayfa (0: kaldır); yolla: kullanıcı yaptı (kanala yaz, tost) */
+    function ipKoy(s, yolla) {
+      s = ipSayfaMi(+s) ? +s : 0;
+      IP.s = s; IP.t = Date.now();
+      ipYaz();
+      ipCiz();
+      if (s && yolla) ipParlat(s);
+      if (yolla) {
+        ipGonder();
+        kkTost(s ? 'Kırmızı ip burada: ' + ipAd(s) : 'İp kaldırıldı');
+      }
+    }
+    function ipGit(s) {
+      if (!(s >= 1)) return;
+      if (z.o > 1.02 || z.x || z.y) { z.o = 1; z.x = 0; z.y = 0; zUygula(false); }
+      if (kkGorunen().indexOf(s) < 0) flip.git(s);
+      setTimeout(function () { ipParlat(s); }, 450);
+    }
+    /* ---------- tahta ---------- */
+    function ipGonder() {
+      if (!TK || !TK.k || !tkLider()) return;
+      try { TK.k.gonder({ t: 'ip', s: IP.s, z: IP.t }); } catch (e) { }
+    }
+    function ipGelen(m) {
+      if (!IP || !m || tkLider()) return;
+      var s = ipSayfaMi(+m.s) ? +m.s : 0;
+      if (s === IP.s) return;
+      IP.s = s; IP.t = +m.z || Date.now();
+      ipYaz();
+      ipCiz();
+    }
+    function ipAnlik() { return IP ? { s: IP.s, z: IP.t } : null; }
+    /* ---------- dokunuşlar ---------- */
+    function ipDur(e) { e.stopPropagation(); }        /* yaprak sürüklenmesin, bölge büyümesin */
+    function ipTik(e) {
+      var b = e.target && e.target.closest && e.target.closest('.kip, .kip-kuyruk');
+      if (!b || !flip.kitap.contains(b)) return;
+      e.preventDefault(); e.stopPropagation();
+      if (engelli()) return;                            /* izleyende yinelenen tık: ip kanaldan gelir */
+      if (b.classList.contains('kip-kuyruk')) { if (IP.s) ipGit(IP.s); return; }
+      var s = +b.getAttribute('data-kip');
+      ipKoy(IP.s === s ? 0 : s, true);
+    }
+    function ipKur() {
+      if (!flip.kitap) return;
+      [].forEach.call(flip.kitap.querySelectorAll('.yuz[data-sayfa]'), function (yuz) {
+        var s = +yuz.getAttribute('data-sayfa');
+        if (!ipSayfaMi(s) || !yuz.querySelector('.katman') || yuz.querySelector('.kip')) return;
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'kip';
+        b.setAttribute('data-kip', String(s));
+        b.innerHTML = '<i aria-hidden="true"></i>';
+        b.addEventListener('pointerdown', ipDur);
+        b.addEventListener('touchstart', ipDur, { passive: true });
+        yuz.appendChild(b);
+      });
+      var k = document.createElement('button');
+      k.type = 'button'; k.className = 'kip-kuyruk'; k.hidden = true;
+      k.innerHTML = '<i aria-hidden="true"></i>';
+      k.addEventListener('pointerdown', ipDur);
+      k.addEventListener('touchstart', ipDur, { passive: true });
+      flip.kitap.appendChild(k);
+      IP.kuyruk = k;
+      flip.kitap.addEventListener('click', ipTik);
+    }
+    /* açılışta: ip açık sayfada değilse bir kez öner */
+    function ipAcilisOnerisi() {
+      if (!IP.s || izleCihazi() || kkMisafirKip() || document.querySelector('.kk-ipucu')) return;
+      if (kkGorunen().indexOf(IP.s) >= 0) { ipParlat(IP.s); return; }
+      var s = IP.s, d = document.createElement('div');
+      d.className = 'kk-ipucu kip-ipucu';
+      d.setAttribute('role', 'status');
+      d.innerHTML = svg(IK.ip) + '<span>Kırmızı ip burada: <b>' + kkEsc(ipAd(s)) + '</b></span>' +
+        '<button type="button" class="kk-ipgit" data-ip="git">Oraya git</button>' +
+        '<button type="button" class="kk-x" data-ip="kapat" aria-label="Kapat">✕</button>';
+      sahne.appendChild(d);
+      var kapat = function () { if (d.parentNode) d.parentNode.removeChild(d); };
+      d.addEventListener('click', function (e) {
+        var b = e.target.closest && e.target.closest('[data-ip]');
+        if (!b) return;
+        e.preventDefault();
+        if (b.getAttribute('data-ip') === 'git' && !kkYanki(e)) ipGit(IP.s || s);
+        kapat();
+      });
+      ['pointerdown', 'touchstart'].forEach(function (t) { d.addEventListener(t, function (e) { e.stopPropagation(); }, { passive: true }); });
+      setTimeout(kapat, 10000);
+    }
+    ipOku();
+    ipKur();
+    ipCiz();
+    (function () {                                     /* sayfa değişince cildin ucu */
+      var onceki = flip.degisti;
+      flip.degisti = function () { var r = onceki.apply(this, arguments); ipKuyruk(); return r; };
+    })();
+    kok.addEventListener('storage', function (e) {     /* öbür sekmede ip değişti */
+      if (e.key !== IP.anahtar) return;
+      ipOku(); ipCiz();
+    });
+    setTimeout(ipAcilisOnerisi, 1200);
+    var ipDis = {
+      sayfa: function () { return IP.s; },
+      koy: function (s) { ipKoy(s, true); },
+      kaldir: function () { ipKoy(0, true); },
+      git: function () { if (IP.s) ipGit(IP.s); },
+      anahtar: IP.anahtar
+    };
+
     zUygula(false);
 
     /* --------------------------------------------------------------
@@ -3110,7 +3295,8 @@
       gorunum: tkGorunum,                  /* yansıtmadaki görünüm (23.10.2026) */
       tahta: function () { return { kanal: !!TK.k, canli: TK.canli, lider: tkLider(), izleyen: tkIzleyen() }; },
       kalem: kkDis,                        /* kalem (23.10.2026) */
-      pinch: function () { return { akici: AKICI, aktif: pinchAktif, kilit: !!flip.kilitli }; }   /* deneme için (24.10.2026) */
+      pinch: function () { return { akici: AKICI, aktif: pinchAktif, kilit: !!flip.kilitli }; },  /* deneme için (24.10.2026) */
+      ip: ipDis                            /* ayraç ipi (27.10.2026) */
     });
   };
 })(window);
