@@ -7383,12 +7383,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       </div>
     </section>
 
-    <!-- Iletisim / Destek (anasayfa alt) -->
+    <!-- İletişim (anasayfa alt) — «Destek Ol» 27.10.2026'da kalktı: destek profildeki Beklenen Destek kartında -->
     <footer class="site-footer" style="margin-top:24px;">
       <div class="footer-links" style="padding:20px 0; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:15px; flex-wrap:wrap;">
         <a href="mailto:kidefarapca@gmail.com" style="color:#fff; text-decoration:underline; font-weight:700; font-size:1.1em;" data-i18n="kart.iletisim">İletişim</a>
-        <span style="color:#fff; opacity:0.5; font-size:1.5em;">|</span>
-        <a href="javascript:void(0)" onclick="openSupportModal()" style="background:linear-gradient(45deg,#FFC107,#FF9800); color:#000; padding:12px 25px; border-radius:50px; text-decoration:none; font-weight:800; font-size:1.3em; box-shadow:0 4px 15px rgba(0,0,0,0.2); display:inline-flex; align-items:center; gap:8px; border:2px solid #fff;">🎮 <span data-i18n="kart.destek_ol">Destek Ol</span> 🚀</a>
       </div>
       <p style="opacity:0.9;">&copy; <span id="telifYil">2026</span> <span data-i18n="kart.telif">kidefarapca.com - Tüm Hakları Saklıdır.</span></p>
       <script>/* Telif yılı hep güncel kalsın: her yıl elle düzeltme gerekmez */
@@ -8298,22 +8296,22 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- DENEME HAKLARI (24.10.2026): destek vermeyen öğretmene bazı araçlarda
          5 deneme hakkı, bir kez (kartta 5 → 4; 25.10.2026'ya dek haftalıktı);
          Kelime Çarkı 25.10.2026'dan beri ücretsiz; durumu destek.js yazar -->
-    <script src="sistem/hak.js?v=9dbeb3f8"></script>
-    <script src="hesap/destek.js?v=9b236b34"></script>
+    <script src="sistem/hak.js?v=f620b4a1"></script>
+    <script src="hesap/destek.js?v=e9215fc4"></script>
     <script src="sistem/alarm.js?v=5af5693a"></script>
     <script src="hesap/live-lesson.js?v=cb8c8026"></script>
     <!-- Haftalık plan tavsiyesi verisi (Yöneticinin tavsiyesi penceresi) -->
     <script src="sistem/kazanimoneri.js?v=82c9b3e7"></script>
     <!-- Öğretmen profilindeki "sitede yenilikler" şeridi -->
-    <script src="sistem/yenilikler.js?v=3555e245"></script>
+    <script src="sistem/yenilikler.js?v=802d683b"></script>
     <!-- Güncellemeler ve Galeri bölümü: liste galeriYenile.py'den,
          duyurular yukarıdaki yenilikler.js'ten gelir. -->
-    <script src="sistem/siniftayeni.js?v=523f760d"></script>
+    <script src="sistem/siniftayeni.js?v=64a82a0f"></script>
     <!-- AYLIK YARIŞMA (24.10.2026) — ana sayfanın başındaki geri sayım kartı (#aylikYarisma);
          görev ayarı ayarlar/aylikYarisma, sayfa aylikyarisma.html -->
     <script defer src="sistem/aylikkart.js?v=f7bf99a7"></script>
     <script src="sistem/galeriveri.js?v=b5d6af07"></script>
-    <script src="sistem/galeri.js?v=31382e3d"></script>
+    <script src="sistem/galeri.js?v=82388540"></script>
     <script src="hesap/listelerim.js?v=66e6bce7"></script>
     <!-- SINIFLAR GİRİŞLE AÇILIR (18.10.2026): çıkışta okul penceresi ve sınıf
          listeleri kapanır, sınıf sekmesi girişi bekler (sistem/oturumkapi.js). -->
@@ -8809,16 +8807,6 @@ function kdDil() {
   <span id="fab-msg-dot" style="display:none; position:absolute; top:4px; right:4px; width:13px; height:13px; background:#2ECC71; border-radius:50%; box-shadow:0 0 0 2px #fff;"></span>
 </button>
 
-<!-- Destek modali (global, gizli) -->
-<div id="supportModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); backdrop-filter:blur(5px);">
-  <div style="background-color:#fff; margin:15% auto; padding:30px; border-radius:20px; width:90%; max-width:400px; text-align:center; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:4px solid #FFC107;">
-    <span onclick="closeSupportModal()" style="position:absolute; right:15px; top:10px; font-size:28px; font-weight:bold; cursor:pointer; color:#aaa;">&times;</span>
-    <div style="font-size:3em; margin-bottom:10px;">🎁</div>
-    <h2 style="font-family:'Marhey',sans-serif; color:#E67E22; margin-top:0;" data-i18n="kart.destek_baslik">Destek Ol!</h2>
-    <p style="font-family:'Nunito',sans-serif; font-size:1.1em; color:#333; line-height:1.5;"><span data-i18n="kart.destek_metin1">Kidef Arapça sitesini desteklemek için:</span> <br><strong style="color:#27AE60;">kidefarapca@gmail.com</strong> <br><span data-i18n="kart.destek_metin2">üzerinden bizimle iletişime geçebilirsiniz.</span></p>
-    <button onclick="closeSupportModal()" data-i18n="g.kapat" style="background:#27AE60; color:#fff; border:none; padding:10px 30px; border-radius:10px; font-weight:bold; cursor:pointer; font-size:1em; margin-top:10px;">Kapat</button>
-  </div>
-</div>
 
 <style>
 .feedback-fab{

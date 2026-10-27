@@ -10,7 +10,9 @@
        Var olan bir id'yi değiştirme, yoksa herkeste yeniden "okunmadı"
        hâline döner.
      · tarih 'YYYY-MM-DD'. Yalnız gösterim için; sıralama id ile yapılır.
-     · metin tek cümle olsun; şerit uzarsa okunmuyor.
+     · metin tek cümle olsun; şerit uzarsa okunmuyor. GRUPLU DUYURU (27.10.2026):
+       benzer konudaki yenilikler tek kayıtta, kısa cümleler art arda (ana sayfada
+       aynı sayfa maddeli: sistem/siniftayeni.js L).
 
    Okundu bilgisi tarayıcıda: localStorage['kidef_yenilik_gorulen'] = en son
    okunan id. Hesaba değil cihaza bağlıdır; öğretmen başka cihazdan girerse
@@ -23,6 +25,37 @@
 
     /* EN YENİSİ EN ÜSTTE */
     var LISTE = [
+        /* GRUPLU DUYURU (27.10.2026): ana sayfadaki sayfalarla aynı; metin = maddeler art arda */
+        {
+            id: 23,
+            tarih: '2026-10-27',
+            baslik: 'Sınıfının materyalleri artık okulunun kitaplığında',
+            metin: 'Kurumlar ve Sınıflar penceresinde sınıf rakamına dokun: o sınıfın kitaplığı açılır. Ders kitabı, belgeler ve etkinlik kartları aynı rafta. Sınıfı olmayan seviyede önce «+ sınıf ekle»; materyaller sınıfla birlikte açılır. Sınıf kapıları 20 ayrı giydirmeyle: harfler, âyet ve hadisler, büyük şahsiyetler. Öğrencin Sınıfım bölümünde aynı kitaplığı görür. «Nerde Kalmıştık?» raporu kalınan sayfayı ve oyunları gösterir, kitabı oradan açar.'
+        },
+        {
+            id: 22,
+            tarih: '2026-10-27',
+            baslik: 'Kitabın üstüne yaz, kaldığın sayfayı iple işaretle',
+            metin: 'Kalem düğmesiyle sayfaya yaz; yazdığın sayfaya yapışır, büyütünce onunla gider. Yüzen şeritte 5 renk, silgi, geri al ve imleç var; şeridi istediğin yere taşırsın. Silgiye ikinci kez dokun: dokunduğu yeri ya da bütün çizgiyi siler. Sayfanın üstündeki gri ize dokun: kırmızı ip o sayfada kalır, kitapta tek ip olur. İp başka sayfadaysa cildin üstündeki kırmızı uçla o sayfaya dönersin. Yazılar her büyütmede keskin, Safari\'de de; iki parmakla akıcı yakınlaşır.'
+        },
+        {
+            id: 21,
+            tarih: '2026-10-26',
+            baslik: 'Defterde sınıf sınıf yazı çalışması',
+            metin: 'Sağ üstteki defter adından genel defterle sınıf defterleri arasında geçersin. Defter hep kaldığın yerden açılır; kalem daha doğal yazar. «Silik yazı» ile dersin kelimeleri gri yazılır, öğrenci üstünden geçer. Harfin dört yazılışı ve yazılış animasyonu defterde; tahtada da görünür. Sınıf materyallerindeki «Yazı Çalışması» kartını öğrenci kendi cihazında da açar. «Kalemle Üzerinden Geç» PDF\'i Alfabe\'de: 5–10. sınıf konuşma metinleri gri yazıyla.'
+        },
+        {
+            id: 20,
+            tarih: '2026-10-26',
+            baslik: 'Tahtada, telefonda ve girişte kolaylıklar',
+            metin: 'Lazer ve büyüteç kumandada tahtanın oranında çalışır, kaydırma akıcı. Defterde yazdığın tahtaya canlı yansır. Kumandadan çıkınca Sınıf Ekranı da kendiliğinden kapanır. Telefonda Kelime Listeleri ekrana sığar; Word, Excel ve PDF indirilir. Videolarda ve etkinliklerde «Tam ekran» ve «Yeni sekmede» düğmeleri var. Giriş hataları artık Türkçe; «Şifremi unuttum» ile yeni şifre alırsın.'
+        },
+        {
+            id: 19,
+            tarih: '2026-10-25',
+            baslik: 'Okuma hızını ölç, yarışmaya hazırlan',
+            metin: 'Okuma Hızlandırma: her sınıfa 18 okuma; Alfabe\'de ve sınıf materyallerinde. Süre tut, sesle birlikte hızlan ya da mikrofonla ölç; hız yıldızla değerlendirilir. Muhâdesede her cümlenin anlamını çağrıştıran animasyonlu bir resim var. Aylık Türkiye Arapça Yarışması: tarih açıklanınca ana sayfada geri sayım çıkar. Öğrenciler kendi hesabıyla katılır; sen katılmazsın, bağlantıyı paylaşırsın.'
+        },
         {
             id: 18,
             tarih: '2026-10-22',

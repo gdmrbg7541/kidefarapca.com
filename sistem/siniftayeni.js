@@ -20,11 +20,67 @@
      e  etiket — alan (Planlar, Dijital kitap, Oyun, Bilgi yarışması…)
      b  başlık
      m  metin
+     L  (isteğe bağlı) maddeler: ['kısa cümle', …] — GRUPLU DUYURU (27.10.2026):
+        benzer konudaki yenilikler tek sayfada, her biri TEK KISA cümle; m o zaman
+        boş kalabilir. sistem/galeri.js maddeleri liste olarak çizer. Aynı sayfayı
+        sistem/yenilikler.js'e de (metin = maddeler art arda) yaz.
 
    Site içi teknik duyuru şeridi ayrı yerde: sistem/yenilikler.js
    (öğretmen profilindeki "yenilik" şeridi).
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
+  /* GRUPLU DUYURU (27.10.2026) — öğretmen: "bu duyuruları kısa cümlelerle ve guruplayarak
+     yayınlayalım, yani benzer konudaki örneğin 5 duyuruyu 5 cümle olarak tek sayfaya ekle".
+     22.10.2026'dan sonraki yenilikler beş sayfada; her madde tek kısa cümle (L). */
+  { t: '2026-10-27', e: 'Sınıflarım', b: 'Sınıfının materyalleri artık okulunun kitaplığında',
+    L: [
+      'Kurumlar ve Sınıflar penceresinde sınıf rakamına dokun: o sınıfın kitaplığı açılır.',
+      'Ders kitabı, belgeler ve etkinlik kartları aynı rafta.',
+      'Sınıfı olmayan seviyede önce «+ sınıf ekle»; materyaller sınıfla birlikte açılır.',
+      'Sınıf kapıları 20 ayrı giydirmeyle: harfler, âyet ve hadisler, büyük şahsiyetler.',
+      'Öğrencin Sınıfım bölümünde aynı kitaplığı görür.',
+      '«Nerde Kalmıştık?» raporu kalınan sayfayı ve oyunları gösterir, kitabı oradan açar.'
+    ] },
+
+  { t: '2026-10-27', e: 'Dijital kitap', b: 'Kitabın üstüne yaz, kaldığın sayfayı iple işaretle',
+    L: [
+      'Kalem düğmesiyle sayfaya yaz; yazdığın sayfaya yapışır, büyütünce onunla gider.',
+      'Yüzen şeritte 5 renk, silgi, geri al ve imleç var; şeridi istediğin yere taşırsın.',
+      'Silgiye ikinci kez dokun: dokunduğu yeri ya da bütün çizgiyi siler.',
+      'Sayfanın üstündeki gri ize dokun: kırmızı ip o sayfada kalır, kitapta tek ip olur.',
+      'İp başka sayfadaysa cildin üstündeki kırmızı uçla o sayfaya dönersin.',
+      'Yazılar her büyütmede keskin, Safari\'de de; iki parmakla akıcı yakınlaşır.'
+    ] },
+
+  { t: '2026-10-26', e: 'Defter', b: 'Defterde sınıf sınıf yazı çalışması',
+    L: [
+      'Sağ üstteki defter adından genel defterle sınıf defterleri arasında geçersin.',
+      'Defter hep kaldığın yerden açılır; kalem daha doğal yazar.',
+      '«Silik yazı» ile dersin kelimeleri gri yazılır, öğrenci üstünden geçer.',
+      'Harfin dört yazılışı ve yazılış animasyonu defterde; tahtada da görünür.',
+      'Sınıf materyallerindeki «Yazı Çalışması» kartını öğrenci kendi cihazında da açar.',
+      '«Kalemle Üzerinden Geç» PDF\'i Alfabe\'de: 5–10. sınıf konuşma metinleri gri yazıyla.'
+    ] },
+
+  { t: '2026-10-26', e: 'Akıllı tahta', b: 'Tahtada, telefonda ve girişte kolaylıklar',
+    L: [
+      'Lazer ve büyüteç kumandada tahtanın oranında çalışır, kaydırma akıcı.',
+      'Defterde yazdığın tahtaya canlı yansır.',
+      'Kumandadan çıkınca Sınıf Ekranı da kendiliğinden kapanır.',
+      'Telefonda Kelime Listeleri ekrana sığar; Word, Excel ve PDF indirilir.',
+      'Videolarda ve etkinliklerde «Tam ekran» ve «Yeni sekmede» düğmeleri var.',
+      'Giriş hataları artık Türkçe; «Şifremi unuttum» ile yeni şifre alırsın.'
+    ] },
+
+  { t: '2026-10-25', e: 'Okuma', b: 'Okuma hızını ölç, yarışmaya hazırlan',
+    L: [
+      'Okuma Hızlandırma: her sınıfa 18 okuma; Alfabe\'de ve sınıf materyallerinde.',
+      'Süre tut, sesle birlikte hızlan ya da mikrofonla ölç; hız yıldızla değerlendirilir.',
+      'Muhâdesede her cümlenin anlamını çağrıştıran animasyonlu bir resim var.',
+      'Aylık Türkiye Arapça Yarışması: tarih açıklanınca ana sayfada geri sayım çıkar.',
+      'Öğrenciler kendi hesabıyla katılır; sen katılmazsın, bağlantıyı paylaşırsın.'
+    ] },
+
 
   /* 22.10.2026 — öğretmen: "sınıfta yeni kısmındaki ekranı yansıt kısmını güncelle, ilk
      duyuru olsun, kumanda özellikleri vs ekledik". 17.10'daki tahta kaydı bugünkü akışla

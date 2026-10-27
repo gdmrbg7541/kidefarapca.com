@@ -34,7 +34,8 @@
      tahta       «Bu cihazı kumanda olarak kullan» (sistem/tahtagir.js) ve
                  telefonda karekodla «Evet, kumanda olsun» (hesap/kumanda.js)
      defter      defterde «PDF indir» ve «Geçmiş» (paneli açarken)
-     kitapIndir  flipbookta İndir panelindeki paketler (flaşa / bilgisayara)
+     kitapIndir  flipbookta İndir panelindeki paketler (flaşa / bilgisayara) — YALNIZ DESTEKÇİYE
+                 (27.10.2026): deneme hakkı yok (YALNIZ, payli())
      kitapKalem  flipbookta Kalem (açarken; P tuşu da)
      (Kelime Çarkı 25.10.2026'dan beri ücretsiz, kapı yok.)
    ORTAK HEDEF İLE AÇILAN İÇERİK
@@ -66,6 +67,19 @@
     tahta: 'Tahtaya yansıt', defter: 'Defter PDF\'i ve geçmiş', kalip: 'Kalıplar tablosu', muhadese: 'Muhâdese',
     kitapIndir: 'Flipbook indirme', kitapKalem: 'Flipbook kalemi'
   };
+
+  /* YALNIZ DESTEKÇİYE (27.10.2026) — öğretmen: "kitap indirme özelliği tamamen ücretli olsun".
+     Bu özelliklerde deneme hakkı yok. Açık olanlar: ödemesi onaylanan (dönemi tamam ya da kısmi),
+     referansla ödemiş sayılan öğretmen ve yönetici (sebebi hesap/destek.js yazar). İlk ayındaki
+     öğretmen, öğrenci ve durumu bu tarayıcıda bilinmeyen hesap «destekçilere açık» penceresini görür. */
+  var YALNIZ = { kitapIndir: 1 };
+  var PAYLI = { odeme: 1, kismi: 1, referans: 1, yonetici: 1 };
+  function payli() {
+    var d = al(K_DURUM, null), uid = oturumUid();
+    if (!d || !d.uid || uid === '' || (uid && d.uid !== uid)) return false;
+    if (d.rol === 'admin') return true;
+    return d.rol === 'teacher' && !!d.sinirsiz && !!PAYLI[d.sebep] && (!d.bit || d.bit > Date.now());
+  }
 
   function al(k, v) { try { var x = localStorage.getItem(k); return x ? JSON.parse(x) : v; } catch (e) { return v; } }
   function yaz(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
@@ -114,6 +128,7 @@
     return { H: H, r: r };
   }
   function kalan(oz) {
+    if (YALNIZ[oz]) return payli() ? Infinity : 0;
     var d = durum();
     if (!d.sinirli) return Infinity;
     var r = hakKaydi(d.uid).r;
@@ -133,7 +148,7 @@
     var d = durum();
     if (!d.sinirli) return 0;
     var r = hakKaydi(d.uid).r, n = 0;
-    Object.keys(r.k).forEach(function (oz) { if (oz in AD) n += Math.max(0, HAK - (r.k[oz] | 0)); });
+    Object.keys(r.k).forEach(function (oz) { if (oz in AD && !YALNIZ[oz]) n += Math.max(0, HAK - (r.k[oz] | 0)); });
     return n;
   }
 
@@ -192,6 +207,7 @@
   function rozetCiz(r, k) {
     if (!r || r.classList.contains('kh-cal')) return;              /* canlanırken dokunma */
     var ic = k > 0 ? '<b>' + k + '</b>' : KILIT, t = k > 0 ? k + ' deneme hakkın kaldı (destekçilere sınırsız)' : 'Deneme hakların bitti — destekçilere sınırsız';
+    if (YALNIZ[r.getAttribute('data-kh')]) t = 'Kidef\'i destekleyen öğretmenlere açık';
     if (r.getAttribute('data-k') === String(k)) return;             /* değişmediyse DOM'a dokunma (gözlemci döngüsü olmasın) */
     r.setAttribute('data-k', String(k));
     r.classList.remove('kh-hedef');
@@ -285,6 +301,26 @@
       '<button type="button" class="kh-kapat">Kapat</button></div>' +
       refNot(), 'Deneme hakları bitti');
   }
+  /* YALNIZ DESTEKÇİYE açık özellik (27.10.2026): deneme hakkı yok. Öğrenciye destek düğmesi yok. */
+  function yalnizPencere(oz) {
+    var d = al(K_DURUM, null) || {};
+    var ad = oz === 'kitapIndir' ? 'Kitap indirme' : (AD[oz] || 'Bu araç');
+    if (d.rol === 'student') {
+      return pencere('<div class="kh-ik">' + KILIT + '</div>' +
+        '<h3>' + esc(ad) + ' öğretmenlere açık</h3>' +
+        '<p>Kitapları flaşa ya da bilgisayara indirmek, Kidef\'i destekleyen öğretmenlere açık. Kitabı burada okumaya devam edebilirsin.</p>' +
+        '<div class="kh-tus"><button type="button" class="kh-kapat">Kapat</button></div>', ad + ' öğretmenlere açık');
+    }
+    return pencere('<div class="kh-ik">' + KILIT + '</div>' +
+      '<h3>' + esc(ad) + ' destekçilere açık</h3>' +
+      '<p>Dijital kitapları flaşa ya da bilgisayara indirmek, Kidef\'e destek veren öğretmenlere açık; bunun için deneme hakkı yok. ' +
+        'Desteğin, sitenin yayın ve geliştirme giderlerini ve materyallerin arkasındaki öğretmen emeğini karşılıyor.</p>' +
+      '<p class="kh-istege"><b>Destek isteğe bağlıdır.</b> Kitapları sitede açmaya her zaman devam edersin.</p>' +
+      '<div class="kh-tus"><a class="kh-destek" href="' + esc(_destekAdres) + '">' + KALP + 'Destekle, indirme açılsın</a>' +
+      '<button type="button" class="kh-kapat">Kapat</button></div>' +
+      '<small>Destek verdiysen Kidef ana sayfasını bu tarayıcıda bir kez aç; indirme kendiliğinden açılır.</small>' +
+      refNot(), ad + ' destekçilere açık');
+  }
   /* GİRİŞ YAPMAMIŞ ZİYARETÇİ (24.10.2026) — öğretmen: "flipbooklarda kalem ve
      indir seçeneği giriş yapılmasada tuş olarak görünsün ama giriş yapmayanlar
      için tıklayınca destek istensin, hatta ... isteğe bağlı olduğunu
@@ -295,8 +331,11 @@
     var ad = KISA[oz] || AD[oz] || 'Bu araç';
     return pencere('<div class="kh-ik">' + KALP + '</div>' +
       '<h3>' + esc(ad) + ', Kidef\'i destekleyenlere açık</h3>' +
-      '<p>Kidef\'in kalem ve indirme gibi araçları, öğretmenlerin desteğiyle ayakta duruyor. Giriş yapan öğretmen her aracı ' +
-        HAK + ' kez ücretsiz dener; destek olanlara sınırsız.</p>' +
+      (YALNIZ[oz]
+        ? '<p>Kitapları indirmek, Kidef\'i destekleyen öğretmenlere açık. Kalem gibi öbür araçları giriş yapan öğretmen ' +
+          HAK + ' kez ücretsiz dener.</p>'
+        : '<p>Kidef\'in kalem ve indirme gibi araçları, öğretmenlerin desteğiyle ayakta duruyor. Giriş yapan öğretmen her aracı ' +
+          HAK + ' kez ücretsiz dener; destek olanlara sınırsız.</p>') +
       '<p class="kh-istege"><b>Destek isteğe bağlıdır.</b> Dilersen bir kerede, dilersen parça parça gönderirsin; ' +
         'vermesen de Kidef\'i kullanmaya devam edersin.</p>' +
       '<div class="kh-tus"><a class="kh-destek" href="' + esc(_destekAdres) + '">' + KALP + 'Giriş yap, destek ol</a>' +
@@ -307,7 +346,7 @@
   function kullan(oz, el) {
     var k = kalan(oz);
     if (k === Infinity) return Promise.resolve(true);
-    if (k <= 0) { var r0 = el && rozet(el, oz); if (r0) rozetCiz(r0, 0); bittiPencere(oz); return Promise.resolve(false); }
+    if (k <= 0) { var r0 = el && rozet(el, oz); if (r0) rozetCiz(r0, 0); if (YALNIZ[oz]) yalnizPencere(oz); else bittiPencere(oz); return Promise.resolve(false); }
     var r = el ? rozet(el, oz) : null;
     var yeni = harca(oz);
     if (!r || !document.body.contains(r)) {
@@ -526,7 +565,7 @@
   TUSLAR.push({ tus: ['p', 'P'], s: '#tKalem', oz: 'kitapKalem', kosul: VARSAYILAN['#tKalem'].kosul });
 
   window.KidefHak = {
-    HAK: HAK, HAFTALIK: HAFTALIK, AD: AD,
+    HAK: HAK, HAFTALIK: HAFTALIK, AD: AD, YALNIZ: YALNIZ, payli: payli,
     durum: durum, kalan: kalan, kullan: kullan, rozet: rozet, bagla: bagla, rozetBagla: rozetBagla, rozetler: rozetler,
     hafta: hafta, kullanim: kullanim, haftaKullanim: kullanim,   /* haftaKullanim: eski ad */
     uid: function (u) { _uid = u ? String(u) : ''; rozetler(); },

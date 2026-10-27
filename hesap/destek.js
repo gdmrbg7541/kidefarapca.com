@@ -232,6 +232,8 @@
             /* 24.10.2026: referans kodları (yalnız kodlar) ve ortak hedefle açılan içerik */
             refKodlar: (o.refKodlar && typeof o.refKodlar === 'object') ? Object.keys(o.refKodlar).filter(function (k) { return !!o.refKodlar[k]; }) : [],
             hedefIcerik: hedefDuzen(o.hedefIcerik),
+            /* 27.10.2026: son 30 günün en çok kullanan 3 öğretmeni (yalnız uid) */
+            enCok: enCokDuzen(o.enCok),
             guncelleme: tarihAl(o.guncelleme),
             /* eski sürümün açık belgeye yazdığı alanlar kaldıysa temizlenir */
             eskiAlan: ['tur', 'toplam', 'taban', 'aktif', 'onayli', 'ayarElle'].some(function (k) { return k in o; })
@@ -444,6 +446,26 @@
             return { id: String(x.id || ''), y: Math.min(100, Math.max(1, Math.round(+x.y))), ad: String(x.ad).trim().slice(0, 60),
                      a: String(x.a || '').trim().slice(0, 200), n: String(x.n || '').trim().slice(0, 140), acildi: +x.acildi || 0 };
         }).sort(function (a, b) { return a.y - b.y; }).slice(0, 12);
+    }
+    /* EN ÇOK KULLANANLAR — ROZETLER (27.10.2026): yönetici sayımı son 30 günde en çok vakit
+       geçiren ilk 3 onaylı öğretmeni (kullanim.gun; en az 30 dk) mufredat/_destek.enCok'a yazar:
+       {L: [uid…], t: ms}. Ad ve süre yazılmaz; öğretmen yalnız kendi sırasını görür. */
+    var EN_COK_GUN = 30, EN_COK_EN_AZ = 30 * 60;
+    function enCokDuzen(e) {
+        if (!e || typeof e !== 'object' || !Array.isArray(e.L)) return { L: [], t: 0 };
+        return { L: e.L.filter(function (u) { return typeof u === 'string' && !!u; }).slice(0, 3), t: +e.t || 0 };
+    }
+    function enCokHesapla(liste, simdi) {
+        var bugun = ymd(new Date(simdi)), bas = ymd(new Date(simdi - (EN_COK_GUN - 1) * GUN)), L = [];
+        (liste || []).forEach(function (o) {
+            var uid = o && (o._id || o.uid);
+            if (!uid || !onayliMi(o)) return;
+            var g = (o.kullanim && o.kullanim.gun) || {}, t = 0;
+            Object.keys(g).forEach(function (k) { if (k >= bas && k <= bugun) t += +g[k] || 0; });
+            if (t >= EN_COK_EN_AZ) L.push({ u: uid, t: t });
+        });
+        L.sort(function (a, b) { return (b.t - a.t) || (a.u < b.u ? -1 : (a.u > b.u ? 1 : 0)); });
+        return L.slice(0, 3).map(function (x) { return x.u; });
     }
     function buDonemYuzde(oz) {
         var dn = donemBul(new Date());
@@ -877,6 +899,7 @@
         if (document.visibilityState === 'hidden') return;
         _seritSayac++;
         hakTazele();                         /* deneme hakları (24.10.2026) */
+        sinirsizTazele();                    /* kartta kalan haklar (27.10.2026) */
         hatirlatKontrol();                   /* kullanım hatırlatması (24.10.2026) */
         var var_ = !!document.getElementById('dstSerit');
         var r = rol(), ogretmen = r === 'teacher' || r === 'admin';
@@ -1231,7 +1254,43 @@
             '.dst-hatirlat .dst-tus{padding:9px 16px;}',
             '.dst-hatirlat .dst-ht-x{position:absolute; top:8px; right:10px; border:0; background:none; font-size:1.4rem; line-height:1; color:#B9A88A; cursor:pointer;}',
             '@keyframes dstHtGel{from{transform:translateY(20px); opacity:0}}',
-            '@media (prefers-reduced-motion:reduce){.dst-hatirlat{animation:none}}'
+            '@media (prefers-reduced-motion:reduce){.dst-hatirlat{animation:none}}',
+            /* ROZETLER (27.10.2026) */
+            '#tpRozet{margin-bottom:25px; border-left:5px solid #E3A02A; position:relative; overflow:hidden;}',
+            '#tpRozet .rz-bas{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:12px;}',
+            '#tpRozet .rz-bas b{color:#9A6512; font-size:1.08rem;}',
+            '#tpRozet .rz-bas span{color:#8A7A66; font-size:.86rem;}',
+            '#tpRozet .rz-liste{display:flex; gap:12px; flex-wrap:wrap;}',
+            '#tpRozet .rz-kart{flex:1 1 250px; min-width:0; display:flex; align-items:center; gap:14px; padding:10px 16px 10px 10px; border-radius:18px;',
+            '  background:linear-gradient(160deg,#FFFBF1,#FFF1D2); border:1px solid #F3DDAF; animation:rzGel .55s cubic-bezier(.2,1.2,.4,1) both;}',
+            '#tpRozet .rz-kart + .rz-kart{animation-delay:.12s;}',
+            '#tpRozet .rz-kart.rz-gumus{background:linear-gradient(160deg,#F8FAFC,#EAEFF5); border-color:#DCE3EB;}',
+            '#tpRozet .rz-kart.rz-bronz{background:linear-gradient(160deg,#FFF8F2,#FBE5D2); border-color:#F1CDAE;}',
+            '#tpRozet .rz-svg{flex:none; width:88px; height:88px; display:flex; align-items:center; justify-content:center;}',
+            '#tpRozet .rz-yedek{font-size:2.8rem; line-height:1;}',
+            '#tpRozet .rz-yazi{min-width:0;}',
+            '#tpRozet .rz-yazi b{display:block; color:#7A4E0B; font-size:1.02rem; margin-bottom:3px;}',
+            '#tpRozet .rz-gumus .rz-yazi b{color:#3F4E5F;}',
+            '#tpRozet .rz-bronz .rz-yazi b{color:#7A3E12;}',
+            '#tpRozet .rz-yazi span{display:block; color:#7D6E58; font-size:.86rem; line-height:1.45;}',
+            '@keyframes rzGel{from{transform:translateY(10px) scale(.96); opacity:0}}',
+            '@media (max-width:520px){#tpRozet .rz-svg{width:70px; height:70px;} #tpRozet .rz-kart{flex-basis:100%;}}',
+            '@media (prefers-reduced-motion:reduce){#tpRozet .rz-kart{animation:none}}',
+            /* DESTEK VERİNCE SINIRSIZ (27.10.2026) */
+            '#tpDestek .dst-sz{margin:4px 0 16px; padding:14px 16px; border-radius:16px; background:#FFFCF4; border:1px solid #F3E3C0;}',
+            '#tpDestek .dst-sz-bas{display:flex; align-items:center; gap:8px; margin-bottom:10px; color:#9A6512; font-weight:800;}',
+            '#tpDestek .dst-sz-bas svg{flex:none; width:20px; height:20px;}',
+            '#tpDestek .dst-sz ul{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:8px;}',
+            '#tpDestek .dst-sz li{display:flex; align-items:center; gap:10px; min-width:0; padding:8px 10px; border-radius:12px; background:#fff; border:1px solid #F1E6CF;}',
+            '#tpDestek .dst-sz li svg{flex:none; width:22px; height:22px; color:#C98A1B;}',
+            '#tpDestek .dst-sz li b{flex:1; min-width:0; font-size:.9rem; color:#5B4A2A; font-weight:700;}',
+            '#tpDestek .dst-sz li em{flex:none; font-style:normal; font-size:.76rem; font-weight:800; padding:3px 9px; border-radius:999px; white-space:nowrap;}',
+            '#tpDestek .dst-sz li[data-s="acik"] em{background:#E8F6EE; color:#1E8449;}',
+            '#tpDestek .dst-sz li[data-s="hak"] em{background:#FFF3DC; color:#B7791F;}',
+            '#tpDestek .dst-sz li[data-s="bitti"] em{background:#FDECEA; color:#C0392B;}',
+            '#tpDestek .dst-sz li[data-s="kilit"] em{background:#F3EEE4; color:#8A6D3B;}',
+            '#tpDestek .dst-sz-alt{margin:10px 0 0; font-size:.82rem; color:#8A7A66; line-height:1.5;}',
+            '@media (max-width:420px){#tpDestek .dst-sz ul{grid-template-columns:1fr;}}'
         ].join('\n');
         document.head.appendChild(s);
     }
@@ -1429,7 +1488,7 @@
               (ayda && h.kisi > 0 ? ' · ayda yaklaşık ' + esc(tl(h.refD === 'yarim' ? Math.ceil(ayda / 2 / 10) * 10 : ayda)) : '') + '</span>' +
             (h.durum !== 'tamam' && h.refD !== 'tam'
                 ? '<span class="dst-istege-not"><b>Destek isteğe bağlıdır.</b> Dilersen bir kerede, dilersen parça parça gönderirsin; ' +
-                  'vermesen de Kidef\'i kullanmaya devam edersin. Destekçilere kalem, indirme gibi araçlar sınırsız açılır.</span>'
+                  'vermesen de Kidef\'i kullanmaya devam edersin.</span>'
                 : '') +
             '<span class="dst-vurgu">' + okSvg() + '<span><b>Siteye katılan öğretmen arttıkça gelecek dönemin payı azalır.</b> ' +
               'Meslektaşlarını davet ettikçe herkesin payı küçülür.</span></span>' +
@@ -1494,7 +1553,7 @@
             }).join('') + '</div>';
         }
         ben += '</div>';
-        return { imza: imza, html: bas + '<div class="dst-ust">' + tutar + grafik + '</div>' + aciklama + ben + kose.html };
+        return { imza: imza, html: bas + '<div class="dst-ust">' + tutar + grafik + '</div>' + aciklama + sinirsizBlok(h) + ben + kose.html };
     }
 
     /* REFERANS bloğu (destek kartı): kod, Kopyala/Paylaş, 5 adım */
@@ -1583,6 +1642,7 @@
         var yeni = r.imza !== _oynatilan;
         kart.classList.toggle('dst-durgun', !yeni);
         kart.innerHTML = r.html;
+        sinirsizTazele();
         grafikCiz(kart, false);
         if (yeni && r.imza.indexOf('|') > 0) { sayacOynat(kart); _oynatilan = r.imza; }
     }
@@ -1594,6 +1654,8 @@
         if (r !== 'teacher' && r !== 'admin') {
             var eski = document.getElementById('tpDestek');
             if (eski) eski.remove();
+            var eskiR = document.getElementById('tpRozet');
+            if (eskiR) eskiR.remove();
             return;
         }
         if (!sec.querySelector('#tpKisisel')) return;   /* öğretmen profili henüz çizilmedi */
@@ -1609,6 +1671,7 @@
             kartCiz(kart);
         }
         rozetYerlestir();
+        rozetKartKontrol(sec);
         var uid = benUid();
         var taze = _ben && _ben.uid === uid && (Date.now() - _ben.zaman < 60000);
         if (taze || _benYukleniyor || !uid) return;
@@ -1618,6 +1681,7 @@
             var k = document.getElementById('tpDestek');
             if (k) kartCiz(k);
             rozetYerlestir();
+            rozetKartKontrol(sec);
             seritCiz();
             hakTazele(true);                 /* deneme hakları (24.10.2026) */
         }).catch(function (e) {
@@ -1625,6 +1689,121 @@
             _ben = { uid: uid, zaman: Date.now(), hata: hataYaz(e) };
             var k = document.getElementById('tpDestek');
             if (k) kartCiz(k);
+        });
+    }
+
+    /* ROZETLER (27.10.2026) — öğretmen: "siteyi en çok kullanan, destek verenler için
+       profillerinde güzel animasyonlu svg ler ekleyelim". Profilin en üstünde «Rozetlerin»:
+       son 30 günün en çok kullanan ilk 3'ü (altın / gümüş / bronz; sıra: mufredat/_destek.enCok)
+       ve destekçi (rozetHtml ile aynı kural). Çizimler SVG kütüphanesinden; kütüphane yalnız
+       rozeti olan öğretmenin profilinde yüklenir, yüklenemezse küçük yedek simge kalır. */
+    var SVG_YOL = 'veri/veri_svg.js?v=54636074';
+    var _svgSoz = null;
+    function svgYukle() {
+        if (window.KidefSvg) return Promise.resolve(window.KidefSvg);
+        if (_svgSoz) return _svgSoz;
+        _svgSoz = new Promise(function (tamam, red) {
+            var s = document.createElement('script');
+            s.src = SVG_YOL; s.async = true;
+            s.onload = function () { if (window.KidefSvg) tamam(window.KidefSvg); else { _svgSoz = null; red(new Error('KidefSvg yok')); } };
+            s.onerror = function () { _svgSoz = null; red(new Error('SVG kütüphanesi yüklenemedi')); };
+            (document.head || document.documentElement).appendChild(s);
+        });
+        return _svgSoz;
+    }
+    function destekRozetAd(v) {
+        try { if (v && v.ozet && !v.hata && benHesap(v).durum === 'tamam') return 'Bu dönemin destekçisi'; } catch (e) { }
+        var y = rozetYili(v);
+        return y ? y + ' destekçisi' : '';
+    }
+    var SIRA = [
+        { id: 'rozet-altin', s: 'altin', y: '🥇', b: 'En çok kullanan · 1.', m: 'Son 30 günde Kidef\'te en çok vakit geçiren öğretmensin. Teşekkürler!' },
+        { id: 'rozet-gumus', s: 'gumus', y: '🥈', b: 'En çok kullanan · 2.', m: 'Son 30 günde Kidef\'te en çok vakit geçiren ikinci öğretmensin. Teşekkürler!' },
+        { id: 'rozet-bronz', s: 'bronz', y: '🥉', b: 'En çok kullanan · 3.', m: 'Son 30 günde Kidef\'te en çok vakit geçiren üçüncü öğretmensin. Teşekkürler!' }
+    ];
+    function rozetlerim(v) {
+        var L = [];
+        if (!v || v.hata || !v.ozet) return L;
+        var ec = v.ozet.enCok, i = (ec && ec.L) ? ec.L.indexOf(v.uid) : -1;
+        if (i >= 0 && SIRA[i]) L.push(SIRA[i]);
+        var d = destekRozetAd(v);
+        if (d) L.push({ id: 'rozet-destekci', s: 'destek', y: '💛', b: d, m: 'Desteğin için teşekkürler; Kidef seninle büyüyor.' });
+        return L;
+    }
+    function rozetKartKontrol(sec) {
+        if (!sec) return;
+        var kart = document.getElementById('tpRozet');
+        var L = (rol() === 'teacher' && _ben && _ben.uid === benUid()) ? rozetlerim(_ben) : [];
+        if (!L.length) { if (kart) kart.remove(); return; }
+        var imza = L.map(function (x) { return x.id + ':' + x.b; }).join('|');
+        var donem = document.getElementById('tpDonem');
+        var hedef = (donem && donem.parentNode === sec) ? donem : sec.firstChild;
+        if (kart && kart.getAttribute('data-imza') === imza && kart.parentNode === sec &&
+            (kart.nextSibling === hedef || kart === sec.firstChild)) return;
+        if (!kart) { kart = document.createElement('div'); kart.id = 'tpRozet'; kart.className = 'glass-card'; }
+        if (kart.getAttribute('data-imza') !== imza) {
+            stilKur();
+            kart.setAttribute('data-imza', imza);
+            kart.innerHTML = '<div class="rz-bas"><b>Rozetlerin</b><span>Kidef\'teki emeğin ve desteğin için</span></div>' +
+                '<div class="rz-liste">' + L.map(function (x) {
+                    return '<div class="rz-kart rz-' + x.s + '"><div class="rz-svg" data-rz="' + x.id + '">' +
+                        '<span class="rz-yedek" aria-hidden="true">' + x.y + '</span></div>' +
+                        '<div class="rz-yazi"><b>' + esc(x.b) + '</b><span>' + esc(x.m) + '</span></div></div>';
+                }).join('') + '</div>';
+            svgYukle().then(function (S) {
+                [].forEach.call(kart.querySelectorAll('.rz-svg[data-rz]'), function (el) {
+                    try { if (S.bul(el.getAttribute('data-rz'))) S.yerlestir(el, el.getAttribute('data-rz'), { etiket: false }); } catch (e) { }
+                });
+            }).catch(function () { /* yedek simge kalır */ });
+        }
+        if (hedef !== kart) sec.insertBefore(kart, hedef);
+    }
+
+    /* DESTEK VERİNCE SINIRSIZ (27.10.2026) — öğretmen: "profildeki ücret kısımlarına ...
+       ücret verince kullanılabilecek özellikler" · "kitap indirme özelliği tamamen ücretli
+       olsun". Kartta kapısı olan araçların listesi (sistem/hak.js): destek vermeyende kalan
+       deneme hakkı, kitap indirmede «yalnız destekçilere»; destekçide hepsi «sınırsız». Satırlar
+       2 sn'de bir (hak harcandıkça) yerinde tazelenir. */
+    var SZ_IK = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+    var SZ = [
+        { oz: 'tahta', ad: 'Tahtaya yansıt ve kumanda', ik: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>' },
+        { oz: 'defter', ad: 'Defter PDF\'i ve geçmiş', ik: '<path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6z"/><path d="M9 3v18M12 8h4M12 12h4"/>' },
+        { oz: 'kalip', ad: 'Kalıplar Tablosu', ik: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>' },
+        { oz: 'muhadese', ad: 'Muhâdese', ik: '<path d="M4 4h11a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M20 9a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2v3l-4-3h-3"/>' },
+        { oz: 'kitapKalem', ad: 'Kitapta kalem', ik: '<path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/>' },
+        { oz: 'kitapIndir', ad: 'Kitap indirme', yalniz: 1, ik: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>' }
+    ];
+    function szDurum(x) {
+        var H = window.KidefHak, k = (H && H.kalan) ? H.kalan(x.oz) : null;
+        if (k === Infinity) return { s: 'acik', y: '✓ sınırsız', t: 'Sınırsız açık' };
+        if (x.yalniz || (H && H.YALNIZ && H.YALNIZ[x.oz])) return { s: 'kilit', y: 'destekçilere', t: 'Yalnız destek veren öğretmenlere açık; deneme hakkı yok' };
+        if (k === null) return { s: 'hak', y: '5 hak', t: '5 deneme hakkı; destekçilere sınırsız' };
+        return k > 0 ? { s: 'hak', y: k + ' hak kaldı', t: k + ' deneme hakkın kaldı; destekçilere sınırsız' }
+                     : { s: 'bitti', y: 'hak bitti', t: 'Deneme hakların bitti; destekçilere sınırsız' };
+    }
+    function sinirsizBlok(h) {
+        var destekci = h.durum === 'tamam' || h.durum === 'kismi' || h.refD === 'tam';
+        var bas = destekci ? 'Destekçi olarak sınırsız açık' : 'Destek verince sınırsız';
+        var alt = destekci ? 'Desteğin için teşekkürler.'
+            : (h.durum === 'ilkay'
+                ? 'İlk ayında araçlar sınırsız, sonra her birinde 5 deneme hakkın olur; kitap indirme yalnız destekçilere.'
+                : 'Destek vermeden her aracı 5 kez deneyebilirsin; kitap indirme yalnız destekçilere.');
+        return '<div class="dst-sz" data-dst-sz><div class="dst-sz-bas"><svg ' + SZ_IK + '><path d="M12 3l2.6 5.5 6 .8-4.4 4.2 1 6-5.2-2.9-5.2 2.9 1-6L3.4 9.3l6-.8z"/></svg>' +
+            '<span>' + esc(bas) + '</span></div><ul>' + SZ.map(function (x) {
+                var d = szDurum(x);
+                return '<li data-oz="' + x.oz + '" data-s="' + d.s + '" title="' + esc(d.t) + '"><svg ' + SZ_IK + '>' + x.ik + '</svg><b>' + esc(x.ad) + '</b><em>' + esc(d.y) + '</em></li>';
+            }).join('') + '</ul><p class="dst-sz-alt">' + esc(alt) + ' Destekçilerin profiline animasyonlu destekçi rozeti gelir; adları istersen Destekçiler köşesinde görünür.</p></div>';
+    }
+    function sinirsizTazele() {
+        var kok = document.querySelector('#tpDestek [data-dst-sz]');
+        if (!kok) return;
+        SZ.forEach(function (x) {
+            var li = kok.querySelector('li[data-oz="' + x.oz + '"]');
+            if (!li) return;
+            var d = szDurum(x), em = li.querySelector('em');
+            if (li.getAttribute('data-s') !== d.s) li.setAttribute('data-s', d.s);
+            if (li.getAttribute('title') !== d.t) li.setAttribute('title', d.t);
+            if (em && em.textContent !== d.y) em.textContent = d.y;
         });
     }
 
@@ -1944,7 +2123,10 @@
                 return c;
             });
             var hedefDegisti = hedefL.some(function (e, i) { return e.acildi !== oz.hedefIcerik[i].acildi; });
-            var degisti = hedefDegisti || A.aktif !== aktif || A.onayli !== onayli || oz.aylik !== aylik || +oz.gecmis[ay] !== aylik ||
+            /* 27.10.2026: son 30 günün en çok kullananları (profil rozeti) — yalnız liste varken */
+            var enCok = liste ? enCokHesapla(liste, simdi) : null;
+            var enCokDegisti = !!enCok && enCok.join(',') !== ((oz.enCok && oz.enCok.L) || []).join(',');
+            var degisti = enCokDegisti || hedefDegisti || A.aktif !== aktif || A.onayli !== onayli || oz.aylik !== aylik || +oz.gecmis[ay] !== aylik ||
                           !eskiD || eskiD.pay !== pay || eskiD.yuzde !== yuzde || +(oz.donemler || {})[dn.kod] !== pay ||
                           oz.eskiAlan || A.eskiTaban || !A.guvenli || (me && oz.yoneticiler.indexOf(me) < 0);
             var bayat = !oz.guncelleme || (simdi - oz.guncelleme.getTime() > 6 * 3600e3);
@@ -1957,6 +2139,7 @@
                          donemler: donemler };
             if (oz.eskiAlan) ['tur', 'toplam', 'taban', 'aktif', 'onayli', 'ayarElle'].forEach(function (k) { acik[k] = FV.delete(); });
             if (hedefDegisti) acik.hedefIcerik = hedefL;
+            if (enCok) acik.enCok = { L: enCok, t: simdi };
             var ozel = { uid: me, tur: 'destekAyar', toplam: A.toplam, ayarElle: A.elle,
                          aktif: aktif, onayli: onayli, guncelleme: sunucuZamani() };
             /* 20.10.2026: alt sınır kalktı; eski belgedeki "taban" alanı silinir */
@@ -2927,7 +3110,7 @@
         var h = benHesap(_ben), uid = _ben.uid, son = {};
         try { son = JSON.parse(localStorage.getItem(HATIRLAT_K) || '{}') || {}; } catch (e) { }
         var gecen = Date.now() - (+son[uid] || 0), metin = '';
-        var araclar = 'tahtaya yansıt, defter PDF\'i, kalıplar tablosu, flipbook indirme ve kalem gibi araçlar';
+        var araclar = 'tahtaya yansıt, defter PDF\'i, kalıplar tablosu ve kitapta kalem gibi araçlar';   /* 27.10.2026: kitap indirme yalnız destekçiye */
         if (h.durum === 'bos') {
             if (gecen < 7 * GUN) return;
             var KH = window.KidefHak, hk = 0, sure = buAySure(_ben.belge);
@@ -2939,7 +3122,7 @@
             var kalan = Math.ceil((h.ilkAyBitis.getTime() - Date.now()) / GUN);
             if (kalan > 7 || kalan < 1 || gecen < 3 * GUN) return;
             metin = '<b>İlk ayının bitmesine ' + kalan + ' gün var.</b> Sonra ' + araclar + ' için her birinde ' +
-                ((window.KidefHak && (window.KidefHak.HAK || window.KidefHak.HAFTALIK)) || 5) + ' deneme hakkın olur; destek verenlere sınırsız.';
+                ((window.KidefHak && (window.KidefHak.HAK || window.KidefHak.HAFTALIK)) || 5) + ' deneme hakkın olur; destek verenlere sınırsız, kitap indirme de açık.';
         } else return;
         son[uid] = Date.now();
         try { localStorage.setItem(HATIRLAT_K, JSON.stringify(son)); } catch (e) { }

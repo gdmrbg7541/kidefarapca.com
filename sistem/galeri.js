@@ -150,6 +150,35 @@
     return parseInt(p[2], 10) + ' ' + (AY[parseInt(p[1], 10) - 1] || '') + ' ' + p[0];
   }
 
+  /* GRUPLU DUYURU (27.10.2026) — öğretmen: "bu duyuruları kısa cümlelerle ve
+     guruplayarak yayınlayalım, yani benzer konudaki örneğin 5 duyuruyu 5 cümle olarak
+     tek sayfaya ekle". Kayıtta L (cümle dizisi) varsa her cümle bir madde: liste
+     defter çizgisiyle hizalı (28/40 px, telefonda 20/30 px), başında renkli nokta.
+     L yoksa kayıt eskisi gibi paragraf. Biçim burada bir kez eklenir. */
+  function maddeStil() {
+    if (document.getElementById('gdMaddeCss')) return;
+    var s = document.createElement('style');
+    s.id = 'gdMaddeCss';
+    s.textContent =
+      '#guncellemeler .gd-kayit ul.gd-madde{ list-style:none; margin:0; padding:0; font-size:28px; color:#4A535F; line-height:40px;' +
+      ' background:repeating-linear-gradient(180deg, transparent 0 38.5px, #E7EDF4 38.5px 40px); }' +
+      '#guncellemeler .gd-kayit ul.gd-madde[hidden]{ display:none; }' +
+      '#guncellemeler .gd-kayit ul.gd-madde li{ position:relative; margin:0; padding-inline-start:30px; overflow-wrap:anywhere; }' +
+      '#guncellemeler .gd-kayit ul.gd-madde li::before{ content:""; position:absolute; inset-inline-start:4px; top:14px;' +
+      ' width:12px; height:12px; border-radius:50%; background:var(--gdm, #16A085); box-shadow:0 0 0 3px var(--gdm-a, #E3F5F0); }' +
+      '#guncellemeler .gd-kayit ul.gd-madde li:nth-child(5n+2){ --gdm:#F39C12; --gdm-a:#FDF1D9; }' +
+      '#guncellemeler .gd-kayit ul.gd-madde li:nth-child(5n+3){ --gdm:#2563EB; --gdm-a:#E4ECFD; }' +
+      '#guncellemeler .gd-kayit ul.gd-madde li:nth-child(5n+4){ --gdm:#7C3AED; --gdm-a:#EEE7FB; }' +
+      '#guncellemeler .gd-kayit ul.gd-madde li:nth-child(5n){ --gdm:#EE5253; --gdm-a:#FDE6E6; }' +
+      '@media (max-width:860px){' +
+      ' #guncellemeler .gd-kayit ul.gd-madde{ font-size:20px; line-height:30px;' +
+      '  background:repeating-linear-gradient(180deg, transparent 0 28.5px, #E7EDF4 28.5px 30px); }' +
+      ' #guncellemeler .gd-kayit ul.gd-madde li{ padding-inline-start:22px; }' +
+      ' #guncellemeler .gd-kayit ul.gd-madde li::before{ top:10px; inset-inline-start:3px; width:9px; height:9px; box-shadow:0 0 0 2px var(--gdm-a, #E3F5F0); }' +
+      '}';
+    (document.head || document.documentElement).appendChild(s);
+  }
+
   function duyurulariKur(bolum) {
     var liste = [];
     try { liste = (window.KIDEF_SINIFTA_YENI || []).slice(); } catch (e) { liste = []; }
@@ -172,6 +201,11 @@
     var gorsel = el('div', 'gd-gorsel');
     gorsel.hidden = true;
     kart.appendChild(ust); kart.appendChild(h4); kart.appendChild(gorsel); kart.appendChild(p);
+    /* GRUPLU DUYURU (27.10.2026): kayıtta L varsa maddeler (yalnız metin, HTML değil) */
+    var madde = el('ul', 'gd-madde');
+    madde.hidden = true;
+    kart.appendChild(madde);
+    maddeStil();
     sahne.appendChild(kart);
     sahne.setAttribute('aria-live', 'polite');
 
@@ -189,6 +223,11 @@
         if (f.g && G[f.g]) { gorsel.innerHTML = G[f.g]; gorsel.hidden = false; }
         else { gorsel.innerHTML = ''; gorsel.hidden = true; }
         p.textContent = f.m || '';
+        var L = (f.L && f.L.length) ? f.L : null;
+        madde.innerHTML = '';
+        if (L) L.forEach(function (c) { madde.appendChild(el('li', null, String(c))); });
+        madde.hidden = !L;
+        p.hidden = !!L && !f.m;          /* maddeli kayıtta giriş cümlesi yoksa boş paragraf yer kaplamasın */
         kart.scrollTop = 0;               /* sabit boy kâğıt: yeni kayıt baştan */
         kart.classList.remove('gd-gir');
         void kart.offsetWidth;            /* animasyonu yeniden başlat */
