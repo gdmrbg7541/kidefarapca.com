@@ -36,6 +36,11 @@
    rafa TAŞINIR, raf kapanınca ya da pencere yeniden çizilmeden önce
    (listelerim.js → sakla) yerine geri konur.
 
+   SINIF EKLEMEDEN MATERYAL YOK (27.10.2026) — öğretmen: "sınıf eklemeden
+   materyaller kısmı açılmasın" · "öğretmenlere". Sınıfı olmayan seviyenin
+   (soluk rakam) rafında öğretmene yalnız plaka ve «+ N. sınıf ekle» çıkar;
+   belgeler ve kartlar sınıf eklenince açılır. Yönetici eskisi gibi göz atar.
+
    PENCERE YENİDEN ÇİZİLİNCE (sınıf eklendi, ad değişti…) açık raf
    hatırlanır ve yeniden açılır (listelerim.js → yenile). kelimeler.html
    «?ihsinif=N» ile dönerse o sınıfın rafı açılır.
@@ -48,6 +53,10 @@
     var RENK = { 5: '#16A085', 6: '#F39C12', 7: '#2563EB', 8: '#7C3AED', 9: '#EE5253', 10: '#0E9E86' };
     var acik = null;          /* { kurum, n }  n: 5–10 ya da 'dok' */
     var dokYuva = null;       /* #dokAccordion'un asıl yeri */
+    function yoneticiMi() {
+        try { return typeof appState !== 'undefined' && !!appState && appState.userRole === 'admin'; }
+        catch (e) { return false; }
+    }
 
     function kac(s) {
         return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -161,6 +170,16 @@
             return kap;
         }
         kap.style.cssText = renkler(n);
+        /* SINIF EKLEMEDEN MATERYAL YOK (27.10.2026): sınıfı olmayan seviyede öğretmene
+           yalnız plaka ve «+ N. sınıf ekle»; içerik kurulmaz (belge/kart okunmaz). */
+        if (bosMu(row, n) && !yoneticiMi()) {
+            kap.classList.add('kd-raf-kilit');
+            kap.innerHTML = plaka(n + '. Sınıf Kitaplığı',
+                'Bu seviyede henüz sınıfın yok. Materyaller sınıf ekleyince açılır; kapıyı açınca ' +
+                'kitaplık sınıfın içinde hazır olur, «Nerde kalmıştık?» orada tutulur.', ekleTusu(row, n));
+            row.appendChild(kap);
+            return kap;
+        }
         kap.innerHTML = plaka(n + '. Sınıf Kitaplığı', bosMu(row, n)
             ? 'Bu seviyede henüz sınıfın yok. Materyallere göz atabilirsin; sınıf ekleyince ' +
               'aynı kitaplık kapıyı açınca sınıfın içinde hazır olur, «Nerde kalmıştık?» orada tutulur.'
@@ -229,7 +248,13 @@
         if (document.getElementById(ID)) return;
         var row = satir(acik.kurum, acik.n);
         if (!row || !tusu(row, acik.n)) row = satir(null, acik.n);     /* seviye başka kuruma taşındı / silindi */
-        if (!row || !tusu(row, acik.n)) { acik = null; return; }
+        if (!row || !tusu(row, acik.n)) {
+            /* 27.10.2026: pencere veri gelmeden boş çizildiyse istek beklesin (yoksa
+               kelimeler.html'den «?ihsinif=N» dönüşünde raf bazen açılmıyordu) */
+            var pp = document.getElementById('llOkulPopup');
+            if (!pp || !pp.querySelector('.okul-raf-tus')) return;
+            acik = null; return;
+        }
         acIc(row, acik.n, true);
     }
     /* Pencere kapanmadan önce (listelerim.js → llOkulPopupKapat). */

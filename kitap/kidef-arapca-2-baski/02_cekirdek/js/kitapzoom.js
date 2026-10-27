@@ -1065,7 +1065,9 @@
          saklanır (IndexedDB, olmazsa localStorage). «Kaldığım yer» en son
          yazılan sayfaları (renk, gün) sıralar; dokununca o sayfayı açar,
          son çizginin yerini bir an parlatır. Kitap açılınca en son
-         yazılan yer açık sayfada değilse bir kez öneri çıkar.
+         yazılan yere yönlendirme yok: SON YAZILAN YER ÖNERİSİ KALKTI (27.10.2026)
+         — en son açılan yer en son yazılan yerden farklı olabilir; kitap
+         kaldığı sayfadan açılır, işaret için ayraç ipi.
        · TAHTA (kanal 'kitap'): kumandada yazılan çizgi Sınıf Ekranı'nda
          yazıldıkça görünür. Lider açık yayılımın yazılarını yollar;
          izleyen onları gösterir, daha yeniyse kendi deposuna da yazar
@@ -2799,30 +2801,7 @@
       yuz.appendChild(d);
       setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); }, 2000);
     }
-    /* açılışta: en son yazılan yer açık sayfada değilse bir kez öner */
-    function kkAcilisOnerisi() {
-      if (izleCihazi() || kkMisafirKip() || document.querySelector('.kk-ipucu')) return;
-      var L = kkYerler();
-      if (!L.length) return;
-      if (kkYayilim().indexOf(L[0].s) >= 0) { if (kkGorunen().indexOf(L[0].s) >= 0) kkParlat(L[0].s); return; }   /* zaten açık: yerini göster */
-      var s = L[0].s, d = document.createElement('div');
-      d.className = 'kk-ipucu';
-      d.setAttribute('role', 'status');
-      d.innerHTML = svg(KK_IK.yer) + '<span>En son yazdığın yer: <b>' + kkEsc(kkSayfaAdi(s)) + '</b> · ' + kkEsc(kkZaman(L[0].t)) + '</span>' +
-        '<button type="button" class="kk-ipgit" data-kk="ipgit">Oraya git</button>' +
-        '<button type="button" class="kk-x" data-kk="ipkapat" aria-label="Kapat">✕</button>';
-      sahne.appendChild(d);
-      var kapat = function () { if (d.parentNode) d.parentNode.removeChild(d); };
-      d.addEventListener('click', function (e) {
-        var b = e.target.closest && e.target.closest('[data-kk]');
-        if (!b) return;
-        e.preventDefault();
-        if (b.getAttribute('data-kk') === 'ipgit' && !kkYanki(e)) kkYereGit(s);
-        kapat();
-      });
-      ['pointerdown', 'touchstart'].forEach(function (t) { d.addEventListener(t, function (e) { e.stopPropagation(); }, { passive: true }); });
-      setTimeout(kapat, 10000);
-    }
+    /* (açılışta «en son yazdığın yer» önerisi kalktı — 27.10.2026) */
 
     /* ---------- aç / kapat ---------- */
     function kkAc() {
@@ -2933,7 +2912,7 @@
       KK.hazir = true;
       kkTazele(true);
       kkYayilimGonder();
-      setTimeout(kkAcilisOnerisi, 1500);
+      /* açılışta en son yazılan yere yönlendirme yok (27.10.2026) */
     });
     var kkDis = {
       acik: function () { return KK.acik; }, ac: kkAc, kapat: kkKapat,
@@ -3117,8 +3096,7 @@
          Kapaklarda (ilk ve son sayfa) iz yok.
        · İp başka sayfadayken kitabın üst ortasında (cilt) ipin kırmızı
          ucu (.kip-kuyruk) görünür; dokununca ipli sayfa açılır. Kitap
-         açılınca ip açık sayfada değilse bir kez «Oraya git» önerisi çıkar
-         (kalemin «en son yazdığın yer» önerisinden önce).
+         açılınca ip açık sayfada değilse bir kez «Oraya git» önerisi çıkar.
        · Bu tarayıcıda kitaba göre saklanır: localStorage kitapIp|<kitap>
          (kitap = klasör adı, kalemle aynı). Öbür sekmede değişince burada
          da değişir.

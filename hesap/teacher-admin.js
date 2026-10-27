@@ -139,6 +139,23 @@ function renderAdminPanel() {
 
     adminSection.innerHTML = `
         <div class="glass-card">
+            <!-- ÖĞRETMEN ONAYLARI EN ÜSTTE (27.10.2026): yalnız yönetici; açık başlar,
+                 akordiyondan ayrı; liste 30 sn'de bir kendiliğinden yenilenir. -->
+            ${_aonYoneticiMi() ? `
+            <details class="admin-details aon-ust" id="admin-onay-details" open ontoggle="if(this.open) _aonTik()">
+                <summary class="admin-summary">🧑‍🏫 Öğretmen Onayları <span id="admin-onay-badge"></span></summary>
+                <div style="padding:10px 0;">
+                    <p style="font-size:0.86rem; color:#7f8c8d; margin:0 0 10px;">
+                        Öğretmen olarak kayıt olanlar buraya düşer; onaylanana kadar siteye giremezler.
+                        Reddettiklerin silinmez, altta <b>Reddedilenler</b>de durur — istersen sonradan onaylayabilirsin.
+                    </p>
+                    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+                        <button class="btn" onclick="loadOgretmenOnaylari()" style="font-size:0.9rem;">🔄 Yenile</button>
+                        <span id="admin-onay-zaman" class="aon-zaman">30 sn'de bir kendiliğinden yenilenir</span>
+                    </div>
+                    <div id="admin-onay-list" style="max-height:400px; overflow-y:auto;">Yükleniyor…</div>
+                </div>
+            </details>` : ''}
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                 <span></span>
                 ${(appState.teacherApplications && appState.teacherApplications.length > 0) ? `
@@ -205,18 +222,6 @@ function renderAdminPanel() {
                     </span>
                 </summary>
                 <div id="admin-all-lessons" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;"></div>
-            </details>
-
-            <details class="admin-details" name="admin-accordion" id="admin-onay-details" ontoggle="if(this.open) loadOgretmenOnaylari()">
-                <summary class="admin-summary">🧑‍🏫 Öğretmen Onayları <span id="admin-onay-badge"></span></summary>
-                <div style="padding:10px 0;">
-                    <p style="font-size:0.86rem; color:#7f8c8d; margin:0 0 10px;">
-                        Öğretmen olarak kayıt olanlar buraya düşer; onaylanana kadar siteye giremezler.
-                        Reddettiklerin silinmez, altta <b>Reddedilenler</b>de durur — istersen sonradan onaylayabilirsin.
-                    </p>
-                    <button class="btn" onclick="loadOgretmenOnaylari()" style="margin-bottom:10px; font-size:0.9rem;">🔄 Yenile</button>
-                    <div id="admin-onay-list" style="max-height:400px; overflow-y:auto;">Bölümü açınca yüklenir…</div>
-                </div>
             </details>
 
             <details class="admin-details" name="admin-accordion">
@@ -294,6 +299,7 @@ function renderAdminPanel() {
     renderAdminOfflinePackages();
     renderAdminOnlinePackages();
     if (typeof loadPaymentOrders === 'function') loadPaymentOrders();
+    _aonBaslat();                                    /* öğretmen onayları: ilk yükleme + 30 sn */
 }
 
 /* ==========================================
@@ -1072,23 +1078,98 @@ function _onaySatir(o, red) {
            '</div>';
 }
 
-function loadOgretmenOnaylari() {
+/* ÖĞRETMEN ONAYLARI EN ÜSTTE (27.10.2026) — yönetici: "yönetici panelinde en üstte
+   öğretmen onaylayı ekleyelim, sadece yönetici giriş yaptığında görünecek sakın öğretmen
+   girdiğinde görünmesin" · "30 saniyede bi otomatik güncellensin".
+   · Bölüm panelin en üstünde, açık başlar; akordiyondan ayrı.
+   · YALNIZ YÖNETİCİ: renderAdminPanel bölümü yalnız appState.userRole === 'admin' iken
+     çizer. Rol değişirse (çıkış, başka hesap) _aonTik bölümü sayfadan söker, listeyi ve
+     önbelleği siler (_aonSok). Sorgular zaten yalnız yöneticiye açık (kurallar).
+   · Panel ekrandayken ve sekme önündeyken 30 sn'de bir SESSİZ yenileme: imza (kimlik, ad,
+     e-posta, telefon, meslek, tarihler) değişmediyse liste yeniden çizilmez, yalnız saat
+     yazısı tazelenir; değiştiyse kaydırma yeri korunarak çizilir, yeni bekleyen bir an
+     parlar. Panel kapalıyken / sekme arkadayken sorgu yok. Panel yeniden çizilince son liste
+     hemen konur (_aon.html), 30 sn'den eskiyse arkadan tazelenir. */
+var _aon = { son: 0, imza: '', html: '', rozet: '', dolu: false, yuk: null, zam: null, bek: null, gor: false };
+function _aonYoneticiMi() {
+    try { return typeof appState !== 'undefined' && !!appState && appState.userRole === 'admin'; }
+    catch (e) { return false; }
+}
+function _aonMs(t) {
+    try { return (t && t.toDate) ? (t.toDate().getTime() || 0) : (typeof t === 'number' ? t : 0); }
+    catch (e) { return 0; }
+}
+function _aonImza(liste, red) {
+    var f = function (o) {
+        return [o._id, o.name || '', o.email || '', o.phone || '', o.meslek || '',
+                _aonMs(o.onayIstekTarihi || o.createdAt), _aonMs(o.redTarihi)].join('\u0001');
+    };
+    return liste.map(f).join('\u0002') + '\u0003' + (red.hata ? '!' + red.hata : red.map(f).join('\u0002'));
+}
+function _aonSaat(hata) {
+    var z = document.getElementById('admin-onay-zaman');
+    if (!z) return;
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    var d = new Date(hata ? Date.now() : (_aon.son || Date.now()));
+    var saat = p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    z.textContent = hata ? 'Yenilenemedi (' + saat + ') — 30 sn sonra yeniden denenecek'
+                         : 'Son yenileme ' + saat + ' · 30 sn\'de bir kendiliğinden yenilenir';
+    z.classList.toggle('aon-zaman-hata', !!hata);
+}
+function _aonCerceve() {
+    var d = document.getElementById('admin-onay-details');
+    if (d) d.classList.toggle('aon-var', !!_aon.dolu);
+}
+/* yönetici değilse bölüm sayfada kalmasın; liste ve önbellek silinir */
+function _aonSok() {
+    var d = document.getElementById('admin-onay-details');
+    if (d && d.parentNode) d.parentNode.removeChild(d);
+    _onayBekleyen = {};
+    _aon.son = 0; _aon.imza = ''; _aon.html = ''; _aon.rozet = ''; _aon.dolu = false; _aon.bek = null;
+    if (_aon.zam) { clearInterval(_aon.zam); _aon.zam = null; }
+}
+function _aonStil() {
+    if (document.getElementById('aon-stil')) return;
+    var st = document.createElement('style');
+    st.id = 'aon-stil';
+    st.textContent =
+        '#admin-onay-details.aon-var{ border-color:#F5C77E; box-shadow:0 0 0 2px rgba(245,199,126,.35), 0 4px 10px rgba(0,0,0,.05); }' +
+        '.aon-zaman{ font-size:.78rem; color:#9AA3AE; }' +
+        '.aon-zaman.aon-zaman-hata{ color:#B03A2E; }' +
+        '#admin-onay-list .aon-satir.aon-yeni{ animation: aonYeni 3s ease-out 1; }' +
+        '@keyframes aonYeni{ 0%, 40%{ background:#FFF3C4; box-shadow:0 0 0 3px #FFE08A; } 100%{ box-shadow:0 0 0 0 rgba(255,224,138,0); } }' +
+        '@media (prefers-reduced-motion: reduce){ #admin-onay-list .aon-satir.aon-yeni{ animation:none; background:#FFF8DC; } }';
+    (document.head || document.documentElement).appendChild(st);
+}
+function loadOgretmenOnaylari(sessiz) {
+    sessiz = (sessiz === true);
+    if (!_aonYoneticiMi()) { _aonSok(); return; }
     var kutu = document.getElementById('admin-onay-list');
-    var rozet = document.getElementById('admin-onay-badge');
     if (!kutu) return;
     if (typeof firebase === 'undefined' || !isFirebaseReady || !window.KidefErisim) {
         kutu.innerHTML = '<p>Bu kip çevrimdışıyken kullanılamaz.</p>';
         return;
     }
-    kutu.innerHTML = '<p>Yükleniyor…</p>';
+    if (sessiz && _aon.yuk) return;                     /* sessiz yenileme üst üste binmesin */
+    _aonStil();
+    if (!sessiz) kutu.innerHTML = '<p>Yükleniyor…</p>';
     /* reddedilenler alınamazsa bekleyenler yine gelsin */
     var redSoz = (window.KidefErisim.reddedilenler ? window.KidefErisim.reddedilenler() : Promise.resolve([]))
         .catch(function (e) { return { hata: (e && (e.code || e.message)) || String(e) }; });
-    Promise.all([window.KidefErisim.bekleyenler(), redSoz]).then(function (s) {
+    var is = Promise.all([window.KidefErisim.bekleyenler(), redSoz]).then(function (s) {
+        if (_aon.yuk === is) _aon.yuk = null;
+        if (!_aonYoneticiMi()) { _aonSok(); return; }
         var liste = s[0] || [], red = s[1] || [];
-        if (rozet) rozet.innerHTML = liste.length
+        var k = document.getElementById('admin-onay-list');   /* panel bu arada yeniden çizilmiş olabilir */
+        if (!k) return;
+        var imza = _aonImza(liste, red);
+        _aon.son = Date.now();
+        if (sessiz && imza === _aon.imza && k.getAttribute('data-aon-imza') === imza) { _aonSaat(); return; }
+        var rozetHtml = liste.length
             ? '<span style="background:#e74c3c; color:#fff; border-radius:999px; padding:2px 10px; font-size:0.8rem; margin-left:8px;">' + liste.length + '</span>'
             : '';
+        var rozet = document.getElementById('admin-onay-badge');
+        if (rozet) rozet.innerHTML = rozetHtml;
         _onayBekleyen = {};
         var html = _onayBaslik('⏳', 'Onay bekleyenler', liste.length, '#B5670A');
         if (!liste.length) html += '<p style="margin:0 0 6px;">Onay bekleyen öğretmen yok.</p>';
@@ -1102,13 +1183,72 @@ function loadOgretmenOnaylari() {
                     'Reddedilen hesap silinmez, kapalı durur. <b>Onayla</b>ya basınca açılır ve hoş geldin mesajı gider.</p>';
             red.forEach(function (o) { html += _onaySatir(o, true); });
         }
-        kutu.innerHTML = html + '</div>';
+        html += '</div>';
+        var ust = k.scrollTop;
+        k.innerHTML = html;
+        k.setAttribute('data-aon-imza', imza);
+        k.scrollTop = ust;
+        /* yeni gelen bekleyen bir an parlasın (ilk yüklemede değil) */
+        if (_aon.bek) liste.forEach(function (o) {
+            if (_aon.bek[o._id]) return;
+            var r = k.querySelector('.aon-satir[data-aon-uid="' + String(o._id).replace(/["\\]/g, '') + '"]');
+            if (r) r.classList.add('aon-yeni');
+        });
+        _aon.bek = {};
+        liste.forEach(function (o) { _aon.bek[o._id] = 1; });
+        _aon.imza = imza; _aon.html = html; _aon.rozet = rozetHtml; _aon.dolu = liste.length > 0;
+        _aonCerceve();
+        _aonSaat();
     }).catch(function (e) {
-        kutu.innerHTML = '<p>' + _fbEsc(_abHataMetni(e)) + '</p>' +
+        if (_aon.yuk === is) _aon.yuk = null;
+        if (!_aonYoneticiMi()) { _aonSok(); return; }
+        var k = document.getElementById('admin-onay-list');
+        if (!k) return;
+        if (sessiz && _aon.html) { _aon.son = Date.now(); _aonSaat(true); return; }   /* eski liste kalsın */
+        k.innerHTML = '<p>' + _fbEsc(_abHataMetni(e)) + '</p>' +
             '<button class="btn" onclick="loadOgretmenOnaylari()" style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
+        k.removeAttribute('data-aon-imza');
+        _aon.son = Date.now();
     });
+    _aon.yuk = is;
 }
 window.loadOgretmenOnaylari = loadOgretmenOnaylari;
+/* Her saniye bakar (yalnız birkaç karşılaştırma): yönetici değilse söker; panel ekranda, sekme önde ve son yenileme
+   30 sn'den eskiyse sessizce yeniler. */
+function _aonTik() {
+    if (!_aonYoneticiMi()) { _aonSok(); return; }
+    if (!document.getElementById('admin-onay-list')) return;
+    var sec = document.getElementById('admin-section');
+    if (!sec || !sec.getClientRects().length) return;          /* panel ekranda değil */
+    if (document.visibilityState === 'hidden') return;          /* sekme arkada */
+    if (Date.now() - _aon.son < 30000) return;
+    loadOgretmenOnaylari(true);
+}
+window._aonTik = _aonTik;
+function _aonBaslat() {
+    if (!_aonYoneticiMi()) { _aonSok(); return; }
+    _aonStil();
+    if (!_aon.zam) _aon.zam = setInterval(_aonTik, 1000);
+    if (!_aon.gor) {
+        _aon.gor = true;
+        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') _aonTik(); });
+    }
+    var kutu = document.getElementById('admin-onay-list');
+    if (!kutu) return;
+    if (_aon.html) {                                   /* son liste hemen görünsün */
+        kutu.innerHTML = _aon.html;
+        kutu.setAttribute('data-aon-imza', _aon.imza);
+        var rz = document.getElementById('admin-onay-badge');
+        if (rz) rz.innerHTML = _aon.rozet;
+        _aonCerceve();
+        _aonSaat();
+    }
+    var sec = document.getElementById('admin-section');
+    var gorunur = !!(sec && sec.getClientRects().length) && document.visibilityState !== 'hidden';
+    if (!gorunur) { if (!_aon.html) kutu.innerHTML = 'Panel açılınca yüklenir…'; return; }
+    if (!_aon.html) loadOgretmenOnaylari(false);
+    else if (Date.now() - _aon.son >= 30000) loadOgretmenOnaylari(true);
+}
 
 /* Onaydan hemen sonra, elle paylaşılacak kısa mesajı gösterir.
    Öğretmen kodu varsa mesaja girsin diye OH.koduTuret'ten okunuyor;
