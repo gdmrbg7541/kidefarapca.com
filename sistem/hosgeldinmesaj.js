@@ -101,15 +101,16 @@
      Onay mesajının kardeşi: aynı kart, başka metin. ONAY VERMEDEN önce
      gönderilir; kart onay tuşuna basmadan, listedeki «Belge iste»den açılır.
      KVKK: belgede gereksiz kişisel veri istenmiyor, karalanabileceği ve
-     doğrulama bitince silineceği açıkça yazıyor. */
+     doğrulama bitince silineceği açıkça yazıyor.
+     01.11.2026 — yönetici: "bunu herkesten istiyorum ifadesini sil, bazılarını tanıdığım için belge
+     istemiyorum": «bu adımı herkese uyguluyorum» kalktı. */
   function ispatMetni(ad) {
     var a = adDuzelt(ad);
     var selam = a ? ('Merhaba ' + a + ' hocam,') : 'Merhaba hocam,';
     return selam + '\n\n' +
       'kidefarapca.com\'a öğretmen başvurunuz ulaştı. Hesabı açmadan önce ' +
       'öğretmen olduğunuzu doğrulamam gerekiyor; sitede sınıf listeleri, ' +
-      'sınav ve belge arşivi gibi yalnız öğretmene açık bölümler olduğu için ' +
-      'bu adımı herkese uyguluyorum.\n\n' +
+      'sınav ve belge arşivi gibi yalnız öğretmene açık bölümler var.\n\n' +
       /* 13.10.2026 — yönetici: "üniversite diploması tarzında bi şey de
          olabilir", "mebbis ten ekran görüntüsü de olabilir", "pdf yerine
          foto veya ekran görüntüsü gibi ifadeler olsun, resmi bi istek değil
