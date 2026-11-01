@@ -70,8 +70,8 @@
             tarih: '2026-10-20',
             baslik: 'Beklenen Destek ve destekçiler köşesi',
             metin: 'Profilindeki Beklenen Destek kartından destek verebilirsin; ' +
-                   'ödemen onaylanınca teşekkür mesajı gelir, kısa adın ana sayfadaki ' +
-                   'destekçiler şeridinde görünür.'
+                   'ödemen onaylanınca teşekkür mesajı gelir. Ana sayfadaki destekçiler ' +
+                   'şeridinde ad yazılmaz; bıraktığın cümle görünür.'
         },
         {
             id: 16,

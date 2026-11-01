@@ -109,9 +109,9 @@ window.KIDEF_SINIFTA_YENI = [
      + 'kartında bu dönemin desteğini görürsün: tutar dönem başında (Eylül ve Şubat) bir kez belirlenir, '
      + 'dönem boyunca değişmez; siteye katılan öğretmen arttıkça gelecek dönemin payı küçülür, yani '
      + 'meslektaşını davet etmek en iyi destek. Yeni katılanın ilk ayı bizden. Kartta herkesin birlikte '
-     + 'doldurduğu «ortak hedef» çubuğu da var. Ödemen onaylanınca sana teşekkür mesajı gelir; kısa adın '
-     + '(tutar olmadan) ana sayfadaki destekçiler şeridinde ve kartın altındaki köşede görünür, profilinde '
-     + 'destekçi rozeti belirir. İstersen meslektaşlarına tek cümle de bırakabilirsin.' },
+     + 'doldurduğu «ortak hedef» çubuğu da var. Ödemen onaylanınca sana teşekkür mesajı gelir; profilinde destekçi rozeti belirir. '
+     + 'Ana sayfadaki destekçiler şeridinde ve kartın altındaki köşede ad ve tutar yazılmaz; '
+     + 'istersen meslektaşlarına bırakacağın tek cümle orada görünür.' },
 
   { t: '2026-10-18', e: 'Dijital kitap', b: '5-10. sınıfın ders kitapları sitede, sayfa sayfa',
     m: '5, 6, 7, 8, 9 ve 10. sınıfın ders kitabı artık sitede sayfa çevirmeli olarak açılıyor: '

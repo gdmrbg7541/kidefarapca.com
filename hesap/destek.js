@@ -229,6 +229,7 @@
             gecmis: (o.gecmis && typeof o.gecmis === 'object') ? o.gecmis : {},
             yoneticiler: Array.isArray(o.yoneticiler) ? o.yoneticiler : [],
             destekciler: destekciDuzen(o.destekciler),
+            destekciAdli: Array.isArray(o.destekciler) && o.destekciler.some(function (x) { return !!(x && x.ad); }),   /* DESTEKÇİLER ADSIZ: yönetici sayımında silinir */
             /* 24.10.2026: referans kodları (yalnız kodlar) ve ortak hedefle açılan içerik */
             refKodlar: (o.refKodlar && typeof o.refKodlar === 'object') ? Object.keys(o.refKodlar).filter(function (k) { return !!o.refKodlar[k]; }) : [],
             hedefIcerik: hedefDuzen(o.hedefIcerik),
@@ -248,7 +249,8 @@
        sıralama yok. Öğretmen bildirimde "adım görünsün" kutusunu kapatırsa
        eklenmez. Ana sayfada öğretmenlere yarı saydam şerit, destek kartında
        "Destekçiler" köşesi, profilde yıl rozeti bu listeden/belgeden çizilir.
-       Kayıt: { ad, ay:'YYYY-MM', t: ms, not } — en yeni başta, en çok 80. */
+       Kayıt: { ad, ay:'YYYY-MM', t: ms, not } — en yeni başta, en çok 80.
+       01.11.2026 DESTEKÇİLER ADSIZ: ad artık tutulmaz ve gösterilmez — { ay, t, not }; köşede, şeritte yalnız cümleler. */
     var DESTEKCI_SINIR = 80, KOSE_NOT_SINIR = 100;
     function kisaAd(ad) {
         var p = String(ad || '').trim().replace(/\s+/g, ' ').split(' ').filter(Boolean);
@@ -257,17 +259,20 @@
         var son = p[p.length - 1];
         return p.slice(0, -1).join(' ') + ' ' + son.charAt(0).toLocaleUpperCase('tr-TR') + '.';
     }
+    /* DESTEKÇİLER ADSIZ (01.11.2026) — öğretmen: "kidefe destek verenler kısmında isim yazmasın": köşede, şeritte ad yok.
+       Kayıt { ay, t, not } — ad tutulmaz, adın özeti de tutulmaz (eski kayıtlardaki ad okurken atılır, yöneticinin
+       sayımında açık özetten de silinir). t her kayıtta tek: köşeden kaldırma t ile. */
     function destekciDuzen(L) {
         if (!Array.isArray(L)) return [];
         var out = [];
         L.forEach(function (x) {
             if (!x || typeof x !== 'object') return;
-            var ad = String(x.ad || '').trim().slice(0, 40);
-            if (!ad) return;
-            out.push({ ad: ad, ay: /^\d{4}-\d{2}$/.test(x.ay) ? x.ay : '', t: +x.t || 0,
-                       not: String(x.not || '').trim().slice(0, KOSE_NOT_SINIR) });
+            var ay = /^\d{4}-\d{2}$/.test(x.ay) ? x.ay : '', t = +x.t || 0;
+            if (!t && !ay) return;
+            out.push({ ay: ay, t: t, not: String(x.not || '').trim().slice(0, KOSE_NOT_SINIR) });
         });
         out.sort(function (a, b) { return b.t - a.t; });
+        for (var i = 1; i < out.length; i++) if (out[i].t >= out[i - 1].t) out[i].t = out[i - 1].t - 1;   /* t tek */
         return out.slice(0, DESTEKCI_SINIR);
     }
     function ayAdi(anahtar) {
@@ -822,7 +827,7 @@
         if (yer) oz.insertBefore(r, yer); else oz.appendChild(r);
     }
 
-    /* DESTEKÇİLER KÖŞESİ — kartın altı: ay ay kısa adlar, varsa cümle. */
+    /* DESTEKÇİLER KÖŞESİ — kartın altı: ay ay meslektaşların cümleleri (01.11.2026: ad yazılmaz). */
     function destekciKose(oz) {
         var L = (oz && oz.destekciler) || [];
         if (!L.length) return { imza: '0', html: '' };
@@ -834,11 +839,12 @@
         });
         var buAy = ayAnahtar(new Date());
         var ilk = aylar.slice(0, 2), kalan = aylar.slice(2);
-        function grup(a) {
+        function grup(a) {                                             /* DESTEKÇİLER ADSIZ: ad yok; cümleler, yoksa teşekkür */
+            var N = H[a].filter(function (x) { return x.not; });
             return '<div class="dst-dk-ay' + (a === buAy ? ' bu-ay' : '') + '"><span class="dst-dk-et">' + esc(a === 'diger' ? 'Diğer' : ayAdi(a)) + '</span>' +
-                '<div class="dst-dk-liste">' + H[a].map(function (x) {
-                    return '<span class="dst-dk"><b>' + esc(x.ad) + '</b>' + (x.not ? '<q>' + esc(x.not) + '</q>' : '') + '</span>';
-                }).join('') + '</div></div>';
+                '<div class="dst-dk-liste">' + (N.length ? N.map(function (x) {
+                    return '<span class="dst-dk dst-dk-adsiz"><q>' + esc(x.not) + '</q></span>';
+                }).join('') : '<span class="dst-dk dst-dk-adsiz"><em>Destek veren meslektaşlarına teşekkürler 💛</em></span>') + '</div></div>';
         }
         var html = '<div class="dst-destekciler">' +
             '<div class="dst-dk-bas">' + kalpSvg('dst-ikon') + '<b>Destekçiler</b><span>Kidef\'i birlikte ayakta tutan meslektaşların</span></div>' +
@@ -849,7 +855,7 @@
     }
 
     /* ANA SAYFADAKİ YARI SAYDAM ŞERİT — yalnız öğretmen/yönetici, liste
-       doluysa. #home-hub-section'ın en üstünde (başlığın hemen altı), adlar
+       doluysa. #home-hub-section'ın en üstünde (başlığın hemen altı), cümleler (ad yok)
        yavaşça kayar; sığıyorsa kaymaz; hareket azaltma tercihinde durur. */
     var _seritImza = '';
     function seritCiz() {
@@ -865,13 +871,16 @@
             var etiket = 'Bu ay Kidef\'e destek verenler';
             if (!bu.length) { bu = L.slice(0, 12); etiket = 'Kidef\'e destek verenler'; }
             if (!bu.length) { if (eski) eski.remove(); _seritImza = ''; return; }
-            var imza = etiket + '|' + bu.map(function (x) { return x.ad + '|' + x.t + '|' + x.not; }).join(';');
+            /* DESTEKÇİLER ADSIZ (01.11.2026): ad yazılmaz — meslektaşların cümleleri, cümle yoksa teşekkür */
+            var cumle = bu.filter(function (x) { return x.not; });
+            var imza = etiket + '|' + bu.map(function (x) { return x.t + '|' + x.not; }).join(';');
             if (eski && _seritImza === imza) return;
             _seritImza = imza;
             stilKur();
-            var ic = bu.map(function (x) {
-                return '<span class="dst-serit-ad">' + esc(x.ad) + (x.not ? '<q>' + esc(x.not) + '</q>' : '') + '</span>';
-            }).join('<span class="dst-serit-nok" aria-hidden="true">·</span>');
+            var ic = cumle.length ? cumle.map(function (x) {
+                return '<span class="dst-serit-ad adsiz"><q>' + esc(x.not) + '</q></span>';
+            }).join('<span class="dst-serit-nok" aria-hidden="true">·</span>')
+                : '<span class="dst-serit-ad adsiz">Kidef\'i birlikte ayakta tutan meslektaşlarına teşekkürler</span>';
             var el = eski || document.createElement('div');
             el.id = 'dstSerit';
             el.className = 'dst-serit';
@@ -1014,6 +1023,8 @@
             '#tpDestek .dst-dk{display:inline-flex; flex-direction:column; gap:2px; background:#FFFBF3; border:1px solid #F3DDAF;',
             '  border-radius:12px; padding:6px 12px; font-size:.86rem; max-width:100%;}',
             '#tpDestek .dst-dk b{color:#5B4A2A; font-weight:800;}',
+            '#tpDestek .dst-dk.dst-dk-adsiz q{font-size:.9rem;}',
+            '#tpDestek .dst-dk.dst-dk-adsiz em{color:#6B5A3E; font-style:normal; font-weight:700; font-size:.86rem;}',
             '#tpDestek .dst-dk q{color:#6B5A3E; font-style:italic; font-size:.8rem; quotes:"«" "»";}',
             '#tpDestek .dst-dk-eski{margin-top:10px;}',
             '#tpDestek .dst-dk-eski summary{cursor:pointer; font-size:.82rem; font-weight:800; color:#8A94A3;}',
@@ -1033,6 +1044,7 @@
             '.dst-serit-ray.kayar .dst-serit-tur{padding-inline-start:28px;}',
             '.dst-serit-ad{display:inline-flex; align-items:baseline; gap:6px; font-weight:700;}',
             '.dst-serit-ad q{font-weight:500; font-style:italic; color:#7A6E5E; quotes:"«" "»";}',
+            '.dst-serit-ad.adsiz q{font-weight:600; color:#6B5A3E;}',
             '.dst-serit-nok{margin:0 12px; color:#D9B979;}',
             '.dst-serit-katil{flex:none; border:1px solid #E3A02A; background:#fff; color:#9A6512; font-weight:800; font-size:.8rem;',
             '  border-radius:999px; padding:5px 12px; cursor:pointer; font-family:inherit; white-space:nowrap;}',
@@ -1078,6 +1090,11 @@
             '.dst-cip.reddedildi{background:#FDEDEC; color:#B03A2E;}',
             '.dst-cip.elle{background:#EEF4FF; color:#1B4F9C;}',
             '#tpDestek .dst-yok{color:#8A94A3; font-size:.9rem; margin:4px 0 0;}',
+            /* 2. DÖNEM NOTU (01.11.2026) */
+            '#tpDestek .dst-d2not{display:flex; gap:8px; align-items:flex-start; margin:12px 0 0; padding:9px 12px; background:#FFF7EC;',
+            '  border:1px solid #F3D9B1; border-left:4px solid #E3A02A; border-radius:10px; color:#7A5520; font-size:.84rem; line-height:1.5;}',
+            '#tpDestek .dst-d2not svg{flex:none; margin-top:2px; color:#C27C0E;}',
+            '#tpDestek .dst-d2not b{color:#9A6512;}',
             '.dst-durgun .dst-cizgi{animation:none; stroke-dashoffset:0;}',
             '.dst-durgun .dst-alan, .dst-durgun .dst-isaret{animation:none; opacity:1;}',
             '.dst-durgun .dst-cubuk{animation:none;}',
@@ -1504,8 +1521,7 @@
                                                : (h.kisi > 0 ? '<b>dönem boyunca değişmez</b>' : 'desteğin gelecek dönemden başlar')))) +
               (ayda && h.kisi > 0 ? ' · ayda yaklaşık ' + esc(tl(h.refD === 'yarim' ? Math.ceil(ayda / 2 / 10) * 10 : ayda)) : '') + '</span>' +
             (h.durum !== 'tamam' && h.refD !== 'tam'
-                ? '<span class="dst-istege-not"><b>Destek isteğe bağlıdır.</b> Dilersen bir kerede, dilersen parça parça gönderirsin; ' +
-                  'vermesen de Kidef\'i kullanmaya devam edersin.</span>'
+                ? '<span class="dst-istege-not"><b>Destek isteğe bağlıdır.</b> Dilersen bir kerede, dilersen parça parça gönderirsin.</span>'   /* 01.11.2026: «vermesen de … devam edersin» kalktı (2. dönem notu) */
                 : '') +
             '<span class="dst-vurgu">' + okSvg() + '<span><b>Siteye katılan öğretmen arttıkça gelecek dönemin payı azalır.</b> ' +
               'Meslektaşlarını davet ettikçe herkesin payı küçülür.</span></span>' +
@@ -1544,12 +1560,23 @@
                 '<div class="dst-k"><b data-dst-say="' + h.toplam + '" data-dst-tl="1">' + esc(tl(h.toplam)) + '</b><span>Toplam desteğin</span></div>' +
               '</div>'
             : '';
+        /* 2. DÖNEM NOTU (01.11.2026) — öğretmen: "destek vermeyen öğretmenlere site erişimlerinin 2. dönem sadece
+           flipbooklara olacağını, defter dahil sitedeki diğer tüm hizmetlere ulaşamayacaklarını belirten küçük bi not
+           olsun profillerinde". Yalnız öğretmende ve 1. dönemde (Eylül–Ocak); bu dönem için de gelecek dönem için de
+           hiç desteği olmayana (dönemi tamamlayan, kısmi veren, referansla tamam sayılan görmez). Kısıtlamanın kendisi
+           (yalnız flipbook) bu notla kurulmadı. */
+        var d2not = (rol() === 'teacher' && dn.no === 1 && h.refD !== 'tam' && h.durum !== 'tamam' && h.durum !== 'hazirlaniyor' &&
+                     !(h.verilen > 0) && !(h.ileri > 0))
+            ? '<p class="dst-d2not" role="note">' + takvimSvg() + '<span><b>Not:</b> Destek vermezsen 2. dönem (Şubat ' + dn.bit.getFullYear() +
+              ' itibarıyla) siteye erişimin yalnız flipbooklarla sınırlı olacak; <b>defter dahil</b> sitedeki diğer bütün hizmetlere ' +
+              'ulaşamayacaksın.</span></p>'
+            : '';
         var ben = '<div class="dst-ben">' + tsk.html +
             '<div class="dst-ben-bas"><b>Senin durumun</b><span>' + esc(dn.yilAd + ' · ' + dn.ad + ' (' + dn.aralik + ')') + '</span></div>' +
             '<div class="dst-ben-ic">' +
               (h.kisi > 0 ? '<div class="dst-halka-k">' + halkaSvg(h.oran, 'BU DÖNEM') + '</div>' : '') +
               '<div class="dst-ben-sag"><p class="dst-durum ' + h.durum + '">' + dy + '</p>' + kutular + '</div>' +
-            '</div>' +
+            '</div>' + d2not +                                      /* 2. DÖNEM NOTU */
             '<p class="dst-ipucu">Tutar her dönemin başında (1 Eylül ve 1 Şubat) bir kez belirlenir, dönem boyunca değişmez. ' +
               'Bir kerede ya da parça parça gönderebilirsin; fazlası gelecek döneme sayılır.</p>' +
             refBlok(v, h) +
@@ -1570,7 +1597,7 @@
             }).join('') + '</div>';
         }
         ben += '</div>';
-        return { imza: imza, html: bas + '<div class="dst-ust">' + tutar + grafik + '</div>' + aciklama + sinirsizBlok(h) + ben + kose.html };
+        return { imza: imza + (d2not ? '|d2' : ''), html: bas + '<div class="dst-ust">' + tutar + grafik + '</div>' + aciklama + sinirsizBlok(h) + ben + kose.html };
     }
 
     /* REFERANS bloğu (destek kartı): kod, Kopyala/Paylaş, 5 adım */
@@ -1810,7 +1837,7 @@
             '<span>' + esc(bas) + '</span></div><ul>' + SZ.map(function (x) {
                 var d = szDurum(x);
                 return '<li data-oz="' + x.oz + '" data-s="' + d.s + '" title="' + esc(d.t) + '"><svg ' + SZ_IK + '>' + x.ik + '</svg><b>' + esc(x.ad) + '</b><em>' + esc(d.y) + '</em></li>';
-            }).join('') + '</ul><p class="dst-sz-alt">' + esc(alt) + ' Destekçilerin profiline animasyonlu destekçi rozeti gelir; adları istersen Destekçiler köşesinde görünür.</p></div>';
+            }).join('') + '</ul><p class="dst-sz-alt">' + esc(alt) + ' Destekçilerin profiline animasyonlu destekçi rozeti gelir; Destekçiler köşesinde ad yazılmaz.</p></div>';
     }
     function sinirsizTazele() {
         var kok = document.querySelector('#tpDestek [data-dst-sz]');
@@ -1971,10 +1998,10 @@
               '<div class="dst-m-bol dst-kose">' +
                 '<p class="dst-m-et">DESTEKÇİLER KÖŞESİ</p>' +
                 '<label class="dst-onay"><input id="dstKoseGoster" type="checkbox" checked> ' +
-                  '<span>Adım destekçiler köşesinde görünsün' + (kisaAd(durum('currentUserName') || u0.displayName) ? ' <b>(' + esc(kisaAd(durum('currentUserName') || u0.displayName)) + ')</b>' : '') + '</span></label>' +
+                  '<span>Desteğim destekçiler köşesine eklensin <b>(adım yazılmaz)</b></span></label>' +
                 '<label for="dstKoseNot">MESLEKTAŞLARINA BİR CÜMLE (İSTEĞE BAĞLI)</label>' +
                 '<input id="dstKoseNot" type="text" maxlength="' + KOSE_NOT_SINIR + '" placeholder="ör. Öğrencilerim dijital kitabı çok sevdi">' +
-                '<p class="dst-dip">Ödemen onaylanınca adın ve cümlen öğretmenlerin gördüğü köşeye eklenir. Tutar görünmez.</p>' +
+                '<p class="dst-dip">Ödemen onaylanınca cümlen öğretmenlerin gördüğü köşeye adsız eklenir. Adın ve tutar görünmez.</p>' +
               '</div>' +
               '<div class="dst-m-bol">' +
                 '<button type="button" class="dst-tus ana" id="dstBildir"' + (onizleme ? ' disabled' : '') + '>Ödemeyi yaptım, bildir</button>' +
@@ -2146,7 +2173,7 @@
             var enCokDegisti = !!enCok && enCok.join(',') !== ((oz.enCok && oz.enCok.L) || []).join(',');
             var degisti = enCokDegisti || hedefDegisti || A.aktif !== aktif || A.onayli !== onayli || oz.aylik !== aylik || +oz.gecmis[ay] !== aylik ||
                           !eskiD || eskiD.pay !== pay || eskiD.yuzde !== yuzde || +(oz.donemler || {})[dn.kod] !== pay ||
-                          oz.eskiAlan || A.eskiTaban || !A.guvenli || (me && oz.yoneticiler.indexOf(me) < 0);
+                          oz.eskiAlan || oz.destekciAdli || A.eskiTaban || !A.guvenli || (me && oz.yoneticiler.indexOf(me) < 0);
             var bayat = !oz.guncelleme || (simdi - oz.guncelleme.getTime() > 6 * 3600e3);
             if (!degisti && !bayat && !zorla) return oz;
             var FV = firebase.firestore.FieldValue, gecmis = {}, donemler = {};
@@ -2157,6 +2184,7 @@
                          donemler: donemler };
             if (oz.eskiAlan) ['tur', 'toplam', 'taban', 'aktif', 'onayli', 'ayarElle'].forEach(function (k) { acik[k] = FV.delete(); });
             if (hedefDegisti) acik.hedefIcerik = hedefL;
+            if (oz.destekciAdli) acik.destekciler = oz.destekciler;         /* DESTEKÇİLER ADSIZ: açık özetteki eski adlar silinir */
             if (enCok) acik.enCok = { L: enCok, t: simdi };
             var ozel = { uid: me, tur: 'destekAyar', toplam: A.toplam, ayarElle: A.elle,
                          aktif: aktif, onayli: onayli, guncelleme: sunucuZamani() };
@@ -2307,12 +2335,12 @@
                kurar, yazılmakta olan toplam ve işaretler kaybolur.) */
             var L = oz.destekciler;
             var koseHtml = '<details class="dst-a-kose"><summary>💛 Destekçiler köşesi (' + L.length + ')' +
-                '<small>ödeme onaylanınca eklenir · ana sayfadaki şeritte ve destek kartında görünür</small></summary>' +
+                '<small>ödeme onaylanınca adsız eklenir · ana sayfadaki şeritte ve destek kartında görünür</small></summary>' +
                 (L.length
                     ? '<div class="dst-a-kose-liste">' + L.map(function (x) {
-                        return '<span class="dst-a-dk"><b>' + esc(x.ad) + '</b><i>' + esc(ayAdi(x.ay)) + '</i>' +
-                            (x.not ? '<q>' + esc(x.not) + '</q>' : '') +
-                            '<button type="button" data-dst="kose-sil" data-t="' + esc(x.t) + '" data-ad="' + esc(x.ad) + '" title="Köşeden kaldır" aria-label="' + esc(x.ad) + ' köşeden kaldır">&times;</button></span>';
+                        return '<span class="dst-a-dk"><b>💛</b><i>' + esc(ayAdi(x.ay)) + '</i>' +
+                            (x.not ? '<q>' + esc(x.not) + '</q>' : '<i>cümle yok</i>') +
+                            '<button type="button" data-dst="kose-sil" data-t="' + esc(x.t) + '" title="Köşeden kaldır" aria-label="' + esc(ayAdi(x.ay)) + ' kaydını köşeden kaldır">&times;</button></span>';
                       }).join('') + '</div>'
                     : '<p class="dst-y-yok" style="margin:8px 0 0;">Henüz kimse yok. İlk ödeme onaylanınca burada ve öğretmenlerin ekranında görünür.</p>') +
                 '</details>';
@@ -2453,8 +2481,8 @@
             (b.not ? '<span class="n" style="font-style:italic;">“' + esc(b.not) + '”</span>' : '') +
             /* köşe: onaylanınca ne yayınlanacağı burada görünür (yönetici onaylamadan önce okur) */
             (b.koseGoster
-                ? '<span class="n dst-kose-on" title="Onaylanınca destekçiler köşesine eklenir">💛 köşe: <b>' + esc(kisaAd(b.ad) || 'ad yok') + '</b>' +
-                  (b.koseNot ? ' — «' + esc(b.koseNot) + '»' : '') + '</span>'
+                ? '<span class="n dst-kose-on" title="Onaylanınca destekçiler köşesine adsız eklenir">💛 köşe (adsız)' +
+                  (b.koseNot ? ': «' + esc(b.koseNot) + '»' : '') + '</span>'
                 : '<span class="n dst-kose-on">köşede görünmek istemiyor</span>') +
             (b.refKod ? '<span class="n dst-ref-on" title="Onaylanınca kod sahibine sayılır">🔗 referans: <b>' + esc(b.refKod) + '</b></span>' : '') +
             '<span class="bos"></span>' +
@@ -2540,7 +2568,7 @@
                   '<label>ÖDEME TARİHİ<input class="dst-f-tarih" type="date" value="' + inputTarih(new Date()) + '"></label>' +
                   '<label style="flex:1 1 180px;">NOT<input class="dst-f-not" type="text" maxlength="200" placeholder="ör. elden / başka hesaptan"></label>' +
                   '<label style="width:120px;">REF. KODU<input class="dst-f-ref" type="text" maxlength="16" placeholder="varsa"></label>' +
-                  '<label class="dst-f-kose" title="Kısa adı (' + esc(kisaAd(bilgi.ad) || '—') + ') destekçiler köşesine eklenir">' +
+                  '<label class="dst-f-kose" title="Destekçiler köşesine adsız eklenir">' +
                     '<input class="dst-f-goster" type="checkbox" checked> köşede göster</label>' +
                   '<button type="button" class="dst-yb kaydet" data-dst="elle-ekle" data-uid="' + esc(uid) + '">Kaydet</button>' +
                 '</div>' +
@@ -2614,23 +2642,25 @@
             'Katkınla Kidef gelişiyor, yeni içerikler hazırlanıp yayımlanıyor. ' +
             'Durumunu profilindeki Beklenen Destek kartından görebilirsin.';
     }
-    /* Destekçiler köşesine ekle (yönetici). Aynı ad aynı ay zaten varsa
-       yenisi eklenmez; tarihi ve (doluysa) cümlesi tazelenir. */
-    function destekciEkle(ad, not, tarih) {
-        var kisa = kisaAd(ad);
-        if (!kisa || !db()) return Promise.resolve(false);
+    /* Destekçiler köşesine ekle (yönetici). 01.11.2026: ad yazılmaz; aynı ay aynı
+       cümle zaten varsa yenisi eklenmez. */
+    function destekciEkle(ad, not, tarih) {                            /* DESTEKÇİLER ADSIZ: ad yazılmaz (ad bağımsız değişkeni kullanılmaz) */
+        if (!db()) return Promise.resolve(false);
         tarih = (tarih && !isNaN(tarih.getTime())) ? tarih : new Date();
-        var kayit = { ad: kisa, ay: ayAnahtar(tarih), t: tarih.getTime(), not: String(not || '').trim().slice(0, KOSE_NOT_SINIR) };
+        var kayit = { ay: ayAnahtar(tarih), t: tarih.getTime(), not: String(not || '').trim().slice(0, KOSE_NOT_SINIR) };
         return ozetOku(true).then(function (oz) {
             var L = oz.destekciler.slice();
             var ayni = -1;
             for (var i = 0; i < L.length; i++) {
-                if (L[i].ad === kayit.ad && L[i].ay === kayit.ay) { ayni = i; break; }
+                if (kayit.not && L[i].ay === kayit.ay && L[i].not === kayit.not) { ayni = i; break; }   /* aynı ay aynı cümle bir kez */
             }
             if (ayni >= 0) {
                 var e = L[ayni];
-                L[ayni] = { ad: e.ad, ay: e.ay, t: Math.max(e.t, kayit.t), not: kayit.not || e.not };
-            } else L.unshift(kayit);
+                L[ayni] = { ay: e.ay, t: e.t, not: e.not };
+            } else {
+                while (L.some(function (x) { return x.t === kayit.t; })) kayit.t++;   /* t tek kalsın */
+                L.unshift(kayit);
+            }
             return db().collection('mufredat').doc('_destek').set({ destekciler: destekciDuzen(L) }, { merge: true });
         }).then(function () { _ozet = null; return true; }, function (e) {
             try { console.warn('destekçi eklenemedi:', hataYaz(e)); } catch (x) { }
@@ -2639,7 +2669,7 @@
     }
     function destekciSil(t, ad) {
         return ozetOku(true).then(function (oz) {
-            var L = oz.destekciler.filter(function (x) { return !(x.t === +t && x.ad === ad); });
+            var L = oz.destekciler.filter(function (x) { return x.t !== +t; });   /* DESTEKÇİLER ADSIZ: t ile (t tek) */
             return db().collection('mufredat').doc('_destek').set({ destekciler: L }, { merge: true });
         }).then(function () { _ozet = null; });
     }
@@ -2914,7 +2944,7 @@
                         var eklendi = sonuc[0], rf = sonuc[1];
                         uyar('Onaylandı ✅ ' + tl(b.tutar) + ' öğretmenin desteğine işlendi.' + refMetin(rf) +
                              (gitti ? '\nTeşekkür mesajı öğretmenin Mesajlar kutusuna yazıldı.' : '\nTeşekkür mesajı yazılamadı (mesaj kutusu izni).') +
-                             (eklendi === true ? '\nDestekçiler köşesine eklendi: ' + kisaAd(b.ad) + '.'
+                             (eklendi === true ? '\nDestekçiler köşesine eklendi (adsız).'
                               : eklendi === false ? '\nDestekçiler köşesine eklenemedi.' : ''));
                         sonrasi();
                     });
@@ -2959,7 +2989,7 @@
                   return Promise.all([kose, rfS]).then(function (sonuc) {
                       var eklendi = sonuc[0], rf = sonuc[1];
                       uyar('Ödeme kaydedildi ✅' + refMetin(rf) + (gitti ? '\nTeşekkür mesajı öğretmenin Mesajlar kutusuna yazıldı.' : '\nTeşekkür mesajı yazılamadı (mesaj kutusu izni).') +
-                           (eklendi === true ? '\nDestekçiler köşesine eklendi: ' + kisaAd(bilgi.ad) + '.' : eklendi === false ? '\nDestekçiler köşesine eklenemedi.' : ''));
+                           (eklendi === true ? '\nDestekçiler köşesine eklendi (adsız).' : eklendi === false ? '\nDestekçiler köşesine eklenemedi.' : ''));
                       sonrasi();
                   });
               });
@@ -3002,7 +3032,7 @@
         else if (is === 'hedef-ekle') hedefEkle(t.closest('.dst-hd-form'));
         else if (is === 'hedef-sil') hedefSil(t.getAttribute('data-id'));
         else if (is === 'kose-sil') {
-            sor(t.getAttribute('data-ad') + ' destekçiler köşesinden kaldırılsın mı?').then(function (evet) {
+            sor('Bu kayıt destekçiler köşesinden kaldırılsın mı?').then(function (evet) {
                 if (!evet) return;
                 return destekciSil(+t.getAttribute('data-t'), t.getAttribute('data-ad')).then(function () { ayarCiz(); seritCiz(); });
             }).catch(function (e) { uyar('Kaldırılamadı: ' + hataYaz(e)); });

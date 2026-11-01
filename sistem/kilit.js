@@ -299,7 +299,7 @@
         '<path d="M52 56l4 5M60 60l0 6M45 62l-4 4"/></g>' +
         '</svg>';
 
-    /* GİRİŞ ÜCRETSİZ (22.10.2026) — öğretmen: "siteyi sadece kaydı olanları
+    /* GİRİŞ ÜCRETSİZ (22.10.2026; 01.11.2026'da kaldırıldı: uyariGuncelle şeridi artık göstermiyor) — öğretmen: "siteyi sadece kaydı olanları
        girebileceği şekilde yönetici olarak ayarladığımda ücretsiz bi şekilde
        girilebileceğini sadece kayıt olunmasının yeterli olduğunu belirtelim, bunu
        daha erken yapalım". «Sadece Girişliler» kilidinde, giriş yapmamış
@@ -380,7 +380,7 @@
         var kap = lm.querySelector('.modal-content') || lm;
         var eksik = (kilit === 'girisli' || kilit === 'yonetici') && belgeEksikMi();   /* 26.10.2026 */
         eksikSerit(kap, eksik);
-        ucretsizSerit(kap, kilit === 'girisli' && !girisli && !eksik);       /* 22.10.2026 */
+        ucretsizSerit(kap, false);   /* 01.11.2026 öğretmen: "giriş kısmındaki sitenin ücretsiz olduğu yazısını kaldıralım" — şerit çıkmaz, eskisi silinir */
         var u = document.getElementById('kilitUyari');
         /* Sahne YALNIZ ogrenci/ogretmen GIRIS YAPINCA cikar; anonim
            ziyaretci duz kayit/giris ekrani gorur (hicbir ipucu yok). */
@@ -580,7 +580,7 @@
     window.kilitPanelHtml = function () {
         var kademe = [
             { k: 'acik',     ad: '🌍 Açık',              acikla: 'Herkes girebilir (normal durum).' },
-            { k: 'girisli',  ad: '🎓 Sadece Girişliler', acikla: 'Yalnız hesapla giriş yapanlar: öğrencilerin ve sen. Ders kipinde dışarıya kapalı. Ziyaretçiye «Siteye giriş ücretsiz — kayıt olman yeterli» yazısı çıkar.' },
+            { k: 'girisli',  ad: '🎓 Sadece Girişliler', acikla: 'Yalnız hesapla giriş yapanlar: öğrencilerin ve sen. Ders kipinde dışarıya kapalı. Ziyaretçiye giriş / kayıt penceresi çıkar.' },
             { k: 'yonetici', ad: '🔒 Sadece Yönetici',   acikla: 'Herkese kapalı; yalnız yönetici girer. Öğrenciler de kilit ekranı görür.' }
         ];
         var simdiki = K.durum || VARSAYILAN;
