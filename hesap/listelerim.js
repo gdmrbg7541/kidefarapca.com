@@ -3547,9 +3547,13 @@ function behLogKapat() {
     function pick(type, color) {
         if(!curCId) return alert("Sınıf seçin!");
         let cls = data.levels[curLId].classes[curCId];
+        const kn = kuraNoDurum(cls);                                   /* KURA NUMARAYLA: isimsiz sınıf ya da «Numarayla çek» */
+        if (kn.acik) return kuraNoCek(cls, kn, type, color);
         if(!cls.students.length) return alert("Öğrenci yok!");
+        const hk = kuraHavuzAnah(type);                                /* havuz sınıf başına */
+        if (pools[hk]) pools[hk] = pools[hk].filter(i => i < cls.students.length);
 
-        if(!pools[type] || !pools[type].length) pools[type] = [...Array(cls.students.length).keys()];
+        if(!pools[hk] || !pools[hk].length) pools[hk] = [...Array(cls.students.length).keys()];
         
         let disp = document.getElementById('luckyStudent');
         let count = 0;
@@ -3557,8 +3561,8 @@ function behLogKapat() {
             disp.innerText = cls.students[Math.floor(Math.random()*cls.students.length)].name;
             if(++count > 20) {
                 clearInterval(int);
-                let pIdx = Math.floor(Math.random()*pools[type].length);
-                let sIdx = pools[type].splice(pIdx, 1)[0];
+                let pIdx = Math.floor(Math.random()*pools[hk].length);
+                let sIdx = pools[hk].splice(pIdx, 1)[0];
                 let stu = cls.students[sIdx];
                 disp.innerText = stu.name;
                 document.getElementById('activityType').innerHTML = llIcon('hedef') + " " + behKacis(type || '');
@@ -3658,12 +3662,14 @@ function addKuraRow(name = "") {
 
     function renderActivityStatus() {
         if(!curCId) return;
+        kuraNoCiz();                                                    /* KURA NUMARAYLA (01.11.2026): vurgulu kart */
+        { const kn = kuraNoDurum(); kuraNoDurumCiz(kn, data.levels[curLId].classes[curCId]); if (kn.acik) return; }
         let table = document.getElementById('activityStatusTable');
         table.innerHTML = `<tr><th>Öğrenci</th><th>Geçmiş (Silmek için tıkla)</th><th>Havuz Durumu</th></tr>`;
         data.levels[curLId].classes[curCId].students.forEach((s, idx) => {
             let hist = (s.history||[]).map((c, hi) => `<span class="marker" style="background:${c}; cursor:pointer;" onclick="delHist(${idx},${hi})"></span>`).join('');
             let poolSt = llKuraListesi().map(st => {
-                let exist = !pools[st.n] || pools[st.n].includes(idx);
+                let exist = !pools[kuraHavuzAnah(st.n)] || pools[kuraHavuzAnah(st.n)].includes(idx);
                 return `<span style="font-size:0.8em; color:${exist?'#2ecc71':'#e74c3c'}; ${!exist?'text-decoration:line-through':''}">${llIcon('nokta')} ${st.n}</span>`;
             }).join(' ');
             table.insertRow().innerHTML = `<td>${s.name}</td><td>${hist}</td><td>${poolSt}</td>`;
@@ -3680,6 +3686,7 @@ function addKuraRow(name = "") {
         llOnay("Tüm geçmiş ve havuzlar sıfırlansın mı?", () => {
             pools = {};
             data.levels[curLId].classes[curCId].students.forEach(s => s.history = []);
+            { const c = data.levels[curLId].classes[curCId]; if (c && c.kuraNo) c.kuraNo.gecmis = {}; }   /* KURA NUMARAYLA */
             save(); renderActivityStatus();
         });
     }
@@ -8534,3 +8541,119 @@ function llNotSilHucre(row, si) {
     c.innerHTML = '<button type="button" class="big-action-btn delete-btn" onclick="deleteStu(' + si + ')" title="Öğrenciyi sil">' + llIcon('cop') + '</button>';
 }
 window.llIsimEkle = llIsimEkle; window.llNotIsimDegis = llNotIsimDegis; window.llListeMenuKapat = llListeMenuKapat;
+
+/* ==========================================================================
+   KURA NUMARAYLA (01.11.2026) — öğretmen: "bi öğretmen sınıf açtığında kura çekmek istediğinde sınıfta 30 öğrenci varmış
+   gbi 30 sayıdan kura çekilsin ama öğretmen listeye öğrenci eklediğinde bu 30 hayali öğrenci rakamı sıfırlansın, amaç
+   isimleri eklenmeyen öğrencilerin sıra numarasından kura çekmek, öğretmen isim eklese bile isterse bu şekilde öğrenci
+   sayısı kadar rakam girerek kura çekebilmeli, kura kısmında bu özelliğe vurgu da ekleyelim".
+   · Sınıfta isim yoksa kura 1–30 arası sıra numarasından çekilir (sayı değiştirilebilir); her kura başlığının kendi numara
+     havuzu var, çekilen numara o başlıkta tükenene dek yeniden gelmez. İsim eklenince bu hayali 30 sıfırlanır: kura
+     isimlerden çekilir.
+   · İsimler varken de «Numarayla çek» açılıp öğrenci sayısı yazılabilir (isimleri eksik sınıf).
+   · Kura bölümünün başında vurgulu kart (Numarayla kura): ne olduğu, aralık (1–N), öğrenci sayısı, anahtar.
+   · Veri: sınıfta kuraNo = { n, oto (isimsiz sınıfın hayali sayısı), acik (isimler varken açık), gecmis: { no: [renk…] } }.
+   · Havuzlar artık sınıf başına (önce sınıf değişince bir öncekinin sırası taşınabiliyordu).
+   ========================================================================== */
+var KURA_NO_VARSAYILAN = 30;
+function kuraHavuzAnah(type) { return (curLId || '') + ':' + (curCId || '') + ':' + type; }
+function kuraAktifSinif() { try { return data.levels[curLId].classes[curCId] || null; } catch (e) { return null; } }
+function kuraNoHavuzSil() {
+    var on = (curLId || '') + ':' + (curCId || '') + ':#';
+    Object.keys(pools).forEach(function (k) { if (k.indexOf(on) === 0) delete pools[k]; });
+}
+function kuraNoDurum(cls) {                                          /* { acik, n, oto } — isim eklenince hayali sayı sıfırlanır */
+    cls = cls || kuraAktifSinif();
+    if (!cls) return { acik: false, n: KURA_NO_VARSAYILAN, oto: false };
+    var bos = !(cls.students && cls.students.length), k = cls.kuraNo;
+    if (!bos && k && k.oto) { delete cls.kuraNo; k = null; kuraNoHavuzSil(); try { save(); } catch (e) { } }
+    var n = (k && k.n >= 1) ? Math.min(99, Math.round(k.n)) : (bos ? KURA_NO_VARSAYILAN : cls.students.length);
+    return { acik: bos || !!(k && k.acik), n: n, oto: bos };
+}
+function kuraNoKur(cls, kn) {                                        /* veri kaydı (yoksa) */
+    var k = cls.kuraNo;
+    if (!k) k = cls.kuraNo = { n: kn.n, gecmis: {} };
+    if (kn.oto) { k.oto = true; delete k.acik; } else { k.acik = true; delete k.oto; }
+    if (!k.gecmis) k.gecmis = {};
+    if (!(k.n >= 1)) k.n = kn.n;
+    return k;
+}
+function kuraNoSayi(v) {                                             /* «Öğrenci sayısı» */
+    var cls = kuraAktifSinif(); if (!cls) return;
+    var n = Math.max(1, Math.min(99, parseInt(v, 10) || 0)), kn = kuraNoDurum(cls);
+    if (!n) { kuraNoCiz(); return; }
+    var k = kuraNoKur(cls, kn);
+    if (!kn.acik) k.acik = false;                                     /* kapalıyken yalnız sayı saklanır */
+    if (k.n !== n) { k.n = n; k.gecmis = {}; kuraNoHavuzSil(); }      /* sayı değişince numara havuzu baştan */
+    save(); renderActivityStatus();
+}
+function kuraNoAcKapa(acik) {                                        /* isimler varken «Numarayla çek» */
+    var cls = kuraAktifSinif(); if (!cls || !(cls.students && cls.students.length)) return;
+    if (acik) { var k = kuraNoKur(cls, { n: (cls.kuraNo && cls.kuraNo.n) || cls.students.length, oto: false }); k.acik = true; }
+    else if (cls.kuraNo) cls.kuraNo.acik = false;
+    var d = document.getElementById('luckyStudent'); if (d) d.innerText = 'Öğrenci Seçin';
+    var t = document.getElementById('activityType'); if (t) t.innerHTML = '';
+    save(); renderActivityStatus();
+}
+function kuraNoYaz(disp, no, son) {
+    disp.innerHTML = '<span class="kura-no-sonuc' + (son ? ' son' : '') + '"><b>' + no + '</b><small>' + (son ? 'numaralı öğrenci' : 'sıra no') + '</small></span>';
+}
+function kuraNoCek(cls, kn, type, color) {
+    var hk = kuraHavuzAnah('#' + type), N = kn.n;
+    if (pools[hk]) pools[hk] = pools[hk].filter(function (x) { return x >= 1 && x <= N; });
+    if (!pools[hk] || !pools[hk].length) pools[hk] = Array.from({ length: N }, function (_, i) { return i + 1; });
+    var disp = document.getElementById('luckyStudent'), count = 0;
+    var int = setInterval(function () {
+        kuraNoYaz(disp, 1 + Math.floor(Math.random() * N));
+        if (++count > 20) {
+            clearInterval(int);
+            var no = pools[hk].splice(Math.floor(Math.random() * pools[hk].length), 1)[0];
+            kuraNoYaz(disp, no, true);
+            document.getElementById('activityType').innerHTML = llIcon('hedef') + ' ' + behKacis(type || '');
+            var k = kuraNoKur(cls, kn); k.n = N;
+            (k.gecmis[no] = k.gecmis[no] || []).push(color);
+            llKuraSesi();
+            save(); renderActivityStatus();
+        }
+    }, 80);
+}
+function kuraNoCiz() {                                               /* kura bölümünün başındaki vurgulu kart */
+    var kap = document.getElementById('llAracKura'), lb = document.getElementById('luckyBox');
+    if (!kap || !lb) return;
+    var kart = document.getElementById('kuraNoKart');
+    if (!kart) { kart = document.createElement('div'); kart.id = 'kuraNoKart'; kart.className = 'kura-no-kart'; kart.setAttribute('role', 'region'); kart.setAttribute('aria-label', 'Numarayla kura'); }
+    if (kart.nextElementSibling !== lb) lb.parentNode.insertBefore(kart, lb);
+    var cls = kuraAktifSinif(); if (!cls) { kart.hidden = true; return; }
+    kart.hidden = false;
+    var kn = kuraNoDurum(cls), isimli = !kn.oto, aralik = '1–' + kn.n;
+    var ac = document.activeElement, yaziyor = ac && kart.contains(ac) && ac.type === 'number';
+    kart.classList.toggle('acik', kn.acik);
+    var metin = kn.oto
+        ? 'Bu sınıfa henüz isim eklenmedi: kura <b>' + aralik + '</b> arası <b>sıra numarasından</b> çekilir — sınıfta ' + kn.n + ' öğrenci varmış gibi. İsimleri ekleyince kura isimlerden çekilir.'
+        : (kn.acik
+            ? 'Kura isimlerden değil, <b>' + aralik + '</b> arası <b>sıra numarasından</b> çekiliyor. İsimleri eklenmemiş öğrencilerin de sırası gelir.'
+            : 'İsimleri eklenmemiş öğrencin mi var? Sağdaki <b>Numarayla çek</b> anahtarını aç, öğrenci sayısını yaz: kura <b>sıra numarasından</b> çekilsin.');
+    var h = '<div class="kura-no-rozet" aria-hidden="true"><small>No</small><b>' + aralik + '</b></div>' +
+        '<div class="kura-no-metin"><div class="kura-no-bas">Numarayla kura <span class="kura-no-yeni">YENİ</span></div><p>' + metin + '</p></div>' +
+        '<div class="kura-no-ayar">' +
+        '<label class="kura-no-sayi"><span>Öğrenci sayısı</span><input type="number" min="1" max="99" inputmode="numeric" value="' + kn.n + '"' + (kn.acik ? '' : ' disabled') +
+        ' onchange="kuraNoSayi(this.value)" onkeydown="if(event.key===\'Enter\'){event.preventDefault(); this.blur();}" aria-label="Kaç numaradan çekilsin (öğrenci sayısı)"></label>' +
+        (isimli ? '<label class="kura-no-anahtar"><input type="checkbox"' + (kn.acik ? ' checked' : '') + ' onchange="kuraNoAcKapa(this.checked)"><i aria-hidden="true"></i><span>Numarayla çek</span></label>' : '') +
+        '</div>';
+    if (!yaziyor) kart.innerHTML = h;
+}
+function kuraNoDurumCiz(kn, cls) {                                   /* numara kurasında: çekilen numaralar (her renk bir başlık) */
+    var t = document.getElementById('activityStatusTable'); if (!t || !t.parentNode) return;
+    var d = document.getElementById('kuraNoDurum');
+    if (!d) { d = document.createElement('div'); d.id = 'kuraNoDurum'; d.className = 'kura-no-durum'; t.parentNode.insertBefore(d, t); }
+    d.hidden = !kn.acik; t.style.display = kn.acik ? 'none' : '';
+    if (!kn.acik) return;
+    var G = (cls.kuraNo && cls.kuraNo.gecmis) || {}, h = '', i;
+    for (i = 1; i <= kn.n; i++) {
+        var R = G[i] || [];
+        h += '<span class="kura-no-cip' + (R.length ? ' cekildi' : '') + '" title="' + i + '. sıra' + (R.length ? ' — ' + R.length + ' kez çekildi' : '') + '"><b>' + i + '</b><i>' +
+            R.map(function (c) { return '<em style="background:' + behKacis(c) + '"></em>'; }).join('') + '</i></span>';
+    }
+    d.innerHTML = '<div class="kura-no-durum-bas"><b>Çekilen numaralar</b> <span>— renkli nokta: o kura başlığında çekildi; bir başlıkta numaralar bitince havuz baştan dolar</span></div><div class="kura-no-izgara">' + h + '</div>';
+}
+window.kuraNoSayi = kuraNoSayi; window.kuraNoAcKapa = kuraNoAcKapa;

@@ -4284,3 +4284,56 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
 #ll-root .ll-not-isim { width: 100%; min-width: 60px; box-sizing: border-box; }
 #ll-root th.ll-not-sil-bas, #ll-root td.ll-not-sil { width: 74px; text-align: center; }
 #ll-root td.ll-not-sil .big-action-btn { margin: 0 auto; }
+
+/* ==========================================================================
+   KURA NUMARAYLA (01.11.2026) — kura bölümünün başında vurgulu kart; numara sonucu; çekilen numaralar ızgarası
+   ========================================================================== */
+#ll-root .kura-no-kart { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin: 0 0 16px; padding: 14px 18px;
+    border-radius: 16px; border: 2px dashed #F0C9A6; background: #FFFBF6; color: #6B4A38; }
+#ll-root .kura-no-kart[hidden] { display: none; }
+#ll-root .kura-no-kart.acik { border: 2px solid #F39C12; background: linear-gradient(135deg, #FFF4E5, #FFE7CC);
+    box-shadow: 0 6px 18px rgba(216, 67, 21, .14); }
+#ll-root .kura-no-rozet { flex: 0 0 auto; min-width: 74px; padding: 8px 10px; border-radius: 14px; text-align: center; line-height: 1.05;
+    background: #fff; border: 2px solid #F3D3B5; color: #B34700; }
+#ll-root .kura-no-kart.acik .kura-no-rozet { background: linear-gradient(135deg, #F39C12, #D84315); border-color: transparent; color: #fff;
+    animation: kuraNoNabiz 2.4s ease-in-out infinite; }
+#ll-root .kura-no-rozet small { display: block; font-size: .72rem; font-weight: 800; letter-spacing: .08em; opacity: .85; }
+#ll-root .kura-no-rozet b { display: block; font-size: 1.35rem; font-weight: 900; white-space: nowrap; font-variant-numeric: tabular-nums; }
+@keyframes kuraNoNabiz { 0%, 100% { box-shadow: 0 0 0 0 rgba(243, 156, 18, .0); } 50% { box-shadow: 0 0 0 7px rgba(243, 156, 18, .22); } }
+@media (prefers-reduced-motion: reduce) { #ll-root .kura-no-kart.acik .kura-no-rozet { animation: none; } }
+#ll-root .kura-no-metin { flex: 1 1 320px; min-width: 0; }
+#ll-root .kura-no-bas { font-weight: 900; font-size: 1.08rem; color: #9C3B0C; display: flex; align-items: center; gap: 8px; }
+#ll-root .kura-no-yeni { font-size: .66rem; font-weight: 900; letter-spacing: .08em; padding: 2px 7px; border-radius: 999px; background: #D84315; color: #fff; }
+#ll-root .kura-no-metin p { margin: 4px 0 0; font-size: .92rem; line-height: 1.5; }
+#ll-root .kura-no-ayar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+#ll-root .kura-no-sayi { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: .9rem; color: #8B4513; }
+#ll-root .kura-no-sayi input { width: 74px; padding: 8px 6px; text-align: center; font-size: 1.15rem; font-weight: 800; border: 2px solid #F0C9A6;
+    border-radius: 10px; background: #fff; color: #9C3B0C; font-family: inherit; }
+#ll-root .kura-no-sayi input:disabled { opacity: .5; }
+#ll-root .kura-no-anahtar { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 800; font-size: .92rem; color: #8B4513; user-select: none; }
+#ll-root .kura-no-anahtar input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+#ll-root .kura-no-anahtar i { position: relative; width: 44px; height: 24px; border-radius: 999px; background: #E5D3C3; transition: background .15s; flex: 0 0 auto; }
+#ll-root .kura-no-anahtar i::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .25); transition: transform .15s; }
+#ll-root .kura-no-anahtar input:checked + i { background: #E67E22; }
+#ll-root .kura-no-anahtar input:checked + i::after { transform: translateX(20px); }
+#ll-root .kura-no-anahtar input:focus-visible + i { outline: 3px solid rgba(52, 152, 219, .45); outline-offset: 2px; }
+#ll-root .kura-no-sonuc { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; }
+#ll-root .kura-no-sonuc b { font-size: 1.6em; font-variant-numeric: tabular-nums; }
+#ll-root .kura-no-sonuc small { margin-top: 6px; font-size: .36em; font-weight: 800; letter-spacing: .04em; color: #8B6A57; }
+#ll-root .kura-no-sonuc.son b { animation: kuraNoGel .45s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes kuraNoGel { from { transform: scale(.6); opacity: .3; } }
+#ll-root .kura-no-durum[hidden] { display: none; }
+#ll-root .kura-no-durum-bas { margin: 0 0 10px; font-size: .9rem; color: #8B6A57; }
+#ll-root .kura-no-durum-bas b { color: #9C3B0C; font-size: 1rem; }
+#ll-root .kura-no-izgara { display: grid; grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)); gap: 8px; }
+#ll-root .kura-no-cip { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 7px 4px 6px; border-radius: 12px;
+    background: #fff; border: 1.5px solid #EEE2D7; color: #8B6A57; }
+#ll-root .kura-no-cip b { font-size: 1.05rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+#ll-root .kura-no-cip i { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; min-height: 8px; }
+#ll-root .kura-no-cip em { width: 8px; height: 8px; border-radius: 50%; }
+#ll-root .kura-no-cip.cekildi { border-color: #F3C9A1; background: #FFF8F1; color: #9C3B0C; }
+@media (max-width: 600px) {
+    #ll-root .kura-no-kart { padding: 12px; gap: 12px; }
+    #ll-root .kura-no-ayar { width: 100%; justify-content: space-between; }
+}
