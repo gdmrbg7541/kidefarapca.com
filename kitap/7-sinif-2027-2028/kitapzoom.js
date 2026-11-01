@@ -3427,13 +3427,15 @@
        üstüne PDF'ten çıkarılmış çizgi yazılar (metin/NNN.svg) konur: yazılar
        her büyütmede ve her ekranda net. İkisi de gelmeden hiçbir şey
        değişmez; biri gelmezse bugünkü sayfa resmi kalır. Bilgisayara
-       indirilmiş kopyada (file://) kapalı. Üreten:
+       indirilmiş kopyada (file://) kapalı — metin.yerel varsa (katman
+       dosyaları kitabın yanında, Komisyon 9) açık (01.11.2026). Üreten:
        _kaynak/uretici/metinKatmani.py
        -------------------------------------------------------------- */
     var metinYukselt = null;                           /* 2K zemin: 9. bölüm kurar, zUygula çağırır */
     (function metinKatmani() {
       var V = kok.KITAP_VERI || {}, M = ayar.metin || V.metin;
-      if (!M || !M.kok || location.protocol === 'file:' || !flip.yapraklar) return;
+      /* NET KATMAN YEREL (01.11.2026): katman dosyaları kitabın yanındaysa (metin.yerel, Komisyon 9) bilgisayardan da açık */
+      if (!M || !M.kok || (location.protocol === 'file:' && !M.yerel) || !flip.yapraklar) return;
       var yok = {};
       (M.yok || []).forEach(function (n) { yok[n] = 1; });
       var ek = M.v ? '?v=' + M.v : '';

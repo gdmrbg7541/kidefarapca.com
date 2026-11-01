@@ -214,28 +214,44 @@
 
        Veri alfabe.js'teki `harfler` dizisinden gelir: h (normal),
        b (baştaki), o (ortadaki), s (sondaki), tr (adı), nobind
-       (kendinden sonrakine bağlanmaz). nobind harflerde baş/orta/son
-       neredeyse aynı göründüğü için o harfler soru harfi olarak
-       kullanılmıyor — cevabı gözle ayırt etmek mümkün olmazdı. */
+       (kendinden sonrakine bağlanmaz).
+       BÜTÜN HARFLER (01.11.2026) — öğretmen: "daha önceden sanki bazı harfler
+       hiç çıkmıyor gibiydi mesela vav harfi, bunları da düzeltelim". Eskiden
+       yalnız dört yazılışı birbirinden ayrı görünen 22 harf soruluyordu:
+       bağlanmayan altı harf (elif, dal, zel, ra, ze, vav) HİÇ çıkmıyordu;
+       üstelik 30 istek rastgele çekildiği için bir turda bazı harfler hiç
+       gelmiyordu. Artık her tur 28 harfin HER BİRİNİ bir kez, karışık
+       sırayla istiyor. Bağlanmayan harfte baştaki yazılış normal yazılışla,
+       ortadaki sondakiyle aynıdır («و», «ـو») — öğretilecek bilgi de bu.
+       «Dene»de aynı görünen şık hiç konmuyor (bkz. istenenHavuzu). */
     var IH_KONUM = [
         { k: 'b', ad: 'baştaki' },
         { k: 'o', ad: 'ortadaki' },
         { k: 's', ad: 'sondaki' }
     ];
+    /* Normal (yalın) yazılış: `harfler`de h, yazım verisinde (HARF_YAZIM,
+       harfDetay.FORM_META) n. */
+    var IH_NORMAL = { k: 'h', ad: 'normal', yazim: 'n' };
     function ihSec(a) { return a[Math.floor(Math.random() * a.length)]; }
+    function ihKaristir(a) {
+        a = a.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1)), t = a[i];
+            a[i] = a[j]; a[j] = t;
+        }
+        return a;
+    }
 
-    /* Dört yazılışı da birbirinden ayrı görünen harfler. Harfin `harfler`
+    /* Bütün harfler (dört yazılışı da tanımlı olanlar). Harfin `harfler`
        dizisindeki SIRASI da taşınıyor: yazılış animasyonu (harfDetay.open)
        sırayla çağrılıyor. */
-    function ihUygunHarfler() {
+    function ihHarfler() {
         var hepsi = [];
         try { if (typeof harfler !== 'undefined' && harfler) hepsi = harfler; } catch (e) { }
         var u = [], i, x;
         for (i = 0; i < hepsi.length; i++) {
             x = hepsi[i];
-            if (!x || x.nobind || !x.b || !x.o || !x.s) continue;
-            if (x.b === x.o || x.o === x.s || x.b === x.s) continue;
-            u.push({ h: x, i: i });
+            if (x && x.h && x.b && x.o && x.s) u.push({ h: x, i: i });
         }
         return u;
     }
@@ -244,47 +260,76 @@
         return {};
     }
 
-    /* İSTEK LİSTESİ — "şu harfin şu yazılışı", tekrarsız. İki etkinlik de
-       buradan besleniyor: konu anlatımı (şıksız) ve Dene (şıklı). */
-    function ihIstekler(adet) {
-        var uygun = ihUygunHarfler();
-        if (!uygun.length) return [];
-        var liste = [], kul = {}, tur = 0;
-        while (liste.length < adet && tur++ < adet * 30) {
-            var u = ihSec(uygun), kon = ihSec(IH_KONUM);
-            var a = u.h.h + kon.k;
-            if (kul[a]) continue;
-            kul[a] = 1;
-            liste.push({ harf: u.h, idx: u.i, kon: kon });
+    /* YAZILIŞ SÜZGECİ (01.11.2026) — öğretmen: "istenen harfi yaz kısmında
+       filtreye şunları da ekle, harflerin sadece normal yazılışları sadece
+       baştaki yazılışları sadece ortada veya sadece sonda, tüm yazılışları
+       karışık şekilde 5 filtre ekle". */
+    /* Tuş adları harf kartındaki biçim adlarıyla aynı (harfDetay.FORM_META:
+       Başta · Ortada · Sonda); soruda «baştaki yazılışını yaz» denir. */
+    var IH_SUZGEC = [
+        { s: 'h', ad: 'Normal', sifat: 'normal' },
+        { s: 'b', ad: 'Başta', sifat: 'baştaki' },
+        { s: 'o', ad: 'Ortada', sifat: 'ortadaki' },
+        { s: 's', ad: 'Sonda', sifat: 'sondaki' },
+        { s: 'k', ad: 'Karışık', sifat: '' }
+    ];
+    function ihKonlar(suzgec) {
+        if (suzgec === 'h') return [IH_NORMAL];
+        var k = IH_KONUM.filter(function (x) { return x.k === suzgec; });
+        return k.length ? k : [IH_NORMAL].concat(IH_KONUM);       /* 'k' karışık */
+    }
+
+    /* İSTEK LİSTESİ — "şu harfin şu yazılışı". İki etkinlik de buradan
+       besleniyor: konu anlatımı (şıksız, süzgeçli) ve Dene (şıklı; baştaki,
+       ortadaki, sondaki). Her tur bütün harfleri birer kez, karışık sırayla
+       verir; yazılışlar tur içinde eşit dağılır. Tur bitince yeni tur. */
+    function ihIstekler(adet, konlar) {
+        var hepsi = ihHarfler();
+        if (!hepsi.length || !adet) return [];
+        konlar = konlar && konlar.length ? konlar : [IH_NORMAL].concat(IH_KONUM);
+        var liste = [];
+        while (liste.length < adet) {
+            var tur = ihKaristir(hepsi), kon = [];
+            while (kon.length < tur.length) kon = kon.concat(konlar);
+            kon = ihKaristir(kon.slice(0, tur.length));
+            tur.forEach(function (u, j) {
+                /* tur sınırında aynı harf art arda gelmesin */
+                if (j === 0 && liste.length && liste[liste.length - 1].harf === u.h && tur.length > 1) {
+                    var t = tur[0]; tur[0] = tur[1]; tur[1] = t; u = tur[0];
+                }
+                liste.push({ harf: u.h, idx: u.i, kon: kon[j] });
+            });
         }
-        return liste;
+        return liste.slice(0, adet);
     }
 
     function istenenHavuzu(adet) {
-        var uygun = ihUygunHarfler();
-        if (uygun.length < 4) return [];
+        var hepsi = ihHarfler();
+        if (hepsi.length < 4) return [];
         var aile = ihAile(), sorular = [];
         /* Çeldirici bulunamayan istek eleniyor; bu yüzden fazladan isteniyor. */
-        ihIstekler(adet + 6).forEach(function (is) {
+        ihIstekler(adet + 6, IH_KONUM).forEach(function (is) {
             if (sorular.length >= adet) return;
             var h = is.harf, kon = is.kon, dogru = h[kon.k];
-            /* Çeldiriciler: AYNI harfin öteki iki yazılışı (asıl ayrım) +
-               mümkünse AYNI AİLEDEN başka bir harfin aynı yazılışı. */
-            var celd = [];
-            IH_KONUM.forEach(function (d) { if (d.k !== kon.k) celd.push(h[d.k]); });
-            var ailem = aile[h.h];
-            var kardes = uygun.filter(function (x) {
-                return x.h.h !== h.h && (ailem ? aile[x.h.h] === ailem : true);
-            });
-            if (!kardes.length) kardes = uygun.filter(function (x) { return x.h.h !== h.h; });
-            var k2 = ihSec(kardes);
-            if (k2) celd.push(k2.h[kon.k]);
-            /* Doğruyla ya da birbiriyle aynı görünen şık kalmasın */
-            var gorulen = {}; gorulen[dogru] = 1;
-            celd = celd.filter(function (x) {
-                if (!x || gorulen[x]) return false;
-                gorulen[x] = 1; return true;
-            }).slice(0, 3);
+            /* Doğruyla ya da birbiriyle AYNI GÖRÜNEN şık konmaz: bağlanmayan
+               harfte (و) baştaki = normal, ortadaki = sondaki. */
+            var gorulen = {}, celd = [];
+            gorulen[dogru] = 1;
+            var al = function (x) {
+                if (!x || gorulen[x] || celd.length >= 3) return;
+                gorulen[x] = 1; celd.push(x);
+            };
+            /* Çeldiriciler: AYNI harfin öteki yazılışları (asıl ayrım) +
+               AYNI AİLEDEN bir harfin aynı yazılışı; eksik kalırsa (bağlanmayan
+               harfler) önce bağlanmayan, sonra herhangi başka bir harfin aynı
+               yazılışı. */
+            IH_KONUM.forEach(function (d) { if (d.k !== kon.k) al(h[d.k]); });
+            var ailem = aile[h.h], digeri = hepsi.filter(function (x) { return x.h.h !== h.h; });
+            var kardes = digeri.filter(function (x) { return ailem && aile[x.h.h] === ailem; });
+            var k2 = ihSec(kardes.length ? kardes : (h.nobind ? digeri.filter(function (x) { return x.h.nobind; }) : digeri));
+            if (k2) al(k2.h[kon.k]);
+            ihKaristir(digeri.filter(function (x) { return !!x.h.nobind === !!h.nobind; })).forEach(function (x) { al(x.h[kon.k]); });
+            ihKaristir(digeri).forEach(function (x) { al(x.h[kon.k]); });
             if (celd.length < 3) return;
 
             var sik = [{ html: '<span class="as-h ih-harf">' + kacis(dogru) + '</span>', dogru: true }];
@@ -369,8 +414,23 @@
        kalem animasyonunu açar (harf kartlarındaki katmanın aynısı).
        Şıklı ölçme aynı satırdaki «Dene» düğmesinde — ikisi ayrı. */
     var YAZ = { havuz: [], i: 0, dolu: false, kalanMs: 0, saat: null, durdu: false,
-                sonSn: -1, basladi: false, sure: 15, bekleMs: 0 };
-    var YAZ_ADET = 30;
+                sonSn: -1, basladi: false, sure: 15, bekleMs: 0, suzgec: 'k' };
+    /* İSTEK SAYISI: her turda bütün harfler birer kez (01.11.2026; önce 30
+       rastgele istekti). Süzgeç — Normal · Baştaki · Ortadaki · Sondaki ·
+       Karışık — süre gibi tarayıcıda kalıyor. */
+    var YAZ_BICIM_ANAHTAR = 'kidefIhyBicim';
+    function yazBicimOku() {
+        try {
+            var v = localStorage.getItem(YAZ_BICIM_ANAHTAR);
+            if (IH_SUZGEC.some(function (x) { return x.s === v; })) return v;
+        } catch (e) { }
+        return 'k';
+    }
+    function yazBicimYaz(s) {
+        YAZ.suzgec = s;
+        try { localStorage.setItem(YAZ_BICIM_ANAHTAR, s); } catch (e) { }
+    }
+    function yazListe() { return ihIstekler(ihHarfler().length, ihKonlar(YAZ.suzgec)); }
     /* GERİ SAYIM (14.10.2026) — öğretmen: "her harf 15 saniye geri sayım
        ekleyelim, daire olsun geri sayım", "ses te ekleyelim".
        Daire boşalınca cevap kendiliğinden yazılır; öğretmen daha önce
@@ -430,9 +490,9 @@
         try {
             if (typeof HARF_YAZIM === 'undefined' || typeof harfDetay === 'undefined') return false;
             if (!harfDetay || !harfDetay.buildSvg) return false;
-            var d = HARF_YAZIM[is.harf.h];
-            if (!d || !d[is.kon.k]) return false;
-            var a = harfDetay.buildSvg(d[is.kon.k], ihRenk(is.kon.k));
+            var d = HARF_YAZIM[is.harf.h], yk = is.kon.yazim || is.kon.k;   /* normal: n */
+            if (!d || !d[yk]) return false;
+            var a = harfDetay.buildSvg(d[yk], ihRenk(yk));
             if (!a || !a.svg) return false;
             kutu.innerHTML = '';
             kutu.appendChild(a.svg);
@@ -459,7 +519,8 @@
 
     function yazAc() {
         katmanKur(); bicemKur();
-        var liste = ihIstekler(YAZ_ADET);
+        YAZ.suzgec = yazBicimOku();
+        var liste = yazListe();
         if (!liste.length) return false;
         YAZ.havuz = liste; YAZ.i = 0;
         zamanTemizle(); perdeKapat();
@@ -489,7 +550,11 @@
        basınca sona gider — tahtada takılıp kalınmasın. */
     function yazIleri() {
         if (!YAZ.havuz.length) return;
-        YAZ.i = (YAZ.i + 1) % YAZ.havuz.length;
+        if (YAZ.i + 1 >= YAZ.havuz.length) {          /* tur bitti: yeni tur */
+            var yeni = yazListe();
+            if (yeni.length) YAZ.havuz = yeni;
+            YAZ.i = 0;
+        } else YAZ.i++;
         yazGoster();
     }
     function yazGeri() {
@@ -513,6 +578,11 @@
                 '" data-rol="ihySure" data-sn="' + n + '">' +
                 (n ? n + ' sn' : 'Süresiz') + '</button>';
         }).join('');
+        var bicimTus = IH_SUZGEC.map(function (x) {
+            return '<button type="button" class="ihy-h-tus' + (x.s === YAZ.suzgec ? ' secili' : '') +
+                '" data-rol="ihyBicim" data-b="' + x.s + '"' + (x.sifat ? ' title="Yalnız ' + x.sifat + ' yazılışlar"' : ' title="Bütün yazılışlar karışık"') +
+                '>' + x.ad + '</button>';
+        }).join('');
         var hizAd = ['Çok yavaş', 'Yavaş', 'Normal', 'Hızlı', 'Çok hızlı'];
         var hizTus = hizAd.map(function (ad, i) {
             return '<button type="button" class="ihy-h-tus' + (i === hiz ? ' secili' : '') +
@@ -523,11 +593,13 @@
             '  <div class="ihy-h-bas">Hazır mısınız?</div>' +
             '  <p class="ihy-h-not">Harf ekranda istenir, çocuklar deftere yazar;' +
             ' süre bitince ya da sen basınca yazılışı açılır.</p>' +
+            '  <div class="ihy-h-sira"><span class="ihy-h-et">Yazılış</span>' +
+            '<span class="ihy-h-tuslar">' + bicimTus + '</span></div>' +
             '  <div class="ihy-h-sira"><span class="ihy-h-et">Süre</span>' +
             '<span class="ihy-h-tuslar">' + sureTus + '</span></div>' +
             '  <div class="ihy-h-sira"><span class="ihy-h-et">Yazma hızı</span>' +
             '<span class="ihy-h-tuslar">' + hizTus + '</span></div>' +
-            '  <div class="ihy-h-say">' + YAZ.havuz.length + ' soru hazır</div>' +
+            '  <div class="ihy-h-say" data-rol="ihySay">' + yazSayYazi() + '</div>' +
             '</div>' +
             '<div class="ak-alt">' +
             '  <button type="button" class="ak-t ak-gez ak-ilerle" data-rol="ihySonraki"' +
@@ -676,6 +748,26 @@
             yazSayimCiz();
             if (YAZ.kalanMs <= 0) { yazSayimDur(); ses('playStart'); yazAcikla(); }
         }, 100);
+    }
+    function yazSayYazi() {
+        var s = IH_SUZGEC.filter(function (x) { return x.s === YAZ.suzgec; })[0];
+        return YAZ.havuz.length + ' soru hazır · her harf bir kez' +
+            (s && s.sifat ? ' · ' + s.sifat + ' yazılışlar' : ' · yazılışlar karışık');
+    }
+    /* Hazırlık ekranındaki yazılış süzgeci: liste baştan kurulur. */
+    function yazBicimTus(d) {
+        var s = d.getAttribute('data-b');
+        if (!IH_SUZGEC.some(function (x) { return x.s === s; })) return;
+        yazBicimYaz(s);
+        var yeni = yazListe();
+        if (yeni.length) { YAZ.havuz = yeni; YAZ.i = 0; }
+        if (sahne) {
+            sahne.querySelectorAll('[data-rol="ihyBicim"]').forEach(function (b) {
+                b.classList.toggle('secili', b.getAttribute('data-b') === s);
+            });
+            var say = sahne.querySelector('[data-rol="ihySay"]');
+            if (say) say.textContent = yazSayYazi();
+        }
     }
     /* Hazırlık ekranındaki süre ve hız tuşları. */
     function yazSureSec(d) {
@@ -1217,6 +1309,7 @@
             if (rol === 'ihySayim')   { tik(); yazSayimDuraklat(); return; }
             if (rol === 'ihySure')    { tik(); yazSureSec(d); return; }
             if (rol === 'ihyHiz')     { tik(); yazHizTus(d); return; }
+            if (rol === 'ihyBicim')   { tik(); yazBicimTus(d); return; }
             if (rol === 'ihyAyar')    { tik(); yazHazirlik(); return; }
             if (rol === 'ihySonraki') { tik(); yazIlerle(); return; }
             if (rol === 'ihyOnceki')  { tik(); yazGeri();  return; }
@@ -1956,10 +2049,14 @@
             '  color:#0E6655;line-height:1.1}',
             '#ak-tam .ihy-h-not{margin:0;font-size:clamp(14px,2.4vh,30px);color:#7b8b97;',
             '  max-width:32ch;line-height:1.35}',
-            '#ak-tam .ihy-h-sira{display:flex;align-items:center;gap:clamp(8px,1.4vw,20px);',
-            '  flex-wrap:wrap;justify-content:center}',
-            '#ak-tam .ihy-h-et{font-size:clamp(13px,2vh,26px);font-weight:800;color:#0E6655;',
-            '  letter-spacing:.4px;min-width:7ch;text-align:end}',
+            /* AD ÜSTTE (01.11.2026): «Yazılış» süzgeci gelince satırlar genişledi;
+               açık çekmecenin kenarındaki ok soldaki adı örtüyordu. Ad artık
+               tuşların üstünde, satırlar dar ve ortada. */
+            '#ak-tam .ihy-h-sira{display:flex;flex-direction:column;align-items:center;',
+            '  gap:clamp(4px,.8vh,10px)}',
+            '#ak-tam .ihy-h-et{font-size:clamp(12px,1.8vh,22px);font-weight:800;color:#0E6655;',
+            '  letter-spacing:.6px;text-transform:uppercase;text-align:center}',
+            '#ak-tam .ihy-h-tuslar{justify-content:center}',
             '#ak-tam .ihy-h-tuslar{display:flex;gap:clamp(6px,.8vw,12px);flex-wrap:wrap}',
             '#ak-tam .ihy-h-tus{font-family:inherit;cursor:pointer;font-weight:700;',
             '  font-size:clamp(14px,2.2vh,28px);padding:.6vh 1.6vw;min-width:3.4em;',
