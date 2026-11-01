@@ -1,0 +1,60 @@
+/* kitap/9-sinif-2026-2027/icindekiler.js — İçindekiler: sayfa bağlantıları ve konular. Ders Tezgâhı yazar (_kaynak/arac/araclar.html#ders).
+   Herkese açık (öğrenci de yükler). Hedef s = basılı sayfa (f = flip sırası); baglanti anahtarı = bağlantının durduğu sayfanın flip sırası. */
+window.KITAP_ICINDEKILER = {
+  "surum": 1,
+  "kitap": "9-sinif-2026-2027",
+  "guncelleme": "2026-10-29",
+  "konular": [
+    { "ad": "Kitabın tanıtımı", "ar": "التَّوْضيحات", "s": 8 },
+    { "ad": "1. Ders: Selamlaşma", "ar": "التَّحِيَّة", "s": 12 },
+    { "ad": "Alıştırmalar", "ar": "التَّدْريبات", "s": 42 },
+    { "ad": "2. Ders: Tanışma", "ar": "التَّعارُف", "s": 48 },
+    { "ad": "Alıştırmalar", "ar": "التَّدْريبات", "s": 70 },
+    { "ad": "1. Ders: Sınıfım", "ar": "صَفّي", "s": 80 },
+    { "ad": "Alıştırmalar", "ar": "التَّدْريبات", "s": 94 },
+    { "ad": "2. Ders: Okulum", "ar": "مَدْرَسَتي", "s": 100 },
+    { "ad": "Alıştırmalar", "ar": "التَّدْريبات", "s": 114 },
+    { "ad": "1. Ders: Ailem", "ar": "أُسْرَتي", "s": 122 },
+    { "ad": "Alıştırmalar", "ar": "التَّدْريبات", "s": 142 },
+    { "ad": "2. Ders: Evim", "ar": "بَيْتي", "s": 146 },
+    { "ad": "Alıştırmalar", "ar": "التَّدْريبات", "s": 162 },
+    { "ad": "1. Ders: Bugün ne yaptım?", "ar": "ماذا فَعَلْتُ اليَوْم؟", "s": 168 },
+    { "ad": "Alıştırmalar", "ar": "التَّدْريبات", "s": 184 },
+    { "ad": "2. Ders: Bugün ne yedim?", "ar": "ماذا تَناوَلْتُ اليَوْم؟", "s": 186 },
+    { "ad": "Alıştırmalar", "ar": "التَّدْريبات", "s": 200 },
+    { "ad": "Cevap anahtarı", "ar": "مِفْتاح الأَجْوِبَة", "s": 215 },
+    { "ad": "Türkiye idari haritası", "s": 216 },
+    { "ad": "Türk dünyası haritası", "ar": "خَريطَةُ العالَم التُّرْكِيّ", "s": 217 }
+  ],
+  "baglanti": {
+    "8": [
+      { "x1": 19, "y1": 10.4, "x2": 82.5, "y2": 13.2, "s": 8, "ad": "Kitabın tanıtımı" },
+      { "x1": 19, "y1": 14.2, "x2": 82.5, "y2": 17.4, "s": 10, "ad": "1. Ünite: Haydi Tanışalım" },
+      { "x1": 19, "y1": 18, "x2": 82.5, "y2": 20.8, "s": 12, "ad": "1. Ders: Selamlaşma" },
+      { "x1": 19, "y1": 20.8, "x2": 82.5, "y2": 23.6, "s": 42, "ad": "Alıştırmalar" },
+      { "x1": 19, "y1": 23.6, "x2": 82.5, "y2": 26.4, "s": 48, "ad": "2. Ders: Tanışma" },
+      { "x1": 19, "y1": 26.4, "x2": 82.5, "y2": 29.2, "s": 70, "ad": "Alıştırmalar" },
+      { "x1": 19, "y1": 30.4, "x2": 82.5, "y2": 33.6, "s": 78, "ad": "2. Ünite: Okuldayım" },
+      { "x1": 19, "y1": 34.2, "x2": 82.5, "y2": 37, "s": 80, "ad": "1. Ders: Sınıfım" },
+      { "x1": 19, "y1": 37, "x2": 82.5, "y2": 39.8, "s": 94, "ad": "Alıştırmalar" },
+      { "x1": 19, "y1": 39.8, "x2": 82.5, "y2": 42.6, "s": 100, "ad": "2. Ders: Okulum" },
+      { "x1": 19, "y1": 42.6, "x2": 82.5, "y2": 45.4, "s": 114, "ad": "Alıştırmalar" },
+      { "x1": 19, "y1": 46.7, "x2": 82.5, "y2": 49.9, "s": 120, "ad": "3. Ünite: Evdeyim" },
+      { "x1": 19, "y1": 50.2, "x2": 82.5, "y2": 53, "s": 122, "ad": "1. Ders: Ailem" },
+      { "x1": 19, "y1": 53, "x2": 82.5, "y2": 55.8, "s": 142, "ad": "Alıştırmalar" },
+      { "x1": 19, "y1": 55.8, "x2": 82.5, "y2": 58.6, "s": 146, "ad": "2. Ders: Evim" },
+      { "x1": 19, "y1": 58.6, "x2": 82.5, "y2": 61.4, "s": 162, "ad": "Alıştırmalar" },
+      { "x1": 19, "y1": 62.4, "x2": 82.5, "y2": 65.6, "s": 166, "ad": "4. Ünite: Bir Günüm" },
+      { "x1": 19, "y1": 66.4, "x2": 82.5, "y2": 69.2, "s": 168, "ad": "1. Ders: Bugün ne yaptım?" },
+      { "x1": 19, "y1": 69.2, "x2": 82.5, "y2": 72, "s": 184, "ad": "Alıştırmalar" },
+      { "x1": 19, "y1": 72, "x2": 82.5, "y2": 74.8, "s": 186, "ad": "2. Ders: Bugün ne yedim?" },
+      { "x1": 19, "y1": 74.8, "x2": 82.5, "y2": 77.6, "s": 200, "ad": "Alıştırmalar" },
+      { "x1": 19, "y1": 77.7, "x2": 82.5, "y2": 80.2, "s": 204, "ad": "Sözlük" },
+      { "x1": 19, "y1": 80.2, "x2": 82.5, "y2": 82.7, "s": 215, "ad": "Kaynakça" },
+      { "x1": 19, "y1": 82.7, "x2": 82.5, "y2": 85.2, "s": 215, "ad": "Cevap anahtarı" },
+      { "x1": 19, "y1": 85.2, "x2": 82.5, "y2": 87.7, "s": 215, "ad": "Görsel kaynakça" },
+      { "x1": 19, "y1": 87.7, "x2": 82.5, "y2": 90.2, "s": 216, "ad": "Türkiye idari haritası" },
+      { "x1": 19, "y1": 90.2, "x2": 82.5, "y2": 92.7, "s": 217, "ad": "Türk dünyası haritası" }
+    ]
+  }
+};

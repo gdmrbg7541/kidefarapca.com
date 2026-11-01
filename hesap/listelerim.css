@@ -4252,3 +4252,35 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
     #llOkulPopup .okul-kapi.giydirme{ padding: 3px 3px 0; }
     #llOkulPopup .okul-kapi.giydirme .okul-kapi-ad{ font-size: 16px; line-height: 1.05; padding: 1px 7px 2px; border-radius: 4px; }
 }
+
+/* ==========================================================================
+   LİSTE MENÜSÜ (01.11.2026) — «Liste» hapı açılır menü (Öğrenci Listesi · Performans · Sınavlar); Performans ve
+   Sınavlar listelerinde de isim ekleme (hep açık), isimler yerinde, satırda sil.
+   ========================================================================== */
+#ll-root .ll-mod-serit.ll-liste-menulu .ll-mod-hap[data-mod="hw"],
+#ll-root .ll-mod-serit.ll-liste-menulu .ll-mod-hap[data-mod="ex"] { display: none; }
+#ll-root .ll-mod-hap.ll-liste-tetik .ll-liste-alt { padding-left: 9px; margin-left: 1px; border-left: 1.5px solid currentColor; font-weight: 800; }
+#ll-root .ll-mod-hap.ll-liste-tetik .ll-liste-alt[hidden] { display: none; }
+#ll-root .ll-mod-hap.ll-liste-tetik .ll-liste-ok { display: inline-flex; width: 17px; height: 17px; margin: 0 -4px 0 -1px; transition: transform .16s; }
+#ll-root .ll-mod-hap.ll-liste-tetik .ll-liste-ok svg { width: 17px; height: 17px; display: block; }
+#ll-root .ll-mod-hap.ll-liste-tetik[aria-expanded="true"] .ll-liste-ok { transform: rotate(180deg); }
+.ll-liste-menu { position: fixed; z-index: 100050; min-width: 270px; max-width: calc(100vw - 16px); box-sizing: border-box; padding: 6px;
+    display: flex; flex-direction: column; gap: 3px; border-radius: 16px; background: #fff; border: 1.5px solid #F0DACA;
+    box-shadow: 0 16px 36px rgba(120, 60, 20, .2); animation: llListeMenuGir .14s ease-out; }
+.ll-liste-menu[hidden] { display: none; }
+@keyframes llListeMenuGir { from { opacity: 0; transform: translateY(-4px); } }
+.ll-liste-menu .ll-liste-oge { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; border: 0; border-radius: 12px;
+    background: transparent; color: #5A3E2B; font-family: inherit; text-align: left; cursor: pointer; }
+.ll-liste-menu .ll-liste-oge:hover, .ll-liste-menu .ll-liste-oge:focus-visible { background: #FFF4EA; outline: none; }
+.ll-liste-menu .ll-liste-oge.secili { background: linear-gradient(135deg, #FDEBD8, #FBDCC4); }
+.ll-liste-menu .hap-ikon { width: 26px; height: 26px; flex: 0 0 auto; display: block; overflow: visible; }
+.ll-liste-menu .ll-liste-ad { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+.ll-liste-menu .ll-liste-ad b { font-size: 1rem; font-weight: 800; color: #9C3B0C; }
+.ll-liste-menu .ll-liste-ad small { max-width: 250px; font-size: .78rem; color: #8B6A57; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ll-liste-menu .ll-liste-isaret { flex: 0 0 auto; font-style: normal; font-weight: 800; color: #D84315; }
+#ll-root .ll-isim-ekle { display: flex; gap: 10px; margin: 0 0 12px; }
+#ll-root .ll-isim-ekle input { flex: 1; min-width: 0; }
+#ll-root .ll-isim-ekle .btn-add { margin: 0; }
+#ll-root .ll-not-isim { width: 100%; min-width: 60px; box-sizing: border-box; }
+#ll-root th.ll-not-sil-bas, #ll-root td.ll-not-sil { width: 74px; text-align: center; }
+#ll-root td.ll-not-sil .big-action-btn { margin: 0 auto; }

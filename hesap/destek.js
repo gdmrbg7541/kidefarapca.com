@@ -676,7 +676,21 @@
     }
     /* 22.10.2026: bütün defter kayıtları öğretmene göre (dönem dağıtımı ve
        ortak hedef için); tumDefter toplamları bundan çıkarır. */
-    function tumKayitlar() {
+    /* OKUMA AZALT (27.10.2026): defter ve bekleyen bildirimler 5 dk saklanır — bir sayımda
+       iki kez, panel yeniden çizilince yeniden okunmaz. Kayıt yazınca/silince (sonrasi) düşer. */
+    var DST_ONB_MS = 5 * 60e3, _dstOnb = {};
+    function dstOnbellek(ad, oku, zorla) {
+        var c = _dstOnb[ad];
+        if (!zorla && c && Date.now() - c.t < DST_ONB_MS) return c.soz;
+        var soz = oku().catch(function (e) { if (_dstOnb[ad] && _dstOnb[ad].soz === soz) delete _dstOnb[ad]; throw e; });
+        _dstOnb[ad] = { t: Date.now(), soz: soz };
+        return soz;
+    }
+    function dstOnbellekDusur() { _dstOnb = {}; }
+    function tumKayitlar(zorla) {
+        return dstOnbellek('kayitlar', tumKayitlarOku, zorla);
+    }
+    function tumKayitlarOku() {
         return Promise.all([ozetOku(), db().collection('siparisler').where('tur', '==', 'destekKayit').get()]).then(function (r) {
             var oz = r[0], K = {};
             r[1].forEach(function (d) {
@@ -696,7 +710,10 @@
             return T;
         });
     }
-    function tumBekleyen() {
+    function tumBekleyen(zorla) {
+        return dstOnbellek('bekleyen', tumBekleyenOku, zorla);
+    }
+    function tumBekleyenOku() {
         /* tek eşitlik süzgeci (dizin gerektirmez); durum burada süzülür */
         return db().collection('siparisler').where('tur', '==', 'destek').get().then(function (snap) {
             var L = [];
@@ -1770,6 +1787,7 @@
         { oz: 'defter', ad: 'Defter PDF\'i ve geçmiş', ik: '<path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6z"/><path d="M9 3v18M12 8h4M12 12h4"/>' },
         { oz: 'kalip', ad: 'Kalıplar Tablosu', ik: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>' },
         { oz: 'muhadese', ad: 'Muhâdese', ik: '<path d="M4 4h11a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M20 9a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2v3l-4-3h-3"/>' },
+        { oz: 'ders', ad: 'Kitapta ders modu', ik: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M10 8v4.5l4-2.25z"/>' },   /* DERS MODU (29.10.2026) */
         { oz: 'kitapKalem', ad: 'Kitapta kalem', ik: '<path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/>' },
         { oz: 'kitapIndir', ad: 'Kitap indirme', yalniz: 1, ik: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>' }
     ];
@@ -2859,6 +2877,7 @@
     });
 
     function sonrasi() {
+        dstOnbellekDusur();                       /* defter / bildirim değişti (27.10.2026) */
         acikTazele();
         rozetleriYenile();
         ayarCiz();      /* destekçiler köşesi listesi tazelensin */

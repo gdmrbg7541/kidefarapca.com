@@ -313,7 +313,7 @@
         z-index:100000001;
     }
     </style>
-    <link rel="stylesheet" href="hesap/listelerim.css?v=b0495e17">
+    <link rel="stylesheet" href="hesap/listelerim.css?v=769e4840">
     <!-- MATERYAL SEKMESİ BİÇİMİ (06.10.2026): İmam Hatip kurallarının
          materyal kabı için üretilmiş kopyası. ÜRETİLMİŞ DOSYA —
          _kaynak/uretici/materyalStilUret.py ile tazelenir. -->
@@ -8211,7 +8211,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/kayittamamla.js?v=e2b6c378"></script>
     <script src="hesap/auth.js?v=93e4260f"></script>
     <!-- Sitede gecirilen sure: yalniz etkin sure sayilir, kullanicilar/{uid}.kullanim -->
-    <script src="sistem/kullanimsure.js?v=c876df2f"></script>
+    <script src="sistem/kullanimsure.js?v=a845d424"></script>
     <!-- Materyal kullanım raporu: Materyaller sekmesinde açılan dosyaları ve
          sekmenin açık kaldığı süreyi ölçer; sınıf listesindeki oktan açılır. -->
     <script src="sistem/materyalrapor.js?v=c7270733"></script>
@@ -8286,7 +8286,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Telefonu tek tıkla kopyala (05.10.2026) — yönetici öğretmen
          onaylarında numarayı fareyle seçmek zorunda kalmasın. -->
     <script src="sistem/telkopya.js?v=303ac4d1"></script>
-    <script src="hesap/teacher-admin.js?v=9613a6f9"></script>
+    <script src="hesap/teacher-admin.js?v=c99fa45a"></script>
     <!-- Yonetici > ogretmen penceresi (19.10.2026): genel (sure, siniflar),
          ucret durumu, takvim, kayit anketi — ogretmenler listesi kart kart -->
     <script src="hesap/ogretmen-detay.js?v=15c64a17"></script>
@@ -8296,8 +8296,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- DENEME HAKLARI (24.10.2026): destek vermeyen öğretmene bazı araçlarda
          5 deneme hakkı, bir kez (kartta 5 → 4; 25.10.2026'ya dek haftalıktı);
          Kelime Çarkı 25.10.2026'dan beri ücretsiz; durumu destek.js yazar -->
-    <script src="sistem/hak.js?v=f620b4a1"></script>
-    <script src="hesap/destek.js?v=e9215fc4"></script>
+    <script src="sistem/hak.js?v=b71a0ec3"></script>
+    <script src="hesap/destek.js?v=88099a16"></script>
     <script src="sistem/alarm.js?v=5af5693a"></script>
     <script src="hesap/live-lesson.js?v=cb8c8026"></script>
     <!-- Haftalık plan tavsiyesi verisi (Yöneticinin tavsiyesi penceresi) -->
@@ -8312,7 +8312,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script defer src="sistem/aylikkart.js?v=f7bf99a7"></script>
     <script src="sistem/galeriveri.js?v=b5d6af07"></script>
     <script src="sistem/galeri.js?v=82388540"></script>
-    <script src="hesap/listelerim.js?v=66e6bce7"></script>
+    <script src="hesap/listelerim.js?v=b61c5cb5"></script>
     <!-- SINIFLAR GİRİŞLE AÇILIR (18.10.2026): çıkışta okul penceresi ve sınıf
          listeleri kapanır, sınıf sekmesi girişi bekler (sistem/oturumkapi.js). -->
     <script src="sistem/oturumkapi.js?v=b6afc73e"></script>
@@ -8335,7 +8335,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          ders kitabı ve etkinlik kartları (öğretmen belgeleri yok). Öğretmen bağı
          hesap/ogrencihesap.js'ten (OH) gelir; ondan SONRA yüklenmeli. -->
     <script src="sistem/sinifim.js?v=080a9c89"></script>
-    <script src="sistem/gorev.js?v=ccd7693c"></script>
+    <script src="sistem/gorev.js?v=d091b252"></script>
 
     <!-- CHECKOUT GİRİŞ İÇİN KÜÇÜK YARDIMCI SCRIPT -->
     <script>
@@ -9304,7 +9304,10 @@ html.dusuk-guc #kamusFab.kb-gir .kb-arayan{ display:none !important }
     var admin=_fbIsAdmin();
     try{
       var col=firebase.firestore().collection('mesajlar');
-      var q=admin ? col.where('readByAdmin','==',false).limit(30) : col.where('uid','==',u.uid).limit(50);
+      /* OKUMA AZALT (27.10.2026): bütün mesajlar yerine yalnız okunmamışlar dinlenir
+         (eşitlik süzgeçleri; dizin gerekmez). Nokta aynı çalışır. */
+      var q=admin ? col.where('readByAdmin','==',false).where('from','==','user').limit(20)
+                  : col.where('uid','==',u.uid).where('from','==','admin').where('readByUser','==',false).limit(20);
       _msgDotUnsub=q.onSnapshot(function(snap){
         var any=false;
         snap.forEach(function(d){ var m=d.data();

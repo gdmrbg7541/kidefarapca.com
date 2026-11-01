@@ -151,7 +151,7 @@ function renderAdminPanel() {
                     </p>
                     <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
                         <button class="btn" onclick="loadOgretmenOnaylari()" style="font-size:0.9rem;">🔄 Yenile</button>
-                        <span id="admin-onay-zaman" class="aon-zaman">30 sn'de bir kendiliğinden yenilenir</span>
+                        <span id="admin-onay-zaman" class="aon-zaman">Canlı: yeni kayıt anında düşer</span>
                     </div>
                     <div id="admin-onay-list" style="max-height:400px; overflow-y:auto;">Yükleniyor…</div>
                 </div>
@@ -205,9 +205,10 @@ function renderAdminPanel() {
                 </div>
             </details>
 
-            <details class="admin-details" name="admin-accordion">
+            <!-- OKUMA AZALT (27.10.2026): liste bölüm açılınca okunur, 10 dk saklanır -->
+            <details class="admin-details" name="admin-accordion" ontoggle="if(this.open) renderAdminStudentList('onbellek')">
                 <summary class="admin-summary">Kayıtlı Öğrenciler (Alfabetik)</summary>
-                <div id="admin-student-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;"></div>
+                <div id="admin-student-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;">Bölümü açınca yüklenir…</div>
             </details>
 
             <details class="admin-details" name="admin-accordion">
@@ -224,7 +225,7 @@ function renderAdminPanel() {
                 <div id="admin-all-lessons" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;"></div>
             </details>
 
-            <details class="admin-details" name="admin-accordion">
+            <details class="admin-details" name="admin-accordion" ontoggle="if(this.open) renderAdminTeacherList('onbellek')">
                 <summary class="admin-summary">👨‍🏫 Öğretmenler <span id="admin-destek-badge"></span></summary>
                 <!-- ADLARI DÜZELT (06.10.2026) — öğretmen: "isim veya
                      soyisimlerinin baş harflerini bazen küçük yazıyorlar...
@@ -248,7 +249,7 @@ function renderAdminPanel() {
                 <div id="admin-destek-ayar"></div>
                 <!-- ÖĞRETMEN TAKVİM DÜZENLEYİCİ ayrı akordiyon DEĞİL (19.10.2026):
                      her öğretmenin takvimi kendi penceresinin "Takvim" sekmesinde. -->
-                <div id="admin-teacher-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 560px; overflow-y: auto;"></div>
+                <div id="admin-teacher-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 560px; overflow-y: auto;">Bölümü açınca yüklenir…</div>
             </details>
 
             <details class="admin-details" name="admin-accordion">
@@ -293,8 +294,9 @@ function renderAdminPanel() {
     adminTakvimOgretmenDoldur();
     
     renderTeacherApplications();
-    renderAdminTeacherList();
-    renderAdminStudentList();
+    /* OKUMA AZALT (27.10.2026): öğretmen ve öğrenci listeleri panel çizilince değil,
+       bölüm açılınca okunur (10 dk önbellek) — eskiden her panel çiziminde bütün
+       kullanıcı belgeleri yeniden okunuyordu. */
     renderAdminAllLessons();
     renderAdminOfflinePackages();
     renderAdminOnlinePackages();
@@ -807,12 +809,30 @@ async function rejectTeacherApplication(appId) {
     }
 }
 
-function renderAdminStudentList() {
+/* OKUMA AZALT (27.10.2026): panel listelerinin önbelleği — kaynak 'onbellek' ise ve
+   kayıt 10 dk'dan tazeyse Firestore'a gidilmez. Kayıt değiştiren işlemler kaynaksız
+   çağırır (taze okur, önbelleği yeniler). */
+var _abOnbellek = {}, AB_TTL = 10 * 60e3;
+function _abSnap(ad, sorgu, onbellek) {
+    var c = _abOnbellek[ad];
+    if (onbellek && c && Date.now() - c.t < AB_TTL) return Promise.resolve(c.snap);
+    return sorgu().then(function (snap) {
+        var docs = [];
+        snap.forEach(function (d) { docs.push({ id: d.id, v: d.data() || {} }); });
+        var sahte = {
+            size: docs.length, empty: !docs.length,
+            forEach: function (f) { docs.forEach(function (x) { f({ id: x.id, exists: true, data: function () { return x.v; } }); }); }
+        };
+        _abOnbellek[ad] = { t: Date.now(), snap: sahte };
+        return sahte;
+    });
+}
+function renderAdminStudentList(kaynak) {
     const listContainer = document.getElementById('admin-student-list');
     if (!listContainer) return;
 
     if (typeof firebase !== 'undefined' && isFirebaseReady) {
-        db.collection('kullanicilar').get().then(snapshot => {
+        _abSnap('ogrenci', function () { return db.collection('kullanicilar').get(); }, kaynak === 'onbellek').then(snapshot => {
             let users = {};
             snapshot.forEach(doc => {
                 const data = doc.data();
@@ -1090,7 +1110,8 @@ function _onaySatir(o, red) {
      yazısı tazelenir; değiştiyse kaydırma yeri korunarak çizilir, yeni bekleyen bir an
      parlar. Panel kapalıyken / sekme arkadayken sorgu yok. Panel yeniden çizilince son liste
      hemen konur (_aon.html), 30 sn'den eskiyse arkadan tazelenir. */
-var _aon = { son: 0, imza: '', html: '', rozet: '', dolu: false, yuk: null, zam: null, bek: null, gor: false };
+var _aon = { son: 0, imza: '', html: '', rozet: '', dolu: false, yuk: null, zam: null, bek: null, gor: false,
+             din: null, dinUid: '', canli: null, kopuk: 0 };
 function _aonYoneticiMi() {
     try { return typeof appState !== 'undefined' && !!appState && appState.userRole === 'admin'; }
     catch (e) { return false; }
@@ -1112,8 +1133,8 @@ function _aonSaat(hata) {
     var p = function (n) { return (n < 10 ? '0' : '') + n; };
     var d = new Date(hata ? Date.now() : (_aon.son || Date.now()));
     var saat = p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
-    z.textContent = hata ? 'Yenilenemedi (' + saat + ') — 30 sn sonra yeniden denenecek'
-                         : 'Son yenileme ' + saat + ' · 30 sn\'de bir kendiliğinden yenilenir';
+    z.textContent = hata ? 'Canlı bağlantı koptu (' + saat + ') — yeniden bağlanılacak; 🔄 Yenile ile de tazelenir'
+                         : 'Canlı · son güncelleme ' + saat;
     z.classList.toggle('aon-zaman-hata', !!hata);
 }
 function _aonCerceve() {
@@ -1127,6 +1148,55 @@ function _aonSok() {
     _onayBekleyen = {};
     _aon.son = 0; _aon.imza = ''; _aon.html = ''; _aon.rozet = ''; _aon.dolu = false; _aon.bek = null;
     if (_aon.zam) { clearInterval(_aon.zam); _aon.zam = null; }
+    _aonDinlemeyiBirak();
+}
+/* OKUMA AZALT (27.10.2026): 30 sn'de bir sorgu yerine iki canlı dinleyici. İlk açılışta
+   listeler bir kez okunur, sonra yalnız değişen belge gelir. Dinleyici koparsa (ağ, kural)
+   60 sn sonra yeniden bağlanır; o arada «🔄 Yenile» elle okur. */
+function _aonDinlemeyiBirak() {
+    if (_aon.din) { _aon.din.forEach(function (u) { try { u(); } catch (e) { } }); }
+    _aon.din = null; _aon.dinUid = ''; _aon.canli = null;
+}
+function _aonUid() {
+    try { var u = firebase.auth().currentUser; return u ? u.uid : ''; } catch (e) { return ''; }
+}
+function _aonDinle() {
+    if (!_aonYoneticiMi()) { _aonSok(); return; }
+    if (typeof firebase === 'undefined' || !isFirebaseReady) return;
+    var uid = _aonUid();
+    if (_aon.din && _aon.dinUid === uid) return;
+    _aonDinlemeyiBirak();
+    _aon.dinUid = uid; _aon.canli = { liste: null, red: null };
+    var kol = firebase.firestore().collection('kullanicilar');
+    var ad = function (x) { return String(x.name || ''); };
+    var ms = function (t) { try { return (t && t.toDate) ? (t.toDate().getTime() || 0) : (typeof t === 'number' ? t : 0); } catch (e) { return 0; } };
+    var koptu = function (e) {
+        _aon.kopuk = Date.now();
+        _aonDinlemeyiBirak();
+        _aonSaat(true);
+        try { console.warn('öğretmen onayları dinleyicisi koptu:', e && (e.code || e.message)); } catch (x) { }
+    };
+    var u1 = kol.where('ogretmenOnay', '==', 'bekliyor').onSnapshot(function (snap) {
+        var l = [];
+        snap.forEach(function (d) { var v = d.data() || {}; v._id = d.id; l.push(v); });
+        l.sort(function (a, b) { return ad(a).localeCompare(ad(b), 'tr'); });
+        if (_aon.canli) { _aon.canli.liste = l; _aonCanliCiz(); }
+    }, koptu);
+    var u2 = kol.where('ogretmenOnay', '==', 'reddedildi').onSnapshot(function (snap) {
+        var l = [];
+        snap.forEach(function (d) { var v = d.data() || {}; v._id = d.id; l.push(v); });
+        l.sort(function (a, b) { return (ms(b.redTarihi) - ms(a.redTarihi)) || ad(a).localeCompare(ad(b), 'tr'); });
+        if (_aon.canli) { _aon.canli.red = l; _aonCanliCiz(); }
+    }, function (e) {
+        /* reddedilenler alınamazsa bekleyenler yine gelsin */
+        if (_aon.canli) { _aon.canli.red = { hata: (e && (e.code || e.message)) || String(e) }; _aonCanliCiz(); }
+    });
+    _aon.din = [u1, u2];
+}
+function _aonCanliCiz() {
+    var c = _aon.canli;
+    if (!c || !c.liste || !c.red) return;                 /* ikisi de gelsin */
+    _aonCiz(c.liste, c.red, true);
 }
 function _aonStil() {
     if (document.getElementById('aon-stil')) return;
@@ -1159,7 +1229,24 @@ function loadOgretmenOnaylari(sessiz) {
     var is = Promise.all([window.KidefErisim.bekleyenler(), redSoz]).then(function (s) {
         if (_aon.yuk === is) _aon.yuk = null;
         if (!_aonYoneticiMi()) { _aonSok(); return; }
-        var liste = s[0] || [], red = s[1] || [];
+        _aonCiz(s[0] || [], s[1] || [], sessiz);
+    }).catch(function (e) {
+        if (_aon.yuk === is) _aon.yuk = null;
+        if (!_aonYoneticiMi()) { _aonSok(); return; }
+        var k = document.getElementById('admin-onay-list');
+        if (!k) return;
+        if (sessiz && _aon.html) { _aon.son = Date.now(); _aonSaat(true); return; }   /* eski liste kalsın */
+        k.innerHTML = '<p>' + _fbEsc(_abHataMetni(e)) + '</p>' +
+            '<button class="btn" onclick="loadOgretmenOnaylari()" style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
+        k.removeAttribute('data-aon-imza');
+        _aon.son = Date.now();
+    });
+    _aon.yuk = is;
+}
+window.loadOgretmenOnaylari = loadOgretmenOnaylari;
+/* listeyi çizer (elle yenileme ve canlı dinleyici aynı yoldan) */
+function _aonCiz(liste, red, sessiz) {
+    (function () {
         var k = document.getElementById('admin-onay-list');   /* panel bu arada yeniden çizilmiş olabilir */
         if (!k) return;
         var imza = _aonImza(liste, red);
@@ -1199,30 +1286,17 @@ function loadOgretmenOnaylari(sessiz) {
         _aon.imza = imza; _aon.html = html; _aon.rozet = rozetHtml; _aon.dolu = liste.length > 0;
         _aonCerceve();
         _aonSaat();
-    }).catch(function (e) {
-        if (_aon.yuk === is) _aon.yuk = null;
-        if (!_aonYoneticiMi()) { _aonSok(); return; }
-        var k = document.getElementById('admin-onay-list');
-        if (!k) return;
-        if (sessiz && _aon.html) { _aon.son = Date.now(); _aonSaat(true); return; }   /* eski liste kalsın */
-        k.innerHTML = '<p>' + _fbEsc(_abHataMetni(e)) + '</p>' +
-            '<button class="btn" onclick="loadOgretmenOnaylari()" style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
-        k.removeAttribute('data-aon-imza');
-        _aon.son = Date.now();
-    });
-    _aon.yuk = is;
+    })();
 }
-window.loadOgretmenOnaylari = loadOgretmenOnaylari;
-/* Her saniye bakar (yalnız birkaç karşılaştırma): yönetici değilse söker; panel ekranda, sekme önde ve son yenileme
-   30 sn'den eskiyse sessizce yeniler. */
+/* Her saniye bakar (yalnız birkaç karşılaştırma): yönetici değilse söker; dinleyici koptuysa
+   60 sn sonra yeniden bağlanır. (30 sn'lik sorgu kalktı — OKUMA AZALT 27.10.2026) */
 function _aonTik() {
     if (!_aonYoneticiMi()) { _aonSok(); return; }
     if (!document.getElementById('admin-onay-list')) return;
-    var sec = document.getElementById('admin-section');
-    if (!sec || !sec.getClientRects().length) return;          /* panel ekranda değil */
+    if (_aon.din && _aon.dinUid === _aonUid()) return;
     if (document.visibilityState === 'hidden') return;          /* sekme arkada */
-    if (Date.now() - _aon.son < 30000) return;
-    loadOgretmenOnaylari(true);
+    if (Date.now() - _aon.kopuk < 60000) return;
+    _aonDinle();
 }
 window._aonTik = _aonTik;
 function _aonBaslat() {
@@ -1242,12 +1316,9 @@ function _aonBaslat() {
         if (rz) rz.innerHTML = _aon.rozet;
         _aonCerceve();
         _aonSaat();
-    }
-    var sec = document.getElementById('admin-section');
-    var gorunur = !!(sec && sec.getClientRects().length) && document.visibilityState !== 'hidden';
-    if (!gorunur) { if (!_aon.html) kutu.innerHTML = 'Panel açılınca yüklenir…'; return; }
-    if (!_aon.html) loadOgretmenOnaylari(false);
-    else if (Date.now() - _aon.son >= 30000) loadOgretmenOnaylari(true);
+    } else kutu.innerHTML = '<p>Yükleniyor…</p>';
+    _aonDinle();                                       /* canlı: ilk liste gelince çizilir */
+    if (_aon.canli && _aon.canli.liste && _aon.canli.red && !_aon.html) _aonCanliCiz();
 }
 
 /* Onaydan hemen sonra, elle paylaşılacak kısa mesajı gösterir.
@@ -1401,7 +1472,7 @@ var _aogSuzgec = 'hepsi';
    göre sıralayabilelim". ad | sure | son; seçim hatırlanır. */
 /* + ogrenci (21.10.2026): "en çok öğrencisi bulunanlardan da" — kendi sınıf listesindeki öğrenci sayısı */
 var _aogSira = (function () { try { var v = localStorage.getItem('kidef_aog_sira'); return /^(ad|sure|son|ogrenci)$/.test(v || '') ? v : 'ad'; } catch (e) { return 'ad'; } })();
-function renderAdminTeacherList() {
+function renderAdminTeacherList(kaynak) {
     var container = document.getElementById('admin-teacher-list');
     if (!container) return;
     if (window.KidefOgretmenDetay && KidefOgretmenDetay.stil) KidefOgretmenDetay.stil();
@@ -1412,8 +1483,9 @@ function renderAdminTeacherList() {
     }
     container.innerHTML = '<p style="color:#7f8c8d;">Yükleniyor…</p>';
 
-    firebase.firestore().collection('kullanicilar')
-        .where('role', '==', 'teacher').get()
+    _abSnap('ogretmen', function () {
+        return firebase.firestore().collection('kullanicilar').where('role', '==', 'teacher').get();
+    }, kaynak === 'onbellek')
         .then(function (snap) {
             var liste = [];
             snap.forEach(function (d) { var v = d.data() || {}; v._id = d.id; liste.push(v); });

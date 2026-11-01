@@ -37,6 +37,7 @@
      kitapIndir  flipbookta İndir panelindeki paketler (flaşa / bilgisayara) — YALNIZ DESTEKÇİYE
                  (27.10.2026): deneme hakkı yok (YALNIZ, payli())
      kitapKalem  flipbookta Kalem (açarken; P tuşu da)
+     ders        flipbookta Ders modu (açarken) — DERS MODU (29.10.2026)
      (Kelime Çarkı 25.10.2026'dan beri ücretsiz, kapı yok.)
    ORTAK HEDEF İLE AÇILAN İÇERİK
      Yöneticinin seçtiği bağlantılar (mufredat/_destek.hedefIcerik, destek.js
@@ -65,7 +66,7 @@
   var K_DURUM = 'kidefDestekDurum', K_HAK = 'kidefHak', K_HEDEF = 'kidefDestekHedef';
   var AD = {
     tahta: 'Tahtaya yansıt', defter: 'Defter PDF\'i ve geçmiş', kalip: 'Kalıplar tablosu', muhadese: 'Muhâdese',
-    kitapIndir: 'Flipbook indirme', kitapKalem: 'Flipbook kalemi'
+    kitapIndir: 'Flipbook indirme', kitapKalem: 'Flipbook kalemi', ders: 'Ders modu'
   };
 
   /* YALNIZ DESTEKÇİYE (27.10.2026) — öğretmen: "kitap indirme özelliği tamamen ücretli olsun".
@@ -326,7 +327,7 @@
      için tıklayınca destek istensin, hatta ... isteğe bağlı olduğunu
      vurgulayalım". Düğme sitenin «index.html#destek»ine gider: girişsizse orada
      giriş penceresi açılır, girince destek kartı (hesap/destek.js). */
-  var KISA = { kitapKalem: 'Kalem', kitapIndir: 'İndirme' };
+  var KISA = { kitapKalem: 'Kalem', kitapIndir: 'İndirme', ders: 'Ders modu' };
   function girisPencere(oz) {
     var ad = KISA[oz] || AD[oz] || 'Bu araç';
     return pencere('<div class="kh-ik">' + KALP + '</div>' +
@@ -558,7 +559,8 @@
     '#ysOrt [data-is="pdf"]': 'defter',
     '#ysOrt [data-is="panel"]': { oz: 'defter', kosul: function () { var p = document.getElementById('ysPanel'); return !(p && p.classList.contains('acik')); } },
     '#pIndir [data-p]': 'kitapIndir',
-    '#tKalem': { oz: 'kitapKalem', kosul: function (el) { return el.getAttribute('aria-pressed') !== 'true'; } }
+    '#tKalem': { oz: 'kitapKalem', kosul: function (el) { return el.getAttribute('aria-pressed') !== 'true'; } },
+    '#tDers': { oz: 'ders', kosul: function (el) { return el.getAttribute('aria-pressed') !== 'true'; } }      /* DERS MODU (29.10.2026) */
   };
   bagla(VARSAYILAN);
   rozetBagla({ '#tIndir': 'kitapIndir' });

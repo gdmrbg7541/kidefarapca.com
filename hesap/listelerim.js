@@ -3019,6 +3019,8 @@ function renderStudents() {
 
     /* Takim araci acikken liste degisirse katilimci seridi de tazelensin. */
     if (typeof llTakimCiz === 'function') llTakimCiz();
+    /* LİSTE MENÜSÜ: Performans / Sınavlar açıkken eklenen, silinen öğrenci not listesinde de hemen görünsün */
+    if (typeof llNotModu !== 'undefined' && (llNotModu === 'hw' || llNotModu === 'ex')) renderGrades(llNotModu);
 }
 
 function addSingleStudent() {
@@ -3250,7 +3252,7 @@ function renderGrades(type) {
     const ortEtki = !!(behAcik && beh.ortEtki);
     /* Ayri "Davranış" / "Davranışlı ORT" sutunu YOK: sayilar isim yanindaki
        arti/eksi tuslarinin USTUNDE, etki dogrudan Ağ. ORT'un icindedir. */
-    table.innerHTML = `<tr><th>Öğrenci</th>${config.map(c => `<th>${c.n} (%${c.w})</th>`).join('')} <th title="${ortEtki ? 'Davranış puanı katılmış ağırlıklı ortalama' : 'Ağırlıklı ortalama'}">Ağ. ORT</th></tr>`;
+    table.innerHTML = `<tr><th>Öğrenci</th>${config.map(c => `<th>${c.n} (%${c.w})</th>`).join('')} <th title="${ortEtki ? 'Davranış puanı katılmış ağırlıklı ortalama' : 'Ağırlıklı ortalama'}">Ağ. ORT</th><th class="ll-not-sil-bas" title="Öğrenciyi listeden sil">Sil</th></tr>`;
 
     data.levels[curLId].classes[curCId].students.forEach((s, si) => {
         let row = table.insertRow();
@@ -3274,11 +3276,11 @@ function renderGrades(type) {
                 `<div style="display:flex; align-items:center; gap:7px;">` +
                 `<button type="button" class="beh-tus eksi" ${eksiT}>&minus;${behAcik ? `<span style="font-size:.82em;">${eksiN}</span>` : ''}</button>` +
                 `<button type="button" class="beh-tus arti" ${artiT}>+${behAcik ? `<span style="font-size:.82em;">${artiN}</span>` : ''}</button>` +
-                `<span style="flex:1;">${behKacis(s.name)}</span>` +
+                `<input type="text" class="student-name-input ll-not-isim" value="${behKacis(s.name || '')}" onchange="llNotIsimDegis(${si}, this.value)" placeholder="Öğrenci Adı" aria-label="Öğrencinin adı" style="flex:1;">` +   /* LİSTE MENÜSÜ: isim yerinde */
                 (behAcik ? `<button type="button" class="beh-gecmis-tus" onclick="behGecmis(${si})" title="Davranış geçmişi">${llIcon('saat')}</button>` : '') +
                 `</div>`;
         } else {
-            nameCell.innerText = s.name;
+            nameCell.innerHTML = '<input type="text" class="student-name-input ll-not-isim" value="' + behKacis(s.name || '') + '" onchange="llNotIsimDegis(' + si + ', this.value)" placeholder="Öğrenci Adı" aria-label="Öğrencinin adı">';   /* LİSTE MENÜSÜ: isim yerinde */
         }
 
         let weightedTotal = 0;
@@ -3313,7 +3315,9 @@ function renderGrades(type) {
             avgCell.style.color = "var(--primary)";
             avgCell.innerText = weightedTotal.toFixed(2);
         }
+        llNotSilHucre(row, si);                                       /* LİSTE MENÜSÜ: satırda sil */
     });
+    llIsimEkleSatiri(type, table);                                     /* LİSTE MENÜSÜ: üstte isim ekleme (hep açık) */
 }
 
 /* ==========================================================================
@@ -8388,3 +8392,143 @@ function ogrenciThread() {
     return imThread(duyuruAnahtar(g.lId, g.cId, g.sIdx));
 }
 window.ogrenciThread = ogrenciThread;
+
+/* ==========================================================================
+   LİSTE MENÜSÜ (01.11.2026) — öğretmen: "sınıf listelerinde bi güncelleme yapalım, sınav ve performans listeleri liste
+   başlığına tıklayınca aşağıda çıksın, isim ekleme ve değiştirme kısmı sınav ve performans kısmında da eklenip
+   çıkartılabilsin" (seçimi: «Liste» hapında açılır menü; isim kısmı hep açık).
+   · Şeritteki «Liste» hapı açılır menü olur: Öğrenci Listesi · Performans · Sınavlar. Performans ve Sınavlar ayrı hap
+     olmaktan çıkar (DOM'da gizli durur — eski çağrılar çalışır). Hap açık listeyi de yazar: «Liste · Sınavlar ▾».
+     Başka bir moddayken «Liste»ye basınca son açılan liste gelir ve menü açılır; listedeyken basınca menü açılır / kapanır.
+   · Performans ve Sınavlar listelerinde de üstte «Öğrenci Adı Soyadı… + Ekle» (hep açık; Öğrenci Listesi'ndekiyle aynı
+     ekleme: güvenli giriş kodu), isimler yerinde değiştirilir, her satırda sil (aynı onay / işlem şifresi).
+   ========================================================================== */
+var LL_LISTE_AD = { liste: 'Öğrenci Listesi', hw: 'Performans', ex: 'Sınavlar' };
+var llListeSon = 'liste';
+function llListeMi(m) { return m === 'liste' || m === 'hw' || m === 'ex'; }
+function llListeHap() { return document.querySelector('#llNotModlar .ll-mod-hap[data-mod="liste"]'); }
+function llListeIkon(m) { var i = document.querySelector('#llNotModlar .ll-mod-hap[data-mod="' + m + '"] .hap-ikon'); return i ? i.outerHTML : ''; }
+function llListeAlt(m) {                                              /* menüde ikinci satır */
+    try {
+        var lvl = data.levels[curLId], s = lvl && lvl.classes && lvl.classes[curCId];
+        if (m === 'liste') return ((s && s.students) ? s.students.length : 0) + ' öğrenci · ad, numara, giriş kodu';
+        var c = (lvl && lvl.config && lvl.config[m]) || [];
+        return c.length ? c.map(function (x) { return x.n; }).join(' · ') : 'Başlık yok — ⚙ ile eklenir';
+    } catch (e) { return ''; }
+}
+function llListeKur() {
+    var serit = document.getElementById('llNotModlar'), b = llListeHap();
+    if (!serit || !b || b.classList.contains('ll-liste-tetik')) return;
+    serit.classList.add('ll-liste-menulu');                          /* CSS: Performans / Sınavlar hapları gizli */
+    b.classList.add('ll-liste-tetik');
+    b.setAttribute('aria-haspopup', 'menu'); b.setAttribute('aria-expanded', 'false');
+    b.title = 'Listeler: Öğrenci Listesi · Performans · Sınavlar';
+    var alt = document.createElement('span'); alt.className = 'll-liste-alt'; alt.hidden = true; b.appendChild(alt);
+    var ok = document.createElement('i'); ok.className = 'll-liste-ok'; ok.setAttribute('aria-hidden', 'true');
+    ok.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    b.appendChild(ok);
+    b.onclick = function (e) { if (e) { e.preventDefault(); e.stopPropagation(); } llListeTik(); };
+}
+function llListeHapGuncelle() {
+    var b = llListeHap(); if (!b) return;
+    var m = llNotModu, ic = llListeMi(m);
+    if (ic) llListeSon = m;
+    b.classList.toggle('aktif', ic);
+    var alt = b.querySelector('.ll-liste-alt');
+    if (alt) { var g = ic && m !== 'liste'; alt.textContent = g ? LL_LISTE_AD[m] : ''; alt.hidden = !g; }
+    if (!ic) llListeMenuKapat();
+}
+function llListeTik() {
+    if (!llListeMi(llNotModu)) llNotModSec(llListeSon);              /* başka moddan: son açılan liste hemen gelir */
+    if (llListeMenuAcik()) llListeMenuKapat(); else llListeMenuAc();
+}
+function llListeMenuAcik() { var m = document.getElementById('llListeMenu'); return !!(m && !m.hidden); }
+function llListeMenuAc() {
+    var b = llListeHap(); if (!b) return;
+    var m = document.getElementById('llListeMenu');
+    if (!m) {
+        m = document.createElement('div'); m.id = 'llListeMenu'; m.className = 'll-liste-menu'; m.setAttribute('role', 'menu');
+        m.setAttribute('aria-label', 'Listeler'); m.hidden = true;
+        m.addEventListener('click', function (e) {
+            var t = e.target && e.target.closest ? e.target.closest('[data-llm]') : null; if (!t) return;
+            e.preventDefault(); llListeMenuKapat(); llNotModSec(t.getAttribute('data-llm'));
+        });
+        m.addEventListener('keydown', function (e) {                   /* ↑ ↓ ile gezinme */
+            if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+            var L = [].slice.call(m.querySelectorAll('[data-llm]')), i = L.indexOf(document.activeElement);
+            i = (i + (e.key === 'ArrowDown' ? 1 : L.length - 1)) % L.length; if (L[i]) L[i].focus(); e.preventDefault();
+        });
+        document.body.appendChild(m);
+    }
+    m.innerHTML = ['liste', 'hw', 'ex'].map(function (k) {
+        var s = llNotModu === k;
+        return '<button type="button" role="menuitemradio" aria-checked="' + s + '" data-llm="' + k + '" class="ll-liste-oge' + (s ? ' secili' : '') + '">' +
+            llListeIkon(k) + '<span class="ll-liste-ad"><b>' + LL_LISTE_AD[k] + '</b><small>' + behKacis(llListeAlt(k)) + '</small></span>' +
+            (s ? '<i class="ll-liste-isaret" aria-hidden="true">✓</i>' : '') + '</button>';
+    }).join('');
+    var r = b.getBoundingClientRect();
+    m.hidden = false;
+    m.style.left = Math.max(8, Math.min(r.left, window.innerWidth - m.offsetWidth - 8)) + 'px';
+    m.style.top = (r.bottom + 6) + 'px';
+    b.setAttribute('aria-expanded', 'true');
+    var o = m.querySelector('.secili') || m.querySelector('[data-llm]');
+    if (o) { try { o.focus({ preventScroll: true }); } catch (e) { } }
+}
+function llListeMenuKapat() {
+    var m = document.getElementById('llListeMenu'); if (m) m.hidden = true;
+    var b = llListeHap(); if (b) b.setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('pointerdown', function (e) {
+    if (!llListeMenuAcik()) return;
+    var m = document.getElementById('llListeMenu'), b = llListeHap();
+    if ((m && m.contains(e.target)) || (b && b.contains(e.target))) return;
+    llListeMenuKapat();
+}, true);
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && llListeMenuAcik()) { e.stopPropagation(); llListeMenuKapat(); var b = llListeHap(); if (b) { try { b.focus(); } catch (x) { } } }
+}, true);
+window.addEventListener('resize', function () { if (llListeMenuAcik()) llListeMenuKapat(); });
+window.addEventListener('scroll', function (e) {
+    var m = document.getElementById('llListeMenu');
+    if (llListeMenuAcik() && !(m && e.target && m.contains && e.target.nodeType === 1 && m.contains(e.target))) llListeMenuKapat();
+}, true);
+(function () {                                                        /* mod değişince hap da (hangi liste açık) */
+    var asil = llNotModSec;
+    llNotModSec = function () { var r = asil.apply(this, arguments); try { llListeKur(); llListeHapGuncelle(); } catch (e) { } return r; };
+    window.llNotModSec = llNotModSec;
+    try { llListeKur(); llListeHapGuncelle(); } catch (e) { }
+})();
+
+/* Performans / Sınavlar: üstte isim ekleme (hep açık), satırlarda isim yerinde, sil */
+function llIsimEkleSatiri(type, table) {
+    if (!table || !table.parentElement) return;
+    var id = 'llIsimEkle_' + type, k = document.getElementById(id);
+    if (!k) {
+        k = document.createElement('div'); k.id = id; k.className = 'll-isim-ekle';
+        k.innerHTML = '<input type="text" class="ll-isim-ekle-ad" placeholder="Öğrenci Adı Soyadı..." aria-label="Yeni öğrencinin adı soyadı"' +
+            ' onkeydown="if(event.key===\'Enter\'){event.preventDefault(); llIsimEkle(this);}">' +
+            '<button type="button" class="btn-add" data-i18n="g.ekle" onclick="llIsimEkle(this)">+ Ekle</button>';
+    }
+    var ds = document.getElementById('donemSerit_' + type);
+    var hedef = (ds && ds.parentElement === table.parentElement) ? ds : table;
+    if (k.parentElement !== table.parentElement || k.nextElementSibling !== hedef) table.parentElement.insertBefore(k, hedef);
+}
+function llIsimEkle(el) {
+    var k = el && el.closest ? el.closest('.ll-isim-ekle') : null, inp = k ? k.querySelector('input') : null;
+    if (!inp) return;
+    var ad = inp.value.trim();
+    if (!ad) { try { inp.focus(); } catch (e) { } return; }
+    var asil = document.getElementById('singleStuName');
+    if (!asil || typeof addSingleStudent !== 'function') return;
+    asil.value = ad; addSingleStudent();                              /* Öğrenci Listesi'ndekiyle aynı yol (kod, kayıt) */
+    inp.value = ''; try { inp.focus(); } catch (e) { }
+}
+function llNotIsimDegis(si, v) {
+    if (!String(v == null ? '' : v).trim()) { renderGrades(llNotModu === 'ex' ? 'ex' : 'hw'); return; }   /* boşsa eski ad geri */
+    updateStudentName(si, v);
+}
+function llNotSilHucre(row, si) {
+    var c = row.insertCell(); c.className = 'll-not-sil';
+    c.innerHTML = '<button type="button" class="big-action-btn delete-btn" onclick="deleteStu(' + si + ')" title="Öğrenciyi sil">' + llIcon('cop') + '</button>';
+}
+window.llIsimEkle = llIsimEkle; window.llNotIsimDegis = llNotIsimDegis; window.llListeMenuKapat = llListeMenuKapat;

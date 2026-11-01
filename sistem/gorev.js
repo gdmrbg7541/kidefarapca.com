@@ -15,6 +15,20 @@
        sonuc gorevkopru.js uzerinden buluta yazilir.
 
    FIRESTORE:  gorevler/{id}  +  gorevSonuc/{id_ogrenciUid}
+
+   TEK DİNLEYİCİ (27.10.2026) — öğretmen: "firebase kısmında reads kısmı
+   hızlıca 50k ya yaklaşıyor, bunu nasıl daha verimli yaparız"
+     - Görev Gönder / Etkinlikler sekmesi ve görev sonuçları her çizimde
+       aboneliği kapatıp yeniden açıyordu; Firestore her yeni abonelikte
+       BÜTÜN belgeleri baştan okur (her belge bir "read"). Artık aynı
+       öğretmen için dinleyici açık kalır, sekme yeniden açılınca eldeki
+       güncel veriden ANINDA çizilir; yeni / silinen / değişen kayıt açık
+       dinleyiciyle yine canlı gelir. Yeniden abone: hesap değişince ya da
+       dinleyici hata verince.
+     - Sonuçlar: son 3 görevin dinleyicisi açık kalır (GV._snc).
+     - Açılış: baslat sayfa yüklenirken iki kez çalışıyordu (kur +
+       basariliGiris). Öğretmenin görev/sonuç/ilerleme taraması ve
+       öğrencinin görev listesi aynı hesap için 60 sn içinde BİR KEZ okunur.
    ========================================================================== */
 (function () {
     'use strict';
@@ -173,6 +187,8 @@
     GV.gorevlerim = [];      /* kendi gonderdigi gorevler   */
     GV._grvAbone = null;
     GV._sncAbone = null;
+    GV._grvUid = null;       /* TEK DİNLEYİCİ: açık dinleyicinin hesabı */
+    GV._grvHata = false;
 
     /* Kenar cubugu tusu KALDIRILDI: Gorev Gonder artik sinif sekmelerinde
        yasar (tab9 -> GV.sekmeGorevCiz). Eski surumden kalan tus temizlenir. */
@@ -753,7 +769,15 @@
     GV.gorevleriDinle = function () {
         var u = oturum(), D = veri();
         if (!u || !D || !ogretmenMi()) return;
+        /* TEK DİNLEYİCİ (27.10.2026): aynı öğretmenin dinleyicisi canlıysa
+           yeniden abone olunmaz (yeni abonelik bütün görevleri baştan okur).
+           Çağıran (sekmeGorevCiz / panelAc / sonucCiz) eldeki GV.gorevlerim'den
+           çizer; yeni / silinen / iptal edilen görev bu dinleyiciyle gelir. */
+        if (GV._grvAbone && GV._grvUid === u.uid && !GV._grvHata) return;
         if (GV._grvAbone) { try { GV._grvAbone(); } catch (e) { } GV._grvAbone = null; }
+        if (GV._grvUid !== u.uid) GV.gorevlerim = [];   /* başka hesabın listesi bir an bile çizilmesin */
+        GV._grvUid = u.uid;
+        GV._grvHata = false;
         GV._grvAbone = D.collection(C_GRV).where('ogretmenUid', '==', u.uid)
             .onSnapshot(function (snap) {
                 GV.gorevlerim = [];
@@ -762,7 +786,7 @@
                 var g = document.getElementById('gvGovde');
                 if (g && g.getAttribute('data-sekme') === 'sonuc') GV.sonucCiz();
                 if (document.getElementById('gvGorevListe')) GV.gorevListesiCiz();
-            }, function (e) { console.warn('GV gorev dinleyici:', e && (e.code || e.message)); });
+            }, function (e) { GV._grvHata = true; console.warn('GV gorev dinleyici:', e && (e.code || e.message)); });
     };
 
     /* ---------------- SINIF SUZGECI + GOREV AKORDIYON LISTESI (tab9) ----------------
@@ -990,19 +1014,57 @@
         else if (confirm('Kalıcı silinsin mi?')) yap();
     };
 
+    /* TEK DİNLEYİCİ (27.10.2026): görev sonuçları her açılışta yeniden
+       okunmaz. Son 3 görevin dinleyicisi açık kalır (GV._snc[gorevId]);
+       aynı görev yeniden açılınca eldeki listeden ANINDA çizilir, öğrenci
+       sonuç gönderdikçe açık dinleyici getirir. 4. görev açılınca en eski
+       dinleyici kapanır; hesap değişince hepsi kapanır. */
+    GV._snc = {};
+    GV._sncSira = [];            /* en son istenen sonda */
+    GV._SNC_EN_FAZLA = 3;
+    function sncKapat(gid) {
+        var k = GV._snc[gid];
+        if (k && k.abone) { try { k.abone(); } catch (e) { } }
+        delete GV._snc[gid];
+        var i = GV._sncSira.indexOf(gid);
+        if (i >= 0) GV._sncSira.splice(i, 1);
+    }
+    /* Bu görevin sonuçları şu an ekranda mı? Akordiyondaki kendi kutusu ya
+       da pencerede SEÇİLİ görev. Arka plandaki dinleyici başka görevin
+       kutusuna çizmesin. */
+    function sncGorunur(gid) {
+        if (document.getElementById('gvSonucListe_' + gid)) return true;
+        return GV._seciliGorev === gid && !!document.getElementById('gvSonucListe');
+    }
     GV.sonuclariGetir = function (gorevId) {
         var u = oturum(), D = veri();
         if (!u || !D) return;
-        if (GV._sncAbone) { try { GV._sncAbone(); } catch (e) { } GV._sncAbone = null; }
-        GV._sncAbone = D.collection(C_SNC)
+        Object.keys(GV._snc).forEach(function (gid) { if (GV._snc[gid].uid !== u.uid) sncKapat(gid); });
+        var k = GV._snc[gorevId];
+        if (k && !k.hata) {                      /* canlı: okuma yok, eldekinden çiz */
+            var i = GV._sncSira.indexOf(gorevId);
+            if (i >= 0) GV._sncSira.splice(i, 1);
+            GV._sncSira.push(gorevId);
+            GV._sncAbone = k.abone;
+            if (k.liste && sncGorunur(gorevId)) GV.sonucListeCiz(gorevId, k.liste);
+            return;
+        }
+        if (k) sncKapat(gorevId);
+        while (GV._sncSira.length >= GV._SNC_EN_FAZLA) sncKapat(GV._sncSira[0]);
+        k = GV._snc[gorevId] = { uid: u.uid, liste: null, hata: false, abone: null };
+        GV._sncSira.push(gorevId);
+        k.abone = GV._sncAbone = D.collection(C_SNC)
             .where('ogretmenUid', '==', u.uid)
             .where('gorevId', '==', gorevId)
             .onSnapshot(function (snap) {
                 var liste = [];
                 snap.forEach(function (doc) { liste.push(doc.data() || {}); });
-                GV.sonucListeCiz(gorevId, liste);
+                k.liste = liste;
+                if (sncGorunur(gorevId)) GV.sonucListeCiz(gorevId, liste);
             }, function (e) {
-                var el = document.getElementById('gvSonucListe');
+                k.hata = true;
+                if (!sncGorunur(gorevId)) return;
+                var el = document.getElementById('gvSonucListe_' + gorevId) || document.getElementById('gvSonucListe');
                 if (el) el.innerHTML = '<p style="color:#E74C3C; font-size:.85rem;">Sonuçlar okunamadı: ' + esc(e && (e.code || e.message)) + '</p>';
             });
     };
@@ -1079,6 +1141,7 @@
         var oz = document.getElementById('gvOzet_' + gorevId);
         if (oz) oz.innerHTML = yapan + '/' + ogrenciler.length + ' ' + gIkon(surelimi ? 'saat' : 'onay');
         GV._sonSonuclar = liste;
+        GV._sonSonuclarId = gorevId;     /* TEK DİNLEYİCİ (27.10.2026): liste hangi görevin */
     };
 
     /* CEKIRDEK: gorevin sonuclarini, gorevin actigi hw sutununa yazar.
@@ -1123,7 +1186,12 @@
         var notEl = document.getElementById('gvNotIsleNot');
         var yaz = function (m, hata) { if (notEl) { notEl.style.color = hata ? '#E74C3C' : '#16A085'; notEl.textContent = m; } };
         if (!v) { yaz('Görev bulunamadı.', true); return; }
-        var say = notaIsleCekirdek(v, GV._sonSonuclar || []);
+        /* TEK DİNLEYİCİ (27.10.2026): birden çok sonuç dinleyicisi açık
+           kalabildiği için «en son çizilen liste» değil BU görevin listesi */
+        var kSnc = GV._snc && GV._snc[gorevId];
+        var sncListe = (kSnc && kSnc.liste) || (GV._sonSonuclarId === gorevId ? GV._sonSonuclar : null);
+        if (!sncListe) { yaz('Sonuçlar henüz yüklenmedi; birkaç saniye sonra yeniden dene.', true); return; }
+        var say = notaIsleCekirdek(v, sncListe);
         if (say < 0) { yaz('Bu görevin not sütunu bulunamadı (görev performans notu olarak gönderilmemiş olabilir).', true); return; }
         yaz('✓ ' + say + ' öğrencinin notu işlendi.');
         /* Elle islendiyse otomatik tarama ayni gorevi bir daha islemesin. */
@@ -1186,11 +1254,22 @@
 
     GV.ilerlemeler = [];
     GV._ilerAbone = null;
+    GV._ilerUid = null;      /* TEK DİNLEYİCİ: açık dinleyicinin hesabı */
+    GV._ilerHata = false;
 
     GV.ilerlemeDinle = function () {
         var u = oturum(), D = veri();
         if (!u || !D || !ogretmenMi()) return;
+        /* TEK DİNLEYİCİ (27.10.2026): Etkinlikler sekmesi / İlerleme penceresi
+           her açılışta öğretmenin BÜTÜN ilerleme kayıtlarını baştan okutmasın.
+           Aynı öğretmen için dinleyici açık kalır; çağıran (sekmeEtkinlikCiz /
+           ilerlemeCiz) eldeki GV.ilerlemeler'den hemen çizer, öğrenci
+           oynadıkça açık dinleyici yeni kaydı getirir. */
+        if (GV._ilerAbone && GV._ilerUid === u.uid && !GV._ilerHata) return;
         if (GV._ilerAbone) { try { GV._ilerAbone(); } catch (e) { } GV._ilerAbone = null; }
+        if (GV._ilerUid !== u.uid) GV.ilerlemeler = [];
+        GV._ilerUid = u.uid;
+        GV._ilerHata = false;
         GV._ilerAbone = D.collection('ogrenciIlerleme').where('ogretmenUid', '==', u.uid)
             .onSnapshot(function (snap) {
                 GV.ilerlemeler = [];
@@ -1198,7 +1277,7 @@
                 var g = document.getElementById('gvGovde');
                 if (g && g.getAttribute('data-sekme') === 'ilerleme') GV.ilerlemeCiz(true);
                 if (document.getElementById('gvEtkGovde')) GV.etkinlikCiz();
-            }, function (e) { console.warn('GV ilerleme dinleyici:', e && (e.code || e.message)); });
+            }, function (e) { GV._ilerHata = true; console.warn('GV ilerleme dinleyici:', e && (e.code || e.message)); });
     };
 
     /* Ogrencinin uid'inden listedeki adini bulur (ayna: hesapUid). */
@@ -1667,10 +1746,17 @@
         return v.lId === (bag && bag.lId);      /* seviye */
     };
 
-    GV.ogrYukle = function () {
+    GV.ogrYukle = function (zorla) {
         var u = oturum(), D = veri();
         var bag = (window.OH && OH.bag) || null;
         if (!u || !D || !bag || bag.durum !== 'onayli' || !bag.ogretmenUid) return;
+        /* AÇILIŞTA TEK OKUMA (27.10.2026): baslat sayfa açılışında iki kez
+           gelir; öğretmenin BÜTÜN görevleri her öğrencide iki kez okunuyordu.
+           Aynı hesap + aynı öğretmen/sınıf bağı için 60 sn içinde bir kez.
+           «Görevlerim» penceresi açılınca (zorla) her zaman tazelenir. */
+        var anahtar = [u.uid, bag.ogretmenUid, bag.lId || '', bag.cId || ''].join('|');
+        if (!zorla && GV._ogrOkuma && GV._ogrOkuma.a === anahtar && Date.now() - GV._ogrOkuma.t < 60000) return;
+        var buOkuma = GV._ogrOkuma = { a: anahtar, t: Date.now() };
 
         D.collection(C_GRV).where('ogretmenUid', '==', bag.ogretmenUid).get().then(function (snap) {
             var hepsi = [];
@@ -1686,7 +1772,7 @@
             var p = document.getElementById('gvOgrGovde');
             if (p && document.getElementById('gvOgrModal') &&
                 document.getElementById('gvOgrModal').style.display !== 'none') GV.ogrListeCiz();
-        }).catch(function (e) { console.warn('GV ogrenci gorevleri:', e && (e.code || e.message)); });
+        }).catch(function (e) { if (GV._ogrOkuma === buOkuma) GV._ogrOkuma = null; console.warn('GV ogrenci gorevleri:', e && (e.code || e.message)); });
     };
 
     function ogrKatman() {
@@ -1714,7 +1800,7 @@
         var k = ogrKatman();
         GV.ogrListeCiz();
         k.style.display = 'flex';
-        GV.ogrYukle();
+        GV.ogrYukle(true);          /* pencere açılınca her zaman taze */
     };
 
     /* Gorev listesi HTML'i — hem pencerede hem profil kartinda kullanilir.
@@ -1836,6 +1922,15 @@
             GV.eskiTusuKaldir();
             var eskiTus = document.getElementById('gvOgrTus');
             if (eskiTus) eskiTus.remove();
+            /* AÇILIŞTA TEK TARAMA (27.10.2026): baslat sayfa açılışında iki kez
+               gelir (kur + basariliGiris). Vade taraması ve bildirim sayımı
+               öğretmenin BÜTÜN görev / sonuç / ilerleme kayıtlarını okur; aynı
+               hesap için 60 sn içinde bir kez yeter. */
+            var ogt = oturum();
+            if (ogt && veri()) {
+                if (GV._ogtTarama && GV._ogtTarama.uid === ogt.uid && Date.now() - GV._ogtTarama.t < 60000) return;
+                GV._ogtTarama = { uid: ogt.uid, t: Date.now() };
+            }
             GV.vadesiGelenleriIsle();
             setTimeout(function () { try { GV.ogretmenBildirimYukle(); } catch (e) { } }, 1800);
         } else if (window.OH && OH.bagliMi && OH.bagliMi()) {

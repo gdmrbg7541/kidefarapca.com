@@ -41,7 +41,9 @@
 
     var BOSTA_SN = 300;        /* 5 dk hareketsizlik -> duraklat */
     var ATLAMA_SN = 120;       /* iki ölçüm arası bundan uzunsa aralığı at */
-    var YAZ_ARALIK_SN = 60;    /* en sık bu kadarda bir buluta yaz */
+    var YAZ_ARALIK_SN = 300;   /* en sık bu kadarda bir buluta yaz — OKUMA AZALT (27.10.2026): 60 → 300;
+                                  her yazma, belgeyi dinleyen her açık sekmede bir okumaydı. Sekme
+                                  gizlenince/kapanınca yine hemen yazılır (aşağıda). */
     var EN_COK_TEK_YAZIM = 3 * 3600;   /* tek seferde en çok 3 saat eklensin */
     var ANAHTAR = 'kidefKullanimBekleyen';
 
