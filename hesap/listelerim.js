@@ -2947,12 +2947,14 @@ function renderStudents() {
     let table = document.getElementById('stuTable');
     if (!table) return;
     
+    /* OKUL NO SOLDA (01.11.2026) — öğretmen: "listede okul no kısmını sıra numarasının sağına alalım":
+       # · Okul No · Öğrenci Adı · Giriş Kodu · İşlemler · Sil */
     table.innerHTML = `
         <thead>
             <tr>
                 <th width="50">#</th>
-                <th style="text-align:left; padding-left:15px;">Öğrenci Adı</th>
                 <th width="90" style="text-align:center;" title="Okuldaki numarası — takım kurarken kullanılır">Okul No</th>
+                <th style="text-align:left; padding-left:15px;">Öğrenci Adı</th>
                 <th width="140" style="text-align:center;">Giriş Kodu</th>
                 <th width="210" style="text-align:center;">İşlemler</th>
                 <th width="80" style="text-align:center;">Sil</th>
@@ -2978,6 +2980,12 @@ function renderStudents() {
 
         row.innerHTML = `
             <td style="text-align:center; font-weight:bold; font-size:1.2rem;">${i + 1}</td>
+            <td style="text-align:center;">
+                <input type="text" value="${behKacis(s.numara == null ? '' : String(s.numara))}"
+                       onchange="updateStudentNo(${i}, this.value)"
+                       class="student-no-input" placeholder="—" inputmode="numeric" maxlength="6"
+                       title="Okul numarası (isteğe bağlı) — takım kurarken numarayla çağırabilirsin">
+            </td>
             <td>
                 <div style="display:flex; align-items:center; gap:7px;">
                     <input type="text" value="${behKacis(s.name || '')}"
@@ -2987,12 +2995,6 @@ function renderStudents() {
                            style="flex:1; min-width:60px;">
                     ${llHesapRozeti(s)}
                 </div>
-            </td>
-            <td style="text-align:center;">
-                <input type="text" value="${behKacis(s.numara == null ? '' : String(s.numara))}"
-                       onchange="updateStudentNo(${i}, this.value)"
-                       class="student-no-input" placeholder="—" inputmode="numeric" maxlength="6"
-                       title="Okul numarası (isteğe bağlı) — takım kurarken numarayla çağırabilirsin">
             </td>
             <td style="text-align:center;">
                 <code class="secure-code" 
