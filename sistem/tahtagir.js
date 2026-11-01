@@ -43,6 +43,26 @@
      cihazda site açık — hazir/); tuşta «Cihaz aranıyor…» / «Cihaz bulundu».
      İşaretli cihaz site açıkken tahta/<uid>/hazir/<kimlik> yazar, bağlantı
      kopunca sunucu siler (onDisconnect).
+   · AÇIK CİHAZDAN SEÇ (01.11.2026) — öğretmen: "kumanda özelliğinde kumanda olan cihaz ve
+     yansıtılan cihazdan da girince sonra bağlanıyor bazen, iki cihaz da internete bağlı ve aynı
+     öğretmen hesabıyla giriş yapılmışsa direkt başlamalı, ister kumanda olacak cihazdan
+     yansıtılacak cihazı seçelim, ister yansıtılacak cihazdan kumanda seçelim". Pencerede, iki
+     seçeneğin altında aynı hesabın sitesi şu an açık öbür cihazları: kumanda seçeneğinin altındakine
+     dokununca o cihaz Sınıf Ekranı olur (kendiliğinden tahta.html?rol=izle), bu cihaz kumanda; Sınıf
+     Ekranı seçeneğinin altındakine dokununca o cihaz kumanda olur (tahta.html?rol=yansit), bu cihaz
+     Sınıf Ekranı. Öbür cihaza dokunmak, onu işaretlemek gerekmez.
+     KAPI ZİLİ hesabın kendi belgesi (kullanicilar/<uid>): hesap/cihazlar.js ve sistem/kilit.js bu
+     belgeyi zaten canlı dinliyor — Firestore aynı belgenin dinleyicilerini tek dinlemede birleştirir,
+     yeni bağlantı yok; Realtime Database'e her cihazdan bağlanılmaz (eşzamanlı bağlantı sınırı).
+       tahtaYokla = { y, k, t }            pencere açılınca (12 sn'de bir, en çok 8 kez) «kim açık?»
+       tahtaYanit.<kimlik> = { y, ad, tur, t }   ana sayfası açık öğretmen cihazının cevabı
+       tahtaCagri.<kimlik> = { n, rol, k, ad, t }  rol: 'izle' (Sınıf Ekranı ol) | 'yansit' (kumanda ol)
+     Cihazların saati karşılaştırılmaz: sayfa açıldığında belgede duran yoklamaya cevap verilmez,
+     duran çağrı işlenmez, silinir (TABAN); yalnız sayfa açıkken gelen işlenir. Bir çağrıyı bir sekme
+     işler (localStorage kidef_tahta_cagri; önce görünen sekme). Aynı cihazın birden çok sekmesi
+     açıksa Sınıf Ekranı'na / kumandaya yalnız biri geçer (Web Locks kidef_tahta_gecis; işaretli
+     cihazın kendiliğinden geçişi de). Kural değişmedi: hesap kendi
+     belgesini rolünü değiştirmeden güncelleyebiliyor.
    Motor ve veritabanı kuralı: sistem/tahta.js.
    ===================================================================== */
 (function () {
@@ -181,6 +201,25 @@
     '.thg-ara .thg-tik{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}',
     '.thg-sec.vurgu .thg-ara{color:#fff}',
     '.thg-ipucu{font-size:.8rem;line-height:1.4;color:#64748b;background:#f8fafc;border-radius:10px;padding:8px 10px}',
+    /* açık cihazdan seç (01.11.2026) */
+    '.thg-cihazlar{margin:-2px 0 2px 16px;padding-inline-start:12px;border-inline-start:2px solid #cfe9e2;display:flex;flex-direction:column;gap:6px}',
+    '.thg-cihazlar.ekran{border-inline-start-color:#d5dde8}',
+    '.thg-cihazlar[hidden]{display:none}',
+    '.thg-cihazlar .thg-bas{font-size:.74rem;font-weight:800;color:#64748b;letter-spacing:.3px;text-transform:uppercase}',
+    '.thg-cipler{display:flex;flex-wrap:wrap;gap:6px}',
+    '.thg-cip{display:inline-flex;align-items:center;gap:9px;max-width:100%;box-sizing:border-box;border:1.5px solid #bfe3d8;background:#f2fbf8;color:#0f2a43;',
+    ' border-radius:12px;padding:7px 12px 7px 9px;font:inherit;font-size:.88rem;font-weight:800;line-height:1.2;cursor:pointer;text-align:start;',
+    ' transition:border-color .15s, box-shadow .15s, transform .15s, background .15s}',
+    '.thg-cip:hover,.thg-cip:focus-visible{border-color:#16A085;background:#e6f6f1;box-shadow:0 6px 16px rgba(22,160,133,.2);transform:translateY(-1px);outline:none}',
+    '.thg-cihazlar.ekran .thg-cip{border-color:#d5dde8;background:#f6f8fb}',
+    '.thg-cihazlar.ekran .thg-cip:hover,.thg-cihazlar.ekran .thg-cip:focus-visible{border-color:#0f2a43;background:#eef2f7;box-shadow:0 6px 16px rgba(15,42,67,.16)}',
+    '.thg-cip > svg{width:22px;height:22px;flex:none;fill:none;stroke:#0E7C66;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}',
+    '.thg-cihazlar.ekran .thg-cip > svg{stroke:#0f2a43}',
+    '.thg-cip > span{min-width:0}',
+    '.thg-cip b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.thg-cip small{display:flex;align-items:center;gap:5px;margin-top:2px;font-size:.72rem;font-weight:700;color:#5b6b7c}',
+    '.thg-cip small .thg-nokta{width:7px;height:7px}',
+    '.thg-cip:disabled{opacity:.75;cursor:progress;transform:none}',
     '@media (prefers-reduced-motion:reduce){.thg-radar::before,.thg-radar::after{animation:none;opacity:.5;transform:scale(.8)}}',
     '#thgBildir{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2600;background:#0f2a43;color:#fff;border-radius:14px;',
     ' padding:12px 16px;font-family:inherit;font-weight:600;font-size:.92rem;line-height:1.4;box-shadow:0 16px 40px rgba(0,0,0,.3);',
@@ -208,6 +247,13 @@
     /* kumanda (telefon/bilgisayar) ve ok — seçim penceresi (21.10.2026) */
     kumanda: '<svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.5"/><circle cx="12" cy="7" r="1.1"/><path d="M10 11.5h4M10 15h4M10 18.5h4"/></svg>',
     ok: '<svg class="thg-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>'
+  };
+  /* açık cihaz düğmelerinde cihaz türü (hesap/cihazlar.js'teki simgelerle aynı) — 01.11.2026 */
+  var SIM_TUR = {
+    bilgisayar: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8.5 20h7M12 16.5V20"/></svg>',
+    telefon: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.6 18.4h2.8"/></svg>',
+    tablet: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2.8" width="16" height="18.4" rx="2.4"/><path d="M10.6 18.2h2.8"/></svg>',
+    tahta: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="12.5" rx="1.8"/><path d="M7 7.8h7M7 11h4.6"/><path d="M12 16v3M8.4 21.2 12 18.8l3.6 2.4"/></svg>'
   };
   function cizim() {
     return '<svg viewBox="0 0 160 84" aria-hidden="true">' +
@@ -303,10 +349,12 @@
       '<b>' + kac(kd('th.p_kumanda', 'Bu cihazı kumanda olarak kullan')) + '</b>' +
       '<small>' + kac(kd('th.p_kumanda_alt', 'Burada açtığın sayfa, kaydırma, tıklama ve yazdıkların Sınıf Ekranı’nda görünür.')) + '</small>' +
       '<span class="thg-ara" id="thgAra" aria-live="polite"></span></span>' + SIM.ok + '</button>' +
+      '<div class="thg-cihazlar" id="thgKCihaz" hidden></div>' +          /* açık cihazdan seç: Sınıf Ekranı olacak */
       '<div class="thg-tahtalar" id="thgTahtalar" hidden></div>' +
       '<button type="button" class="thg-sec ikincil" data-thg="izle"><span class="thg-sim">' + SIM.tahta + '</span><span class="thg-yazi">' +
       '<b>' + kac(kd('th.p_ekran', 'Bu cihazı Sınıf Ekranı olarak kullan')) + '</b>' +
       '<small>' + kac(kd('th.p_ekran_alt', 'Kumandadan yaptıkların bu ekranda görünür. Cihaz bunu hatırlar: sonraki derslerde kumandadan başlatman yeter.')) + '</small></span>' + SIM.ok + '</button>' +
+      '<div class="thg-cihazlar ekran" id="thgECihaz" hidden></div>' +    /* açık cihazdan seç: kumanda olacak */
       '</div>' +
       '<div class="thg-durum" id="thgDurum"></div>' +
       '<p class="thg-not">' + kac(kd('th.p_not', 'Yalnız bu site yansır. Şifre, e-posta ve PIN alanları tahtaya gitmez; hiçbir şey iki kez kaydedilmez.')) +
@@ -321,12 +369,15 @@
       else if (is === 'yansit') { cihazYaz(null); hedefYaz(null); git('yansit'); }
       else if (is === 'izle') { cihazYaz('tahta'); git('izle'); }
       else if (is === 'unut') { cihazYaz(null); hazirSil(); panelAc(); }
+      else if (is === 'cagir') cagir(t.getAttribute('data-k'), t.getAttribute('data-rol'));
     });
     document.body.appendChild(p);
     durumYaz();
     tahtaImza = '';                                   /* yeni pencere: liste yeniden çizilsin */
+    cihazImza = '';
     tahtalarCiz();
     canliDinle();
+    yoklaBaslat();                                    /* açık cihazdan seç: «kim açık?» (01.11.2026) */
     document.addEventListener('keydown', escKapat);
   }
   function escKapat(e) { if (e.key === 'Escape') panelKapat(); }
@@ -334,6 +385,7 @@
     var p = $('thgPerde');
     if (p) p.parentNode.removeChild(p);
     document.removeEventListener('keydown', escKapat);
+    yoklaBitir();
     if (!tahtaCihazi()) canliBirak();
   }
   function git(rol, hedef) {
@@ -413,6 +465,8 @@
     if (dur === 'ara') a.innerHTML = '<span class="thg-radar" aria-hidden="true"></span><span>' + kac(kd('th.p_araniyor', 'Cihaz aranıyor…')) + '</span>';
     else if (dur === 'bulundu') a.innerHTML = '<svg class="thg-tik" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>' +
       kac(kd('th.p_bulundu', 'Cihaz bulundu: {ad}', { ad: bul ? bul.ad : '' })) + '</span>';
+    else if (dur === 'sec') a.innerHTML = '<svg class="thg-tik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v13M6.5 12.5 12 18l5.5-5.5"/></svg><span>' +
+      kac(kd('th.p_ara_sec', 'Açık cihazın var: Sınıf Ekranı olacak olanı aşağıdan seç')) + '</span>';
     else a.innerHTML = '';
   }
   /* İşaretli Sınıf Ekranı: site açıkken «hazırım» kaydı. Bağlantı her kurulduğunda
@@ -463,18 +517,21 @@
        kumanda olarak kullan kısmı yeşil dolgu beyaz yazı olsun". */
     var el = $('thgTahtalar');
     if (!el) return;
+    cihazlarCiz();                                    /* açık cihazdan seç (01.11.2026) */
+    var acik = acikCihazlar();
     /* CİHAZ ARANIYOR (24.10.2026): yeşil yalnız aynı hesabın başka bir cihazı Sınıf
        Ekranı olarak şu an hazırsa; kayıtlı ama kapalı tahta yeşil yapmaz */
     var bul = ekranBulundu(), tc = tahtaCihazi(), e = bul || ekranBilgi();
-    var imza = JSON.stringify(e) + '|' + (bul ? 1 : 0) + '|' + (vt ? 1 : 0) + '|' + (tc ? 1 : 0) + '|' + (yayinVar() ? 1 : 0);
+    var imza = JSON.stringify(e) + '|' + (bul ? 1 : 0) + '|' + (vt ? 1 : 0) + '|' + (tc ? 1 : 0) + '|' + (yayinVar() ? 1 : 0) + '|' + acik.length;
     if (imza === tahtaImza) return;
     tahtaImza = imza;
     var kb = document.querySelector('#thgPerde [data-thg="yansit"]');
     if (kb) kb.classList.toggle('vurgu', !!(bul && !tc));
-    araYaz(tc ? '' : (bul ? 'bulundu' : 'ara'), bul);
+    araYaz(tc ? '' : (bul ? 'bulundu' : (acik.length ? 'sec' : 'ara')), bul);
     if ((!e || e.ben) && !tc) {
-      el.hidden = false;
-      el.innerHTML = '<div class="thg-ipucu">' + kac(kd('th.p_ara_ipucu', 'Tahtada siteyi bu hesapla aç ve «Bu cihazı Sınıf Ekranı olarak kullan»a dokun.')) + '</div>';
+      /* açık cihaz varsa ipucu yerine yukarıdaki düğmeler (01.11.2026) */
+      el.hidden = !!acik.length;
+      el.innerHTML = acik.length ? '' : '<div class="thg-ipucu">' + kac(kd('th.p_ara_ipucu2', 'Tahtada siteyi bu hesapla aç: burada görünür, dokununca bağlanır.')) + '</div>';
       return;
     }
     el.hidden = !e || e.ben;
@@ -485,6 +542,224 @@
                   : kd('th.p_ekran_kapali', 'şu an açık değil — açılınca kumandaya bağlanır'),
            e.acik && e.sinif ? (e.sinifAcik ? kd('th.acik_sinif', 'açık sınıf: {s}', { s: e.sinif }) : kd('th.son_sinif', 'son sınıf: {s}', { s: e.sinif })) : ''
           ].filter(Boolean).join(' · ')) + '</small></span></div>';
+  }
+
+  /* ------------------------------------------ AÇIK CİHAZDAN SEÇ (01.11.2026)
+     Açıklama dosyanın başında. Hesabın belgesi (kullanicilar/<uid>) kapı zili. */
+  var FB = { uid: null, dinle: null, v: null, taban: false, yanitlanan: '', temiz: '' };
+  var YK = { j: '', once: '', z: 0, say: 0, zaman: null };          /* yoklama: jeton, önceki jeton, zamanı */
+  var cihazImza = '';
+  function sahip(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
+  function jetonUret() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+  function hesapBelge() {
+    var u = kullanici();
+    try { return u ? firebase.firestore().collection('kullanicilar').doc(u.uid) : null; } catch (e) { return null; }
+  }
+  function belgeYaz(o) {
+    var b = hesapBelge();
+    if (!b) return Promise.resolve(false);
+    try { return b.update(o).then(function () { return true; }, function () { return false; }); } catch (e) { return Promise.resolve(false); }
+  }
+  function sureli(p, ms) {
+    return new Promise(function (bit) {
+      var z = setTimeout(function () { bit(false); }, ms);
+      p.then(function (v) { clearTimeout(z); bit(v); }, function () { clearTimeout(z); bit(false); });
+    });
+  }
+  function silme() { try { return firebase.firestore.FieldValue.delete(); } catch (e) { return null; } }
+  function turBul() {                                 /* hesap/cihazlar.js cihazBilgi() ile aynı */
+    var ua = navigator.userAgent || '', kisa = 9999;
+    try { kisa = Math.min(screen.width, screen.height); } catch (e) { }
+    var ipad = /iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    if (tahtaCihazi()) return 'tahta';
+    if (/iPhone|iPod|Windows Phone/.test(ua) || (/Android/.test(ua) && /Mobile/.test(ua) && kisa <= 600)) return 'telefon';
+    if (ipad || (/Android/.test(ua) && kisa <= 820)) return 'tablet';
+    if (/Android/.test(ua)) return 'tahta';
+    return 'bilgisayar';
+  }
+  /* öğretmen girişliyken hesabın belgesi dinlenir (aynı belgeyi hesap/cihazlar.js de dinliyor) */
+  function belgeDinleKur() {
+    var u = kullanici(), uid = (u && ogretmenMi()) ? u.uid : null;
+    if (uid === FB.uid && (FB.dinle || !uid)) return;
+    if (FB.dinle) { try { FB.dinle(); } catch (e) { } FB.dinle = null; }
+    FB.uid = uid; FB.v = null; FB.taban = false; FB.yanitlanan = ''; FB.temiz = '';
+    if (!uid) return;
+    var b = hesapBelge();
+    if (!b) { FB.uid = null; return; }
+    /* includeMetadataChanges: önbellekten gelen ilk görüntüden sonra sunucuyla eşitlenme de haber verilsin (TABAN için);
+       aynı belge aynı dinlemede birleşir, ek okuma yok */
+    try { FB.dinle = b.onSnapshot({ includeMetadataChanges: true }, belgeGeldi, function () { }); } catch (e) { FB.dinle = null; FB.uid = null; }
+  }
+  function belgeGeldi(doc) {
+    if (!FB.uid) return;
+    var v = (doc && doc.exists) ? (doc.data() || {}) : {};
+    FB.v = v;
+    if (!FB.taban) {
+      if (doc && doc.metadata && doc.metadata.fromCache) { if ($('thgPerde')) tahtalarCiz(); return; }   /* önbellek taban değil */
+      /* TABAN: sayfa açılırken belgede duran yoklama ve çağrı ESKİ sayılır — cevap verilmez,
+         bu cihaza çağrı varsa işlenmeden silinir (cihazların saati karşılaştırılmaz) */
+      FB.taban = true;
+      FB.yanitlanan = (v.tahtaYokla && v.tahtaYokla.y) ? String(v.tahtaYokla.y) : '';
+      cagriSil(v.tahtaCagri);
+    } else {
+      yoklaCevapla(v.tahtaYokla);
+      cagriBak(v.tahtaCagri);
+    }
+    if ($('thgPerde')) tahtalarCiz();
+  }
+  function cagriSil(c) {
+    var ben = kimlik();
+    if (!ben || !c || typeof c !== 'object' || !c[ben]) return;
+    var im = JSON.stringify(c[ben]);
+    if (FB.temiz === im) return;
+    FB.temiz = im;
+    var o = {}; o['tahtaCagri.' + ben] = silme();
+    belgeYaz(o);
+  }
+  /* «kim açık?» — bu cihaz ana sayfası açık bir öğretmen cihazı: cevap */
+  function yoklaCevapla(y) {
+    var ben = kimlik();
+    if (!ben || !y || typeof y !== 'object' || !y.y || y.k === ben || FB.yanitlanan === String(y.y)) return;
+    FB.yanitlanan = String(y.y);
+    var o = {}; o['tahtaYanit.' + ben] = { y: String(y.y), ad: hazirAd(), tur: turBul(), t: Date.now() };
+    belgeYaz(o);
+  }
+  /* çağrı: öbür cihaz bu cihazı Sınıf Ekranı (izle) ya da kumanda (yansit) yaptı */
+  function cagriBak(c) {
+    var ben = kimlik();
+    if (!ben || !c || typeof c !== 'object' || !c[ben]) return;
+    var x = c[ben];
+    if (!x || typeof x !== 'object' || !x.n || (x.rol !== 'izle' && x.rol !== 'yansit') || x.k === ben) { cagriSil(c); return; }
+    var son = '';
+    try { son = localStorage.getItem('kidef_tahta_cagri') || ''; } catch (e) { }
+    if (son === String(x.n)) { cagriSil(c); return; }                 /* başka sekme işledi */
+    if (gidiyor) return;
+    var calis = function () {
+      var s2 = '';
+      try { s2 = localStorage.getItem('kidef_tahta_cagri') || ''; } catch (e) { }
+      if (s2 === String(x.n) || gidiyor) return false;
+      try { localStorage.setItem('kidef_tahta_cagri', String(x.n)); } catch (e) { }
+      gidiyor = true;
+      gecisYaz();
+      soruKapat(); panelKapat();
+      var ad = String(x.ad || '').slice(0, 40) || kd('th.p_cagri_biri', 'Öbür cihazın');
+      bildirGoster(x.rol === 'izle'
+        ? kd('th.p_cagri_izle', '{ad} bu cihazı Sınıf Ekranı yaptı — açılıyor…', { ad: ad })
+        : kd('th.p_cagri_yansit', '{ad} bu cihazı kumanda yaptı — açılıyor…', { ad: ad }));
+      FB.temiz = JSON.stringify(x);
+      var o = {}; o['tahtaCagri.' + ben] = silme();
+      sureli(belgeYaz(o), 1500).then(function () {
+        if (x.rol === 'izle') { cihazYaz('tahta'); git('izle'); }
+        else { cihazYaz(null); hedefYaz(null); git('yansit'); }
+      });
+      return true;
+    };
+    /* aynı cihazda birden çok sekme: çağrıyı yalnız biri işler, önce görünen sekme alır */
+    var kilitle = function () { tekSekme(calis); };
+    if (document.visibilityState === 'hidden') setTimeout(kilitle, 700); else kilitle();
+  }
+  /* AYNI CİHAZIN SEKMELERİ (01.11.2026): kumandaya / Sınıf Ekranı'na geçişi yalnız bir sekme yapar —
+     Web Locks (sayfa değişene dek tutulur; yoksa doğrudan); geçen sekme zamanı yazar (kidef_tahta_gecis) */
+  function tekSekme(f) {
+    try {
+      if (navigator.locks && navigator.locks.request) {
+        navigator.locks.request('kidef_tahta_gecis', { ifAvailable: true }, function (k) {
+          if (!k || !f()) return;
+          return new Promise(function (r) { setTimeout(r, 4000); });
+        }).catch(function () { f(); });
+        return;
+      }
+    } catch (e) { }
+    f();
+  }
+  function gecisYaz() { try { localStorage.setItem('kidef_tahta_gecis', String(Date.now())); } catch (e) { } }
+  function gecisVar() { var g = 0; try { g = +localStorage.getItem('kidef_tahta_gecis') || 0; } catch (e) { } return Date.now() - g < 20000; }
+  function yokla() {
+    var ben = kimlik();
+    if (!kullanici() || !ogretmenMi() || !ben) return;
+    belgeDinleKur();
+    YK.once = YK.j; YK.j = jetonUret(); YK.z = Date.now();
+    var o = { tahtaYokla: { y: YK.j, k: ben, t: Date.now() } };
+    var Y = (FB.v && FB.v.tahtaYanit) || {};               /* bir günden eski cevaplar silinir */
+    for (var k in Y) if (sahip(Y, k) && (!Y[k] || !(+Y[k].t > 0) || Date.now() - (+Y[k].t) > 864e5)) o['tahtaYanit.' + k] = silme();
+    belgeYaz(o);
+    if ($('thgPerde')) tahtalarCiz();
+  }
+  function yoklaBaslat() {
+    yoklaBitir();
+    YK.say = 0;
+    yokla();
+    YK.zaman = setInterval(function () {
+      if (!$('thgPerde') || ++YK.say > 8) { yoklaBitir(); return; }
+      if (document.visibilityState !== 'hidden') yokla();
+    }, 12000);
+  }
+  function yoklaBitir() { clearInterval(YK.zaman); YK.zaman = null; }
+  /* şu an açık öbür cihazlar: bu yoklamaya cevap verenler (yeni yoklamanın ilk 5 sn'sinde öncekine
+     cevap verenler de) + Sınıf Ekranı sayfası açık ya da işaretli, sitesi açık cihazlar (hazirlar) */
+  function acikCihazlar() {
+    var ben = kimlik(), l = [], gor = {};
+    var Y = (FB.v && FB.v.tahtaYanit) || {}, oncesi = YK.once && Date.now() - YK.z < 5000;
+    if (YK.j) for (var k in Y) {
+      if (!sahip(Y, k) || k === ben) continue;
+      var r = Y[k];
+      if (!r || typeof r !== 'object') continue;
+      var y = String(r.y || '');
+      if (y !== YK.j && !(oncesi && y === YK.once)) continue;
+      gor[k] = 1;
+      l.push({ kimlik: k, ad: String(r.ad || '').slice(0, 40) || tahtaAdi({ kimlik: k }), tur: SIM_TUR[r.tur] ? String(r.tur) : 'bilgisayar', izle: false });
+    }
+    hazirlar().forEach(function (t) {
+      if (gor[t.kimlik]) { l.forEach(function (x) { if (x.kimlik === t.kimlik && t.izle) x.izle = true; }); return; }
+      gor[t.kimlik] = 1;
+      l.push({ kimlik: t.kimlik, ad: t.ad, tur: 'tahta', izle: !!t.izle });
+    });
+    var ek = (ekran && ekran.kimlik) || '';
+    l.sort(function (a, b) { return ((b.kimlik === ek) - (a.kimlik === ek)) || (a.ad < b.ad ? -1 : (a.ad > b.ad ? 1 : 0)); });
+    return l;
+  }
+  function cipHtml(x, rol) {
+    var alt = x.izle ? kd('th.p_cip_ekran_acik', 'Sınıf Ekranı açık') : kd('th.p_cip_acik', 'şimdi açık');
+    var et = rol === 'izle' ? kd('th.p_cip_ekran_et', '{ad} Sınıf Ekranı olsun, bu cihaz kumanda', { ad: x.ad })
+                            : kd('th.p_cip_kumanda_et', '{ad} kumanda olsun, bu cihaz Sınıf Ekranı', { ad: x.ad });
+    return '<button type="button" class="thg-cip" data-thg="cagir" data-rol="' + rol + '" data-k="' + kac(x.kimlik) + '" title="' + kac(et) + '" aria-label="' + kac(et) + '">' +
+      (SIM_TUR[x.tur] || SIM_TUR.bilgisayar) + '<span><b>' + kac(x.ad) + '</b><small><span class="thg-nokta canli"></span>' + kac(alt) + '</small></span></button>';
+  }
+  function cihazlarCiz() {
+    var kc = $('thgKCihaz'), ec = $('thgECihaz');
+    if (!kc || !ec || gidiyor) return;
+    var l = acikCihazlar(), e = l.filter(function (x) { return !x.izle; });        /* Sınıf Ekranı sayfasındaki cihaz kumanda yapılamaz */
+    var im = JSON.stringify(l);
+    if (im === cihazImza) return;
+    cihazImza = im;
+    kc.hidden = !l.length; ec.hidden = !e.length;
+    kc.innerHTML = l.length ? '<div class="thg-bas">' + kac(kd('th.p_sec_ekran', 'Sınıf Ekranı olacak cihaz')) + '</div><div class="thg-cipler">' +
+      l.map(function (x) { return cipHtml(x, 'izle'); }).join('') + '</div>' : '';
+    ec.innerHTML = e.length ? '<div class="thg-bas">' + kac(kd('th.p_sec_kumanda', 'Kumanda olacak cihaz')) + '</div><div class="thg-cipler">' +
+      e.map(function (x) { return cipHtml(x, 'yansit'); }).join('') + '</div>' : '';
+  }
+  /* dokunulan cihaz: rol 'izle' → o cihaz Sınıf Ekranı, bu cihaz kumanda; 'yansit' → tersi */
+  function cagir(k, rol) {
+    if (!k || (rol !== 'izle' && rol !== 'yansit') || gidiyor) return;
+    var x = null;
+    acikCihazlar().forEach(function (c) { if (c.kimlik === k) x = c; });
+    if (!x || (rol === 'yansit' && x.izle)) return;
+    gidiyor = true;
+    [].forEach.call(document.querySelectorAll('#thgPerde .thg-cip'), function (b) {
+      b.disabled = true;
+      if (b.getAttribute('data-k') === k && b.getAttribute('data-rol') === rol) {
+        var sm = b.querySelector('small');
+        if (sm) sm.innerHTML = '<span class="thg-radar" aria-hidden="true"></span>' + kac(kd('th.p_cip_baglaniyor', 'bağlanıyor…'));
+      }
+    });
+    var basla = function () {
+      gecisYaz();
+      if (rol === 'izle') { cihazYaz(null); hedefYaz(null); git('yansit'); }
+      else { cihazYaz('tahta'); git('izle'); }
+    };
+    if (rol === 'izle' && x.izle) { basla(); return; }             /* Sınıf Ekranı sayfası zaten açık: çağrı gerekmez */
+    var o = {}; o['tahtaCagri.' + k] = { n: jetonUret(), rol: rol, k: kimlik(), ad: hazirAd(), t: Date.now() };
+    sureli(belgeYaz(o), 2500).then(basla);
   }
 
   /* ------------------------------- tahta cihazı: yansıtma başlayınca geç
@@ -501,7 +776,7 @@
     if (b.bas && yayin && yayin.bas) return b.bas === yayin.bas;      /* aynı yansıtma oturumu */
     return Date.now() - (b.t || 0) < 10 * 60000;                       /* eski bilgisayar sürümü: 10 dk */
   }
-  var soruIlk = 0, soruBekleZ = null;
+  var soruIlk = 0, soruBekleZ = null, soruIstek = false;
   function soruKontrol() {
     if (!tahtaCihazi() || gidiyor) return;
     var taze = yayinVar() && !yayin.durak;
@@ -516,9 +791,19 @@
       var kalan = 3500 - (Date.now() - soruIlk);
       if (kalan > 0) { clearTimeout(soruBekleZ); soruBekleZ = setTimeout(soruKontrol, kalan + 50); return; }
     }
-    gidiyor = true;
-    soruKapat();
-    git('izle');
+    /* aynı cihazın başka sekmesi az önce geçtiyse bu sekme geçmez; aynı anda yalnız biri (01.11.2026) */
+    if (gecisVar() || soruIstek) return;
+    soruIstek = true;
+    tekSekme(function () {
+      soruIstek = false;
+      if (gidiyor || gecisVar()) return false;
+      gidiyor = true;
+      gecisYaz();
+      soruKapat();
+      git('izle');
+      return true;
+    });
+    setTimeout(function () { soruIstek = false; }, 3000);
   }
   function soruKapat() {
     clearInterval(soruZ); soruZ = null;
@@ -585,6 +870,7 @@
     if (gor) donusKontrol();
     if (!kullanici()) { canliBirak(); soruKapat(); }
     hazirYaz();                                        /* işaretli cihaz: «site açık» kaydı (24.10.2026) */
+    belgeDinleKur();                                   /* açık cihazdan seç: yoklama / çağrı (01.11.2026) */
   }
   /* kumanda / Sınıf Ekranı başka cihaza geçti (sistem/tahta.js → sessionStorage) */
   function bildirGoster(m) {
@@ -615,6 +901,6 @@
     try { firebase.auth().onAuthStateChanged(function () { setTimeout(dugmeGuncelle, 300); }); } catch (e) { }
     document.addEventListener('kidef:dil', function () { if ($('thgPerde')) panelAc(); });
   }
-  window.KidefTahtaGir = { ac: panelAc, kapat: panelKapat };
+  window.KidefTahtaGir = { ac: panelAc, kapat: panelKapat, yokla: yokla, acikCihazlar: acikCihazlar, _fb: FB, _yk: YK };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', basla); else basla();
 })();

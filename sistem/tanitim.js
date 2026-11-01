@@ -336,6 +336,27 @@
       '  background:rgba(22,160,133,.10); font-size:1.02rem; line-height:1.55;',
       '  color:#12463B; }',
       '#kdtSahne .kdt-ozet b{ font-weight:800; }',
+      /* ---- ARAÇ KATALOĞU (01.11.2026): kılavuzun başında, kutu yok — renkli kenarlı satırlar ---- */
+      '#kdtSahne .kdt-kat-bas{ margin:0 0 6px; font-size:clamp(1.15rem,2.3vw,1.5rem); color:#12463B;',
+      '  font-weight:800; line-height:1.25; }',
+      '#kdtSahne .kdt-kat-yazi{ margin:0 0 14px; font-size:1rem; line-height:1.55; color:#4A525E; }',
+      '#kdtSahne .kdt-kat-sek{ display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }',
+      '#kdtSahne .kdt-kat-sek a{ display:flex; flex-direction:column; gap:2px; padding:11px 14px 11px 15px;',
+      '  border-radius:12px; text-decoration:none; background:rgba(255,255,255,.88);',
+      '  border:1px solid rgba(18,70,59,.10); border-left:5px solid var(--r);',
+      '  transition:transform .15s, box-shadow .15s; }',
+      '#kdtSahne .kdt-kat-sek a:hover, #kdtSahne .kdt-kat-sek a:focus-visible{ transform:translateY(-1px);',
+      '  box-shadow:0 8px 18px rgba(18,70,59,.12); outline:none; }',
+      '#kdtSahne .kdt-kat-sek b{ font-size:1.02rem; color:#22303C; font-weight:800; }',
+      '#kdtSahne .kdt-kat-sek small{ font-size:.84rem; color:#8A939E; font-weight:600; }',
+      '#kdtSahne .kdt-kat-ac{ display:inline-flex; align-items:center; gap:8px; margin-top:14px;',
+      '  padding:11px 20px; border-radius:12px; text-decoration:none; color:#fff; font-weight:800;',
+      '  background:linear-gradient(90deg,#16A085,#0E9E86); box-shadow:0 6px 16px rgba(14,158,134,.28); }',
+      '#kdtSahne .kdt-kat-ac svg{ width:17px; height:17px; flex:none; }',
+      '#kdtSahne .kdt-kat-ac:hover{ filter:brightness(1.06); }',
+      '#kdtSahne .kdt-bolum-bas{ margin:30px 0 0; padding-top:22px; border-top:1px solid rgba(18,70,59,.10);',
+      '  font-size:.82rem; font-weight:800; letter-spacing:1.8px; text-transform:uppercase; color:#9AA3AE; }',
+      '#kdtSahne .kdt-bolum-bas + .kdt-adim{ margin-top:16px; padding-top:0; border-top:0; }',
       '@media (max-width:760px){',
       '  #kdtSahne .kdt-adim p, #kdtSahne .kdt-maket{ margin-left:0; }',
       '  #kdtSahne .mk-ok2{ display:none; } }',
@@ -381,14 +402,14 @@
          çok ta uzun olmasın." Kısa bir kılavuz: üç adım, üçünün de
          ekran görüntüsü var. */
       '<button type="button" class="kdt-tus kdt-site-tus"' +
-      ' onclick="KidefKimlik.siteAc()" title="Site nasıl çalışıyor">' +
+      ' onclick="KidefKimlik.siteAc()" title="Araç kataloğu ve site kılavuzu">' +
       '<span class="kdt-bas kdt-bas-site" aria-hidden="true">' +
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"' +
       ' stroke-linecap="round" stroke-linejoin="round">' +
       '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18' +
       'a15 15 0 0 1 0-18z"/></svg></span>' +
       '<span class="kdt-ad"><b>kidefarapca.com</b>' +
-      '<span>Site nasıl çalışıyor?</span></span>' +
+      '<span>Araç kataloğu ve site kılavuzu</span></span>' +   /* 01.11.2026: katalog burada */
       '<svg class="kdt-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor"' +
       ' stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"' +
       ' aria-hidden="true"><path d="M9 5.5l7 6.5-7 6.5"/></svg>' +
@@ -473,8 +494,8 @@
     [5, 6, 7, 8, 9, 10].forEach(function (n, i) {
       g += '<span class="' + (n === 5 ? 'sec' : '') + '" style="--r:' + r[i] + '">' + n + '</span>';
     });
-    return '<div class="mk-bas">İmam Hatip</div><div class="mk-rakam">' + g + '</div>' +
-      '<div class="mk-acilan">5. Sınıf — belgeler ve etkinlikler altında açıldı</div>';
+    return '<div class="mk-bas">Okul kitaplığı</div><div class="mk-rakam">' + g + '</div>' +
+      '<div class="mk-acilan">5. sınıf — ders kitabı, belgeler ve etkinlikler açıldı</div>';
   }
   function mkSinifIci() {
     var r = ['#16A085', '#F39C12', '#2563EB', '#7C3AED'];
@@ -520,18 +541,50 @@
       '<div class="mk-genel">Genel ortalama 82,5</div>';
   }
 
+  /* ARAÇ KATALOĞU (01.11.2026) — öğretmen: "sitenin başındaki Hangi ihtiyaç için hangi araç? kısmını
+     kaldıralım, bunun yerine soldaki sosyal popuptaki kısmı zenginleştirelim" · "kataloğu site
+     tanıtımıyla birleştir, pdf özelliği olmayacak artık". Kılavuzun başında: katalog sayfasının
+     (katalog/) beş sekmesi doğrudan (katalog/#sekme yeni sekmede o sekmeyle açılır) ve tamamı.
+     rel="opener" BİLEREK: katalogdaki geri tuşu sekmeyi kapatıp buraya döner (geri.js kuralı). */
+  var KATALOG = [
+    ['isinma', '#E08A00', 'Isınma oyunları', 'dersin ilk beş dakikası'],
+    ['dil', '#8E44AD', 'Dilbilgisi ve sözlük', 'kelime · sarf · nahiv'],
+    ['okuma', '#2E86DE', 'Okuma-yazma ve konuşma', 'harf, metin, konuşma, ezber'],
+    ['sunum', '#E8735E', 'Sunumlar', 'ders anlatımı ve seminer'],
+    ['olcme', '#1B3A6B', 'Ölçme ve dokümanlar', 'sınav, kitap, form ve plan']
+  ];
+  function katalogIc() {
+    return '<div class="kdt-katalog">' +
+      '<h3 class="kdt-kat-bas">Hangi ihtiyaç için hangi araç?</h3>' +
+      '<p class="kdt-kat-yazi">Sınıfta karşılaştığın durumu bul, karşısındaki aracı aç. Oyunlar, uygulamalar, ' +
+      'sunumlar ve öğretmen dokümanları tek katalogda; her kartta aracın hangi ihtiyacı karşıladığı ve adresi yazar.</p>' +
+      '<div class="kdt-kat-sek">' + KATALOG.map(function (k) {
+        return '<a href="katalog/#' + k[0] + '" target="_blank" rel="opener" style="--r:' + k[1] + '">' +
+          '<b>' + k[2] + '</b><small>' + k[3] + '</small></a>';
+      }).join('') + '</div>' +
+      '<a class="kdt-kat-ac" href="katalog/" target="_blank" rel="opener">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"' +
+      ' stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/>' +
+      '<path d="M18.5 14v4.5a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5H10"/></svg>' +
+      'Kataloğun tamamını aç</a>' +
+      '</div>';
+  }
+
   function siteIc() {
     return '<div class="kdt-kutu">' +
       '<button type="button" class="kdt-kapat" aria-label="Kapat"' +
       ' onclick="KidefKimlik.kapat()">&times;</button>' +
       '<h2 class="kdt-isim">kidefarapca.com</h2>' +
-      '<p class="kdt-unvan">Nasıl çalışıyor?</p>' +
+      '<p class="kdt-unvan">Araç kataloğu ve site kılavuzu</p>' +
       '<div class="kdt-cizgi" aria-hidden="true"></div>' +
       '<div style="height:22px"></div>' +
-      adim(1, '#16A085', 'Hazır malzeme sınıfa göre duruyor',
-        'Anasayfadaki <b>İmam Hatip</b> bölümünde sınıf rakamına basarsın. ' +
-        'O sınıfın belgeleri ve etkinlikleri hemen altında açılır. ' +
-        'Aradığını sınıftan bulursun, menüde kaybolmazsın.',
+      katalogIc() +                                   /* 01.11.2026: anasayfadaki katalog şeridi buraya */
+      '<h3 class="kdt-bolum-bas">Site nasıl çalışıyor?</h3>' +
+      /* 01.11.2026: İmam Hatip bölümü artık herkese gizli (sistem/ihgorunum.js) — malzeme sınıfın kitaplığında */
+      adim(1, '#16A085', 'Hazır malzeme sınıfının kitaplığında',
+        '<b>Sınıflarım</b>da okuluna girip üstteki <b>sınıf rakamına</b> dokunursun; o sınıfın ' +
+        'ders kitabı, belgeleri ve etkinlikleri açılır. Kapıyı açınca aynı kitaplık sınıfın ' +
+        '<b>Materyaller</b> sekmesinde. Kitaplık, o seviyede bir sınıf ekleyince açılır.',
         mkKatalog()) +
       adim(2, '#F39C12', 'Bir sınıfın içinde ne var',
         'Üstte <b>belgeler</b>: yıllık plan, günlük plan, BEP, zümre, ' +
@@ -557,10 +610,9 @@
         'yaptığını, oyun ve etkinliklerde kimin nerede olduğunu da ' +
         'buradan görürsün — öğrenci de kendi karnesini görür.',
         mkSonuc()) +
-      '<p class="kdt-ozet"><b>Kısacası:</b> katalog herkese açık hazır ' +
-      'malzeme, Sınıflarım ise yalnız senin verin. İkisi birbirine ' +
-      'karışmaz — birinden ders malzemesi alır, öbüründe sınıfını ' +
-      'yönetirsin.</p>' +
+      '<p class="kdt-ozet"><b>Kısacası:</b> hangi aracın ne işe yaradığını katalogda, ' +
+      'hazır malzemeyi sınıfının kitaplığında bulursun; sınıf listesi, defter ve sonuçlar ' +
+      '<b>Sınıflarım</b>da — onlar yalnız senin verin.</p>' +
       '</div>';
   }
 
@@ -610,7 +662,7 @@
     if (document.getElementById('kdTanitim') || ++tur > 40) clearInterval(zaman);
   }, 200);
 
-  function siteAc() { sahneAc('kidefarapca.com — kılavuz', siteIc()); }
+  function siteAc() { sahneAc('kidefarapca.com — araç kataloğu ve kılavuz', siteIc()); }
 
   window.KidefKimlik = { ciz: ciz, ac: ac, siteAc: siteAc, kapat: kapat };
 })();
