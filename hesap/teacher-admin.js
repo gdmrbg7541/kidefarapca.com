@@ -140,6 +140,8 @@ function renderAdminPanel() {
 
     adminSection.innerHTML = `
         <div class="glass-card">
+            <!-- CANLI ÖĞRETMEN SAYACI (02.11.2026): en üstte, yalnız yönetici; panel açılınca N-10'dan N'ye sayar -->
+            ${_aonYoneticiMi() ? _ogsHtml() : ''}
             <!-- ÖĞRETMEN ONAYLARI EN ÜSTTE (27.10.2026): yalnız yönetici; açık başlar,
                  akordiyondan ayrı; liste 30 sn'de bir kendiliğinden yenilenir.
                  ÖĞRETMENLER BİR ARADA (02.11.2026) — yönetici: "öğretmen onayı ve öğretmenler
@@ -307,6 +309,7 @@ function renderAdminPanel() {
     renderAdminOnlinePackages();
     if (typeof loadPaymentOrders === 'function') loadPaymentOrders();
     _aonBaslat();                                    /* öğretmen onayları: ilk yükleme + 30 sn */
+    _ogsKur();                                       /* canlı öğretmen sayacı (02.11.2026) */
 }
 
 /* ==========================================
@@ -1150,6 +1153,9 @@ function _aonCerceve() {
 function _aonSok() {
     var d = document.getElementById('admin-onay-details');
     if (d && d.parentNode) d.parentNode.removeChild(d);
+    if (typeof _ogsDur === 'function') _ogsDur();      /* canlı öğretmen sayacı (02.11.2026) */
+    var ogsK = document.getElementById('ogs-kutu');
+    if (ogsK && ogsK.parentNode) ogsK.parentNode.removeChild(ogsK);
     _onayBekleyen = {};
     _aon.son = 0; _aon.imza = ''; _aon.html = ''; _aon.rozet = ''; _aon.dolu = false; _aon.bek = null;
     if (_aon.zam) { clearInterval(_aon.zam); _aon.zam = null; }
@@ -1172,6 +1178,7 @@ function _aonDinle() {
     if (_aon.din && _aon.dinUid === uid) return;
     _aonDinlemeyiBirak();
     _aon.dinUid = uid; _aon.canli = { liste: null, red: null };
+    _ogs.bek = null;                                   /* canlı öğretmen sayacı: ilk teslim taban */
     var kol = firebase.firestore().collection('kullanicilar');
     var ad = function (x) { return String(x.name || ''); };
     var ms = function (t) { try { return (t && t.toDate) ? (t.toDate().getTime() || 0) : (typeof t === 'number' ? t : 0); } catch (e) { return 0; } };
@@ -1185,6 +1192,7 @@ function _aonDinle() {
         var l = [];
         snap.forEach(function (d) { var v = d.data() || {}; v._id = d.id; l.push(v); });
         l.sort(function (a, b) { return ad(a).localeCompare(ad(b), 'tr'); });
+        _ogsBekleyen(l);                               /* yeni kayıt → sayaç yeniden sayar */
         if (_aon.canli) { _aon.canli.liste = l; _aonCanliCiz(); }
     }, koptu);
     var u2 = kol.where('ogretmenOnay', '==', 'reddedildi').onSnapshot(function (snap) {
@@ -1550,6 +1558,317 @@ function _aogAy(ms) {
     return _AOG_AYLAR[d.getMonth()] + ' ' + d.getFullYear();
 }
 
+/* ==========================================================================
+   CANLI ÖĞRETMEN SAYACI (02.11.2026) — yönetici: "yönetici giriş yaptığında güncel öğretmen
+   sayısı en üstte görünsün, yönetici paneli açıldığında öğretmen sayısı şöyle bi animasyonla
+   görünsün, örneğin 250 tane varsa 240'tan 250 ye kadar sayı artma animasyonu olsun, yaylanma
+   ve esneme efekti de olsun".
+   · Yalnız yönetici, panelin en üstünde. Öğretmenlere hiçbir yerde görünmez (sayı belli olmasın).
+   · Sayı: kullanicilar'da role=='teacher' (öğretmen listesindeki «öğretmen» kutusuyla aynı).
+     Firestore REST runAggregationQuery/count ile gelir: bütün listeyi okumadan, tek okuma.
+     REST kalıcı reddederse (kural, anahtar) listeden sayılır (listeyle aynı 10 dk önbellek).
+     Yönetici girince (panel arkada çizilir) sayılır; panel açılırken 60 sn'den eskiyse tazelenir;
+     öğretmen listesi okununca listeden; yeni öğretmen kaydı (canlı onay dinleyicisi) gelince
+     yeniden sayılır. Son sayı tarayıcıda (kidef_ogs_son): sayım gecikirse açılış onunla başlar.
+   · Animasyon panel EKRANA GELİNCE oynar (her açılışta yeniden); panel ekrandayken yeniden
+     çizilirse sayı hareketsiz yazılır. N-10'dan N'ye 10 adım, sona doğru yavaşlayarak; her
+     adımda küçük zıplama, son adımlarda yay gerilir (esneme), N'de bırakılır: zıplar, basılır,
+     sönerek oturur (yaylanma). Sayı değişirse eski sayıdan yeniye aynı hareket, daha hafif.
+     «Hareketi azalt» açık cihazda sayı hareketsiz yazılır.
+   ========================================================================== */
+var _ogs = { n: null, t: 0, taze: false, ekran: null, oynadi: false, gorunur: false, gozcu: null, hedef: null,
+             istek: null, surer: false, restYok: false, tekrar: false, sonIstek: 0, zam: [], bosZam: null,
+             anim: false, bek: null, beklendi: false, yay: null };
+var OGS_DEPO = 'kidef_ogs_son', OGS_TTL = 60e3;
+/* bırakış: [an, yukarı(px), en, boy] — gerilmiş duruştan başlar, zıplar, basılır, söner */
+var OGS_YAY = [[0, 0, .92, 1.16], [.12, -14, .95, 1.10], [.26, 0, 1.18, .80], [.38, -5, .94, 1.08],
+               [.50, 0, 1.07, .93], [.62, -1.5, .98, 1.03], [.74, 0, 1.02, .98], [.86, 0, .995, 1.006], [1, 0, 1, 1]];
+
+function _ogsBicim(n) {
+    if (n == null || !isFinite(n)) return '—';
+    try { return Number(n).toLocaleString('tr-TR'); } catch (e) { return String(n); }
+}
+function _ogsAzHareket() {
+    try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+    catch (e) { return false; }
+}
+function _ogsDepoOku() {
+    if (_ogs.n != null) return;
+    try {
+        var v = JSON.parse(localStorage.getItem(OGS_DEPO) || 'null');
+        if (v && isFinite(v.n) && v.n >= 0) { _ogs.n = +v.n; _ogs.t = +v.t || 0; _ogs.taze = false; }
+    } catch (e) { }
+}
+function _ogsStil() {
+    if (document.getElementById('ogs-stil')) return;
+    var st = document.createElement('style');
+    st.id = 'ogs-stil';
+    st.textContent = [
+        '.ogs-kutu{display:flex; align-items:center; gap:16px; margin:0 0 16px; padding:14px 24px 14px 14px;',
+        '  border-radius:18px; border:1px solid #D3E2FB;',
+        '  background:linear-gradient(120deg,#EEF4FF 0%,#F8FBFF 55%,#EAF7F3 100%); box-shadow:0 6px 18px rgba(27,79,156,.08);}',
+        '.ogs-kutu.ogs-ilk{visibility:hidden;}',
+        '.ogs-simge{flex:0 0 auto; width:56px; height:56px; border-radius:16px; display:flex; align-items:center;',
+        '  justify-content:center; font-size:1.9rem; background:#fff; box-shadow:0 2px 8px rgba(27,79,156,.12);}',
+        '.ogs-yay{display:inline-block; transform-origin:50% 100%;}',
+        '.ogs-sayi{display:inline-block; font-size:3.4rem; line-height:1; font-weight:900; color:#1B4F9C;',
+        '  letter-spacing:-.02em; font-variant-numeric:tabular-nums; min-width:1ch;}',
+        '.ogs-kutu.ogs-bos .ogs-sayi{color:#B8C1CC;}',
+        '.ogs-yazi{display:flex; flex-direction:column; font-size:1.15rem; font-weight:800; color:#2c3e50; line-height:1.15;}',
+        '.ogs-yazi small{font-size:.8rem; font-weight:700; color:#8A94A3; margin-top:2px;}',
+        '@media (max-width:560px){ .ogs-kutu{gap:12px; padding:12px 16px 12px 12px;}',
+        '  .ogs-simge{width:46px; height:46px; font-size:1.5rem;} .ogs-sayi{font-size:2.7rem;} .ogs-yazi{font-size:1rem;} }'
+    ].join('\n');
+    (document.head || document.documentElement).appendChild(st);
+}
+/* renderAdminPanel içinde, en üstte */
+function _ogsHtml() {
+    _ogsStil(); _ogsDepoOku();
+    var hazir = _ogs.oynadi && _ogs.ekran != null;          /* açılış oynadıysa: yeniden çizim hareketsiz */
+    return '<div class="ogs-kutu' + (hazir ? '' : ' ogs-ilk') + '" id="ogs-kutu" role="status"' +
+             ' aria-label="' + (hazir ? _ogsBicim(_ogs.ekran) + ' kayıtlı öğretmen' : 'Kayıtlı öğretmen sayısı') + '">' +
+             '<span class="ogs-simge" aria-hidden="true">👨‍🏫</span>' +
+             '<span class="ogs-yay" id="ogs-yay" aria-hidden="true"><b class="ogs-sayi" id="ogs-sayi">' +
+               (hazir ? _ogsBicim(_ogs.ekran) : '') + '</b></span>' +
+             '<span class="ogs-yazi" aria-hidden="true">öğretmen<small>kayıtlı</small></span>' +
+           '</div>';
+}
+function _ogsZaman(f, ms) { var id = setTimeout(f, ms); _ogs.zam.push(id); return id; }
+function _ogsDur() {
+    _ogs.zam.forEach(function (id) { clearTimeout(id); });
+    _ogs.zam = []; _ogs.bosZam = null; _ogs.anim = false;
+    if (_ogs.yay) { try { _ogs.yay.cancel(); } catch (e) { } _ogs.yay = null; }
+}
+function _ogsYaz(v) {
+    var s = document.getElementById('ogs-sayi'), k = document.getElementById('ogs-kutu');
+    if (s) s.textContent = _ogsBicim(v);
+    if (k) k.setAttribute('aria-label', v == null ? 'Kayıtlı öğretmen sayısı' : _ogsBicim(v) + ' kayıtlı öğretmen');
+    _ogs.ekran = v;
+}
+function _ogsAnim(el, kare, sec) {
+    if (!el || typeof el.animate !== 'function') return null;
+    try { return el.animate(kare, sec); } catch (e) { return null; }
+}
+/* açılış: kutu süzülür, sayı küçükten büyüyüp hafif taşarak yerine oturur */
+function _ogsGiris() {
+    _ogsAnim(document.getElementById('ogs-kutu'),
+        [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0px)' }],
+        { duration: 320, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    _ogsAnim(document.getElementById('ogs-yay'), [
+        { opacity: 0, transform: 'translateY(8px) scale(.45,.45)' },
+        { opacity: 1, transform: 'translateY(-4px) scale(1.12,1.12)', offset: .55 },
+        { opacity: 1, transform: 'translateY(0px) scale(.97,1.03)', offset: .8 },
+        { opacity: 1, transform: 'translateY(0px) scale(1,1)' }], { duration: 440, easing: 'ease-out' });
+}
+/* her adımda küçük zıplama (sona doğru azalır) */
+function _ogsTik(k) {
+    var h = 6 - 4 * k;
+    _ogsAnim(document.getElementById('ogs-sayi'), [
+        { transform: 'translateY(0px)' }, { transform: 'translateY(' + (-h).toFixed(1) + 'px)', offset: .4 },
+        { transform: 'translateY(0px)' }], { duration: 140, easing: 'ease-out' });
+}
+/* esneme: son adımlarda yay gerilir — dikine uzar, enine incelir */
+function _ogsGer(sure, a) {
+    var y = document.getElementById('ogs-yay');
+    if (!y || sure < 30) return;
+    if (_ogs.yay) { try { _ogs.yay.cancel(); } catch (e) { } }
+    _ogs.yay = _ogsAnim(y, [{ transform: 'translateY(0px) scale(1,1)' },
+        { transform: 'translateY(0px) scale(' + (1 - .08 * a).toFixed(4) + ',' + (1 + .16 * a).toFixed(4) + ')' }],
+        { duration: sure, easing: 'cubic-bezier(.55,0,.85,.4)', fill: 'forwards' });
+}
+/* yaylanma: bırakılır — zıplar, basılır, sönerek oturur; kutu bir kez parlar */
+function _ogsBirak(a) {
+    var y = document.getElementById('ogs-yay');
+    if (_ogs.yay) { try { _ogs.yay.cancel(); } catch (e) { } _ogs.yay = null; }
+    if (!y) return;
+    _ogsAnim(y, OGS_YAY.map(function (r) {
+        return { offset: r[0], easing: 'ease-in-out',
+                 transform: 'translateY(' + (r[1] * a).toFixed(2) + 'px) scale(' + (1 + (r[2] - 1) * a).toFixed(4) +
+                            ',' + (1 + (r[3] - 1) * a).toFixed(4) + ')' };
+    }), { duration: 1000 });
+    _ogsAnim(document.getElementById('ogs-kutu'), [
+        { boxShadow: '0 6px 18px rgba(27,79,156,.08), 0 0 0 0 rgba(27,79,156,' + (.30 * a).toFixed(2) + ')' },
+        { boxShadow: '0 6px 18px rgba(27,79,156,.08), 0 0 0 18px rgba(27,79,156,0)' }],
+        { duration: 800, easing: 'ease-out' });
+}
+/* bas → son: en çok 10 adım (fark büyükse atlayarak), sona doğru yavaşlar */
+function _ogsOynat(bas, son, ilk) {
+    _ogsDur();
+    var kutu = document.getElementById('ogs-kutu');
+    if (!kutu) return;
+    kutu.classList.remove('ogs-ilk', 'ogs-bos');
+    var a = ilk ? 1 : .6;
+    if (_ogsAzHareket()) { _ogsYaz(son); return; }
+    if (bas === son) {
+        _ogsYaz(son);
+        if (ilk) { _ogsGiris(); _ogsZaman(function () { _ogsBirak(a); }, 300); }
+        return;
+    }
+    var fark = Math.abs(son - bas), yon = son > bas ? 1 : -1, n = Math.min(fark, 10), t = ilk ? 260 : 60;
+    var zaman = [], deger = [];
+    for (var i = 1; i <= n; i++) {
+        var k = i / n;
+        t += (ilk ? 45 : 70) + 230 * Math.pow(k, 3);
+        zaman.push(Math.round(t)); deger.push(i === n ? son : Math.round(bas + yon * fark * k));
+    }
+    var gi = Math.min(n - 1, Math.max(0, Math.ceil(n * .6) - 1));
+    var gerBas = gi >= n - 1 ? (ilk ? 300 : 40) : zaman[gi];
+    _ogs.anim = true;
+    _ogsYaz(bas);
+    if (ilk) _ogsGiris();
+    deger.forEach(function (v, i) {
+        _ogsZaman(function () {
+            _ogsYaz(v);
+            if (i < n - 1) { _ogsTik((i + 1) / n); return; }
+            _ogs.anim = false;
+            _ogsBirak(a);
+            _ogsZaman(_ogsGoster, 1050);             /* bu arada sayı değiştiyse yeniye */
+        }, zaman[i]);
+    });
+    _ogsZaman(function () { _ogsGer(zaman[n - 1] - gerBas, a); }, gerBas);
+}
+/* sayı hiç yoksa (çevrimdışı, ilk giriş) bir süre sonra «—» */
+function _ogsBosBekle() {
+    if (_ogs.bosZam) return;
+    _ogs.bosZam = _ogsZaman(function () {
+        _ogs.bosZam = null;
+        var k = document.getElementById('ogs-kutu');
+        if (!k || _ogs.n != null) return;
+        k.classList.remove('ogs-ilk'); k.classList.add('ogs-bos');
+        _ogsYaz(null);
+    }, 1200);
+}
+function _ogsGoster() {
+    var kutu = document.getElementById('ogs-kutu');
+    if (!kutu || !_ogs.gorunur || _ogs.anim) return;
+    if (!_ogs.oynadi) {
+        if (_ogs.n == null) { _ogsBosBekle(); return; }
+        if (!_ogs.taze && _ogs.surer && !_ogs.beklendi) {   /* taze sayı yolda: biraz bekle, gelmezse saklı sayıyla */
+            _ogs.beklendi = true;
+            _ogsZaman(_ogsGoster, 900);
+            return;
+        }
+        _ogs.oynadi = true;
+        _ogsOynat(Math.max(0, _ogs.n - 10), _ogs.n, true);
+        return;
+    }
+    if (_ogs.n != null && _ogs.ekran !== _ogs.n)
+        _ogsOynat(_ogs.ekran == null ? Math.max(0, _ogs.n - 10) : _ogs.ekran, _ogs.n, false);
+    else if (kutu.classList.contains('ogs-ilk') && _ogs.ekran != null) { kutu.classList.remove('ogs-ilk'); _ogsYaz(_ogs.ekran); }
+}
+/* yeni sayı: sayımdan ya da öğretmen listesinden (t: alındığı an; eskisi yenisini ezmez) */
+function _ogsBildir(n, t) {
+    n = +n; t = +t || Date.now();
+    if (!isFinite(n) || n < 0) return;
+    if (_ogs.taze && t < _ogs.t) return;
+    _ogs.n = n; _ogs.t = t; _ogs.taze = true;
+    try { localStorage.setItem(OGS_DEPO, JSON.stringify({ n: n, t: t })); } catch (e) { }
+    _ogsGoster();
+}
+/* Firestore REST count: kurallar yöneticinin kimliğiyle denetlenir; okuma faturası 1 */
+function _ogsSay() {
+    if (_ogs.istek) return _ogs.istek;
+    var u = null, op = null;
+    try { u = firebase.auth().currentUser; op = (firebase.app && firebase.app().options) || null; } catch (e) { }
+    if (!u || typeof u.getIdToken !== 'function' || !op || !op.projectId || typeof fetch !== 'function')
+        return Promise.resolve(null);
+    var iptal = (typeof AbortController === 'function') ? new AbortController() : null;
+    var sure = setTimeout(function () { try { if (iptal) iptal.abort(); } catch (e) { } }, 8000);
+    _ogs.istek = u.getIdToken().then(function (jeton) {
+        return fetch('https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(op.projectId) +
+                     '/databases/(default)/documents:runAggregationQuery' + (op.apiKey ? '?key=' + encodeURIComponent(op.apiKey) : ''), {
+            method: 'POST', cache: 'no-store', credentials: 'omit', signal: iptal ? iptal.signal : undefined,
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jeton },
+            body: JSON.stringify({ structuredAggregationQuery: {
+                structuredQuery: { from: [{ collectionId: 'kullanicilar' }],
+                    where: { fieldFilter: { field: { fieldPath: 'role' }, op: 'EQUAL', value: { stringValue: 'teacher' } } } },
+                aggregations: [{ alias: 'n', count: {} }] } })
+        });
+    }).then(function (r) {
+        if (!r || !r.ok) {
+            /* kalıcı ret (kural, adres, anahtar): bu oturumda listeden sayılır */
+            if (r && /^(400|401|403|404)$/.test(String(r.status))) _ogs.restYok = true;
+            throw new Error('http ' + (r && r.status));
+        }
+        return r.json();
+    }).then(function (j) {
+        var L = Array.isArray(j) ? j : [j];
+        for (var i = 0; i < L.length; i++) {
+            var f = L[i] && L[i].result && L[i].result.aggregateFields && L[i].result.aggregateFields.n;
+            if (f) { var v = +(f.integerValue != null ? f.integerValue : f.doubleValue); if (isFinite(v)) return v; }
+        }
+        throw new Error('sayı yok');
+    }).then(function (v) { clearTimeout(sure); _ogs.istek = null; return v; },
+            function (e) {
+                clearTimeout(sure); _ogs.istek = null;
+                try { console.warn('öğretmen sayısı alınamadı:', (e && (e.message || e.name)) || e); } catch (x) { }
+                return null;
+            });
+    return _ogs.istek;
+}
+/* yedek yol (REST kalıcı reddederse): öğretmen listesini okuyup sayar — liste ile aynı 10 dk önbellek */
+function _ogsListedenSay(zorla) {
+    if (typeof firebase === 'undefined' || typeof isFirebaseReady === 'undefined' || !isFirebaseReady) return Promise.resolve(null);
+    return _abSnap('ogretmen', function () {
+        return firebase.firestore().collection('kullanicilar').where('role', '==', 'teacher').get();
+    }, !zorla).then(function (snap) {
+        return { n: snap.size, t: (_abOnbellek.ogretmen && _abOnbellek.ogretmen.t) || Date.now() };
+    }, function () { return null; });
+}
+function _ogsTazele(zorla) {
+    if (_ogs.surer) { if (zorla) _ogs.tekrar = true; return; }
+    if (!zorla && _ogs.taze && Date.now() - _ogs.t < (_ogs.restYok ? AB_TTL : OGS_TTL)) return;
+    if (!zorla && Date.now() - _ogs.sonIstek < 15e3) return;      /* üst üste çizimlerde tek istek */
+    _ogs.sonIstek = Date.now(); _ogs.surer = true;
+    var is = _ogs.restYok ? _ogsListedenSay(zorla) : _ogsSay().then(function (n) {
+        if (n != null) return { n: n, t: Date.now() };
+        return _ogs.restYok ? _ogsListedenSay(zorla) : null;
+    });
+    is.then(null, function () { return null; }).then(function (r) {
+        _ogs.surer = false;
+        if (r) _ogsBildir(r.n, r.t);
+        else _ogsGoster();                                         /* bekleyen açılış saklı sayıyla başlasın */
+        if (_ogs.tekrar) { _ogs.tekrar = false; _ogsTazele(true); }
+    });
+}
+/* canlı onay dinleyicisi: bekleyenlere YENİ kimlik düştüyse (yeni kayıt) yeniden say */
+function _ogsBekleyen(l) {
+    var yeni = {}, eklendi = false;
+    (l || []).forEach(function (o) { if (o && o._id) { yeni[o._id] = 1; if (_ogs.bek && !_ogs.bek[o._id]) eklendi = true; } });
+    _ogs.bek = yeni;
+    if (eklendi) _ogsTazele(true);
+}
+/* panel bölümü görünür mü: dev kök payıyla gözcü yalnız «gösteriliyor / gizli» farkını yakalar */
+function _ogsGozcuHaber(es) {
+    var e = es[es.length - 1], g = !!(e && e.isIntersecting);
+    if (g === _ogs.gorunur) return;
+    _ogs.gorunur = g;
+    if (!g) { _ogsDur(); _ogs.oynadi = false; _ogs.beklendi = false; return; }
+    _ogsTazele(false);                                 /* 60 sn'den eskiyse */
+    _ogsGoster();
+}
+function _ogsKur() {
+    if (!_aonYoneticiMi()) {
+        _ogsDur();
+        var o = document.getElementById('ogs-kutu');
+        if (o && o.parentNode) o.parentNode.removeChild(o);
+        return;
+    }
+    _ogsStil(); _ogsDepoOku();
+    var sec = document.getElementById('admin-section');
+    if (sec && typeof IntersectionObserver === 'function') {
+        if (_ogs.hedef !== sec) {
+            if (_ogs.gozcu) { try { _ogs.gozcu.disconnect(); } catch (e) { } }
+            _ogs.hedef = sec; _ogs.gorunur = false;
+            _ogs.gozcu = new IntersectionObserver(_ogsGozcuHaber, { rootMargin: '99999px 0px 99999px 0px' });
+            _ogs.gozcu.observe(sec);
+        }
+    } else _ogs.gorunur = !!(sec && sec.offsetParent !== null);
+    _ogsTazele(false);
+    _ogsGoster();
+}
+window._ogsKur = _ogsKur;
+
 function renderAdminTeacherList(kaynak) {
     var container = document.getElementById('admin-teacher-list');
     if (!container) return;
@@ -1571,6 +1890,8 @@ function renderAdminTeacherList(kaynak) {
             liste.sort(function (a, b) {
                 return String(a.name || a.email || '').localeCompare(String(b.name || b.email || ''), 'tr');
             });
+            /* canlı öğretmen sayacı (02.11.2026): liste okunduğu anın sayısı */
+            _ogsBildir(liste.length, (_abOnbellek.ogretmen && _abOnbellek.ogretmen.t) || Date.now());
 
             _adminOgretmenler = {};
             if (!liste.length) {
