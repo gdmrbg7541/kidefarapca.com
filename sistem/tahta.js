@@ -674,6 +674,7 @@
       '<rect x="202" y="66" width="76" height="7" rx="3.5" fill="#cbd5e1"/></svg>';
   }
   function bekleGoster(tur, ek) {
+    if (OGR_KAPALI) tur = 'ogrenci';                 /* öğrenci hesabı: başka ekran gelmez (02.11.2026) */
     var b = $('thBekle');
     if (!tur) { b.hidden = true; zKumandaGoster(); return; }
     /* BEKLEME EKRANI YOK (21.10.2026): Sınıf Ekranı beklerken ya da yansıtma başka
@@ -697,6 +698,10 @@
     } else if (tur === 'giris') {
       ic = '<h1>' + kac(kd('th.giris_bas', 'Önce giriş yap')) + '</h1>' +
         '<p>' + kac(kd('th.giris_alt', 'Tahtaya yansıtma, bilgisayarla tahtada aynı hesapla giriş yapınca çalışır.')) + '</p>' +
+        '<div class="th-tuslar"><button type="button" class="th-ana" data-th="anasayfa">' + kac(kd('th.anasayfaya', 'Ana sayfaya git')) + '</button></div>';
+    } else if (tur === 'ogrenci') {
+      ic = '<h1>' + kac(kd('th.ogr_bas', 'Tahta öğretmen hesabıyla açılır')) + '</h1>' +
+        '<p>' + kac(kd('th.ogr_alt', 'Bu bir öğrenci hesabı. Tahtaya yansıtma ve kumanda, öğretmenlerin derste kullandığı araçlar.')) + '</p>' +
         '<div class="th-tuslar"><button type="button" class="th-ana" data-th="anasayfa">' + kac(kd('th.anasayfaya', 'Ana sayfaya git')) + '</button></div>';
     } else if (tur === 'vt') {
       ic = '<h1>' + kac(kd('th.vt_bas', 'Tahta bağlantısı kurulamadı')) + '</h1>' +
@@ -931,8 +936,52 @@
         }
       }
       S.uid = u.uid;
+      /* ÖĞRENCİ HESABI (02.11.2026): kapı bileti «öğrenci» diyorsa tahta hiç başlamaz */
+      if (OGR_KAPALI || ogrenciBileti(u)) { ogrenciKapat(); return; }
       hazir(vt.ref('tahta/' + u.uid));
+      rolDenetle(u);
     });
+  }
+  /* ÖĞRENCİ HESABI TAHTAYA GİREMEZ (02.11.2026) — yönetici: öğretmenler öğrenci hesabıyla ücretsiz
+     kullanmasın. Tahta düğmesi zaten yalnız öğretmende; sayfa adresle de açılmasın.
+     · Ana sayfanın kapı bileti (localStorage kidefKapiBilet) bu hesabı «student» diyorsa hemen kapanır.
+     · Değilse tahta öğretmeni bekletmeden başlar; rol kullanicilar/<uid>.role'den REST ile okunur
+       (sayfa Firestore yüklemez): öğretmen ya da yönetici değilse (belge/rol yoksa da) kapanır.
+     · Ağ hatasında kapatmaz (derste öğretmen yarı yolda kalmasın). */
+  var OGR_KAPALI = false;
+  function ogrenciBileti(u) {
+    try {
+      var b = JSON.parse(localStorage.getItem('kidefKapiBilet') || 'null');
+      return !!(b && u && b.uid === u.uid && b.rol === 'student');
+    } catch (e) { return false; }
+  }
+  function rolDenetle(u) {
+    if (!u || typeof u.getIdToken !== 'function' || typeof fetch !== 'function') return;
+    u.getIdToken().then(function (j) {
+      return fetch('https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(AYAR.projectId) +
+        '/databases/(default)/documents/kullanicilar/' + encodeURIComponent(u.uid) + '?mask.fieldPaths=role',
+        { cache: 'no-store', credentials: 'omit', headers: { 'Authorization': 'Bearer ' + j } });
+    }).then(function (r) {
+      if (r.status === 404) return {};
+      if (!r.ok) throw new Error('http ' + r.status);
+      return r.json();
+    }).then(function (j) {
+      if (S.uid !== u.uid) return;                       /* bu arada hesap değişti */
+      var rol = j && j.fields && j.fields.role && j.fields.role.stringValue;
+      if (rol === 'teacher' || rol === 'admin') return;
+      ogrenciKapat();
+    }).catch(function () { });
+  }
+  function ogrenciKapat() {
+    OGR_KAPALI = true;
+    if (S.kok) {
+      var k = S.kok; S.kok = null; S.lider = false;
+      try { k.child('izle/' + BEN).remove(); } catch (e) { }
+    }
+    try { if (vt) vt.goOffline(); } catch (e) { }
+    try { CERCEVE.src = 'about:blank'; } catch (e) { }
+    ['thKPanel', 'thCubuk', 'thPerde', 'thDurum'].forEach(function (id) { var e = $(id); if (e) e.hidden = true; });
+    bekleGoster('ogrenci');
   }
   var bayatBakildi = false;
   function bayatOturum(u) {
@@ -4462,7 +4511,7 @@
 
   /* ======================================================= BAŞLATMA */
   function yansitBasla(kok) {
-    if (S.kok) return;
+    if (S.kok || OGR_KAPALI) return;
     if (S.devam && !S.karar) { devamKarar(kok); return; }       /* önce: ders tahtada sürüyor mu? */
     S.kok = kok; S.lider = true;
     stilKur(); bekleGoster(null);
@@ -4505,7 +4554,7 @@
      açılır, geçmişi tahtadan gelir; ilk dokunuşta kontrol bu cihaza geçer
      (aynı sayfa, aynı hâl: tahta yenilenmez) */
   function takipBasla(kok, y) {
-    if (S.kok) return;
+    if (S.kok || OGR_KAPALI) return;
     S.kok = kok; S.lider = false; S.bas = y.bas || null;
     try { kok.child('isaret').set(null); } catch (e) { }      /* önceki kumandanın bıraktığı lazer kalkar */
     S.izlenenKumanda = (y && y.cihaz === 'bilgisayar') ? y.id : null;     /* izlenen (kopmuş) eski kumanda: devir sayılmaz */
@@ -4571,7 +4620,7 @@
     } catch (e) { }
   }
   function izleBasla(kok) {
-    if (S.kok) return;
+    if (S.kok || OGR_KAPALI) return;
     S.kok = kok;
     ekranSahiplen();               /* hesabın Sınıf Ekranı bu sayfa (dinleyiciden ÖNCE yazılır) */
     try { kok.child('cikis').remove(); } catch (e) { }      /* önceki tahtanın çıkışı geçersiz: Sınıf Ekranı yine açık (26.10.2026) */

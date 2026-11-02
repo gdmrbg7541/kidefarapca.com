@@ -3070,7 +3070,7 @@
        (flipbooklar ve defter de okur; başka hesabın kaydı sayılmaz).
        ------------------------------------------------------------------ */
     var HAK_ARA = 10 * 60e3;
-    var _hakUid = null, _hakZaman = 0, _hakSoz = null, _hakSonraki = 0, _hedefZaman = 0;
+    var _hakUid = null, _hakZaman = 0, _hakSoz = null, _hakSonraki = 0, _hedefZaman = 0, _hakBagsiz = false;
     function hakDurumu(v) {
         var h = benHesap(v), o = { uid: v.uid, rol: 'teacher', z: Date.now() };
         var rb = v.belge && v.belge.referans;
@@ -3105,8 +3105,17 @@
         if (_hakUid !== u.uid) H.uid(u.uid);
         if (Date.now() - _hedefZaman > HAK_ARA) { _hedefZaman = Date.now(); ozetOku().catch(function () { }); }
         if (r !== 'teacher') {
-            if (_hakUid !== u.uid || zorla) {
-                H.durumYaz({ uid: u.uid, rol: r, sinirsiz: true, sebep: r === 'admin' ? 'yonetici' : r, z: Date.now() });
+            /* BAĞSIZ ÖĞRENCİ (02.11.2026) — yönetici: öğretmenler öğrenci hesabıyla ücretsiz kullanmasın.
+               Bağ bilgisi kesinse (hesap/ogrencihesap.js OH.bagBilgisi) ve hiçbir öğretmene bağlı
+               değilse ders araçlarında deneme hakkı (sistem/hak.js). Bilgi gelince bu 2 sn'lik
+               yoklamada yazılır; bağlanınca yine sınırsız. */
+            var bb = (r === 'student' && window.OH) ? window.OH.bagBilgisi : null;
+            var bagsiz = !!(bb && bb.uid === u.uid && bb.bagli === false);
+            if (_hakUid !== u.uid || zorla || bagsiz !== _hakBagsiz) {
+                H.durumYaz(bagsiz
+                    ? { uid: u.uid, rol: r, sinirsiz: false, bagsiz: true, sebep: 'ogrenci-bagsiz', z: Date.now() }
+                    : { uid: u.uid, rol: r, sinirsiz: true, sebep: r === 'admin' ? 'yonetici' : r, z: Date.now() });
+                _hakBagsiz = bagsiz;
             }
             _hakUid = u.uid; _hakZaman = Date.now();
             return;

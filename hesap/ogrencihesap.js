@@ -1745,6 +1745,10 @@
 
             OH.baglar = Object.keys(harita).map(function (k) { return harita[k]; });
             aktifiSec();
+            /* BAĞSIZ ÖĞRENCİ (02.11.2026): bağ bilgisi yalnız sorgu GERÇEKTEN okunduysa kesin;
+               hesap/destek.js bunu sistem/hak.js'e yazar (bağsız öğrenciye deneme hakkı) */
+            if (okundu.sorgu) OH.bagBilgisi = { uid: u.uid, t: Date.now(),
+                bagli: OH.baglar.some(function (b) { return !!b && b.durum === 'onayli'; }) };
             if (OH.bagliMi()) {
                 OH.ozetiDinle();
             } else {
@@ -2066,6 +2070,12 @@
                boylece zaten bagli/bekleyen hesaba ikinci istek atilmaz. */
             if (p && p.then) p.then(function () { OH.bekleyenKoduIsle(); });
             else OH.bekleyenKoduIsle();
+            /* BAĞSIZ ÖĞRENCİ (02.11.2026): deneme hakkı biten araçtan «Öğretmenimin kodu var»
+               (index.html#ogretmen-kodu) → kod penceresi */
+            if (location.hash === '#ogretmen-kodu') {
+                try { history.replaceState(history.state, '', location.pathname + location.search); } catch (e) { }
+                setTimeout(function () { try { OH.kodModalAc(); } catch (e) { } }, 600);
+            }
         }
     };
 

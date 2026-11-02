@@ -233,6 +233,13 @@ function renderAdminPanel() {
                 <div id="admin-student-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;">Bölümü açınca yüklenir…</div>
             </details>
 
+            <!-- ÖĞRETMEN OLABİLECEK ÖĞRENCİLER (02.11.2026): öğretmen gibi kullanan öğrenci hesapları; açınca okunur -->
+            ${_aonYoneticiMi() ? `
+            <details class="admin-details" name="admin-accordion" id="admin-supheli-details" ontoggle="if(this.open) adminSupheliYukle()">
+                <summary class="admin-summary">🔍 Öğretmen olabilecek öğrenciler <span id="admin-supheli-badge"></span></summary>
+                <div id="admin-supheli" style="margin-top:12px; margin-bottom:10px; max-height:560px; overflow-y:auto;">Bölümü açınca yüklenir…</div>
+            </details>` : ''}
+
             <details class="admin-details" name="admin-accordion">
                 <summary class="admin-summary">
                     <span style="display: inline-flex; align-items: center;">
@@ -1156,6 +1163,8 @@ function _aonSok() {
     if (typeof _ogsDur === 'function') _ogsDur();      /* canlı öğretmen sayacı (02.11.2026) */
     var ogsK = document.getElementById('ogs-kutu');
     if (ogsK && ogsK.parentNode) ogsK.parentNode.removeChild(ogsK);
+    var aspD = document.getElementById('admin-supheli-details');      /* öğretmen olabilecek öğrenciler */
+    if (aspD && aspD.parentNode) aspD.parentNode.removeChild(aspD);
     _onayBekleyen = {};
     _aon.son = 0; _aon.imza = ''; _aon.html = ''; _aon.rozet = ''; _aon.dolu = false; _aon.bek = null;
     if (_aon.zam) { clearInterval(_aon.zam); _aon.zam = null; }
@@ -3347,3 +3356,179 @@ function _abSor(m, evet) {
     }
     if (confirm(m)) evet();
 }
+
+/* ==========================================================================
+   ÖĞRETMEN OLABİLECEK ÖĞRENCİLER (02.11.2026) — yönetici: öğretmenler öğrenci hesabıyla siteyi
+   ücretsiz kullanmasın; panelde «öğretmen olabilir» listesi, tek tuşla öğretmen hesabına çevir.
+   · Bölüm açılınca okunur (10 dk önbellek): kullanicilar (Kayıtlı Öğrenciler listesiyle ortak) ve
+     ogrenciBaglari.
+   · İşaretler (puan): tahtada süre 3 · mesleği öğretmen/hoca/eğitimci… 3 · e-posta meb.gov.tr /
+     meb.k12.tr ya da adında öğretmen/hoca 2 · ankette «yetişkin» 1 · hiçbir öğretmene bağlı değil 1 ·
+     sitede 3 saatten çok ya da 8 gün ve üstü 1. Puanı 2 ve üstü listelenir, en olası üstte.
+   · «Öğretmen yap»: KidefErisim.onayla (rol teacher + onaylı + hoş geldin mesajı), ogrencidenCevrildi
+     zamanı; öğretmen sayacı tazelenir. «Öğrenci»: inceleme.karar 'ogrenci' yazılır, kart alttaki
+     «Öğrenci dediklerin» kümesine iner (oradan da öğretmen yapılabilir).
+   ========================================================================== */
+var _asp = { L: null, ogr: {}, ogt: {} };
+var ASP_MESLEK = /öğretmen|ogretmen|hoca|eğitimci|egitimci|teacher|akademisyen|öğretim görevlisi|ogretim gorevlisi|müdür|mudur|idareci/;
+function _aspStil() {
+    if (document.getElementById('asp-stil')) return;
+    var st = document.createElement('style');
+    st.id = 'asp-stil';
+    st.textContent = [
+        '#admin-supheli .asp-ust{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;',
+        '  margin:0 0 10px; font-size:.88rem; color:#5B6B7F; font-weight:800;}',
+        '#admin-supheli .asp-kart{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;',
+        '  padding:12px 14px; margin:0 0 10px; border-radius:14px; background:#fff; border:1px solid #E6ECF3;',
+        '  box-shadow:0 2px 8px rgba(15,42,67,.05);}',
+        '#admin-supheli .asp-sol{flex:1 1 260px; min-width:0;}',
+        '#admin-supheli .asp-ad{font-weight:800; color:#2c3e50; font-size:1rem;}',
+        '#admin-supheli .asp-alt{font-size:.8rem; color:#8A94A3; margin-top:2px; overflow-wrap:anywhere;}',
+        '#admin-supheli .asp-cipler{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;}',
+        '#admin-supheli .asp-cip{font-size:.78rem; font-weight:700; padding:3px 9px; border-radius:999px;',
+        '  background:#F4F7FB; color:#4A5A6B; border:1px solid #E3E9F1; overflow-wrap:anywhere;}',
+        '#admin-supheli .asp-cip.g3{background:#FDEDEC; color:#B03A2E; border-color:#F5C6C1;}',
+        '#admin-supheli .asp-cip.g2{background:#FFF4E6; color:#B9690F; border-color:#F8DDB8;}',
+        '#admin-supheli .asp-tus{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}',
+        '#admin-supheli .asp-tus button{border:0; border-radius:10px; padding:8px 14px; font-weight:800; font-size:.86rem; cursor:pointer;}',
+        '#admin-supheli .asp-tus .asp-ogt{background:#16A085; color:#fff;}',
+        '#admin-supheli .asp-tus .asp-ogr{background:#F1F5F9; color:#2C3E50;}',
+        '#admin-supheli .asp-bos{color:#7f8c8d; font-size:.9rem; margin:0;}',
+        '#admin-supheli details.asp-gizli{margin-top:14px;}',
+        '#admin-supheli details.asp-gizli > summary{cursor:pointer; font-weight:800; color:#5B6B7F; font-size:.9rem; margin-bottom:8px;}',
+        '#admin-supheli-badge .asp-rozet{background:#E67E22; color:#fff; border-radius:12px; padding:1px 9px; font-size:.75rem; margin-left:8px;}'
+    ].join('\n');
+    (document.head || document.documentElement).appendChild(st);
+}
+function _aspSure(sn) {
+    sn = Math.round(+sn || 0);
+    if (sn < 3600) return Math.max(1, Math.round(sn / 60)) + ' dk';
+    var s = Math.floor(sn / 3600), d = Math.round((sn % 3600) / 60);
+    return s + ' sa' + (d ? ' ' + d + ' dk' : '');
+}
+/* bagli: true / false / null (bağlar okunamadı: o işaret konmaz) */
+function _aspIsaretler(v, bagli) {
+    var I = [], kul = v.kullanim || {}, alan = kul.alan || {};
+    var tahta = +alan.tahta || 0;
+    if (tahta >= 60) I.push({ p: 3, y: '📺 Tahtada ' + _aspSure(tahta) });
+    var meslek = String(v.meslek || '').trim();
+    if (meslek && ASP_MESLEK.test(meslek.toLocaleLowerCase('tr'))) I.push({ p: 3, y: '💼 ' + meslek });
+    var ep = String(v.email || '').toLowerCase(), m = ep.split('@')[0].match(/ogretmen|öğretmen|hoca|teacher/);
+    if (/@meb\.(gov|k12)\.tr$/.test(ep)) I.push({ p: 2, y: '✉️ ' + ep.split('@')[1] });
+    else if (m) I.push({ p: 2, y: '✉️ e-postada «' + m[0] + '»' });
+    if (v.anket && v.anket.sinif === 'yetiskin') I.push({ p: 1, y: '📝 Ankette: yetişkin' });
+    if (bagli === false) I.push({ p: 1, y: '🔗 Öğretmene bağlı değil' });
+    var top = +kul.toplamSn || 0, gun = kul.gun ? Object.keys(kul.gun).length : 0;
+    if (top >= 3 * 3600 || gun >= 8) I.push({ p: 1, y: '⏱ Sitede ' + _aspSure(top) + (gun ? ' · ' + gun + ' gün' : '') });
+    return I;
+}
+function _aspBaglar(snap) {
+    if (!snap) return null;
+    var B = {};
+    snap.forEach(function (d) {
+        var v = d.data() || {};
+        if (v.durum !== 'onayli') return;
+        var u = v.uid || String(d.id).split('__')[0];
+        if (u) B[u] = true;
+    });
+    return B;
+}
+function adminSupheliYukle(zorla) {
+    var kap = document.getElementById('admin-supheli');
+    if (!kap) return;
+    _aspStil();
+    if (typeof firebase === 'undefined' || typeof isFirebaseReady === 'undefined' || !isFirebaseReady) {
+        kap.innerHTML = '<p class="asp-bos">Bu bölüm çevrimdışıyken kullanılamaz.</p>';
+        return;
+    }
+    kap.innerHTML = '<p class="asp-bos">Yükleniyor…</p>';
+    var D = firebase.firestore();
+    Promise.all([
+        _abSnap('ogrenci', function () { return D.collection('kullanicilar').get(); }, !zorla),
+        _abSnap('bag', function () { return D.collection('ogrenciBaglari').get(); }, !zorla).then(null, function () { return null; })
+    ]).then(function (r) {
+        var B = _aspBaglar(r[1]), L = [];
+        r[0].forEach(function (d) {
+            var v = d.data() || {};
+            if ((v.role && v.role !== 'student') || _asp.ogt[d.id]) return;      /* öğretmen, yönetici, az önce çevrilen */
+            var I = _aspIsaretler(v, B ? !!B[d.id] : null);
+            var p = I.reduce(function (s, x) { return s + x.p; }, 0);
+            if (p < 2) return;
+            L.push({ uid: d.id, ad: (v.name && v.name !== 'Belirtilmedi') ? v.name : (v.email || d.id), email: v.email || '',
+                     kayit: _aogKayitMs(v), I: I, p: p, tahta: +((v.kullanim || {}).alan || {}).tahta || 0,
+                     top: +(v.kullanim || {}).toplamSn || 0,
+                     ogrenci: !!(_asp.ogr[d.id] || (v.inceleme && v.inceleme.karar === 'ogrenci')) });
+        });
+        L.sort(function (a, b) {
+            return (b.p - a.p) || (b.tahta - a.tahta) || (b.top - a.top) || String(a.ad).localeCompare(String(b.ad), 'tr');
+        });
+        _asp.L = L;
+        _aspCiz();
+    }, function (e) {
+        kap.innerHTML = '<p style="color:#EF5350;">Liste alınamadı: ' + _fbEsc((e && (e.code || e.message)) || e) + '</p>';
+    });
+}
+function _aspKart(x) {
+    var s = function (p) { return p >= 3 ? ' g3' : (p >= 2 ? ' g2' : ''); };
+    return '<div class="asp-kart" data-asp-uid="' + _fbEsc(x.uid) + '">' +
+        '<div class="asp-sol"><div class="asp-ad">' + _fbEsc(x.ad) + '</div>' +
+          '<div class="asp-alt">' + _fbEsc(x.email) + (x.kayit ? ' · kayıt ' + _aogGun(x.kayit) : '') + '</div>' +
+          '<div class="asp-cipler">' + x.I.map(function (i) { return '<span class="asp-cip' + s(i.p) + '">' + _fbEsc(i.y) + '</span>'; }).join('') + '</div>' +
+        '</div>' +
+        '<div class="asp-tus"><button type="button" class="asp-ogt" data-asp="ogt">Öğretmen yap</button>' +
+          (x.ogrenci ? '' : '<button type="button" class="asp-ogr" data-asp="ogr">Öğrenci</button>') + '</div>' +
+      '</div>';
+}
+function _aspCiz() {
+    var kap = document.getElementById('admin-supheli');
+    if (!kap || !_asp.L) return;
+    var acik = _asp.L.filter(function (x) { return !x.ogrenci; }), gizli = _asp.L.filter(function (x) { return x.ogrenci; });
+    var rz = document.getElementById('admin-supheli-badge');
+    if (rz) rz.innerHTML = acik.length ? '<span class="asp-rozet">' + acik.length + '</span>' : '';
+    kap.innerHTML =
+        '<div class="asp-ust"><span>' + (acik.length ? acik.length + ' hesap · en olası üstte' : 'Öğretmen gibi görünen öğrenci hesabı yok') + '</span>' +
+          '<button type="button" class="btn" data-asp="yenile" style="font-size:.85rem;">🔄 Yenile</button></div>' +
+        acik.map(_aspKart).join('') +
+        (gizli.length ? '<details class="asp-gizli"><summary>Öğrenci dediklerin (' + gizli.length + ')</summary>' +
+                        gizli.map(_aspKart).join('') + '</details>' : '');
+    kap.onclick = function (e) {
+        var t = e.target && e.target.closest ? e.target.closest('[data-asp]') : null;
+        if (!t || !kap.contains(t)) return;
+        var is = t.getAttribute('data-asp'), kart = t.closest('[data-asp-uid]'), uid = kart && kart.getAttribute('data-asp-uid');
+        if (is === 'yenile') adminSupheliYukle(true);
+        else if (is === 'ogt' && uid) adminSupheliOgretmen(uid);
+        else if (is === 'ogr' && uid) adminSupheliOgrenci(uid);
+    };
+}
+function _aspBul(uid) { return (_asp.L || []).filter(function (x) { return x.uid === uid; })[0] || null; }
+function adminSupheliOgretmen(uid) {
+    var x = _aspBul(uid);
+    if (!x) return;
+    _abSor('«' + x.ad + '» öğretmen hesabına çevrilsin mi? Hesap öğretmen olur; deneme hakları ve destek düzeni ona da ' +
+           'işler, hoş geldin mesajı gider.', function () {
+        var E = window.KidefErisim, D = firebase.firestore();
+        var is = (E && E.onayla) ? E.onayla(uid, { ad: x.ad, email: x.email })
+                                 : D.collection('kullanicilar').doc(uid).update({ role: 'teacher', ogretmenOnay: 'onayli' });
+        is.then(function () {
+            D.collection('kullanicilar').doc(uid).update({ ogrencidenCevrildi: firebase.firestore.FieldValue.serverTimestamp() })
+                .catch(function () { });
+            _asp.ogt[uid] = 1;
+            _asp.L = _asp.L.filter(function (y) { return y.uid !== uid; });
+            delete _abOnbellek.ogrenci; delete _abOnbellek.ogretmen;
+            if (typeof _ogsTazele === 'function') _ogsTazele(true);           /* öğretmen sayacı */
+            _aspCiz();
+            _abUyar('«' + x.ad + '» artık öğretmen hesabı.');
+        }, function (e) {
+            _abUyar('Çevrilemedi: ' + ((e && (e.code || e.message)) || e));
+        });
+    });
+}
+function adminSupheliOgrenci(uid) {
+    var x = _aspBul(uid);
+    if (!x) return;
+    firebase.firestore().collection('kullanicilar').doc(uid)
+        .update({ inceleme: { karar: 'ogrenci', t: firebase.firestore.FieldValue.serverTimestamp() } })
+        .then(function () { _asp.ogr[uid] = 1; x.ogrenci = true; _aspCiz(); },
+              function (e) { _abUyar('Kaydedilemedi: ' + ((e && (e.code || e.message)) || e)); });
+}
+window.adminSupheliYukle = adminSupheliYukle;

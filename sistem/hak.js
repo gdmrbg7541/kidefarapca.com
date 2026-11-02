@@ -17,6 +17,12 @@
      günündeki yeni öğretmen, dönem payı henüz belli değilken herkes.
      Öğrenci ve giriş yapmamış ziyaretçi bu düzenin dışında (hiçbir şey
      değişmez).
+     BAĞSIZ ÖĞRENCİ (02.11.2026) — yönetici: öğretmenler öğrenci hesabıyla
+     ücretsiz kullanmasın. Hiçbir öğretmene bağlı olmayan öğrenci hesabı
+     (destek.js durumda bagsiz: true yazar; yalnız bağ bilgisi kesinken)
+     ödeme yapmayan öğretmen gibi deneme hakkıyla. Pencerede destek yerine
+     «Öğretmenimin kodu var» (ana sayfada kod penceresi). Öğretmene bağlı
+     öğrenci sınırsız.
    DURUM NEREDEN
      hesap/destek.js ana sayfada öğretmenin durumunu hesaplayıp tarayıcıya
      yazar: localStorage kidefDestekDurum = { uid, rol, sinirsiz, sebep,
@@ -115,6 +121,8 @@
     if (uid === '') return { sinirli: false, sebep: 'oturum-yok' };
     if (!d || !d.uid) return { sinirli: false, sebep: 'bilinmiyor' };
     if (uid && d.uid !== uid) return { sinirli: false, sebep: 'baska-hesap' };
+    /* BAĞSIZ ÖĞRENCİ (02.11.2026): yalnız bağ bilgisi kesinken (bagsiz: true) sınırlı */
+    if (d.rol === 'student' && d.bagsiz === true) return { sinirli: true, sebep: 'ogrenci-bagsiz', uid: d.uid, rol: d.rol };
     if (d.rol !== 'teacher') return { sinirli: false, sebep: d.rol || 'rol-yok', uid: d.uid, rol: d.rol };
     if (d.sinirsiz && (!d.bit || d.bit > Date.now())) return { sinirli: false, sebep: d.sebep || 'destekci', uid: d.uid, rol: d.rol };
     return { sinirli: true, sebep: d.sebep || 'destek-yok', uid: d.uid, rol: d.rol };
@@ -194,6 +202,7 @@
         'font:800 1rem system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;text-decoration:none}' +
       '.kh-kutu .kh-destek{background:#F39C12;color:#fff;box-shadow:0 8px 18px rgba(243,156,18,.32)}' +
       '.kh-kutu .kh-destek svg{width:18px;height:18px}' +
+      '.kh-kutu .kh-kod{background:linear-gradient(135deg,#F39C12,#D84315);color:#fff;box-shadow:0 8px 18px rgba(216,67,21,.28)}' +
       '.kh-kutu .kh-kapat{background:#F1F5F9;color:#2C3E50}' +
       '.kh-kutu small{display:block;margin-top:10px;color:#94A3B8;font-size:.8rem;line-height:1.45}' +
       '.kh-kutu p.kh-istege{margin:-6px 0 16px;padding:9px 12px;border-radius:12px;background:#F1FAF4;border:1px solid #CFEBD9;color:#1E6B45;font-size:.9rem}' +
@@ -207,7 +216,8 @@
   }
   function rozetCiz(r, k) {
     if (!r || r.classList.contains('kh-cal')) return;              /* canlanırken dokunma */
-    var ic = k > 0 ? '<b>' + k + '</b>' : KILIT, t = k > 0 ? k + ' deneme hakkın kaldı (destekçilere sınırsız)' : 'Deneme hakların bitti — destekçilere sınırsız';
+    var sn = sinirsizNotu();
+    var ic = k > 0 ? '<b>' + k + '</b>' : KILIT, t = k > 0 ? k + ' deneme hakkın kaldı (' + sn + ')' : 'Deneme hakların bitti — ' + sn;
     if (YALNIZ[r.getAttribute('data-kh')]) t = 'Kidef\'i destekleyen öğretmenlere açık';
     if (r.getAttribute('data-k') === String(k)) return;             /* değişmediyse DOM'a dokunma (gözlemci döngüsü olmasın) */
     r.setAttribute('data-k', String(k));
@@ -287,11 +297,32 @@
     });
     document.addEventListener('keydown', escK, true);
     document.body.appendChild(p);
-    var ilk = p.querySelector('.kh-destek');
+    /* BAĞSIZ ÖĞRENCİ (02.11.2026): ana sayfada kod penceresi; başka sayfada index.html#ogretmen-kodu */
+    var kk = p.querySelector('.kh-kod');
+    if (kk) kk.addEventListener('click', function (e) {
+      if (window.OH && typeof window.OH.kodModalAc === 'function') { e.preventDefault(); kapat(); window.OH.kodModalAc(); }
+    });
+    var ilk = p.querySelector('.kh-destek, .kh-kod');
     try { if (ilk) ilk.focus({ preventScroll: true }); } catch (e) { }
     return p;
   }
+  /* BAĞSIZ ÖĞRENCİ (02.11.2026): destek düğmesi yok; öğretmeninin koduna yönlendirir */
+  function bagsizMi() { var d = durum(); return d.sinirli && d.sebep === 'ogrenci-bagsiz'; }
+  function sinirsizNotu() { return bagsizMi() ? 'öğretmenine bağlanınca sınırsız' : 'destekçilere sınırsız'; }
+  var _kodAdres = (function () {
+    var p = location.pathname, i = p.indexOf('/kitap/');
+    return (i >= 0 ? p.slice(0, i + 1) : '') + 'index.html#ogretmen-kodu';
+  })();
+  function bagsizPencere(oz) {
+    return pencere('<div class="kh-ik">' + KILIT + '</div>' +
+      '<h3>Deneme hakların bitti</h3>' +
+      '<p><b>' + esc(AD[oz] || 'Bu araç') + '</b>, öğretmeni olan öğrencilere sınırsız. Bu araç için verilen ' + HAK +
+        ' deneme hakkını kullandın. Öğretmeninin verdiği kodu girip sınıfına katılınca sınırsız kullanırsın.</p>' +
+      '<div class="kh-tus"><a class="kh-kod" href="' + esc(_kodAdres) + '">🎫 Öğretmenimin kodu var</a>' +
+      '<button type="button" class="kh-kapat">Kapat</button></div>', 'Deneme hakları bitti');
+  }
   function bittiPencere(oz) {
+    if (bagsizMi()) return bagsizPencere(oz);
     return pencere('<div class="kh-ik">' + KILIT + '</div>' +
       '<h3>Deneme hakların bitti</h3>' +
       '<p><b>' + esc(AD[oz] || 'Bu araç') + '</b> Kidef\'e destek veren öğretmenlere sınırsız. Bu araç için verilen ' + HAK +
@@ -351,7 +382,7 @@
     var r = el ? rozet(el, oz) : null;
     var yeni = harca(oz);
     if (!r || !document.body.contains(r)) {
-      bildir((AD[oz] || 'Deneme hakkı') + ': ' + (yeni > 0 ? yeni + ' deneme hakkın kaldı' : 'son deneme hakkını kullandın') + ' · destekçilere sınırsız');
+      bildir((AD[oz] || 'Deneme hakkı') + ': ' + (yeni > 0 ? yeni + ' deneme hakkın kaldı' : 'son deneme hakkını kullandın') + ' · ' + sinirsizNotu());
       r = null;
     }
     return canlan(r, k, yeni).then(function () {
