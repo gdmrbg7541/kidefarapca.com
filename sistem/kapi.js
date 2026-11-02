@@ -43,6 +43,23 @@
     if (window.KidefKapi) return;
     var Z = window.KidefKapi = { surum: '2026-10-26' };
 
+    /* SİTEDE GEÇİRİLEN SÜRE HER SAYFADA (02.11.2026) — yönetici: "öğretmenlerin sitede geçirdiği
+       tüm zamandan sızan gözümüzden kaçan bi şey varsa ara bul". Süre yalnız ana sayfada ve
+       sarf'ta sayılıyordu; kitaplar, defter, tahta, alfabe, etkinlikler sayılmıyordu. Bu kapı her
+       sayfanın başında çalıştığı için sayaç buradan yüklenir (çerçevede değil: orada süreyi
+       üstteki sayfa sayar). Damgayı surumle.py tazeler. */
+    try {
+        var _ks = document.currentScript && document.currentScript.src;
+        if (_ks && /sistem\/kapi\.js/.test(_ks) && window.top === window.self &&
+            !window.KidefKullanim && !document.getElementById('kidefKullanimJs')) {
+            var _ke = document.createElement('script');
+            _ke.id = 'kidefKullanimJs';
+            _ke.async = true;
+            _ke.src = _ks.replace(/sistem\/kapi\.js[\s\S]*$/, 'sistem/kullanimsure.js?v=9814d3a1');
+            (document.head || document.documentElement).appendChild(_ke);
+        }
+    } catch (e) { }
+
     var API = 'AIzaSyBGIQPJ_Bjm5I3-QmrrGpLR5MqmG3S5F8w';
     var KILIT = 'siteKilitSon', KILIT_ZAMAN = 'siteKilitZaman';
     var BILET = 'kidefKapiBilet', SAYAC = 'kidefKapiSayac';

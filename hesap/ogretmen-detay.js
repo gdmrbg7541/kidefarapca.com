@@ -173,9 +173,24 @@
             '.aog-alt{font-size:.8rem; color:#55606D;}',
             '.aog-alt b{color:#1F2430;}',
             '.aog-ok{flex:none; color:#B6C2D2; font-size:1.4rem; line-height:1;}',
+            '#ogdKutu .ogd-alan{display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:12px 0 0; font-size:.82rem; color:#5B6B7C;}',
+            '#ogdKutu .ogd-alan small{flex-basis:100%; font-size:.68rem; font-weight:800; letter-spacing:.05em; color:#A9B2BD;}',
+            '#ogdKutu .ogd-alan span{background:#F4F7FB; border:1px solid #E3E9F1; border-radius:999px; padding:3px 10px;}',
+            '#ogdKutu .ogd-alan b{color:#1B4F9C;}',
             '.aog-bos{grid-column:1/-1; color:#A9B2BD; font-size:.9rem; padding:8px 2px;}'
         ].join('\n');
         document.head.appendChild(s);
+    }
+
+    /* NEREDE (02.11.2026): sistem/kullanimsure.js sayfa türüne göre de yazar (kullanim.alan) */
+    var ALANLAR = [['site', 'Ana sayfa'], ['kitap', 'Dijital kitap'], ['defter', 'Defter'],
+                   ['tahta', 'Tahta'], ['etkinlik', 'Etkinlik ve araçlar']];
+    function alanSatiri(A) {
+        A = A || {};
+        var p = ALANLAR.filter(function (x) { return (+A[x[0]] || 0) >= 60; }).map(function (x) {
+            return '<span><b>' + esc(sure(A[x[0]])) + '</b> ' + esc(x[1]) + '</span>';
+        });
+        return p.length ? '<div class="ogd-alan"><small>NEREDE — 2 KASIM 2026\'DAN BERİ</small>' + p.join('') + '</div>' : '';
     }
 
     /* --- GENEL: süre --- */
@@ -208,10 +223,12 @@
             '</div>' +
             (son14 ? '<div class="ogd-gun">' + cubuk + '</div>'
                    : '<p class="ogd-yok" style="margin:10px 0 0;">Son 14 günde kayıt yok.</p>') +
+            alanSatiri(kul.alan) +
             '<p style="margin:10px 0 0; font-size:.78rem; color:#A9B2BD; line-height:1.5;">' +
-              'Yalnız <b>etkin</b> süre sayılır: sekme açık ve görünür olacak, ' +
-              '5 dakikadan uzun hareketsizlik duraklatır. Ayrı sekmede açılan ' +
-              'flipbook ve sunumlar bu süreye girmez.</p>' +
+              'Yalnız <b>etkin</b> süre sayılır: sayfa görünür olacak ve son 5 dakikada bir dokunuş olacak ' +
+              '(tam ekran sunumda 15 dk); sesi açık video ya da ses oynarken de sayılır. Aynı anda açık iki ' +
+              'pencere çift sayılmaz. Dijital kitap, defter, tahta, alfabe ve etkinlik sayfaları ' +
+              '<b>2 Kasım 2026</b>\'dan beri sayılıyor (önce yalnız ana sayfa ve sarf sayılıyordu).</p>' +
             '</div>';
     }
 
