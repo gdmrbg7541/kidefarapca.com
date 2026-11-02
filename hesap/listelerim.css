@@ -4337,3 +4337,21 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
     #ll-root .kura-no-kart { padding: 12px; gap: 12px; }
     #ll-root .kura-no-ayar { width: 100%; justify-content: space-between; }
 }
+
+/* ==========================================================================
+   BOŞ SATIR (02.11.2026) — sınıf listelerinin sonunda hep bir boş satır
+   (Öğrenci Listesi, Performans, Sınavlar; hesap/listelerim.js → llBosSatirStu / llBosSatirNot)
+   ========================================================================== */
+#ll-root tfoot tr.ll-bos-satir td{ background: #FBFDFF; border-top: 2px dashed #CFE0F1; }
+#ll-root tr.ll-bos-satir .ll-bos-sira{ text-align: center; color: #B8C4D0; font-weight: bold; font-size: 1.2rem; }
+#ll-root tr.ll-bos-satir input.ll-bos-ad::placeholder{ color: #9DB3C8; font-weight: 600; }
+#ll-root tr.ll-bos-satir input.ll-bos-no::placeholder{ color: #C8D3DD; }
+#ll-root tr.ll-bos-satir .ll-bos-not{ color: #9AA7B4; font-size: .85rem; opacity: 0; transition: opacity .2s; }
+#ll-root tr.ll-bos-satir:focus-within .ll-bos-not{ opacity: 1; }
+#ll-root tr.ll-bos-satir:focus-within td{ background: #F4F9FF; }
+@media (max-width: 600px){
+    #ll-root tr.ll-bos-satir .ll-bos-not{ display: none; }
+}
+@media (prefers-reduced-motion: reduce){
+    #ll-root tr.ll-bos-satir .ll-bos-not{ transition: none; }
+}

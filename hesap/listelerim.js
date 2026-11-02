@@ -3019,6 +3019,7 @@ function renderStudents() {
         `;
     });
 
+    llBosSatirStu(table, students.length);                     /* BOŞ SATIR (02.11.2026): en altta hep bir boş satır */
     /* Takim araci acikken liste degisirse katilimci seridi de tazelensin. */
     if (typeof llTakimCiz === 'function') llTakimCiz();
     /* LİSTE MENÜSÜ: Performans / Sınavlar açıkken eklenen, silinen öğrenci not listesinde de hemen görünsün */
@@ -3319,6 +3320,7 @@ function renderGrades(type) {
         }
         llNotSilHucre(row, si);                                       /* LİSTE MENÜSÜ: satırda sil */
     });
+    llBosSatirNot(table, type, config.length);                         /* BOŞ SATIR (02.11.2026): en altta hep bir boş satır */
     llIsimEkleSatiri(type, table);                                     /* LİSTE MENÜSÜ: üstte isim ekleme (hep açık) */
 }
 
@@ -8544,6 +8546,122 @@ function llNotSilHucre(row, si) {
     c.innerHTML = '<button type="button" class="big-action-btn delete-btn" onclick="deleteStu(' + si + ')" title="Öğrenciyi sil">' + llIcon('cop') + '</button>';
 }
 window.llIsimEkle = llIsimEkle; window.llNotIsimDegis = llNotIsimDegis; window.llListeMenuKapat = llListeMenuKapat;
+
+/* ==========================================================================
+   BOŞ SATIR (02.11.2026) — öğretmen: "sınıf listelerinde en son öğrencinin altında her zaman bi satır boş
+   kalsın yeni öğrenci eklenmek istediğinde altta yer olsun, bi öğrenci eklenirse tekrar boş bi satır eklensin".
+   · Öğrenci Listesi, Performans ve Sınavlar tablolarının sonunda (tfoot — sayımlar ve eski seçiciler
+     yalnız öğrencileri görsün) hep bir boş satır.
+   · Ada yazıp Enter (ya da Tab) → öğrenci eklenir (addSingleStudent yolu: giriş kodu, kayıt), tablolar
+     yeniden çizilir, altına yeni boş satır gelir, imleç oraya geçer: art arda yazılabilir.
+   · Alandan çıkınca da eklenir (kısa beklemeyle: başka yere yapılan tıklama işini bitirsin); imleç
+     gittiği alanda kalır. Adı yazıp okul no kutusuna dönen, yeni öğrencinin okul nosuna geçer.
+   · Öğrenci Listesi'nde okul no önce yazıldıysa yeni öğrenciye işlenir. Esc boş satırı temizler.
+   · Üstteki «+ Ekle» kutuları yerinde.
+   ========================================================================== */
+function llBosSatirStu(table, n) {
+    if (!table) return;
+    var tf = table.createTFoot();
+    tf.innerHTML = '';
+    var r = tf.insertRow();
+    r.className = 'll-bos-satir';
+    r.innerHTML =
+        '<td class="ll-bos-sira">' + (n + 1) + '</td>' +
+        '<td style="text-align:center;"><input type="text" class="student-no-input ll-bos-no" placeholder="—" inputmode="numeric"' +
+            ' maxlength="6" autocomplete="off" title="Okul numarası (isteğe bağlı)" aria-label="Yeni öğrencinin okul numarası"' +
+            ' onkeydown="llBosTus(event, this)"></td>' +
+        '<td><input type="text" class="student-name-input ll-bos-ad" placeholder="+ Yeni öğrenci adı" autocomplete="off"' +
+            ' aria-label="Yeni öğrencinin adı soyadı" onkeydown="llBosTus(event, this)" onblur="llBosBirak(this)"></td>' +
+        '<td colspan="3" class="ll-bos-not">Adını yaz, Enter\'a bas — giriş kodu kendiliğinden verilir</td>';
+}
+function llBosSatirNot(table, type, kolon) {
+    if (!table) return;
+    var tf = table.createTFoot();
+    tf.innerHTML = '';
+    var r = tf.insertRow();
+    r.className = 'll-bos-satir';
+    r.innerHTML =
+        '<td><input type="text" class="student-name-input ll-bos-ad" placeholder="+ Yeni öğrenci adı" autocomplete="off"' +
+            ' aria-label="Yeni öğrencinin adı soyadı" onkeydown="llBosTus(event, this)" onblur="llBosBirak(this)"></td>' +
+        '<td colspan="' + ((kolon || 0) + 2) + '" class="ll-bos-not">Adını yaz, Enter\'a bas — öğrenci listeye eklenir</td>';
+}
+function llBosTus(e, inp) {
+    if (!e || !inp) return;
+    if (!inp.classList.contains('ll-bos-ad')) {                  /* okul no: Enter ada geçer (ad yazılıysa ekler) */
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            var ad = inp.closest('tr') ? inp.closest('tr').querySelector('.ll-bos-ad') : null;
+            if (ad && ad.value.trim()) llBosEkle(ad, 'sonraki'); else if (ad) ad.focus();
+        }
+        return;
+    }
+    if ((e.key === 'Enter' || (e.key === 'Tab' && !e.shiftKey)) && inp.value.trim()) {
+        e.preventDefault();
+        llBosEkle(inp, 'sonraki');
+    } else if (e.key === 'Escape') {
+        inp.value = '';
+        var no = inp.closest('tr') ? inp.closest('tr').querySelector('.ll-bos-no') : null;
+        if (no) no.value = '';
+    }
+}
+function llBosBirak(inp) {
+    if (!inp || inp.__llBosEklendi || !inp.value.trim()) return;
+    setTimeout(function () {
+        if (inp.__llBosEklendi || !inp.isConnected || !inp.value.trim()) return;
+        if (document.activeElement === inp) return;              /* geri döndü */
+        llBosEkle(inp, 'yerinde');
+    }, 160);
+}
+/* odaklı alanın tablodaki yeri: yeniden çizimden sonra aynı alana dönülür */
+function llOdakAdres(el) {
+    try {
+        if (!el || !el.closest) return null;
+        var t = el.closest('#stuTable, #hwTable, #exTable');
+        if (!t) return null;
+        var tr = el.closest('tr');
+        if (tr && tr.classList.contains('ll-bos-satir')) return { t: t.id, bos: true, no: el.classList.contains('ll-bos-no') };
+        var satirlar = [].slice.call(t.querySelectorAll('tbody tr')), ri = satirlar.indexOf(tr);
+        var alanlar = tr ? [].slice.call(tr.querySelectorAll('input, button')) : [], ai = alanlar.indexOf(el);
+        return (ri < 0 || ai < 0) ? null : { t: t.id, ri: ri, ai: ai };
+    } catch (e) { return null; }
+}
+function llBosEkle(inp, odak) {
+    if (!inp || inp.__llBosEklendi) return;
+    var ad = inp.value.trim();
+    if (!ad) return;
+    var sinif = null;
+    try { sinif = data.levels[curLId].classes[curCId]; } catch (e) { sinif = null; }
+    var asil = document.getElementById('singleStuName');
+    if (!sinif || !asil || typeof addSingleStudent !== 'function') return;
+    inp.__llBosEklendi = true;
+    var tr = inp.closest('tr'), tablo = inp.closest('table'), tid = tablo ? tablo.id : 'stuTable';
+    var noInp = tr ? tr.querySelector('.ll-bos-no') : null, no = noInp ? noInp.value : '';
+    var adres = (odak === 'yerinde') ? llOdakAdres(document.activeElement) : null;
+    if (!Array.isArray(sinif.students)) sinif.students = [];
+    var once = sinif.students.length, eski = asil.value;
+    asil.value = ad;
+    try { addSingleStudent(); } finally { asil.value = eski; }       /* üstteki kutuda yazılan kalsın */
+    var L = sinif.students;
+    if (L.length > once && no) {
+        var temiz = String(no).replace(/[^0-9]/g, '').replace(/^0+(?=\d)/, '').slice(0, 6);
+        if (temiz) { L[L.length - 1].numara = temiz; save(); renderStudents(); }
+    }
+    var t = document.getElementById(tid), hedef = null;
+    if (!t) return;
+    if (odak === 'sonraki') hedef = t.querySelector('tfoot .ll-bos-ad');
+    else if (adres && adres.bos && adres.t === tid && adres.no) {
+        var sat = t.querySelectorAll('tbody tr'), son = sat[sat.length - 1];   /* yeni öğrencinin okul nosu */
+        hedef = son ? son.querySelector('.student-no-input') : null;
+    } else if (adres && adres.bos) {
+        var t2 = document.getElementById(adres.t);
+        hedef = t2 ? t2.querySelector('tfoot ' + (adres.no ? '.ll-bos-no' : '.ll-bos-ad')) : null;
+    } else if (adres) {
+        var t3 = document.getElementById(adres.t), rows = t3 ? t3.querySelectorAll('tbody tr') : [], row = rows[adres.ri];
+        hedef = row ? row.querySelectorAll('input, button')[adres.ai] : null;
+    }
+    if (hedef && hedef.focus) { try { hedef.focus(); } catch (e) { } }
+}
+window.llBosTus = llBosTus; window.llBosBirak = llBosBirak; window.llBosEkle = llBosEkle;
 
 /* ==========================================================================
    KURA NUMARAYLA (01.11.2026) — öğretmen: "bi öğretmen sınıf açtığında kura çekmek istediğinde sınıfta 30 öğrenci varmış
