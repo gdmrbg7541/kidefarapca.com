@@ -42,6 +42,15 @@
    belgeler ve kartlar sınıf eklenince açılır. MATERYAL YOK — YÖNETİCİ DE (27.10.2026):
    "bende 5 6 var ama 7 ye tıklayınca tüm materyaller çıkıyor" — yönetici hesabı da aynı.
 
+   KAPIDAN MATERYAL (02.11.2026) — öğretmen: "5. seviyeden de 2 şube ekledi
+   diyelim, yukarda 5 e basınca materyaller vs açılmasın, sadece şube
+   kapısından açınca materyallere ulaşabilsin". Seçim: «yalnız kapılar
+   parlasın». Sınıfı olan seviyenin rakamı artık raf AÇMAZ: o binadaki o
+   seviyenin şube kapıları ~2 sn parlar, rakamın altında «Materyaller için
+   kapıyı aç» notu çıkar (kapiGoster). Materyaller yalnız sınıfın içinde
+   (kapı → sınıf → Materyaller sekmesi; «Nerde kalmıştık?» orada). Soluk
+   rakam ve Öğretmen Dökümanları eskisi gibi. Herkese (yönetici dahil).
+
    PENCERE YENİDEN ÇİZİLİNCE (sınıf eklendi, ad değişti…) açık raf
    hatırlanır ve yeniden açılır (listelerim.js → yenile). kelimeler.html
    «?ihsinif=N» ile dönerse o sınıfın rafı açılır.
@@ -117,6 +126,8 @@
             return null;
         }
         if (n === 'dok') return rows[0];
+        /* KAPIDAN MATERYAL (02.11.2026): kurum bilinmiyorsa (?ihsinif=N) önce o seviyede sınıfı OLAN bina */
+        for (i = 0; i < rows.length; i++) if (rows[i].querySelector('.okul-raf-tus[data-raf="' + n + '"]:not(.bos)')) return rows[i];
         for (i = 0; i < rows.length; i++) if (rows[i].querySelector('.okul-raf-tus[data-raf="' + n + '"]')) return rows[i];
         return null;
     }
@@ -177,18 +188,10 @@
             row.appendChild(kap);
             return kap;
         }
-        kap.innerHTML = plaka(n + '. Sınıf Kitaplığı',
-            'Ders kitabı, belgeler ve etkinlik kartları — bu seviyedeki her sınıfın ortak rafı. ' +
-              'Kapıyı açınca aynı kitaplık sınıfın içinde; «Nerde kalmıştık?» orada tutulur.', ekleTusu(row, n)) +
-            '<div class="ihsec-item ihsec-bassiz"><div class="ihsec-panel"><div class="ihsec-panel-in">' +
-            '<div class="ihdoc-acc" data-sinif="' + n + '"></div>' +
-            '<div class="ihsec-ayirac" aria-hidden="true"></div>' +
-            '<div class="ih-kartlar" data-sinif="' + n + '"></div>' +
-            '</div></div></div>';
-        row.appendChild(kap);
-        try { if (window.ihIcKur) window.ihIcKur(kap); }
-        catch (e) { try { console.warn('okul kitaplığı kurulamadı:', e && e.message); } catch (x) { } }
-        return kap;
+        /* KAPIDAN MATERYAL (02.11.2026): sınıfı olan seviyenin rafı (belgeler,
+           etkinlik kartları) burada KURULMAZ — materyaller yalnız şube kapısından,
+           sınıfın içinde. Rakam o seviyenin kapılarını parlatır (kapiGoster). */
+        return null;
     }
     function dokGeriKoy(kap) {
         var d = kap ? kap.querySelector('#dokAccordion') : null;
@@ -208,7 +211,10 @@
         if (!sakla) acik = null;
     }
     function acIc(row, n, sessiz) {
+        temizle();
         kapat(true);
+        /* KAPIDAN MATERYAL (02.11.2026): sınıfı olan seviye → raf yok, kapılar parlar */
+        if (n !== 'dok' && !bosMu(row, n)) { acik = null; kapiGoster(row, n); return null; }
         acik = { kurum: row.getAttribute('data-kurum'), n: n };
         stilKopyala();
         var kap = kur(row, n);
@@ -277,7 +283,79 @@
         })();
     }
 
-    /* kelimeler.html'den dönüş: index.html?ihsinif=N → o sınıfın rafı */
+    /* ------------------------------------------------------- KAPIDAN MATERYAL */
+    /* (02.11.2026) Sınıfı olan seviyenin rakamı: o binadaki o seviyenin şube
+       kapıları kısa süre parlar, rakamın altında «Materyaller için kapıyı aç».
+       Materyaller sınıfın içinde (kapı → sınıf → Materyaller sekmesi). */
+    var parlaT = null;
+    function azHareket() {
+        try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+        catch (e) { return false; }
+    }
+    function temizle() {
+        if (parlaT) { clearTimeout(parlaT); parlaT = null; }
+        var p = document.getElementById('llOkulPopup');
+        if (!p) return;
+        [].forEach.call(p.querySelectorAll('.kd-kapi-parla'), function (e) { e.classList.remove('kd-kapi-parla'); });
+        [].forEach.call(p.querySelectorAll('.kd-kapi-not'), function (e) { if (e.parentNode) e.parentNode.removeChild(e); });
+    }
+    /* Binadaki n. seviye kapıları. Sınıfın seviyesi listelerim.js'in tanımasıyla
+       (llSinifSeviyeNo): seviyenin adı, tanınmazsa sınıfın adı («Okulum» / «5-A»). */
+    function kapilari(row, n) {
+        var bina = row.closest ? row.closest('.okul-bina') : null;
+        if (!bina) return [];
+        var lv = null;
+        try { lv = (typeof data !== 'undefined' && data && data.levels) ? data.levels : null; } catch (e) { lv = null; }
+        var bul = [];
+        [].forEach.call(bina.querySelectorAll('.okul-kapi[data-kapi]'), function (k) {
+            var a = String(k.getAttribute('data-kapi') || '').split('/');
+            var L = lv ? lv[a[0]] : null, C = (L && L.classes) ? L.classes[a[1]] : null;
+            var no = 0;
+            try { no = (L && typeof window.llSinifSeviyeNo === 'function') ? window.llSinifSeviyeNo(L, C) : 0; } catch (e) { no = 0; }
+            if (no === n) bul.push(k);
+        });
+        return bul;
+    }
+    /* Not, satırın içinde rakamın altında; satırın dışına taşmaz, oku rakamı gösterir. */
+    function notGoster(row, tus) {
+        var not = document.createElement('span');
+        not.className = 'kd-kapi-not';
+        not.setAttribute('role', 'status');
+        not.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+            '<path d="M6.5 21V4.6c0-.9.7-1.6 1.6-1.6h7.8c.9 0 1.6.7 1.6 1.6V21" fill="none" stroke="currentColor"' +
+            ' stroke-width="2" stroke-linejoin="round"/><path d="M4 21h16" stroke="currentColor" stroke-width="2"' +
+            ' stroke-linecap="round"/><circle cx="14.3" cy="12.4" r="1.4" fill="currentColor"/></svg>' +
+            '<span>Materyaller için kapıyı aç</span>';
+        row.appendChild(not);
+        try {
+            var rr = row.getBoundingClientRect(), tr = tus.getBoundingClientRect();
+            var w = not.offsetWidth, orta = tr.left + tr.width / 2 - rr.left;
+            var sol = Math.max(4, Math.min(rr.width - w - 4, orta - w / 2));
+            not.style.left = Math.round(sol) + 'px';
+            not.style.top = Math.round(tr.bottom - rr.top + 10) + 'px';
+            not.style.setProperty('--ok', Math.round(orta - sol) + 'px');
+        } catch (e) { }
+        return not;
+    }
+    function kapiGoster(row, n) {
+        temizle();
+        var kapilar = kapilari(row, n);
+        kapilar.forEach(function (k) {
+            var c = (k.parentElement && k.parentElement.classList.contains('okul-cerceve')) ? k.parentElement : k;
+            void c.offsetWidth;          /* aynı rakama yeniden basılınca parıltı baştan başlasın */
+            c.classList.add('kd-kapi-parla');
+        });
+        var t = tusu(row, n);
+        if (t) notGoster(row, t);
+        if (kapilar.length) setTimeout(function () {
+            try { kapilar[0].scrollIntoView({ behavior: azHareket() ? 'auto' : 'smooth', block: 'nearest', inline: 'nearest' }); } catch (e) { }
+        }, 60);
+        parlaT = setTimeout(temizle, 2700);
+        return kapilar.length;
+    }
+
+    /* kelimeler.html'den dönüş: index.html?ihsinif=N → o sınıfın rafı
+       (KAPIDAN MATERYAL: o seviyede sınıf varsa raf yerine kapıları parlar) */
     (function () {
         var m = /[?&]ihsinif=(\d+)/.exec(location.search || '');
         if (!m) return;

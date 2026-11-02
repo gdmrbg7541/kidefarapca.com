@@ -5131,10 +5131,12 @@ function llOkulPopupAc() {
         [5, 6, 7, 8, 9, 10].forEach(function (n) {
             var _bos = !_dolu[n];
             _rak += '<button type="button" class="okul-hizli okul-raf-tus' + (_bos ? ' bos' : '') + '" data-raf="' + n + '"' +
-                ' title="' + n + '. sınıfın kitaplığı — ' + (_bos
-                    ? 'henüz sınıfın yok: buradan sınıf ekle, materyaller sınıf ekleyince açılır'   /* MATERYAL YOK — YÖNETİCİ DE (27.10.2026) */
-                    : 'ders kitabı, belgeler, etkinlik kartları') + '"' +
-                ' aria-expanded="false"' +
+                /* KAPIDAN MATERYAL (02.11.2026): sınıfı olan seviyenin rakamı raf açmaz,
+                   şube kapılarını parlatır (sistem/okulkitaplik.js) */
+                ' title="' + (_bos
+                    ? n + '. sınıfın kitaplığı — henüz sınıfın yok: buradan sınıf ekle, materyaller sınıf ekleyince açılır'   /* MATERYAL YOK — YÖNETİCİ DE (27.10.2026) */
+                    : n + '. sınıf — materyaller sınıfın içinde: şube kapısını aç') + '"' +
+                (_bos ? ' aria-expanded="false"' : '') +
                 ' onclick="llOkulKitaplikAc(\'' + _kHedef + '\',' + n + ')">' +
                 llIhRakam(n) + '</button>';
         });
@@ -5168,8 +5170,9 @@ function llOkulPopupAc() {
             ' stroke-width="2.6" stroke-linecap="round"/></svg>' +
             '</button>' +
             /* İPUCU (21.10.2026): öğretmenler rakamın seviye kurduğunu anlamayıp + 'ya basıyordu */
-            '<span class="okul-hizli-ipucu">Rakama dokun: o sınıfın kitaplığı açılır. ' +
-            (_bosVar ? 'Soluk rakamlarda henüz sınıfın yok — kitaplığından <b>+ Sınıf ekle</b>. ' : '') +
+            /* KAPIDAN MATERYAL (02.11.2026): materyaller yalnız şube kapısından */
+            '<span class="okul-hizli-ipucu">Materyaller sınıfın içinde: <b>şube kapısını</b> aç. ' +
+            (_bosVar ? 'Soluk rakamlarda henüz sınıfın yok — rakama dokun, <b>+ Sınıf ekle</b>. ' : '') +
             'Başka bir seviye için <b>+</b></span></div>';
         /* EKLEME SATIRI HER ZAMAN EN ÜSTTE (07.10.2026) — öğretmen önce
            "seviye ekle yukarda, henüz seviye yok aşağıda olsun", ardından

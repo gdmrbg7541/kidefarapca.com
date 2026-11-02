@@ -183,10 +183,11 @@
             ip.className = 'kdih-ipucu';
             ip.innerHTML = KITAP_SVG +
                 '<span class="kdih-yazi">' +
-                '<span class="kdih-var"><b>Sınıf kitaplığı okulun içinde:</b> üstteki rakama dokun → o sınıfın ' +
-                'ders kitabı, belgeleri ve etkinlik kartları. Kapıyı açınca aynı kitaplık sınıfın <b>Materyaller</b> sekmesinde.</span>' +
+                /* KAPIDAN MATERYAL (02.11.2026): materyaller yalnız şube kapısından */
+                '<span class="kdih-var"><b>Sınıf kitaplığı sınıfın içinde:</b> şube kapısını aç → <b>Materyaller</b> ' +
+                'sekmesinde o sınıfın ders kitabı, belgeleri ve etkinlik kartları.</span>' +
                 '<span class="kdih-yok"><b>Önce bir sınıf ekle.</b> 5–10. sınıfların kitaplığı (ders kitabı, belgeler, ' +
-                'etkinlik kartları) okulun ve sınıfın içinde hazır gelir.</span>' +
+                'etkinlik kartları) sınıfın içinde hazır gelir.</span>' +
                 '</span>' +
                 '<button type="button" class="kdih-ekle" onclick="if(window.KidefSiniflarim)KidefSiniflarim.sinifEkle()">' +
                 ARTI_SVG + '<span>Sınıf ekle</span></button>';
