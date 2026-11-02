@@ -150,11 +150,8 @@ function renderAdminPanel() {
             <details class="admin-details aon-ust" id="admin-onay-details" open ontoggle="if(this.open) _aonTik()">
                 <summary class="admin-summary">👨‍🏫 Öğretmenler <span id="admin-onay-badge"></span></summary>
                 <div style="padding:10px 0 4px;">
-                    <div class="aon-alt-baslik">🧑‍🏫 Öğretmen Onayları</div>
-                    <p style="font-size:0.86rem; color:#7f8c8d; margin:0 0 10px;">
-                        Öğretmen olarak kayıt olanlar buraya düşer; onaylanana kadar siteye giremezler.
-                        Reddettiklerin silinmez, altta <b>Reddedilenler</b>de durur — istersen sonradan onaylayabilirsin.
-                    </p>
+                    <!-- AÇIKLAMALAR KALKTI (02.11.2026) — yönetici: "bu açıklamalar olmasın" -->
+                    <div class="aon-alt-baslik" style="margin-bottom:10px;">🧑‍🏫 Öğretmen Onayları</div>
                     <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
                         <button class="btn" onclick="loadOgretmenOnaylari()" style="font-size:0.9rem;">🔄 Yenile</button>
                         <span id="admin-onay-zaman" class="aon-zaman">Canlı: yeni kayıt anında düşer</span>
@@ -169,14 +166,12 @@ function renderAdminPanel() {
                 <details class="aog-bolum" id="admin-ogretmen-liste" name="admin-accordion" ontoggle="if(this.open) renderAdminTeacherList('onbellek')">
                     <summary>👥 Öğretmen listesi <small>arama · süzgeç · sıralama</small></summary>
                     <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-                        <button class="btn" onclick="adminAdlariDuzelt()"
+                        <button class="btn" onclick="adminAdlariDuzelt()" title="Küçük harfle yazılmış ad ve soyadların baş harflerini büyütür (öğretmen ve öğrenci kayıtlarının hepsinde)"
                                 style="background:#EAF4FF; color:#1f5f99; border:1px solid #CFE3F7; border-radius:9px; padding:8px 16px; font-size:.9rem; font-weight:700;">
                             Adları düzelt</button>
                         <button class="btn" onclick="if(window.KidefOgretmenDetay) KidefOgretmenDetay.anketlerAc()"
                                 style="background:#F4F0FF; color:#5B3FA8; border:1px solid #E1D8FA; border-radius:9px; padding:8px 16px; font-size:.9rem; font-weight:700;">
                             📋 Tüm kayıt anketleri</button>
-                        <span style="flex-basis:100%; font-size:.82rem; color:#8A93A0;">
-                            Adları düzelt: küçük harfle yazılmış ad ve soyadların baş harflerini büyütür (öğretmen ve öğrenci kayıtlarının hepsinde).</span>
                     </div>
                     <div id="admin-teacher-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 560px; overflow-y: auto;">Bölümü açınca yüklenir…</div>
                 </details>
@@ -1674,11 +1669,6 @@ function renderAdminTeacherList(kaynak) {
                 /* Firebase Authentication'dan kullanıcı silmek bu listeyi
                    DEĞİŞTİRMEZ: liste kullanicilar koleksiyonundan okunuyor.
                    Kart, öğretmen penceresindeki "Onayı kaldır" → "Sil" ile gider. */
-                '<p style="font-size:.82rem; color:#8A94A3; margin:0 0 10px; line-height:1.5;">' +
-                  'Bir öğretmene basınca penceresi açılır: <b>sınıflar ve süre</b>, <b>ücret durumu</b>, ' +
-                  '<b>takvim</b>, <b>kayıt anketi</b>. Liste Firestore\'daki <code>kullanicilar</code> koleksiyonundan gelir; ' +
-                  'Authentication\'dan hesabı silmek kartı kaldırmaz — pencerede önce <b>Onayı kaldır</b>, sonra <b>Sil</b>.' +
-                '</p>' +
                 /* BÜYÜK SAYILAR (02.11.2026) — yönetici: "bu kısımda öğretmen sayıları büyük görünsün" */
                 '<div class="aog-sayilar">' +
                   '<span class="aog-sayi ana"><b>' + liste.length + '</b><small>öğretmen</small></span>' +
