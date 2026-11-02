@@ -4928,7 +4928,7 @@
        kart «Silik yazı» penceresinin yanında durur: başka harfe basınca o
        harf yazılır. Tahtaya yansıtmada öbür ekranda da açılır / kapanır.
        ------------------------------------------------------------------ */
-    var HYZ_YOL = 'okumayazma/alfabe_harf_yazim.js?v=ff8490d7';     /* sürüm damgası: _kaynak/uretici/surumle.py */
+    var HYZ_YOL = 'okumayazma/alfabe_harf_yazim.js?v=4fc31cb4';     /* sürüm damgası: _kaynak/uretici/surumle.py */
     var HYZ_BICIM = [{ k: 'n', ad: 'Ayrı', renk: '#1e293b' }, { k: 'b', ad: 'Başta', renk: '#16a34a' },
                      { k: 'o', ad: 'Ortada', renk: '#2563eb' }, { k: 's', ad: 'Sonda', renk: '#9333ea' }];
     var HY_IZ = 0.7, HY_ESIK = 0.22, HY_HIZ = [0.5, 0.72, 1, 1.45, 2.1];
