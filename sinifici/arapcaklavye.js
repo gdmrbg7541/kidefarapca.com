@@ -23,6 +23,24 @@
   var $$ = function (s, k) { return Array.prototype.slice.call((k || document).querySelectorAll(s)); };
   var DEPO = 'kidef-arapcaklavye-v1';
   var ta = $('#metin');
+  /* GÖMÜLÜ KLAVYE — KENDİ SORUN (02.11.2026): Soru Hazırla'daki «Kendi sorunu yaz» bu sayfayı
+     alttan açılan çerçevede kullanır (arapcaklavye.html?gomulu=1). Yazı alanı ve üst şerit gizli
+     (CSS html.ak-gomulu): asıl yazı yeri Soru Hazırla'daki seçili alandır, imleç de orada.
+     Her tuştan önce o alanın yazısı ve imleci buraya alınır (cek), sonra geri yazılır
+     (parent.KidefSoruKlavye). Ayarlar ayrı anahtarda; metin saklanmaz. */
+  var GOMULU = /[?&]gomulu=1(?:&|$)/.test(location.search), yankisiz = false;
+  if (GOMULU) { DEPO = 'kidef-arapcaklavye-gomulu-v1'; document.documentElement.classList.add('ak-gomulu'); }
+  function anaSayfa() {
+    try { return (GOMULU && window.parent !== window && window.parent.KidefSoruKlavye) || null; } catch (e) { return null; }
+  }
+  function cek() {
+    var a = anaSayfa(), d = null;
+    if (!a || !a.al) return;
+    try { d = a.al(); } catch (e) { return; }
+    if (!d || typeof d.v !== 'string') return;
+    if (d.v !== ta.value) { gecmisEkle(); ta.value = d.v; }
+    try { ta.setSelectionRange(Math.min(d.s, ta.value.length), Math.min(d.e, ta.value.length)); } catch (e) {}
+  }
 
   /* DİL (17.10.2026) — klavyenin yazıları seçili dilde (sistem/dil.js).
      Kodun yazdığı her yazı kdMetin ile; tuş, sekme ve bölüm adları Türkçe
@@ -270,13 +288,13 @@
   }
   function titret() { try { if (navigator.vibrate) navigator.vibrate(7); } catch (e) {} }
   function kaydet() {
-    try { localStorage.setItem(DEPO, JSON.stringify({ metin: ta.value, ayar: ayar })); } catch (e) {}
+    try { localStorage.setItem(DEPO, JSON.stringify({ metin: GOMULU ? '' : ta.value, ayar: ayar })); } catch (e) {}
   }
   function geriYukle() {
     try {
       var d = JSON.parse(localStorage.getItem(DEPO) || 'null');
       if (!d) return;
-      if (typeof d.metin === 'string') ta.value = d.metin;
+      if (typeof d.metin === 'string' && !GOMULU) ta.value = d.metin;
       if (d.ayar) Object.keys(ayar).forEach(function (k) { if (k in d.ayar) ayar[k] = d.ayar[k]; });
       if (!HEDEF[ayar.hedef]) ayar.hedef = 'word';
     } catch (e) {}
@@ -309,6 +327,7 @@
 
   /* ---------- metne yazma ---------- */
   function odak() {
+    if (GOMULU) { var a = anaSayfa(); if (a && a.odak) { try { a.odak(); } catch (e) {} } return; }
     try { ta.focus({ preventScroll: true }); } catch (e) { ta.focus(); }
   }
   /* İmleç hep görünsün: ekran klavyesiyle yazınca tarayıcı yazı alanını kendiliğinden
@@ -335,6 +354,10 @@
   function sonra() {
     kaydet(); sayacYaz(); imleciGoster();
     $('#geriAl').disabled = !gecmis.length; $('#yinele').disabled = !ileri.length;
+    if (GOMULU && !yankisiz) {
+      var a = anaSayfa();
+      if (a && a.degisti) { try { a.degisti(ta.value, ta.selectionStart, ta.selectionEnd); } catch (e) {} }
+    }
   }
   function yaz(metin, secimArasi) {
     var s = ta.selectionStart, e = ta.selectionEnd;
@@ -588,6 +611,7 @@
   }
 
   document.addEventListener('pointerdown', function (e) {
+    if (GOMULU) cek();                                /* öğretmen alanda yazmış / imleci taşımış olabilir */
     if (uzunAcik && yapiskan) {                       /* açık kalan harf menüsünden seçim */
       var u = e.target.closest('.uz-tus');
       e.preventDefault(); uzunMenuKapat();
@@ -641,6 +665,7 @@
     if (e.target.closest('#ayetEkle')) { ayetEkle(); return; }
     var tus = tusBul(e.target);
     if (tus && e.detail === 0 && tus.closest('#ak') && Date.now() - sonIsaretci > 700) {
+      if (GOMULU) cek();
       if (tus.getAttribute('data-is') === 'sil') sil(false); else bas(tus);
     }
   });
@@ -1280,5 +1305,18 @@
   });
 
   window.ArapcaKlavye = { yaz: yaz, harekeYaz: harekeYaz, sil: sil, metin: function () { return ta.value; },
-    htmlYap: htmlYap, rtfYap: rtfYap, bilgiAc: bilgiAc, sekmeGit: sekmeGit, BILGI: BILGI, HEDEF: HEDEF };
+    htmlYap: htmlYap, rtfYap: rtfYap, bilgiAc: bilgiAc, sekmeGit: sekmeGit, BILGI: BILGI, HEDEF: HEDEF,
+    /* GÖMÜLÜ: Soru Hazırla başka alana geçince o alanın yazısı (geçmiş sıfırlanır) */
+    ver: function (v, yeni) {
+      yankisiz = true;
+      try {
+        ta.value = String(v == null ? '' : v);
+        if (yeni) { gecmis = []; ileri = []; }
+        ta.setSelectionRange(ta.value.length, ta.value.length);
+        sonra();
+      } finally { yankisiz = false; }
+    },
+    geriAl: function () { cek(); geriAl(); }, yinele: function () { cek(); yinele(); },
+    harekesiz: function () { cek(); $('#harekesiz').click(); }, temizle: function () { cek(); $('#temizle').click(); } };
+  if (GOMULU) { var ilkAna = anaSayfa(); if (ilkAna && ilkAna.hazir) { try { ilkAna.hazir(window.ArapcaKlavye); } catch (e) {} } }
 })();

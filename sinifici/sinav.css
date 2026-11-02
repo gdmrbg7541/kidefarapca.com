@@ -789,3 +789,78 @@ html { font-size: 20px; }
 /* .k-ar DEĞİL: o ad sınav kâğıdındaki yeşil çerçeveli Arapça kutusunun
    (satır 233) — kâğıt satırında o çerçeve görünüyordu. */
 #kagit .k-sor-ar { font-size: 1.05em; color: var(--yesil-k); opacity: .9; }
+
+/* ---------- KENDİ SORUN (02.11.2026): «✍️ Kendi sorunu yaz» + alttan Arapça klavye ---------- */
+.ks-panel { padding: 0 0 10px; margin-bottom: 14px; border-left: 4px solid #8E44AD; }
+details.sv-ak.ks-panel > summary::before { background: #8E44AD; }
+details.sv-ak.ks-panel > *:not(summary) { margin-inline: 14px; }
+.ks-form { padding: 2px 0 4px; }
+.ks-sat { display: flex; gap: 6px; align-items: flex-start; }
+.ks-sat textarea { flex: 1 1 auto; min-width: 0; min-height: 40px; padding: 8px 10px; resize: none; overflow-y: auto;
+  border: 1.5px solid var(--cizgi); border-radius: 9px; font: inherit; font-weight: 400; line-height: 1.55;
+  color: var(--murekkep); background: #fff; }
+.ks-sat textarea.ar { font-size: 1.4rem; line-height: 1.9; min-height: 64px; }
+.ks-sat textarea:focus { outline: none; border-color: var(--yesil); }
+.ks-sat textarea.ks-hedef { border-color: #8E44AD; box-shadow: 0 0 0 3px rgba(142, 68, 173, .16); }
+.ks-kl { flex: none; width: 42px; height: 40px; border-radius: 9px; border: 1.5px solid #E2D3EE; background: #F7F0FC;
+  color: #6C3483; font-size: 1.25rem; line-height: 1; }
+.ks-kl:hover { border-color: #8E44AD; background: #EFE3F8; }
+.ks-iki { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.ks-form select { padding: 8px 10px; border: 1.5px solid var(--cizgi); border-radius: 9px; font: inherit; font-weight: 400;
+  background: #fff; color: var(--murekkep); }
+.ks-sikler { margin-top: 10px; display: grid; gap: 6px; }
+.ks-sik-bas { font-size: .8rem; color: var(--gri); font-weight: 700; }
+.ks-sik-bas small { font-weight: 600; }
+.ks-sik { display: flex; gap: 8px; align-items: flex-start; }
+.ks-sik > .ks-sat { flex: 1 1 auto; min-width: 0; }
+.ks-dogru { flex: none; display: inline-flex; align-items: center; gap: 5px; height: 40px; cursor: pointer; }
+.ks-dogru input { width: 18px; height: 18px; margin: 0; accent-color: var(--yesil); }
+.ks-dogru b { width: 16px; color: var(--murekkep); }
+.ks-uyari { margin: 10px 0 0; padding: 8px 10px; border-radius: 9px; background: #FDEDEC; color: var(--kirmizi);
+  font-size: .85rem; font-weight: 700; }
+.ks-eylem { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.ks-eylem button { padding: 10px 16px; border-radius: 11px; border: 1.5px solid var(--cizgi); background: #fff; font-weight: 800; }
+.ks-liste h4 { margin: 14px 0 6px; font-size: .88rem; color: var(--murekkep); }
+.ks-liste h4 small { font-weight: 600; color: var(--gri); }
+.ks-liste ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.ks-liste li { border: 1.5px solid var(--cizgi); border-radius: 12px; padding: 9px 11px; background: #fff; }
+.ks-liste li.secili { border-color: var(--yesil); background: #fbfefd; }
+.ks-l-soru { font-weight: 700; white-space: pre-line; }
+.ks-l-ar { margin-top: 4px; text-align: right; white-space: pre-line; }
+.ks-l-alt { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; font-size: .8rem; color: var(--gri); }
+.ks-l-alt > span { margin-right: auto; }
+.ks-l-alt button { padding: 5px 10px; border-radius: 9px; border: 1.5px solid var(--cizgi); background: #fff; font-weight: 700; font-size: .8rem; }
+.ks-l-alt button:hover { border-color: var(--yesil); }
+.ks-l-alt button[aria-pressed="true"] { background: var(--yesil); border-color: var(--yesil); color: #fff; }
+.ks-l-alt .ks-sil.emin { background: var(--kirmizi); border-color: var(--kirmizi); color: #fff; }
+.ks-l-alt em { font-style: normal; color: var(--turuncu); font-weight: 700; }
+/* kâğıtta kendi sorunun satır sonları korunur */
+.k-soru[data-a^="ozel#"] .k-bas p, .k-soru[data-a^="ozel#"] .k-ar, .k-soru[data-a^="ozel#"] .k-sik li { white-space: pre-line; }
+/* alttan açılan klavye: Kâğıdım'ın üstünde, önizlemenin altında */
+.ks-klavye { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; height: min(470px, 60vh);
+  display: flex; flex-direction: column; background: #EEF2F6; border-top: 1.5px solid #D9E1EA;
+  border-radius: 18px 18px 0 0; box-shadow: 0 -10px 30px rgba(22, 50, 79, .22); overflow: hidden; }
+.ks-kl-bas { flex: none; display: flex; align-items: center; gap: 10px; padding: 7px max(14px, calc((100vw - 1320px) / 2)); }
+.ks-kl-ad { flex: 1; min-width: 0; font-size: .86rem; color: var(--gri); font-weight: 700; }
+.ks-kl-ad b { color: #6C3483; }
+.ks-kl-bas > button { padding: 8px 20px; border-radius: 11px; border: 1.5px solid var(--yesil); font-weight: 800; }
+.ks-kl-arac { display: inline-flex; gap: 5px; }
+.ks-kl-arac button { min-width: 40px; height: 36px; padding: 0 9px; border-radius: 10px; border: 1.5px solid var(--cizgi);
+  background: #fff; color: var(--murekkep); font-weight: 800; font-size: 1.05rem; line-height: 1; }
+.ks-kl-arac button:hover { border-color: #8E44AD; color: #6C3483; }
+.ks-kl-arac .ar { font-size: 1.05rem; line-height: 1; }
+.ks-sat textarea.ar.ks-hedef { font-size: 1.6rem; }
+.ks-klavye iframe { flex: 1 1 auto; width: 100%; min-height: 0; border: 0; display: block; background: #EEF2F6; }
+body.ks-klavye-acik { padding-bottom: var(--ks-kl-y, min(470px, 60vh)); }
+body.ks-klavye-acik .kagit-panel { visibility: hidden; }
+@media (max-width: 700px) {
+  .ks-iki { grid-template-columns: 1fr; }
+  .ks-klavye { height: min(470px, 58vh); }
+  .ks-kl-bas { gap: 6px; padding: 6px 8px; }
+  .ks-kl-ad { font-size: .82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ks-kl-ik, .ks-kl-yazi { display: none; }
+  .ks-kl-arac { gap: 4px; }
+  .ks-kl-arac button { min-width: 34px; height: 34px; padding: 0 6px; }
+  .ks-kl-bas > button { padding: 7px 12px; }
+}
+@media print { .ks-klavye { display: none !important; } }

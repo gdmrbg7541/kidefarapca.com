@@ -309,7 +309,10 @@
     'kl-sozcuk': 'SÖZCÜK', 'kl-eslestirme': 'SÖZCÜK', 'kl-bosluk': 'SÖZCÜK',
     'kl-kurma': 'DİL BİLGİSİ', 'kl-hareke': 'DİL BİLGİSİ', 'kl-duzeltme': 'DİL BİLGİSİ',
     'kl-yazma': 'YAZMA', 'kl-uretim': 'YAZMA',
-    'kl-konusma': 'KONUŞMA', 'kl-dinleme': 'DİNLEME'
+    'kl-konusma': 'KONUŞMA', 'kl-dinleme': 'DİNLEME',
+    /* --- KENDİ SORUN (02.11.2026): öğretmenin seçtiği beceri --- */
+    'oz-okuma': 'OKUMA', 'oz-yazma': 'YAZMA', 'oz-dinleme': 'DİNLEME', 'oz-konusma': 'KONUŞMA',
+    'oz-sozcuk': 'SÖZCÜK', 'oz-dilbilgisi': 'DİL BİLGİSİ'
   };
   var ALAN_KISA = {
     'DİNLEME': 'Dinleme', 'OKUMA': 'Okuma', 'DİL BİLGİSİ': 'Dil bilgisi',
@@ -648,7 +651,7 @@
            aynı ("Aşağıdaki cümleyi Türkçeye çeviriniz."), ayırt eden şey
            Arapça metin — o da soru kökünde değil özetinde duruyor.
            Tek satıra kırpılıyken on soru aynı görünüyordu. */
-        '<span class="k-metin"><span class="k-soru">' + karisik(o.q.soru) +
+        '<span class="k-metin"><span class="k-soru">' + (o.ozel ? '<span class="k-ozel" title="Kendi sorun">✍️</span> ' : '') + karisik(o.q.soru) +
         (function (ar) { return ar ? ' <bdi class="ar k-sor-ar">' + kac(ar) + '</bdi>' : ''; })(kagitArapca(o)) +
         '</span>' + ciktiSecici(a) + '</span>' +
         /* Puan artık yazılabilir: boş bırakılırsa otomatik dağıtılır. */
@@ -679,6 +682,7 @@
     }
     sepetOlc();
     kaydet();
+    ksListe();                           /* KENDİ SORUN: «Kâğıtta» düğmeleri */
   }
 
   /* Puanlar toplam puana tam bölünür; artan ilk sorulara birer birer
@@ -809,7 +813,7 @@
       govde = '<div class="k-parca' + (harf ? ' harf' : '') + '" dir="rtl">' + parca.map(function (p) {
         return '<span>' + metin(p) + '</span>'; }).join('') + '</div><div class="k-cizgi"></div>';
       cevap = harf ? q.parcalar.join('') : q.parcalar.join(' ');
-    } else if (q.cevapYazi) {                                    // yazma / klasik
+    } else if (q.cevapYazi || (q.ozel && q.bicim === 'klasik')) {   // yazma / klasik · kendi sorun (cevapsız da)
       /* q.satir: cevap için kaç çizgi bırakılsın. Klasik sorularda çeviri 2,
          paragraf yazma 4-6 satır ister; uygulamalı (konuşma) soruda çizgi
          gerekmez, satir:0 gelir. */
@@ -1266,6 +1270,7 @@
     var yp = $('#yontemPaneli'); if (yp) yp.hidden = y !== 'sinav';
     yontemGoster();                       /* ağaç paneli yönteme göre açılır */
     var kp = $('#klasikPaneli'); if (kp) kp.hidden = !y;
+    ksYolaGore(y);                        /* KENDİ SORUN (02.11.2026) */
     $('#ciktiAyar').hidden = !y;
     var aa = $('#aciklamaAyar'); if (aa) aa.hidden = y !== 'sinav';
     $('#btnDagilim').hidden = y !== 'sinav';
@@ -1793,6 +1798,312 @@
   }
 
   /* =====================================================================
+     10b) KENDİ SORUN (02.11.2026) — öğretmen: "sınıfiçi materyaller kategorisinde arapça klavye
+     ile soru hazırla kısmını birleştirelim ama klavye kartı da ayrı bi şekilde dursun, yani
+     isteyen öğretmen soru hazırla kısmında okul ismi vs yazdıktan sonra klavyeyi kullanarak
+     kendi sorularını da yazabilsin".
+     · «✍️ Kendi sorunu yaz» paneli (Okul bilgileri'nin altında; iki yolda da). Soru, Arapça
+       metin, cevap ve şıklar Arapça Klavye ile yazılır: ⌨ tuşu (Arapça metinde alana dokunmak
+       da) klavyeyi alttan açar — arapcaklavye.html?gomulu=1 çerçevede; yazılan, seçili alana
+       canlı geçer. Klavye açıkken başka alana dokununca klavye o alana yazar.
+     · Biçim: açık uçlu (cevap çizgisi, cevap anahtarı için cevap) — sınavda YALNIZ bu
+       (Yazılı ve Uygulamalı Sınavlar Yönergesi m.5/1-e); temrinde çoktan seçmeli de (2–5 şık,
+       doğru şık işaretlenir; kâğıtta şıklar karışır).
+     · Beceri (yalnız sınavda): öğrenme çıktısı önerisi için (TIP_ALAN 'oz-…').
+     · Sorular YALNIZ bu tarayıcıda (localStorage 'kidef-sinav-ozel-v1'); kâğıda 'ozel#<id>'
+       anahtarıyla girer, havuz listesinde görünmez. Düzenle / Sil (iki basış); silinen
+       kâğıttan da çıkar.
+     ===================================================================== */
+  var KS_DEPO = 'kidef-sinav-ozel-v1';
+  var KS_ALAN = [['', 'Seç (isteğe bağlı)'], ['okuma', 'Okuma'], ['yazma', 'Yazma'], ['dinleme', 'Dinleme'],
+                 ['konusma', 'Konuşma'], ['sozcuk', 'Sözcük'], ['dilbilgisi', 'Dil bilgisi']];
+  var KS_SIK = 5;
+  var ks = { L: [], duzen: null, silZaman: null };
+
+  function ksOku() {
+    try {
+      var d = JSON.parse(localStorage.getItem(KS_DEPO) || 'null');
+      ks.L = (d && Array.isArray(d.L)) ? d.L.filter(function (k) {
+        return k && typeof k.id === 'string' && typeof k.soru === 'string' &&
+          (k.bicim !== 'test' || (Array.isArray(k.secenekler) && k.secenekler.length > 1));
+      }) : [];
+    } catch (e) { ks.L = []; }
+  }
+  function ksYaz() { try { localStorage.setItem(KS_DEPO, JSON.stringify({ L: ks.L })); } catch (e) {} }
+  function ksAnahtar(k) { return 'ozel#' + k.id; }
+  function ksBul(id) { for (var i = 0; i < ks.L.length; i++) if (ks.L[i].id === id) return ks.L[i]; return null; }
+  function ksSoru(k) {
+    var q = { id: k.id, soru: k.soru, tip: 'oz-' + (k.alan || ''), zorluk: 2, ozel: true };
+    if (k.arapca) q.arapca = k.arapca;
+    if (k.bicim === 'test') { q.bicim = 'test'; q.secenekler = k.secenekler.slice(); q.dogru = k.dogru; }
+    else { q.bicim = 'klasik'; q.cevapYazi = k.cevap || ''; q.satir = typeof k.satir === 'number' ? k.satir : 2; }
+    return q;
+  }
+  function ksKaydet(k) {
+    var a = ksAnahtar(k);
+    V.harita[a] = { anahtar: a, konu: 'ozel', konuAd: 'Kendi sorum', q: ksSoru(k), klasik: k.bicim !== 'test', ozel: true, ara: '' };
+  }
+  function ksHepsiniKaydet() { ksOku(); ks.L.forEach(ksKaydet); ksListe(); }
+
+  function ksBicim() {
+    var r = $('input[name="ksBicim"]:checked');
+    return (r && r.value === 'test' && ayar.yol !== 'sinav') ? 'test' : 'klasik';
+  }
+  function ksBicimGoster() {
+    var test = ksBicim() === 'test';
+    $('#ksKlasik').hidden = test; $('#ksSikler').hidden = !test;
+  }
+  function ksYolaGore(y) {
+    var p = $('#ksPaneli'); if (!p) return;
+    p.hidden = !y;
+    var sinav = y === 'sinav';
+    $('#ksTestSec').hidden = sinav;                 /* sınavda yalnız açık uçlu */
+    $('#ksAlanSat').hidden = !sinav;                /* beceri: çıktı önerisi yalnız sınavda */
+    if (sinav) { var k = $('input[name="ksBicim"][value="klasik"]'); if (k) k.checked = true; }
+    ksBicimGoster(); ksListe();
+  }
+  function ksUyari(m) { var u = $('#ksUyari'); if (!u) return; u.textContent = m || ''; u.hidden = !m; }
+  function ksTemiz(s, n) {
+    return String(s || '').replace(/\r\n?/g, '\n').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim().slice(0, n);
+  }
+  function ksBoy(t) {
+    if (!t || t.tagName !== 'TEXTAREA') return;
+    t.style.height = 'auto';
+    t.style.height = Math.min(Math.max(t.scrollHeight + 2, 40), 240) + 'px';
+  }
+  function ksFormOku() {
+    var b = ksBicim();
+    var k = { soru: ksTemiz($('#ksSoru').value, 300), arapca: ksTemiz($('#ksArapca').value, 1500), bicim: b,
+              alan: ayar.yol === 'sinav' ? ($('#ksAlan').value || '') : '' };
+    if (!k.soru) return { hata: 'Önce soruyu yaz (ör. «Aşağıdaki cümleyi Türkçeye çeviriniz.»).', alan: $('#ksSoru') };
+    if (b === 'test') {
+      var d = $('input[name="ksDogru"]:checked'), di = d ? parseInt(d.value, 10) : -1, dolu = [], dogru = -1;
+      $$('#ksSikler .ks-sik textarea').forEach(function (t, i) {
+        var s = ksTemiz(t.value, 200);
+        if (s) { if (i === di) dogru = dolu.length; dolu.push(s); }
+      });
+      if (dolu.length < 2) return { hata: 'Çoktan seçmeli soruya en az iki şık yaz.', alan: $('#ksSik0') };
+      if (dogru < 0) return { hata: 'Doğru şıkkı işaretle (şıkkın başındaki yuvarlak).', alan: $('input[name="ksDogru"]') };
+      k.secenekler = dolu; k.dogru = dogru;
+    } else {
+      k.satir = Math.max(0, Math.min(8, parseInt($('#ksSatir').value, 10) || 0));
+      k.cevap = ksTemiz($('#ksCevap').value, 600);
+    }
+    return { k: k };
+  }
+  function ksFormDoldur(k) {
+    $('#ksSoru').value = k ? k.soru : '';
+    $('#ksArapca').value = k ? (k.arapca || '') : '';
+    $('#ksCevap').value = k && k.cevap ? k.cevap : '';
+    $('#ksSatir').value = String(k && typeof k.satir === 'number' ? k.satir : 2);
+    if (k) $('#ksAlan').value = k.alan || '';                  /* yenide son seçilen beceri kalır */
+    var b = k ? k.bicim : 'klasik';
+    $$('input[name="ksBicim"]').forEach(function (r) { r.checked = r.value === b; });
+    $$('#ksSikler .ks-sik textarea').forEach(function (t, j) { t.value = (k && k.secenekler && k.secenekler[j]) || ''; });
+    $$('input[name="ksDogru"]').forEach(function (r) { r.checked = !!(k && k.bicim === 'test' && +r.value === k.dogru); });
+    $$('#ksPaneli textarea').forEach(ksBoy);
+    ksBicimGoster();
+    $('#ksEkle').textContent = k ? '✓ Değişikliği kaydet' : '+ Kâğıda ekle';
+    $('#ksVazgec').hidden = !k;
+    ksUyari('');
+  }
+  function ksEkle() {
+    var r = ksFormOku();
+    if (r.hata) { ksUyari(r.hata); try { if (r.alan) r.alan.focus(); } catch (e) {} return; }
+    var k = r.k, yeni = !ks.duzen, eski = yeni ? null : ksBul(ks.duzen);
+    if (!yeni && !eski) yeni = true;
+    if (yeni) {
+      k.id = 'k' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
+      k.t = Date.now();
+      ks.L.push(k);
+    } else {
+      k.id = eski.id; k.t = eski.t;
+      ks.L[ks.L.indexOf(eski)] = k;
+    }
+    ksYaz(); ksKaydet(k);
+    var a = ksAnahtar(k);
+    if (yeni && secili.indexOf(a) < 0) { secili.push(a); ciktiyiDoldur(a); }
+    ks.duzen = null;
+    ksFormDoldur(null); klKapat();
+    liste(); kagidim(); if (ayar.yol === 'sinav') cizAgac();
+    durum(yeni ? 'Kendi sorun kâğıda eklendi (' + (secili.indexOf(a) + 1) + '. soru).' : 'Sorun güncellendi.', 'ok');
+    try { $('#ksSoru').focus({ preventScroll: true }); } catch (e) {}
+  }
+  function ksDuzenle(id) {
+    var k = ksBul(id); if (!k) return;
+    ks.duzen = id; ksFormDoldur(k);
+    var p = $('#ksPaneli'); if (p) p.open = true;
+    try { $('#ksSoru').scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+  }
+  function ksSil(id, dug) {
+    var k = ksBul(id); if (!k) return;
+    /* iki basış: ilkinde düğme kırmızı «Eminsen yine bas», 3 sn içinde ikinci basış siler */
+    if (!dug.classList.contains('emin')) {
+      $$('#ksListe .ks-sil.emin').forEach(function (b) { b.classList.remove('emin'); b.textContent = 'Sil'; });
+      dug.classList.add('emin'); dug.textContent = 'Eminsen yine bas';
+      clearTimeout(ks.silZaman);
+      ks.silZaman = setTimeout(function () { if (dug.isConnected) { dug.classList.remove('emin'); dug.textContent = 'Sil'; } }, 3000);
+      return;
+    }
+    var a = ksAnahtar(k), i = secili.indexOf(a);
+    if (i >= 0) { secili.splice(i, 1); delete ciktiAtama[a]; if (ayar.elPuanlar) delete ayar.elPuanlar[a]; }
+    delete V.harita[a];
+    ks.L = ks.L.filter(function (x) { return x.id !== id; });
+    if (ks.duzen === id) { ks.duzen = null; ksFormDoldur(null); }
+    ksYaz(); liste(); kagidim(); if (ayar.yol === 'sinav') cizAgac();
+    durum('Kendi sorun silindi.', 'ok');
+  }
+  function ksListe() {
+    var kutu = $('#ksListe'); if (!kutu) return;
+    var oz = $('#ksOzet'); if (oz) oz.textContent = ks.L.length ? ks.L.length + ' soru' : '';
+    if (!ks.L.length) { kutu.innerHTML = ''; return; }
+    var sinav = ayar.yol === 'sinav';
+    kutu.innerHTML = '<h4>Kendi sorularım <small>yalnız bu tarayıcıda saklanır</small></h4><ol>' + ks.L.map(function (k) {
+      var a = ksAnahtar(k), var_ = secili.indexOf(a) >= 0, yasak = sinav && k.bicim === 'test';
+      var bilgi = k.bicim === 'test' ? 'Çoktan seçmeli · ' + k.secenekler.length + ' şık'
+                : 'Açık uçlu · ' + (k.satir ? k.satir + ' satır' : 'çizgisiz') + (k.cevap ? ' · cevaplı' : '');
+      var al = KS_ALAN.filter(function (x) { return x[0] && x[0] === k.alan; })[0];
+      return '<li data-ks="' + kac(k.id) + '"' + (var_ ? ' class="secili"' : '') + '>' +
+        '<div class="ks-l-soru">' + karisik(k.soru) + '</div>' +
+        (k.arapca ? '<div class="ks-l-ar">' + arKutu(k.arapca.length > 160 ? k.arapca.slice(0, 160) + '…' : k.arapca) + '</div>' : '') +
+        '<div class="ks-l-alt"><span>' + kac(bilgi + (al ? ' · ' + al[1] : '')) + '</span>' +
+        (yasak ? '<em>Sınavda yalnız açık uçlu</em>'
+               : '<button type="button" data-ks-is="kagit" aria-pressed="' + var_ + '">' + (var_ ? '✓ Kâğıtta' : '+ Kâğıda ekle') + '</button>') +
+        '<button type="button" data-ks-is="duzen">Düzenle</button>' +
+        '<button type="button" data-ks-is="sil" class="ks-sil">Sil</button></div></li>';
+    }).join('') + '</ol>';
+  }
+
+  /* ---------- alttan açılan Arapça klavye (arapcaklavye.html?gomulu=1) ----------
+     Yazı yeri seçili alandır (imleç de orada): klavye her tuştan önce alanın yazısını ve imlecini
+     alır (al), sonra geri yazar (degisti). Alan klavye açıkken inputmode=none: tablette cihazın
+     klavyesi üste açılmasın; «Tamam» deyince geri gelir. */
+  var KL = { api: null, hedef: null, yuklendi: false };
+  function klOlc() {
+    var s = $('#ksKlavye');
+    if (s && !s.hidden) document.documentElement.style.setProperty('--ks-kl-y', s.offsetHeight + 'px');
+  }
+  /* alan, üst şerit ile klavye arasındaki boşluğun ortasına gelsin */
+  function klGoster(el) {
+    try {
+      var r = el.getBoundingClientRect(), u = $('.ust'), sk = $('#klasikPaneli'), k = $('#ksKlavye');
+      var ust = (u ? u.offsetHeight : 0) + (sk && !sk.hidden ? Math.min(sk.getBoundingClientRect().height, 90) : 0);
+      var bos = innerHeight - ust - (k && !k.hidden ? k.offsetHeight : 0);
+      var hedef = ust + Math.max(8, (bos - Math.min(r.height, bos)) / 2);
+      if (Math.abs(r.top - hedef) > 4) window.scrollBy({ top: r.top - hedef, behavior: 'smooth' });
+    } catch (e) {}
+  }
+  function klYukle(yeni) {
+    if (!KL.api || !KL.hedef) return;
+    try { KL.api.ver(KL.hedef.value, !!yeni); } catch (e) {}
+  }
+  function klBirak(el) {
+    if (!el) return;
+    el.classList.remove('ks-hedef');
+    if (el.hasAttribute('data-ks-im')) {
+      var im = el.getAttribute('data-ks-im');
+      if (im) el.setAttribute('inputmode', im); else el.removeAttribute('inputmode');
+      el.removeAttribute('data-ks-im');
+    }
+  }
+  function klAc(el) {
+    if (!el) return;
+    var acikti = !$('#ksKlavye').hidden;
+    if (KL.hedef === el && acikti) return;
+    if (KL.hedef && KL.hedef !== el) klBirak(KL.hedef);
+    KL.hedef = el; el.classList.add('ks-hedef');
+    if (!el.hasAttribute('data-ks-im')) { el.setAttribute('data-ks-im', el.getAttribute('inputmode') || ''); el.setAttribute('inputmode', 'none'); }
+    $('#ksKlHedef').textContent = el.getAttribute('data-ks-ad') || 'Soru';
+    $('#ksKlavye').hidden = false;
+    document.body.classList.add('ks-klavye-acik');
+    var f = $('#ksKlCerceve');
+    if (!KL.yuklendi) { KL.yuklendi = true; f.setAttribute('src', 'arapcaklavye.html?gomulu=1'); }
+    else klYukle(true);
+    klOlc();
+    try {
+      if (document.activeElement !== el) el.focus({ preventScroll: true });
+      el.setSelectionRange(el.value.length, el.value.length);
+    } catch (e) {}
+    setTimeout(function () { klGoster(el); }, 40);
+  }
+  function klKapat() {
+    var s = $('#ksKlavye'); if (s) s.hidden = true;
+    document.body.classList.remove('ks-klavye-acik');
+    klBirak(KL.hedef);
+    KL.hedef = null;
+  }
+  /* gömülü klavye buraya bağlanır (arapcaklavye.js · GOMULU) */
+  window.KidefSoruKlavye = {
+    hazir: function (api) { KL.api = api; klYukle(true); },
+    al: function () {
+      var t = KL.hedef;
+      return t ? { v: t.value, s: t.selectionStart, e: t.selectionEnd } : null;
+    },
+    degisti: function (v, s, e) {
+      var t = KL.hedef; if (!t) return;
+      t.value = v;
+      try { if (document.activeElement !== t) t.focus({ preventScroll: true }); t.setSelectionRange(s, e); } catch (x) {}
+      ksBoy(t);
+      if (!$('#ksUyari').hidden) ksUyari('');
+    },
+    odak: function () {
+      var t = KL.hedef;
+      if (t && document.activeElement !== t) { try { t.focus({ preventScroll: true }); } catch (x) {} }
+    }
+  };
+
+  function ksKur() {
+    var p = $('#ksPaneli'); if (!p) return;
+    $('#ksAlan').innerHTML = KS_ALAN.map(function (x) { return '<option value="' + x[0] + '">' + kac(x[1]) + '</option>'; }).join('');
+    var sik = '<span class="ks-sik-bas">Şıklar <small>doğru şıkkı yuvarlaktan işaretle · kâğıtta şıklar karışır</small></span>';
+    for (var i = 0; i < KS_SIK; i++) {
+      sik += '<span class="ks-sik"><label class="ks-dogru" title="Doğru şık"><input type="radio" name="ksDogru" value="' + i + '"' +
+        ' aria-label="' + HARF[i] + ' doğru şık"><b>' + HARF[i] + '</b></label>' +
+        '<span class="ks-sat"><textarea id="ksSik' + i + '" rows="1" dir="auto" data-ks-kl data-ks-ad="' + HARF[i] + ' şıkkı"' +
+        (i < 2 ? '' : ' placeholder="(isteğe bağlı)"') + '></textarea>' +
+        '<button type="button" class="ks-kl" data-ks-kl-ac="ksSik' + i + '" title="Arapça klavyeyle yaz" aria-label="' + HARF[i] +
+        ' şıkkını Arapça klavyeyle yaz">⌨</button></span></span>';
+    }
+    $('#ksSikler').innerHTML = sik;
+    $('#ksEkle').addEventListener('click', ksEkle);
+    $('#ksVazgec').addEventListener('click', function () { ks.duzen = null; ksFormDoldur(null); klKapat(); });
+    $$('input[name="ksBicim"]').forEach(function (r) { r.addEventListener('change', ksBicimGoster); });
+    p.addEventListener('click', function (e) {
+      var ac = e.target.closest('[data-ks-kl-ac]');
+      if (ac) { e.preventDefault(); klAc($('#' + ac.getAttribute('data-ks-kl-ac'))); return; }
+      var is = e.target.closest('[data-ks-is]'); if (!is) return;
+      var li = is.closest('[data-ks]'), id = li && li.getAttribute('data-ks'), ne = is.getAttribute('data-ks-is');
+      if (!id) return;
+      if (ne === 'kagit') { ekleCikar('ozel#' + id); ksListe(); }
+      else if (ne === 'duzen') ksDuzenle(id);
+      else if (ne === 'sil') ksSil(id, is);
+    });
+    p.addEventListener('input', function (e) {
+      var t = e.target;
+      if (t.tagName === 'TEXTAREA') ksBoy(t);
+      if (!$('#ksUyari').hidden) ksUyari('');
+    });
+    /* klavye açıkken başka alana dokununca klavye oraya yazar; Arapça metne dokununca kendiliğinden açılır */
+    p.addEventListener('focusin', function (e) {
+      var t = e.target.closest && e.target.closest('[data-ks-kl]');
+      if (!t || t === KL.hedef) return;
+      if (!$('#ksKlavye').hidden || t.hasAttribute('data-ks-oto')) klAc(t);
+    });
+    $('#ksKlKapat').addEventListener('click', klKapat);
+    /* şeritteki araçlar: odak alanda kalsın */
+    var arac = $('#ksKlavye .ks-kl-arac');
+    arac.addEventListener('pointerdown', function (e) { if (e.target.closest('[data-ks-kl-is]')) e.preventDefault(); });
+    arac.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-ks-kl-is]'); if (!b || !KL.api) return;
+      var is = b.getAttribute('data-ks-kl-is');
+      if (typeof KL.api[is] === 'function') { try { KL.api[is](); } catch (x) {} }
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#ksKlavye').hidden) klKapat(); });
+    window.addEventListener('resize', klOlc);
+    ksFormDoldur(null);
+  }
+
+  /* =====================================================================
      11) AÇILIŞ
      ===================================================================== */
   function hazirla(r) {
@@ -1841,9 +2152,10 @@
       if (s.get('sinif')) { ayar.sinifNo = s.get('sinif'); ayar.yol = ayar.yol || 'sinav'; }
       if (s.get('yol')) ayar.yol = s.get('yol');
     } catch (e) {}
-    formDoldur(); formDinle(); okulFormDoldur(); okulDinle(); olaylar();
+    formDoldur(); formDinle(); okulFormDoldur(); okulDinle(); olaylar(); ksKur();
     Promise.all([havuzuOku(), ciktiVerisiniYukle()]).then(function (r) {
       hazirla(r[0]);
+      ksHepsiniKaydet();                    /* KENDİ SORUN: kâğıt kurulmadan önce */
       $('#yukleniyor').hidden = true;
       yolKur(ayar.yol || 'sinav');            /* sekmeli: açılışta Sınav Hazırla */
       /* İlk iş sınıf seçmek; henüz seçilmemişse o panel AÇIK gelsin
@@ -1866,6 +2178,7 @@
   /* test ve hata ayıklama için */
   window.SoruKagidi = {
     durum: function () { return { secili: secili.slice(), ayar: ayar, havuz: V.sorular.length }; },
-    soru: function (a) { var o = V.harita[a]; return o ? JSON.parse(JSON.stringify(o.q)) : null; }
+    soru: function (a) { var o = V.harita[a]; return o ? JSON.parse(JSON.stringify(o.q)) : null; },
+    kendi: function () { return JSON.parse(JSON.stringify(ks.L)); }      /* KENDİ SORUN */
   };
 })();

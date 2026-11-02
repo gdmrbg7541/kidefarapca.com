@@ -29,6 +29,76 @@
    (öğretmen profilindeki "yenilik" şeridi).
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
+  /* SINIFTA YENİ 02.11.2026 — öğretmen: "sınıfta yeni kısmına yeni özellikleri de ekleyelim, madde madde
+     sınıflandırarak yapalım, ücret konusundan bahsetmiyoruz". 28.10–02.11.2026 yenilikleri yedi
+     sayfada; her madde tek kısa cümle (L), sayfa başına en çok altı madde. */
+  { t: '2026-11-02', e: 'Soru Hazırla', b: 'Kendi sorunu Arapça klavyeyle yaz, kâğıda ekle',
+    L: [
+      'Soru Hazırla\'da okul bilgilerinin altında «Kendi sorunu yaz» bölümü var.',
+      '⌨ tuşuna dokun: Arapça Klavye alttan açılır, harf imlecin yerine girer.',
+      'Sınavda açık uçlu soru yazarsın; cevap çizgisini ve anahtarı sen belirlersin.',
+      'Beceriyi seçince öğrenme çıktısı kendiliğinden önerilir.',
+      'Temrinde çoktan seçmeli de yazarsın; kâğıtta şıklar karışır.',
+      'Sorular bu tarayıcıda saklanır; Arapça Klavye kartı da yerinde duruyor.'
+    ] },
+
+  { t: '2026-11-02', e: 'Sınıflarım', b: 'Sınıf listeni dosyadan yükle, materyallere şube kapısından gir',
+    L: [
+      'e-Okul, PDF, Word ya da Excel listeni Listelerim\'e sürükle bırak.',
+      'Dosyada birkaç sınıf varsa sınıflar kendiliğinden kurulur.',
+      'Eklemeden önce adları görür, istemediğini çıkarırsın; «Geri al» da var.',
+      'Dosya cihazında okunur; listeye yalnız ad ve okul numarası geçer.',
+      'Kurumlar ve Sınıflar\'da rakama dokununca şube kapıları parlar.',
+      'Materyallere şube kapısından girersin; «Nerde kalmıştık?» de orada.'
+    ] },
+
+  { t: '2026-11-02', e: 'Sınıf listeleri', b: 'İsim yazmadan kura çek, listeye satır satır ekle',
+    L: [
+      'Listende ad yoksa kura sıra numarasından çekilir; sayıyı sen belirlersin.',
+      'Adlar eksikse «Numarayla çek» anahtarını aç.',
+      'Çıkan numara, herkes çıkana dek bir daha gelmez.',
+      'Listenin altında hep boş bir satır var: adı yaz, Enter\'a bas.',
+      '«Liste» menüsüyle Performans ve Sınavlar\'a geç; orada da öğrenci eklersin.',
+      'Okul numarası artık sıra numarasının hemen yanında.'
+    ] },
+
+  { t: '2026-11-02', e: 'Akıllı tahta', b: 'Tahtayı ve telefonu birbirinden seç, hemen bağlansın',
+    L: [
+      'Akıllı tahta penceresi, hesabının açık öbür cihazlarını adıyla gösterir.',
+      'Telefondan tahtayı seç: tahta kendiliğinden Sınıf Ekranı olur.',
+      'Tahtadan telefonunu seç: telefonun kumanda olur.',
+      'Tahtayı önceden işaretlemen gerekmez; iki cihaz hemen bağlanır.',
+      'Cihaz görünmüyorsa siteyi orada aynı hesapla aç, listeye düşer.'
+    ] },
+
+  { t: '2026-11-02', e: 'Dijital kitap', b: 'Cevabı kitabın üstünde işaretle, eşleştirmeyi okla göster',
+    L: [
+      'Kalem şeridinde yeni «Cevapla» grubu: ✓ doğru, ✗ yanlış işareti.',
+      'Daireyi sürükleyerek şıkkın boyunda çizersin.',
+      'Rakam aracı her dokunuşta bir artar (١, ٢, ٣…).',
+      'Eşleştirmede oku parmağınla çiz; ucunda ok belirir.',
+      'Yazı aracıyla cevabı yaz; Arapça sağdan sola oturur, yüzen klavye de var.',
+      'İşaretler sayfada kalır, tahtaya yansır; silgi bir işareti bütün siler.'
+    ] },
+
+  { t: '2026-11-02', e: 'Dijital kitap', b: 'Konuya tek dokunuşla git, sesi istediğin yerden dinlet',
+    L: [
+      'MEB kitaplarında da İçindekiler\'deki başlığa dokun, o sayfa açılır.',
+      'Dokunulabilen başlıklar sayfa açılınca bir kez parlar.',
+      'Soldaki İçindekiler panelinde ünitelerin altında konular da var.',
+      'Panelde açık sayfanın konusu işaretli.',
+      'Ses ya da video açınca altta kalın bir ilerleme çubuğu çıkar.',
+      'Çubukta bir yere dokun: ses oradan çalar, cümleyi yeniden dinletirsin.'
+    ] },
+
+  { t: '2026-11-02', e: 'Alfabe', b: 'Harfi istediğin yazılışıyla sor',
+    L: [
+      'İstenen Harfi Yaz\'da «Yazılış» seç: Normal, Başta, Ortada, Sonda, Karışık.',
+      'Her tur 28 harfin hepsini birer kez sorar, bağlanmayanlar da gelir.',
+      'Şıklı «Dene» de 28 harften sorar; aynı görünen iki şık çıkmaz.',
+      'Dal ve Zel\'in yazılış animasyonu yenilendi.'
+    ] },
+
   /* GRUPLU DUYURU (27.10.2026) — öğretmen: "bu duyuruları kısa cümlelerle ve guruplayarak
      yayınlayalım, yani benzer konudaki örneğin 5 duyuruyu 5 cümle olarak tek sayfaya ekle".
      22.10.2026'dan sonraki yenilikler beş sayfada; her madde tek kısa cümle (L). */

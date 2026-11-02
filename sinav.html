@@ -14,7 +14,7 @@
     gtag('js', new Date());
     gtag('config', 'G-FV9JD15KLW');
   </script>
-  <link rel="stylesheet" href="sinifici/sinav.css?v=ef57c661">
+  <link rel="stylesheet" href="sinifici/sinav.css?v=48a1b283">
   <!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
   <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
@@ -123,6 +123,57 @@
       <!-- Süre, kâğıdın başındaki açıklamalarda yazar (30.09.2026). Boş
            bırakılırsa "bir ders saati" yazılır. -->
       <label class="alan">Sınav süresi<input type="text" data-okul="sure" maxlength="30" placeholder="bir ders saati"></label>
+    </details>
+
+    <!-- KENDİ SORUN (02.11.2026) — öğretmen: "isteyen öğretmen soru hazırla kısmında okul ismi vs
+         yazdıktan sonra klavyeyi kullanarak kendi sorularını da yazabilsin". Ana sayfadaki Arapça
+         Klavye kartı ayrıca duruyor; burada aynı klavye alttan açılır (arapcaklavye.html?gomulu=1).
+         Sorular yalnız bu tarayıcıda saklanır (sinifici/sinav.js «KENDİ SORUN»). -->
+    <details id="ksPaneli" class="kutu ks-panel sv-ak" hidden>
+      <summary><b>✍️ Kendi sorunu yaz</b> <small>Arapça klavyeyle</small> <span id="ksOzet"></span></summary>
+      <div class="ks-form">
+        <label class="alan">Soru
+          <span class="ks-sat"><textarea id="ksSoru" rows="1" dir="auto" data-ks-kl data-ks-ad="Soru"
+            placeholder="ör. Aşağıdaki cümleyi Türkçeye çeviriniz." autocomplete="off"></textarea>
+          <button type="button" class="ks-kl" data-ks-kl-ac="ksSoru" title="Arapça klavyeyle yaz" aria-label="Soruyu Arapça klavyeyle yaz">⌨</button></span>
+        </label>
+        <label class="alan">Arapça metin <small>sorunun altında kutu içinde · isteğe bağlı</small>
+          <span class="ks-sat"><textarea id="ksArapca" rows="2" dir="rtl" lang="ar" class="ar" data-ks-kl data-ks-oto
+            data-ks-ad="Arapça metin" placeholder="اُكْتُبْ هُنا…"></textarea>
+          <button type="button" class="ks-kl" data-ks-kl-ac="ksArapca" title="Arapça klavyeyle yaz" aria-label="Arapça metni klavyeyle yaz">⌨</button></span>
+        </label>
+        <div class="secenek-grup ks-bicim"><span>Soru biçimi</span>
+          <div class="dilim">
+            <label><input type="radio" name="ksBicim" value="klasik" checked><span>Açık uçlu</span></label>
+            <label id="ksTestSec"><input type="radio" name="ksBicim" value="test"><span>Çoktan seçmeli</span></label>
+          </div>
+        </div>
+        <div id="ksKlasik">
+          <div class="ks-iki">
+            <label class="alan">Cevap çizgisi
+              <select id="ksSatir">
+                <option value="0">çizgi yok</option><option value="1">1 satır</option>
+                <option value="2" selected>2 satır</option><option value="3">3 satır</option>
+                <option value="4">4 satır</option><option value="6">6 satır</option><option value="8">8 satır</option>
+              </select>
+            </label>
+            <label class="alan" id="ksAlanSat">Beceri <small>öğrenme çıktısı önerisi için</small>
+              <select id="ksAlan"></select>
+            </label>
+          </div>
+          <label class="alan">Cevap <small>cevap anahtarına yazılır · boş kalabilir</small>
+            <span class="ks-sat"><textarea id="ksCevap" rows="1" dir="auto" data-ks-kl data-ks-ad="Cevap"></textarea>
+            <button type="button" class="ks-kl" data-ks-kl-ac="ksCevap" title="Arapça klavyeyle yaz" aria-label="Cevabı Arapça klavyeyle yaz">⌨</button></span>
+          </label>
+        </div>
+        <div id="ksSikler" class="ks-sikler" hidden></div>
+        <p id="ksUyari" class="ks-uyari" role="alert" hidden></p>
+        <div class="ks-eylem">
+          <button type="button" id="ksEkle" class="ana">+ Kâğıda ekle</button>
+          <button type="button" id="ksVazgec" hidden>Vazgeç</button>
+        </div>
+      </div>
+      <div id="ksListe" class="ks-liste"></div>
     </details>
 
     <!-- OKUL SINAVI: çıktı ağacı -->
@@ -251,6 +302,22 @@
   </aside>
 </main>
 
+<!-- KENDİ SORUN (02.11.2026): alttan açılan Arapça klavye — yazılan, seçili alana imlecin yerine girer -->
+<div id="ksKlavye" class="ks-klavye" hidden role="dialog" aria-label="Arapça klavye">
+  <div class="ks-kl-bas">
+    <span class="ks-kl-ad"><span class="ks-kl-ik">⌨ </span><b id="ksKlHedef">Arapça metin</b><span class="ks-kl-yazi"> alanına yazıyor</span></span>
+    <span class="ks-kl-arac">
+      <button type="button" data-ks-kl-is="geriAl" title="Geri al" aria-label="Geri al">↶</button>
+      <button type="button" data-ks-kl-is="yinele" title="Yinele" aria-label="Yinele">↷</button>
+      <button type="button" data-ks-kl-is="harekesiz" title="Harekeleri kaldır (seçili kısımdan ya da hepsinden)"
+              aria-label="Harekeleri kaldır"><span class="ar" dir="rtl">كَ→ك</span></button>
+      <button type="button" data-ks-kl-is="temizle" title="Alanı temizle" aria-label="Alanı temizle">✕</button>
+    </span>
+    <button type="button" id="ksKlKapat" class="ana">Tamam</button>
+  </div>
+  <iframe id="ksKlCerceve" title="Arapça klavye" src="about:blank"></iframe>
+</div>
+
 <!-- ===================== ÖNİZLEME ===================== -->
 <div id="onizleme" hidden role="dialog" aria-modal="true" aria-labelledby="onizlemeBaslik">
   <div class="oz-ust">
@@ -273,7 +340,7 @@
      bakarak doğru üniteyi okur. -->
 <script src="sistem/sinifveri.js?v=6baf2d98"></script>
 <script src="sinifici/klasik.js?v=98be1e6e"></script>
-<script src="sinifici/sinav.js?v=5fe0453a"></script>
+<script src="sinifici/sinav.js?v=e28ce2e3"></script>
 <script src="sistem/geri.js?v=f87d1337"></script>
 <script>
 /* ==================================================================

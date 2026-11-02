@@ -25,6 +25,49 @@
 
     /* EN YENİSİ EN ÜSTTE */
     var LISTE = [
+        /* SINIFTA YENİ 02.11.2026: ana sayfadaki yedi sayfayla aynı (metin = maddeler art arda) */
+        {
+            id: 30,
+            tarih: '2026-11-02',
+            baslik: 'Kendi sorunu Arapça klavyeyle yaz, kâğıda ekle',
+            metin: 'Soru Hazırla\'da okul bilgilerinin altında «Kendi sorunu yaz» bölümü var. ⌨ tuşuna dokun: Arapça Klavye alttan açılır, harf imlecin yerine girer. Sınavda açık uçlu soru yazarsın; cevap çizgisini ve anahtarı sen belirlersin. Beceriyi seçince öğrenme çıktısı kendiliğinden önerilir. Temrinde çoktan seçmeli de yazarsın; kâğıtta şıklar karışır. Sorular bu tarayıcıda saklanır; Arapça Klavye kartı da yerinde duruyor.'
+        },
+        {
+            id: 29,
+            tarih: '2026-11-02',
+            baslik: 'Sınıf listeni dosyadan yükle, materyallere şube kapısından gir',
+            metin: 'e-Okul, PDF, Word ya da Excel listeni Listelerim\'e sürükle bırak. Dosyada birkaç sınıf varsa sınıflar kendiliğinden kurulur. Eklemeden önce adları görür, istemediğini çıkarırsın; «Geri al» da var. Dosya cihazında okunur; listeye yalnız ad ve okul numarası geçer. Kurumlar ve Sınıflar\'da rakama dokununca şube kapıları parlar. Materyallere şube kapısından girersin; «Nerde kalmıştık?» de orada.'
+        },
+        {
+            id: 28,
+            tarih: '2026-11-02',
+            baslik: 'İsim yazmadan kura çek, listeye satır satır ekle',
+            metin: 'Listende ad yoksa kura sıra numarasından çekilir; sayıyı sen belirlersin. Adlar eksikse «Numarayla çek» anahtarını aç. Çıkan numara, herkes çıkana dek bir daha gelmez. Listenin altında hep boş bir satır var: adı yaz, Enter\'a bas. «Liste» menüsüyle Performans ve Sınavlar\'a geç; orada da öğrenci eklersin. Okul numarası artık sıra numarasının hemen yanında.'
+        },
+        {
+            id: 27,
+            tarih: '2026-11-02',
+            baslik: 'Tahtayı ve telefonu birbirinden seç, hemen bağlansın',
+            metin: 'Akıllı tahta penceresi, hesabının açık öbür cihazlarını adıyla gösterir. Telefondan tahtayı seç: tahta kendiliğinden Sınıf Ekranı olur. Tahtadan telefonunu seç: telefonun kumanda olur. Tahtayı önceden işaretlemen gerekmez; iki cihaz hemen bağlanır. Cihaz görünmüyorsa siteyi orada aynı hesapla aç, listeye düşer.'
+        },
+        {
+            id: 26,
+            tarih: '2026-11-02',
+            baslik: 'Cevabı kitabın üstünde işaretle, eşleştirmeyi okla göster',
+            metin: 'Kalem şeridinde yeni «Cevapla» grubu: ✓ doğru, ✗ yanlış işareti. Daireyi sürükleyerek şıkkın boyunda çizersin. Rakam aracı her dokunuşta bir artar (١, ٢, ٣…). Eşleştirmede oku parmağınla çiz; ucunda ok belirir. Yazı aracıyla cevabı yaz; Arapça sağdan sola oturur, yüzen klavye de var. İşaretler sayfada kalır, tahtaya yansır; silgi bir işareti bütün siler.'
+        },
+        {
+            id: 25,
+            tarih: '2026-11-02',
+            baslik: 'Konuya tek dokunuşla git, sesi istediğin yerden dinlet',
+            metin: 'MEB kitaplarında da İçindekiler\'deki başlığa dokun, o sayfa açılır. Dokunulabilen başlıklar sayfa açılınca bir kez parlar. Soldaki İçindekiler panelinde ünitelerin altında konular da var. Panelde açık sayfanın konusu işaretli. Ses ya da video açınca altta kalın bir ilerleme çubuğu çıkar. Çubukta bir yere dokun: ses oradan çalar, cümleyi yeniden dinletirsin.'
+        },
+        {
+            id: 24,
+            tarih: '2026-11-02',
+            baslik: 'Harfi istediğin yazılışıyla sor',
+            metin: 'İstenen Harfi Yaz\'da «Yazılış» seç: Normal, Başta, Ortada, Sonda, Karışık. Her tur 28 harfin hepsini birer kez sorar, bağlanmayanlar da gelir. Şıklı «Dene» de 28 harften sorar; aynı görünen iki şık çıkmaz. Dal ve Zel\'in yazılış animasyonu yenilendi.'
+        },
         /* GRUPLU DUYURU (27.10.2026): ana sayfadaki sayfalarla aynı; metin = maddeler art arda */
         {
             id: 23,

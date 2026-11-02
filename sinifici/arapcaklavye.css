@@ -380,3 +380,13 @@ html.dusuk-guc .sekme-isik, html.dusuk-guc .sem-bant, html.dusuk-guc .sem-pencer
 @media (prefers-reduced-motion: reduce) {
   .sekme-isik, .sem-bant, .sem-pencere { transition: none !important; }
 }
+
+/* ---------------- GÖMÜLÜ — KENDİ SORUN (02.11.2026) ----------------
+   Soru Hazırla'daki «Kendi sorunu yaz» bu sayfayı alttan açılan çerçevede kullanır
+   (arapcaklavye.html?gomulu=1). Yazı yeri Soru Hazırla'daki alan olduğu için buradaki yazı alanı
+   ekran dışında durur (seçim ve geçmiş onda tutulur); yalnız sekmeler, harekeler ve klavye görünür.
+   Geri al, yinele, harekeyi kaldır ve temizle Soru Hazırla'daki klavye şeridinde. */
+html.ak-gomulu .ust { display: none !important; }
+html.ak-gomulu .yazi { position: absolute !important; left: -10000px; top: 0; width: 360px; height: 140px; }
+html.ak-gomulu body { background: #EEF2F6; min-height: 100vh; }
+html.ak-gomulu main#ak { max-width: none; padding: 2px max(8px, calc((100vw - 1320px) / 2)) 3px; gap: 6px; }
