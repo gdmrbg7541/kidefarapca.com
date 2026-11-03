@@ -61,6 +61,18 @@
                                         ol» penceresi (flipbookta Kalem / İndir,
                                         kitapyan.js; 24.10.2026)
    Tahtadaki yinelenen tıklar (isTrusted: false) hak harcamaz, pencere açmaz.
+   2. DÖNEM KİLİDİ (03.11.2026)
+     Yönetici: "1. dönem ücretini vermeyenler sadece flipbook hariç diğer hiç bir özelliği
+     kullanamayacaklar, fakat bulut için kaydedilen verileri silinmeyecek, ödeme yaptıklarında
+     yine kaldıkları yerden devam edebilecekler". Durumu hesap/destek.js yazar
+     (kidefDestekDurum.dk = {d: '2026-27/1', bas: 2. dönemin başı}); onaylı ödeme gelince kalkar.
+     Kilitli öğretmen ana sayfayı olduğu gibi görür (seçim: «Her şey görünsün, uyarı çıksın»):
+     üstte şerit + flipbook rafı; flipbook dışındaki bir şeye basınca «desteğinle açılır»
+     penceresi. Flipbook araçları (kalem, ders modu, indirme) eskisi gibi; tahta, defter,
+     kalıplar, muhâdese kilitli. Öbür sayfaları sistem/kapi.js kapatır (ana sayfaya
+     ?donemkilit=<sayfa> ile gelir). Hiçbir veri silinmez. «Destek isteğe bağlıdır» notları kalktı.
+     KİDEF KİTABI DA KİLİTLİ (03.11.2026) — yönetici: "kidef flipbook u da kilitli olsun 2. dönem destek
+     vermeyene": kitap/kidef-arapca-2-baski/ kilitli öğretmene kapalı; MEB ders kitapları ve Pratik Sayfalar açık.
    ===================================================================== */
 (function () {
   'use strict';
@@ -81,6 +93,7 @@
      öğretmen, öğrenci ve durumu bu tarayıcıda bilinmeyen hesap «destekçilere açık» penceresini görür. */
   var YALNIZ = { kitapIndir: 1 };
   var PAYLI = { odeme: 1, kismi: 1, referans: 1, yonetici: 1 };
+  var KITAP_ARAC = { kitapKalem: 1, ders: 1, kitapIndir: 1 };     /* 2. DÖNEM KİLİDİ: flipbookun kendi araçları açık */
   function payli() {
     var d = al(K_DURUM, null), uid = oturumUid();
     if (!d || !d.uid || uid === '' || (uid && d.uid !== uid)) return false;
@@ -124,6 +137,8 @@
     /* BAĞSIZ ÖĞRENCİ (02.11.2026): yalnız bağ bilgisi kesinken (bagsiz: true) sınırlı */
     if (d.rol === 'student' && d.bagsiz === true) return { sinirli: true, sebep: 'ogrenci-bagsiz', uid: d.uid, rol: d.rol };
     if (d.rol !== 'teacher') return { sinirli: false, sebep: d.rol || 'rol-yok', uid: d.uid, rol: d.rol };
+    /* 2. DÖNEM KİLİDİ (03.11.2026): 1. dönem desteği olmayan öğretmen 2. dönemde yalnız flipbook */
+    if (d.dk && !(+d.dk.bas > Date.now())) return { sinirli: true, sebep: 'donem-kilit', uid: d.uid, rol: d.rol, kilit: true };
     if (d.sinirsiz && (!d.bit || d.bit > Date.now())) return { sinirli: false, sebep: d.sebep || 'destekci', uid: d.uid, rol: d.rol };
     return { sinirli: true, sebep: d.sebep || 'destek-yok', uid: d.uid, rol: d.rol };
   }
@@ -140,6 +155,7 @@
     if (YALNIZ[oz]) return payli() ? Infinity : 0;
     var d = durum();
     if (!d.sinirli) return Infinity;
+    if (d.kilit && !KITAP_ARAC[oz]) return 0;                       /* 2. DÖNEM KİLİDİ */
     var r = hakKaydi(d.uid).r;
     return (oz in r.k) ? Math.max(0, r.k[oz] | 0) : HAK;
   }
@@ -210,6 +226,32 @@
       '.kh-bildir{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:2147483001;max-width:calc(100% - 32px);box-sizing:border-box;' +
         'background:#0F2A43;color:#fff;border-radius:14px;padding:10px 16px;font:700 .9rem/1.35 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;' +
         'box-shadow:0 12px 30px rgba(15,23,42,.3);animation:khGel .2s ease-out;pointer-events:none}' +
+      /* 2. DÖNEM KİLİDİ (03.11.2026): yeşil not, raf düğmesi, ana sayfa şeridi ve flipbook rafı */
+      '.kh-kutu p.kh-yesil{margin:-6px 0 16px;padding:9px 12px;border-radius:12px;background:#F1FAF4;border:1px solid #CFEBD9;color:#1E6B45;font-size:.9rem}' +
+      '.kh-kutu p.kh-yesil b{color:#1E8449}' +
+      '.kh-kutu .kh-raf-ac{background:#E8F6F2;color:#0E7C66}' +
+      '.kh-kutu .kh-raf-ac svg{width:18px;height:18px}' +
+      '.dk-serit{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;box-sizing:border-box;margin:10px 0 16px;padding:14px 16px;border-radius:18px;' +
+        'background:linear-gradient(135deg,#FFF7E6,#FFEFD5);border:1px solid #F5C26B;color:#6B4210;box-shadow:0 6px 18px rgba(180,83,9,.12);' +
+        'font:500 .95rem/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;text-align:start}' +
+      '.dk-serit .dk-ik{flex:none;width:42px;height:42px;border-radius:13px;background:#fff;color:#E67E22;display:flex;align-items:center;justify-content:center}' +
+      '.dk-serit .dk-ik svg{width:24px;height:24px}' +
+      '.dk-serit .dk-yazi{flex:1 1 260px;min-width:0}' +
+      '.dk-serit .dk-yazi b{color:#9A3412}' +
+      '.dk-serit .dk-tuslar{display:flex;gap:8px;flex-wrap:wrap}' +
+      '.dk-serit .dk-tuslar button,.dk-serit .dk-tuslar a{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:42px;padding:0 16px;' +
+        'border-radius:12px;border:0;cursor:pointer;font:800 .92rem system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;text-decoration:none;box-sizing:border-box}' +
+      '.dk-serit .dk-tuslar svg{width:18px;height:18px;flex:none}' +
+      '.dk-serit .dk-raf-tus{background:#fff;color:#0E7C66;box-shadow:inset 0 0 0 1px #BFE6DA}' +
+      '.dk-serit .dk-destek{background:#F39C12;color:#fff;box-shadow:0 6px 14px rgba(243,156,18,.3)}' +
+      '.dk-raf{flex:1 1 100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}' +
+      '.dk-raf[hidden]{display:none}' +
+      '.dk-raf a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#fff;border:1px solid #F3DDAF;color:#1F2430;text-decoration:none}' +
+      '.dk-raf a:hover{border-color:#E3A02A;box-shadow:0 4px 12px rgba(180,83,9,.12)}' +
+      '.dk-raf a svg{width:22px;height:22px;flex:none;color:#D97706}' +
+      '.dk-raf a b{display:block;font-size:.92rem}' +
+      '.dk-raf a small{display:block;color:#8A7A66;font-size:.78rem;font-weight:600}' +
+      '@media (max-width:560px){.dk-serit .dk-tuslar{flex:1 1 100%}.dk-serit .dk-tuslar>*{flex:1 1 0}}' +
       '@keyframes khGel{from{opacity:0}}@keyframes khKutu{from{transform:scale(.9);opacity:0}}' +
       '@media (prefers-reduced-motion:reduce){.kh-rozet.kh-cal b.eski,.kh-rozet.kh-cal b.yeni,.kh-perde,.kh-kutu,.kh-bildir{animation:none}}';
     (document.head || document.documentElement).appendChild(s);
@@ -219,6 +261,7 @@
     var sn = sinirsizNotu();
     var ic = k > 0 ? '<b>' + k + '</b>' : KILIT, t = k > 0 ? k + ' deneme hakkın kaldı (' + sn + ')' : 'Deneme hakların bitti — ' + sn;
     if (YALNIZ[r.getAttribute('data-kh')]) t = 'Kidef\'i destekleyen öğretmenlere açık';
+    else if (durum().kilit && !KITAP_ARAC[r.getAttribute('data-kh')]) t = '2. dönemde desteğinle açılır';   /* 2. DÖNEM KİLİDİ */
     if (r.getAttribute('data-k') === String(k)) return;             /* değişmediyse DOM'a dokunma (gözlemci döngüsü olmasın) */
     r.setAttribute('data-k', String(k));
     r.classList.remove('kh-hedef');
@@ -328,7 +371,6 @@
       '<p><b>' + esc(AD[oz] || 'Bu araç') + '</b> Kidef\'e destek veren öğretmenlere sınırsız. Bu araç için verilen ' + HAK +
         ' deneme hakkını kullandın. Desteğin, sitenin yayın ve geliştirme giderlerini ve bu materyallerin arkasındaki ' +
         'öğretmen emeğini karşılıyor.</p>' +
-      '<p class="kh-istege"><b>Destek isteğe bağlıdır.</b> Dilersen bir kerede, dilersen parça parça gönderirsin.</p>' +
       '<div class="kh-tus"><a class="kh-destek" href="' + esc(_destekAdres) + '">' + KALP + 'Destekle, sınırsız olsun</a>' +
       '<button type="button" class="kh-kapat">Kapat</button></div>' +
       refNot(), 'Deneme hakları bitti');
@@ -347,7 +389,7 @@
       '<h3>' + esc(ad) + ' destekçilere açık</h3>' +
       '<p>Dijital kitapları flaşa ya da bilgisayara indirmek, Kidef\'e destek veren öğretmenlere açık; bunun için deneme hakkı yok. ' +
         'Desteğin, sitenin yayın ve geliştirme giderlerini ve materyallerin arkasındaki öğretmen emeğini karşılıyor.</p>' +
-      '<p class="kh-istege"><b>Destek isteğe bağlıdır.</b> Kitapları sitede açmaya her zaman devam edersin.</p>' +
+      '<p class="kh-yesil"><b>Flipbooklar ücretsiz:</b> kitapları sitede açmaya her zaman devam edersin.</p>' +
       '<div class="kh-tus"><a class="kh-destek" href="' + esc(_destekAdres) + '">' + KALP + 'Destekle, indirme açılsın</a>' +
       '<button type="button" class="kh-kapat">Kapat</button></div>' +
       '<small>Destek verdiysen Kidef ana sayfasını bu tarayıcıda bir kez aç; indirme kendiliğinden açılır.</small>' +
@@ -368,14 +410,161 @@
           HAK + ' kez ücretsiz dener.</p>'
         : '<p>Kidef\'in kalem ve indirme gibi araçları, öğretmenlerin desteğiyle ayakta duruyor. Giriş yapan öğretmen her aracı ' +
           HAK + ' kez ücretsiz dener; destek olanlara sınırsız.</p>') +
-      '<p class="kh-istege"><b>Destek isteğe bağlıdır.</b> Dilersen bir kerede, dilersen parça parça gönderirsin; ' +
-        'vermesen de Kidef\'i kullanmaya devam edersin.</p>' +
+      '<p class="kh-yesil"><b>Flipbooklar ücretsiz:</b> kitabı okumaya her zaman devam edersin.</p>' +       /* 03.11.2026: «isteğe bağlı» notu kalktı */
       '<div class="kh-tus"><a class="kh-destek" href="' + esc(_destekAdres) + '">' + KALP + 'Giriş yap, destek ol</a>' +
       '<button type="button" class="kh-kapat">Kapat</button></div>', ad + ' için destek');
   }
 
+  /* ---------------- 2. DÖNEM KİLİDİ (03.11.2026) ----------------
+     Kilitli öğretmen (durum().kilit) ana sayfayı olduğu gibi görür; flipbook dışında bir şeye basınca
+     «desteğinle açılır» penceresi çıkar. Serbest: flipbooklar (kitap/, flipbooks/, kitapetkinlikleri/),
+     dış bağlantılar, profil, mesajlar, giriş-çıkış, dil, Sınıfta Yeni ve galeri, sosyal hesaplar.
+     Yeni kitap eklenince DK_KITAPLAR'a da eklenmeli (ana sayfadaki rafta görünsün). */
+  var DK_KITAPLAR = [
+    ['kitap/5-sinif-2026-2027/index.html', '5. sınıf', 'Arapça ders kitabı'],
+    ['kitap/6-sinif-2026-2027/index.html', '6. sınıf', 'Arapça ders kitabı'],
+    ['kitap/7-sinif-2026-2027/index.html', '7. sınıf', 'Arapça ders kitabı'],
+    ['kitap/8-sinif-2026-2027/index.html', '8. sınıf', 'Arapça ders kitabı'],
+    ['kitap/9-sinif-2026-2027/index.html', '9. sınıf', 'Arapça ders kitabı'],
+    ['kitap/10-sinif-2026-2027/index.html', '10. sınıf', 'Arapça ders kitabı'],
+    ['flipbooks/pratiksayfalar/flipbookpratiksayfalar.html', 'Pratik Sayfalar', 'alıştırma kitabı']
+  ];
+  var DK_SERBEST_YOL = /(^|\/)(kitap|flipbooks|kitapetkinlikleri)\//;
+  var DK_KAPALI_YOL = /(^|\/)kitap\/kidef-arapca-2-baski\//;      /* KİDEF KİTABI DA KİLİTLİ (03.11.2026) */
+  var DK_KILITLI = '#home-hub-section, #siniflarim, #header-nav-tabs, #ysPil, #ysOrt, #kamusFab, #thgKutu, ' +
+    '#sdvKart [data-sdv="ekle"], [onclick*="sarfMotorAc"]';
+  var DK_SERBEST = '#dkSerit, .kh-perde, #guncellemeler, #gdBuyut, #youtube-kanallari';
+  var DK_ETKIN = 'a[href], button, [onclick], [role="button"], summary, label, input, select, textarea';
+  var KITAP = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M12 6.5C10.2 5 7.6 4.5 4 4.6v13.2c3.6-.1 6.2.4 8 1.9 1.8-1.5 4.4-2 8-1.9V4.6c-3.6-.1-6.2.4-8 1.9z"/><path d="M12 6.5v13.2"/></svg>';
+  function anaSayfa() { return !!document.getElementById('home-hub-section'); }
+  function kokAdres() {
+    var p = location.pathname, i = p.search(/\/(kitap|flipbooks|kitapetkinlikleri)\//);
+    return i >= 0 ? p.slice(0, i + 1) : '';
+  }
+  function kilitAktif() { return !!durum().kilit && !!oturumUid(); }
+  /* bağlantı: true serbest · false kilitli (sitenin başka bir sayfası) · null karar bölgenin */
+  function adresIzinli(a) {
+    var h = a.getAttribute('href') || '';
+    if (!h || h.charAt(0) === '#') return null;
+    var u;
+    try { u = new URL(h, location.href); } catch (e) { return true; }
+    if (!/^https?:$/.test(u.protocol)) return true;                  /* mailto:, tel:, javascript: */
+    if (u.origin !== location.origin) return true;                    /* dış bağlantı */
+    if (DK_KAPALI_YOL.test(u.pathname)) return false;                 /* Kidef Arapça kitabı da kilitli */
+    if (DK_SERBEST_YOL.test(u.pathname)) return true;                 /* flipbook */
+    if (u.pathname === location.pathname || /(^|\/)(index\.html)?$/.test(u.pathname)) return null;   /* ana sayfa */
+    return false;
+  }
+  function kilitHedefi(t) {
+    if (!t || !t.closest || t.closest(DK_SERBEST)) return false;
+    var a = t.closest('a[href]');
+    if (a) { var iz = adresIzinli(a); if (iz === true) return false; if (iz === false) return true; }
+    return !!t.closest(DK_KILITLI) && !!t.closest(DK_ETKIN);
+  }
+  function kilitTik(e) {
+    if (!e.isTrusted || (e.button && e.button !== 0) || !kilitAktif() || !kilitHedefi(e.target)) return;
+    e.preventDefault(); e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    var a = e.target.closest && e.target.closest('a[href]'), kidef = false;
+    try { kidef = !!a && DK_KAPALI_YOL.test(new URL(a.getAttribute('href'), location.href).pathname); } catch (x) { }
+    kilitPencere(kidef ? 'Kidef Arapça kitabı 2. dönemde desteğinle açılır' : '');
+  }
+  /* parmak kalkınca iş yapan düğmeler (defter): basış da onlara ulaşmasın */
+  function kilitBasis(e) {
+    if (!e.isTrusted || !kilitAktif() || !kilitHedefi(e.target)) return;
+    e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+  }
+  function rafHtml() {
+    var kok = kokAdres();
+    return DK_KITAPLAR.map(function (k) {
+      return '<a href="' + esc(kok + k[0]) + '" target="_blank" rel="opener">' + KITAP +
+        '<span><b>' + esc(k[1]) + '</b><small>' + esc(k[2]) + '</small></span></a>';
+    }).join('');
+  }
+  function rafAc() {
+    var s = document.getElementById('dkSerit');
+    if (!s) return;
+    var r = s.querySelector('.dk-raf'), b = s.querySelector('.dk-raf-tus');
+    if (r) r.hidden = false;
+    if (b) b.setAttribute('aria-expanded', 'true');
+    try { s.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { }
+  }
+  function kilitPencere(baslik) {
+    var ana = anaSayfa();
+    var p = pencere('<div class="kh-ik">' + KILIT + '</div>' +
+      '<h3>' + esc(baslik || 'Bu bölüm 2. dönemde desteğinle açılır') + '</h3>' +
+      '<p>1. dönem için desteğin olmadığından hesabın şu an yalnız <b>MEB ders kitaplarına</b> ve <b>Pratik Sayfalar</b>\'a açık; ' +
+        'Kidef Arapça kitabı ve defter dahil diğer hizmetler kapalı. ' +
+        '<b>Verilerin silinmedi:</b> sınıfların, listelerin ve defterin bulutta duruyor.</p>' +
+      '<p class="kh-yesil">Destek verip ödemen onaylanınca her şey <b>kaldığın yerden</b> açılır.</p>' +
+      '<div class="kh-tus"><a class="kh-destek" href="' + esc(_destekAdres) + '">' + KALP + 'Destek ver</a>' +
+      (ana ? '<button type="button" class="kh-raf-ac">' + KITAP + 'Flipbookları aç</button>'
+           : '<a class="kh-raf-ac" href="' + esc(kokAdres() + 'index.html#flipbooklar') + '">' + KITAP + 'Flipbooklar</a>') +
+      '<button type="button" class="kh-kapat">Kapat</button></div>' +
+      '<small>Ödeme bildirimi gönderdiysen, onaylanınca kendiliğinden açılır.</small>', '2. dönem: yalnız flipbooklar');
+    var ra = p.querySelector('button.kh-raf-ac');
+    if (ra) ra.addEventListener('click', function () { var k = p.querySelector('.kh-kapat'); if (k) k.click(); rafAc(); });
+    return p;
+  }
+  /* ana sayfanın üstünde şerit: kilit kalkınca kendiliğinden gider */
+  function seritKur() {
+    var hub = document.getElementById('home-hub-section');
+    if (!hub) return;
+    var s = document.getElementById('dkSerit'), acik = kilitAktif();
+    document.documentElement.classList.toggle('kd-donem-kilit', acik);
+    if (!acik) { if (s) s.remove(); return; }
+    if (s && hub.contains(s)) return;
+    stil();
+    if (!s) {
+      s = document.createElement('div');
+      s.id = 'dkSerit'; s.className = 'dk-serit';
+      s.setAttribute('role', 'region'); s.setAttribute('aria-label', '2. dönem: yalnız flipbooklar');
+      s.innerHTML = '<div class="dk-ik">' + KILIT + '</div>' +
+        '<div class="dk-yazi"><b>2. dönemde hesabın yalnız MEB ders kitaplarına ve Pratik Sayfalar\'a açık.</b> 1. dönem için desteğin ' +
+          'olmadığından Kidef Arapça kitabı ve defter dahil diğer hizmetler kapalı. Verilerin silinmedi; destek verip ödemen onaylanınca ' +
+          'her şey kaldığın yerden açılır.</div>' +
+        '<div class="dk-tuslar"><button type="button" class="dk-raf-tus" aria-expanded="false">' + KITAP + 'Flipbooklar</button>' +
+          '<a class="dk-destek" href="' + esc(_destekAdres) + '">' + KALP + 'Destek ver</a></div>' +
+        '<div class="dk-raf" id="flipbooklar" hidden>' + rafHtml() + '</div>';
+      s.querySelector('.dk-raf-tus').addEventListener('click', function () {
+        var r = s.querySelector('.dk-raf');
+        r.hidden = !r.hidden;
+        this.setAttribute('aria-expanded', String(!r.hidden));
+      });
+      s.querySelector('.dk-destek').addEventListener('click', function (e) {
+        if (typeof window.KidefHak.destekAc === 'function') { e.preventDefault(); window.KidefHak.destekAc(); }
+      });
+    }
+    hub.insertBefore(s, hub.firstChild);
+    if (/#flipbooklar$/.test(location.hash)) rafAc();
+  }
+  /* öbür sayfalardan sistem/kapi.js ile gelen: index.html?donemkilit=<sayfa>. Durum bu açılışta tazelenince
+     karar verilir: hâlâ kilitliyse pencere; kilit kalkmışsa (ödeme onaylandı) gitmek istediği sayfaya. */
+  function kilitDonusu() {
+    var m = /[?&]donemkilit=([^&#]*)/.exec(location.search);
+    if (!m) return;
+    var sayfa = '';
+    try { sayfa = decodeURIComponent(m[1]); } catch (e) { }
+    try {
+      var q = location.search.replace(/([?&])donemkilit=[^&#]*(&|$)/, function (x, a, b) { return b ? a : ''; });
+      history.replaceState(history.state, '', location.pathname + (q === '?' ? '' : q) + location.hash);
+    } catch (e) { }
+    var bas = Date.now();
+    (function bak() {
+      if (!document.body) { setTimeout(bak, 200); return; }
+      var d = al(K_DURUM, null), taze = !!(d && +d.z >= bas - 1000);
+      if (!taze && Date.now() - bas < 9000) { setTimeout(bak, 400); return; }
+      if (durum().kilit) {
+        kilitPencere(DK_KAPALI_YOL.test(sayfa) ? 'Kidef Arapça kitabı 2. dönemde desteğinle açılır' : 'Bu sayfa 2. dönemde desteğinle açılır');
+        return;
+      }
+      if (taze && /^\/(?!\/)/.test(sayfa)) location.replace(sayfa);
+    })();
+  }
+
   /* hak harcar: sınırsızsa true; hak varsa rozet 5→4 canlanır, sonra true; yoksa pencere, false */
   function kullan(oz, el) {
+    if (durum().kilit && !KITAP_ARAC[oz]) { kilitPencere(); return Promise.resolve(false); }      /* 2. DÖNEM KİLİDİ */
     var k = kalan(oz);
     if (k === Infinity) return Promise.resolve(true);
     if (k <= 0) { var r0 = el && rozet(el, oz); if (r0) rozetCiz(r0, 0); if (YALNIZ[oz]) yalnizPencere(oz); else bittiPencere(oz); return Promise.resolve(false); }
@@ -479,6 +668,7 @@
       [].forEach.call(document.querySelectorAll(b.s), function (el) { rozet(el, b.oz); });
     });
     hedefRozetler();
+    seritKur();                                                       /* 2. DÖNEM KİLİDİ */
   }
   function hedefeGit(el, e) {
     var yeniSekme = el.target === '_blank' || e.ctrlKey || e.metaKey;
@@ -550,6 +740,9 @@
   function kur() {
     if (kur._oldu) return;
     kur._oldu = 1;
+    document.addEventListener('click', kilitTik, true);              /* 2. DÖNEM KİLİDİ: önce o */
+    document.addEventListener('pointerdown', kilitBasis, true);
+    document.addEventListener('pointerup', kilitBasis, true);
     document.addEventListener('click', tik, true);
     document.addEventListener('pointerdown', basis, true);
     window.addEventListener('keydown', tusDinle, true);
@@ -560,7 +753,7 @@
       _goz = new MutationObserver(function (L) {
         var gercek = L.some(function (m) {
           if (rozetMi(m.target) || (m.target.parentNode && rozetMi(m.target.parentNode))) return false;
-          return [].some.call(m.addedNodes, function (n) { return n.nodeType === 1 && !rozetMi(n) && !(n.classList && (n.classList.contains('kh-perde') || n.classList.contains('kh-bildir'))); });
+          return [].some.call(m.addedNodes, function (n) { return n.nodeType === 1 && !rozetMi(n) && n.id !== 'dkSerit' && !(n.classList && (n.classList.contains('kh-perde') || n.classList.contains('kh-bildir'))); });
         });
         if (!gercek || bekle) return;
         bekle = setTimeout(function () { bekle = 0; rozetler(); }, 120);
@@ -611,6 +804,8 @@
     hedefBul: hedefBul, yeEki: yeEki,
     destekAdresi: function (a) { if (a) _destekAdres = a; return _destekAdres; },
     girisIste: girisPencere,
-    destekAc: null
+    destekAc: null,
+    kilitli: function () { return !!durum().kilit; }, kilitPencere: kilitPencere      /* 2. DÖNEM KİLİDİ */
   };
+  kilitDonusu();
 })();

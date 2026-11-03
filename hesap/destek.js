@@ -1095,6 +1095,16 @@
             '  border:1px solid #F3D9B1; border-left:4px solid #E3A02A; border-radius:10px; color:#7A5520; font-size:.84rem; line-height:1.5;}',
             '#tpDestek .dst-d2not svg{flex:none; margin-top:2px; color:#C27C0E;}',
             '#tpDestek .dst-d2not b{color:#9A6512;}',
+            /* 2. DÖNEM KİLİDİ (03.11.2026): kilit notu + «Desteğinle dersin kolaylaşır» listesi */
+            '#tpDestek .dst-d2not.dst-kilitli{background:#FDEEEA; border-color:#F5C2B6; border-left-color:#D9534F; color:#7A2E22; font-size:.88rem;}',
+            '#tpDestek .dst-d2not.dst-kilitli svg{color:#C0392B;}',
+            '#tpDestek .dst-d2not.dst-kilitli b{color:#9B2C1F;}',
+            '#tpDestek .dst-kazanc{margin:12px 0 0; padding:13px 15px; border-radius:14px; background:linear-gradient(160deg,#F2FBF7,#E6F6EF); border:1px solid #CDEBDD;}',
+            '#tpDestek .dst-kazanc-bas{display:block; color:#0E6E55; font-size:.96rem; margin-bottom:9px;}',
+            '#tpDestek .dst-kazanc ul{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:9px 16px;}',
+            '#tpDestek .dst-kazanc li{display:flex; gap:9px; align-items:flex-start; font-size:.88rem; line-height:1.5; color:#35524A;}',
+            '#tpDestek .dst-kazanc li svg{flex:none; width:20px; height:20px; margin-top:1px; color:#16A085;}',
+            '#tpDestek .dst-kazanc li b{color:#0E6E55;}',
             '.dst-durgun .dst-cizgi{animation:none; stroke-dashoffset:0;}',
             '.dst-durgun .dst-alan, .dst-durgun .dst-isaret{animation:none; opacity:1;}',
             '.dst-durgun .dst-cubuk{animation:none;}',
@@ -1467,6 +1477,10 @@
         return '<span class="dst-cip bekliyor">Onay bekliyor</span>';
     }
 
+    function kilitSvg() {          /* 2. DÖNEM KİLİDİ (03.11.2026) */
+        return '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+            '<rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>';
+    }
     function takvimSvg() {
         return '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
             '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path class="dst-takvim-tik" d="M9 15l2 2 4-4"/></svg>';
@@ -1508,7 +1522,7 @@
 
         var ayda = h.pay > 0 ? Math.round(h.pay / DONEM_AY) : 0;
         var tutar = '<div class="dst-tutar">' +
-            '<span class="dst-et">Bu dönemin desteği <span class="dst-istege">İsteğe bağlı</span></span>' +
+            '<span class="dst-et">Bu dönemin desteği</span>' +       /* 03.11.2026: «İsteğe bağlı» etiketi kalktı (2. dönem kilidi) */
             (h.refD === 'tam'
                 ? '<span class="dst-buyuk dst-hediye">Referansla tamam</span>'
                 : (h.kisi > 0
@@ -1520,9 +1534,7 @@
                : (h.kisi > 0 && h.kisi < h.pay ? 'dönemin ortasında katıldığın için kalan süreye göre'
                                                : (h.kisi > 0 ? '<b>dönem boyunca değişmez</b>' : 'desteğin gelecek dönemden başlar')))) +
               (ayda && h.kisi > 0 ? ' · ayda yaklaşık ' + esc(tl(h.refD === 'yarim' ? Math.ceil(ayda / 2 / 10) * 10 : ayda)) : '') + '</span>' +
-            (h.durum !== 'tamam' && h.refD !== 'tam'
-                ? '<span class="dst-istege-not"><b>Destek isteğe bağlıdır.</b> Dilersen bir kerede, dilersen parça parça gönderirsin.</span>'   /* 01.11.2026: «vermesen de … devam edersin» kalktı (2. dönem notu) */
-                : '') +
+            /* 03.11.2026: «Destek isteğe bağlıdır…» notu kalktı (2. dönem kilidiyle çelişiyordu; «parça parça» cümlesi kartta tek) */
             '<span class="dst-vurgu">' + okSvg() + '<span><b>Siteye katılan öğretmen arttıkça gelecek dönemin payı azalır.</b> ' +
               'Meslektaşlarını davet ettikçe herkesin payı küçülür.</span></span>' +
             '</div>';
@@ -1533,6 +1545,22 @@
         var aciklama = '<p class="dst-aciklama">Kidef\'teki her materyal, oyun ve sınav, hazırlanmasından yayımlanmasına kadar ' +
             '<b>yoğun bir öğretmen emeğinin</b> ürünü. Sitenin <b>yayın ve geliştirme giderleri</b> ile bu emek, ' +
             'siteyi kullanan öğretmenler arasında paylaşılır. Katkın Kidef\'in büyümesini ve yeni içeriklerin hazırlanmasını sağlar.</p>';
+        /* DESTEĞİN KAZANDIRDIKLARI (03.11.2026) — yönetici: "profildeki ödeme bilgilendirme kısmında şu vurgu olsun,
+           derslerin öğretmen adına daha konforlu olması, öğrencilerin uzaktan sadece bi tıkla hangi etkinlik ve puanlı
+           oyunlardaki performansına bakılabileceği vs" */
+        var ikK = function (d) {
+            return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
+        };
+        var kazanc = '<div class="dst-kazanc"><b class="dst-kazanc-bas">Desteğinle dersin kolaylaşır</b><ul>' +
+            '<li>' + ikK('<rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8 20h8M12 16.5V20"/>') +
+              '<span><b>Daha konforlu dersler:</b> dijital kitap, tahtaya yansıtma, telefondan kumanda, hazır etkinlik ve oyunlar tek ekranda.</span></li>' +
+            '<li>' + ikK('<path d="M4 4v15.5h16"/><path d="M8 14.5l3.4-3.8 3 2.4L19.5 7"/>') +
+              '<span><b>Öğrencilerin uzaktan, tek tıkla:</b> hangi etkinliği yaptıklarını, puanlı oyunlarda nasıl olduklarını görürsün.</span></li>' +
+            '<li>' + ikK('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>') +
+              '<span><b>Hazırlık süren kısalır:</b> sınıf listesi, kura, defter, sınav ve soru hazırlama aynı yerde.</span></li>' +
+            '<li>' + ikK('<path d="M7 18.5h10.5a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.6 9.6 4.5 4.5 0 0 0 7 18.5z"/>') +
+              '<span><b>Verilerin bulutta:</b> hangi cihazdan girersen gir, kaldığın yerden devam edersin.</span></li>' +
+            '</ul></div>';
 
         /* kişisel durum — «borç / kalan» kelimesi yok */
         var dy;
@@ -1550,7 +1578,7 @@
         } else if (h.durum === 'disi') {
             dy = 'Desteğin gelecek dönemden başlar.';
         } else {
-            dy = 'Bu dönem için desteğini bekliyoruz. Dilediğin zaman bir kerede ya da parça parça gönderebilirsin.';
+            dy = 'Bu dönem için desteğini bekliyoruz.';      /* 03.11.2026: «bir kerede ya da parça parça» alttaki ipucunda zaten var */
         }
         if (bekleyen.length) dy += ' <span class="dst-bek">Onay bekleyen bildirimin var; onaylanınca buraya işlenir.</span>';
         var kutular = h.toplam > 0
@@ -1565,12 +1593,22 @@
            olsun profillerinde". Yalnız öğretmende ve 1. dönemde (Eylül–Ocak); bu dönem için de gelecek dönem için de
            hiç desteği olmayana (dönemi tamamlayan, kısmi veren, referansla tamam sayılan görmez). Kısıtlamanın kendisi
            (yalnız flipbook) bu notla kurulmadı. */
-        var d2not = (rol() === 'teacher' && dn.no === 1 && h.refD !== 'tam' && h.durum !== 'tamam' && h.durum !== 'hazirlaniyor' &&
+        /* 03.11.2026 — yönetici: "ücretsiz kullanımın sonlandırılacağı flipbookların ücretsiz olacağı profilde
+           belirtilebilir". Not yalnız bu dönem için payı olana (h.kisi > 0: son ayda katılıp ilk ayı 1 Şubat'ı
+           aşan öğretmen kilitlenmez, not da görmez). 2. dönemde kilitliyse yerinde kilit notu (2. DÖNEM KİLİDİ). */
+        /* KİDEF KİTABI DA KİLİTLİ (03.11.2026): kilitli öğretmene yalnız MEB ders kitapları ve Pratik Sayfalar açık */
+        var dkK = rol() === 'teacher' ? donemKilidi(v, h) : null;
+        var d2not = (rol() === 'teacher' && dn.no === 1 && h.kisi > 0 && h.refD !== 'tam' && h.durum !== 'tamam' && h.durum !== 'hazirlaniyor' &&
                      !(h.verilen > 0) && !(h.ileri > 0))
-            ? '<p class="dst-d2not" role="note">' + takvimSvg() + '<span><b>Not:</b> Destek vermezsen 2. dönem (Şubat ' + dn.bit.getFullYear() +
-              ' itibarıyla) siteye erişimin yalnız flipbooklarla sınırlı olacak; <b>defter dahil</b> sitedeki diğer bütün hizmetlere ' +
-              'ulaşamayacaksın.</span></p>'
-            : '';
+            ? '<p class="dst-d2not" role="note">' + takvimSvg() + '<span><b>Not:</b> Ücretsiz kullanım 1. dönemin sonunda bitiyor. ' +
+              '1. dönem için destek vermezsen 2. dönemde (1 Şubat ' + dn.bit.getFullYear() + ' itibarıyla) yalnız <b>MEB ders kitaplarının flipbookları</b> ' +
+              've Pratik Sayfalar ücretsiz açık kalır; <b>Kidef Arapça kitabı ve defter dahil</b> sitedeki diğer bütün hizmetler kapanır. ' +
+              'Verilerin silinmez; destek verdiğinde kaldığın yerden devam edersin.</span></p>'
+            : (dkK
+              ? '<p class="dst-d2not dst-kilitli" role="note">' + kilitSvg() + '<span><b>Hesabın şu an yalnız MEB ders kitaplarına ve Pratik Sayfalar\'a açık.</b> ' +
+                '1. dönem için desteğin olmadığından 2. dönemde Kidef Arapça kitabı ve defter dahil diğer hizmetler kapalı. Sınıfların, listelerin ve defterin ' +
+                'bulutta duruyor; <b>hiçbiri silinmedi</b>. Destek verip ödemen onaylanınca her şey kaldığın yerden açılır.</span></p>'
+              : '');
         var ben = '<div class="dst-ben">' + tsk.html +
             '<div class="dst-ben-bas"><b>Senin durumun</b><span>' + esc(dn.yilAd + ' · ' + dn.ad + ' (' + dn.aralik + ')') + '</span></div>' +
             '<div class="dst-ben-ic">' +
@@ -1597,7 +1635,7 @@
             }).join('') + '</div>';
         }
         ben += '</div>';
-        return { imza: imza + (d2not ? '|d2' : ''), html: bas + '<div class="dst-ust">' + tutar + grafik + '</div>' + aciklama + sinirsizBlok(h) + ben + kose.html };
+        return { imza: imza + (d2not ? (dkK ? '|dk' : '|d2') : ''), html: bas + '<div class="dst-ust">' + tutar + grafik + '</div>' + aciklama + kazanc + sinirsizBlok(h, dkK) + ben + kose.html };
     }
 
     /* REFERANS bloğu (destek kartı): kod, Kopyala/Paylaş, 5 adım */
@@ -1821,18 +1859,21 @@
     function szDurum(x) {
         var H = window.KidefHak, k = (H && H.kalan) ? H.kalan(x.oz) : null;
         if (k === Infinity) return { s: 'acik', y: '✓ sınırsız', t: 'Sınırsız açık' };
+        /* 2. DÖNEM KİLİDİ (03.11.2026): flipbook dışındaki araçlar kapalı */
+        if (H && H.kilitli && H.kilitli() && !{ ders: 1, kitapKalem: 1, kitapIndir: 1 }[x.oz]) return { s: 'bitti', y: '2. dönemde kapalı', t: '2. dönemde desteğinle açılır' };
         if (x.yalniz || (H && H.YALNIZ && H.YALNIZ[x.oz])) return { s: 'kilit', y: 'destekçilere', t: 'Yalnız destek veren öğretmenlere açık; deneme hakkı yok' };
         if (k === null) return { s: 'hak', y: '5 hak', t: '5 deneme hakkı; destekçilere sınırsız' };
         return k > 0 ? { s: 'hak', y: k + ' hak kaldı', t: k + ' deneme hakkın kaldı; destekçilere sınırsız' }
                      : { s: 'bitti', y: 'hak bitti', t: 'Deneme hakların bitti; destekçilere sınırsız' };
     }
-    function sinirsizBlok(h) {
+    function sinirsizBlok(h, dk) {          /* dk: 2. DÖNEM KİLİDİ (03.11.2026) */
         var destekci = h.durum === 'tamam' || h.durum === 'kismi' || h.refD === 'tam';
         var bas = destekci ? 'Destekçi olarak sınırsız açık' : 'Destek verince sınırsız';
         var alt = destekci ? 'Desteğin için teşekkürler.'
             : (h.durum === 'ilkay'
                 ? 'İlk ayında araçlar sınırsız, sonra her birinde 5 deneme hakkın olur; kitap indirme yalnız destekçilere.'
                 : 'Destek vermeden her aracı 5 kez deneyebilirsin; kitap indirme yalnız destekçilere.');
+        if (dk) alt = 'Hesabın şu an yalnız MEB ders kitaplarına ve Pratik Sayfalar\'a açık: bu kitaplarda kalem ve ders modunu 5 kez deneyebilirsin, öbür araçlar desteğinle açılır.';
         return '<div class="dst-sz" data-dst-sz><div class="dst-sz-bas"><svg ' + SZ_IK + '><path d="M12 3l2.6 5.5 6 .8-4.4 4.2 1 6-5.2-2.9-5.2 2.9 1-6L3.4 9.3l6-.8z"/></svg>' +
             '<span>' + esc(bas) + '</span></div><ul>' + SZ.map(function (x) {
                 var d = szDurum(x);
@@ -3071,6 +3112,48 @@
        ------------------------------------------------------------------ */
     var HAK_ARA = 10 * 60e3;
     var _hakUid = null, _hakZaman = 0, _hakSoz = null, _hakSonraki = 0, _hedefZaman = 0, _hakBagsiz = false;
+    /* ------------------------------------------------------------------
+       2. DÖNEM KİLİDİ (03.11.2026) — yönetici: "1. dönem ücretini vermeyenler sadece flipbook hariç diğer hiç bir
+       özelliği kullanamayacaklar, fakat bulut için kaydedilen verileri silinmeyecek, ödeme yaptıklarında yine
+       kaldıkları yerden devam edebilecekler" · seçim: yönetici ödemeyi onaylayınca kalksın; muafiyet anahtarı yok.
+       Kilitli: 2. dönemde (1 Şubat – 31 Ağustos) öğretmen; 1. dönemde payı vardı (ilk 30 günü 1 Şubat'tan önce bitti,
+       referansla «tam» değil) ama 1. döneme hiç destek düşmedi; bu döneme de henüz onaylı destek yok. Onaylı ödeme
+       (kısmi de) gelince kalkar. Kısıt tarayıcıda (sistem/hak.js ana sayfa ve kitaplar, sistem/kapi.js öbür
+       sayfalar); hiçbir veri silinmez. Durumda: dk = {d: '2026-27/1', bas: 2. dönemin başı (ms)}.
+       ------------------------------------------------------------------ */
+    function donemKilidi(v, h) {
+        if (!v || !h || !h.donem || h.donem.no !== 2) return null;
+        if (h.refD === 'tam' || h.durum === 'tamam' || h.durum === 'kismi' || (h.verilen || 0) > 0) return null;
+        var b = v.belge || {};
+        var d1 = donemBul(new Date(h.donem.bas.getTime() - GUN / 2));
+        var p1 = kisiPay(d1, donemPayi(v.ozet, d1.kod), kayitTarihi(b), refCarpan(b.referans, d1));
+        if (!(p1 > 0)) return null;
+        if (((h.dagilim || {})[d1.kod] || 0) > 0) return null;
+        return { d: d1.kod, bas: h.donem.bas.getTime() };
+    }
+    /* Ödeme onaylanınca kilit ANINDA kalksın: kilitliyken öğretmenin kendi belgesi dinlenir (erisim.js ve kilit.js
+       de aynı belgeyi dinliyor; Firestore tek dinlemeyle okur). destek/referans değişince durum yeniden hesaplanır. */
+    var _dkDinle = null, _dkUid = null, _dkImza = null;
+    function dkDinle(uid) {
+        if (_dkUid === uid) return;
+        if (_dkDinle) { try { _dkDinle(); } catch (e) { } _dkDinle = null; }
+        _dkUid = uid; _dkImza = null;
+        if (!uid || !db()) return;
+        try {
+            _dkDinle = db().collection('kullanicilar').doc(uid).onSnapshot(function (s) {
+                if (_dkUid !== uid || !s.exists) return;
+                var x = s.data() || {};
+                var imza = JSON.stringify([x.destek || null, x.referans || null]);
+                if (_dkImza === null) { _dkImza = imza; return; }
+                if (imza === _dkImza) return;
+                _dkImza = imza;
+                if (_ben && _ben.uid === uid) _ben.zaman = 0;             /* önbellek eskisin, yeniden okunsun */
+                _hakZaman = 0;
+                hakTazele(true);
+                setTimeout(function () { try { kartTazele(); } catch (e) { } }, 600);
+            }, function () { });
+        } catch (e) { }
+    }
     function hakDurumu(v) {
         var h = benHesap(v), o = { uid: v.uid, rol: 'teacher', z: Date.now() };
         var rb = v.belge && v.belge.referans;
@@ -3090,6 +3173,8 @@
         } else {
             o.sinirsiz = false; o.sebep = 'destek-yok';
         }
+        var dk = donemKilidi(v, h);                                   /* 2. DÖNEM KİLİDİ (03.11.2026) */
+        if (dk) { o.sinirsiz = false; o.sebep = 'donem-kilit'; o.dk = dk; delete o.bit; }
         return o;
     }
     function hakTazele(zorla) {
@@ -3097,7 +3182,7 @@
         if (!H) return;
         var u = benKim();
         if (!u || u.isAnonymous) {
-            if (_fbHazir && _hakUid !== '') { _hakUid = ''; H.uid(''); }     /* oturum kapandı */
+            if (_fbHazir && _hakUid !== '') { _hakUid = ''; H.uid(''); dkDinle(null); }     /* oturum kapandı */
             return;
         }
         var r = rol();
@@ -3125,7 +3210,9 @@
         if (_hakUid !== u.uid) _hakUid = null;
         _hakSoz = benimVerim().then(function (v) {
             if (benUid() !== v.uid || v.hata || !v.ozet) { _hakSonraki = Date.now() + 60e3; return; }
-            H.durumYaz(hakDurumu(v));
+            var hd = hakDurumu(v);
+            H.durumYaz(hd);
+            dkDinle(hd.dk ? v.uid : null);                            /* 2. DÖNEM KİLİDİ: onayda anında kalksın */
             _hakUid = v.uid; _hakZaman = Date.now();
         }).catch(function () { _hakSonraki = Date.now() + 60e3; }).then(function () { _hakSoz = null; });
     }

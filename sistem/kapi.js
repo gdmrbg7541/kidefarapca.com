@@ -223,18 +223,59 @@
         } catch (e) { son(null); }
     }
 
+    /* ------------------------------------------------- 2. DÖNEM KİLİDİ (03.11.2026)
+       Yönetici: "1. dönem ücretini vermeyenler sadece flipbook hariç diğer hiç bir özelliği
+       kullanamayacaklar, fakat bulut için kaydedilen verileri silinmeyecek, ödeme yaptıklarında yine
+       kaldıkları yerden devam edebilecekler". hesap/destek.js ana sayfada öğretmenin durumunu yazar
+       (localStorage kidefDestekDurum.dk); bu tarayıcıdaki oturum o öğretmense flipbook (kitap/,
+       flipbooks/, kitapetkinlikleri/) dışındaki sayfa açılmaz, ana sayfaya gider:
+       index.html?donemkilit=<bu sayfa>. Ana sayfa «desteğinle açılır» penceresini gösterir; kilit
+       kalkmışsa ziyaretçiyi geri getirir. Site kilidinden bağımsız çalışır; veri silinmez. */
+    var DK_SERBEST = /(^|\/)(kitap|flipbooks|kitapetkinlikleri)\//;
+    /* KİDEF KİTABI DA KİLİTLİ (03.11.2026) — yönetici: "kidef flipbook u da kilitli olsun 2. dönem destek
+       vermeyene": Kidef Arapça kitabının sayfaları da kilitli öğretmene açılmaz (MEB kitapları ve Pratik Sayfalar açık). */
+    var DK_KAPALI = /(^|\/)kitap\/kidef-arapca-2-baski\//;
+    function donemKilidi() {
+        if (yabanciCerceve || (DK_SERBEST.test(location.pathname) && !DK_KAPALI.test(location.pathname))) return null;
+        var d = null;
+        try { d = JSON.parse(yerelAl('kidefDestekDurum') || 'null'); } catch (e) { d = null; }
+        if (!d || !d.uid || d.rol !== 'teacher' || !d.dk || +d.dk.bas > Date.now()) return null;
+        return d;
+    }
+    Z.donemKilidi = donemKilidi;
+    function dkYonlendir() {
+        var s = null;
+        try { s = JSON.parse(sessionStorage.getItem('kidefKapiDkSayac') || 'null'); } catch (e) { }
+        if (!s || Date.now() - s.t > 60000) s = { n: 0, t: Date.now() };
+        if (s.n >= 3) return false;                                   /* döngü kalkanı */
+        s.n++;
+        try { sessionStorage.setItem('kidefKapiDkSayac', JSON.stringify(s)); } catch (e) { }
+        location.replace('/index.html?donemkilit=' + encodeURIComponent(location.pathname + location.search + location.hash));
+        return true;
+    }
+
     /* ------------------------------------------------------------ akış */
-    var kilit = yerelAl(KILIT);
-    var zaman = +yerelAl(KILIT_ZAMAN) || 0;
-    var bilinmiyor = !kilit;
-    if (kilitliMi(kilit) || bilinmiyor) gizle();
-    if (kilitliMi(kilit)) uygula(kilit);
-    if (bilinmiyor || Date.now() - zaman > TAZE_MS) {
-        kilitGetir(function (v) {
-            if (v === null) { if (!kilitliMi(kilit)) goster(); return; }   /* bulut yok: son bilinenle kal */
-            if (kilitliMi(v)) { if (v !== kilit) uygula(v); }
-            else goster();
-            kilit = v;
+    function akis() {
+        var kilit = yerelAl(KILIT);
+        var zaman = +yerelAl(KILIT_ZAMAN) || 0;
+        var bilinmiyor = !kilit;
+        if (kilitliMi(kilit) || bilinmiyor) gizle();
+        if (kilitliMi(kilit)) uygula(kilit);
+        if (bilinmiyor || Date.now() - zaman > TAZE_MS) {
+            kilitGetir(function (v) {
+                if (v === null) { if (!kilitliMi(kilit)) goster(); return; }   /* bulut yok: son bilinenle kal */
+                if (kilitliMi(v)) { if (v !== kilit) uygula(v); }
+                else goster();
+                kilit = v;
+            });
+        } else if (!kilitliMi(kilit)) goster();
+    }
+    var _dk = donemKilidi();
+    if (_dk) {
+        gizle();
+        oturumUid(function (uid) {
+            if (uid && uid === _dk.uid && dkYonlendir()) { yonlendi = true; return; }
+            akis();
         });
-    } else if (!kilitliMi(kilit)) goster();
+    } else akis();
 })();
