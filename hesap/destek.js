@@ -1333,6 +1333,9 @@
             '#tpDestek .dst-sz li[data-s="hak"] em{background:#FFF3DC; color:#B7791F;}',
             '#tpDestek .dst-sz li[data-s="bitti"] em{background:#FDECEA; color:#C0392B;}',
             '#tpDestek .dst-sz li[data-s="kilit"] em{background:#F3EEE4; color:#8A6D3B;}',
+            /* BULUT HİZMETLERİ (03.11.2026): mavi simge, listede başta */
+            '#tpDestek .dst-sz li[data-bulut] svg{color:#2E86C1;}',
+            '#tpDestek .dst-sz li[data-bulut]{border-color:#D6E9F5; background:#FBFDFF;}',
             '#tpDestek .dst-sz-alt{margin:10px 0 0; font-size:.82rem; color:#8A7A66; line-height:1.5;}',
             '@media (max-width:420px){#tpDestek .dst-sz ul{grid-template-columns:1fr;}}'
         ].join('\n');
@@ -1848,15 +1851,31 @@
        2 sn'de bir (hak harcandıkça) yerinde tazelenir. */
     var SZ_IK = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
     var SZ = [
+        /* BULUT HİZMETLERİ (03.11.2026) — yönetici: "destek verince sınırsız kısmında, verilerin bulutta saklanması ögesini
+           de ekle, buna benzer bulut hizmetlerinde önemlileri de ekle". Deneme hakkı yok; durumu bulutDurum() verir. */
+        { oz: 'bulutVeri', bulut: 1, ad: 'Verilerin bulutta saklanması', ik: '<path d="M7 18.5h10.5a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.6 9.6 4.5 4.5 0 0 0 7 18.5z"/><path d="M12 11v5M9.8 13.8 12 16l2.2-2.2"/>' },
+        { oz: 'bulutGorev', bulut: 1, ad: 'Görev gönderme ve sonuçlar', ik: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M8.8 11.2l2 2 4.4-4.4M9 17h6"/>' },
+        { oz: 'bulutMesaj', bulut: 1, ad: 'Sınıf mesajları', ik: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12.5h5"/>' },
         { oz: 'tahta', ad: 'Tahtaya yansıt ve kumanda', ik: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>' },
         { oz: 'defter', ad: 'Defter PDF\'i ve geçmiş', ik: '<path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6z"/><path d="M9 3v18M12 8h4M12 12h4"/>' },
         { oz: 'kalip', ad: 'Kalıplar Tablosu', ik: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>' },
         { oz: 'muhadese', ad: 'Muhâdese', ik: '<path d="M4 4h11a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M20 9a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2v3l-4-3h-3"/>' },
-        { oz: 'ders', ad: 'Kitapta ders modu', ik: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M10 8v4.5l4-2.25z"/>' },   /* DERS MODU (29.10.2026) */
+        /* «Kitapta ders modu» çıktı (03.11.2026) — yönetici: "henüz kitapta ders modunu daha eklemedik onu kaldır" */
         { oz: 'kitapKalem', ad: 'Kitapta kalem', ik: '<path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/>' },
         { oz: 'kitapIndir', ad: 'Kitap indirme', yalniz: 1, ik: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>' }
     ];
+    /* BULUT HİZMETLERİ: destekçiye sınırsız; 1. dönemde destek vermeyene açık ama 2. dönemde kapanacak; kilitliyse kapalı */
+    var _szH = null;                    /* kartın son çizildiği hesap (sinirsizBlok yazar) */
+    function bulutDurum(H) {
+        if (H && H.kilitli && H.kilitli()) return { s: 'bitti', y: '2. dönemde kapalı', t: 'Verilerin silinmedi; desteğin onaylanınca kaldığın yerden açılır' };
+        var d = (H && H.durum) ? H.durum() : null;
+        if (d && !d.sinirli && { odeme: 1, kismi: 1, referans: 1, yonetici: 1 }[d.sebep]) return { s: 'acik', y: '✓ sınırsız', t: 'Sınırsız açık' };
+        /* 1. dönemde: bu dönem payı olan (2. dönemde kilitlenebilecek) öğretmene «1. dönem açık»; son ayında katılana «açık» */
+        if (donemBul(new Date()).no === 1 && (!_szH || _szH.kisi > 0)) return { s: 'hak', y: '1. dönem açık', t: '1. dönem herkese açık; destek vermezsen 2. dönemde kapanır (verilerin silinmez)' };
+        return { s: 'acik', y: '✓ açık', t: 'Açık' };
+    }
     function szDurum(x) {
+        if (x.bulut) return bulutDurum(window.KidefHak);
         var H = window.KidefHak, k = (H && H.kalan) ? H.kalan(x.oz) : null;
         if (k === Infinity) return { s: 'acik', y: '✓ sınırsız', t: 'Sınırsız açık' };
         /* 2. DÖNEM KİLİDİ (03.11.2026): flipbook dışındaki araçlar kapalı */
@@ -1867,17 +1886,19 @@
                      : { s: 'bitti', y: 'hak bitti', t: 'Deneme hakların bitti; destekçilere sınırsız' };
     }
     function sinirsizBlok(h, dk) {          /* dk: 2. DÖNEM KİLİDİ (03.11.2026) */
+        _szH = h;                                                    /* BULUT HİZMETLERİ (03.11.2026) */
         var destekci = h.durum === 'tamam' || h.durum === 'kismi' || h.refD === 'tam';
         var bas = destekci ? 'Destekçi olarak sınırsız açık' : 'Destek verince sınırsız';
         var alt = destekci ? 'Desteğin için teşekkürler.'
             : (h.durum === 'ilkay'
                 ? 'İlk ayında araçlar sınırsız, sonra her birinde 5 deneme hakkın olur; kitap indirme yalnız destekçilere.'
                 : 'Destek vermeden her aracı 5 kez deneyebilirsin; kitap indirme yalnız destekçilere.');
-        if (dk) alt = 'Hesabın şu an yalnız MEB ders kitaplarına ve Pratik Sayfalar\'a açık: bu kitaplarda kalem ve ders modunu 5 kez deneyebilirsin, öbür araçlar desteğinle açılır.';
+        if (dk) alt = 'Hesabın şu an yalnız MEB ders kitaplarına ve Pratik Sayfalar\'a açık: bu kitaplarda kalemi 5 kez deneyebilirsin; öbür araçlar ve bulut hizmetleri desteğinle açılır.';
+        else if (!destekci && h.donem && h.donem.no === 1 && h.kisi > 0) alt += ' Bulut hizmetleri 1. dönem açık; destek vermezsen 2. dönemde kapanır, verilerin silinmez.';
         return '<div class="dst-sz" data-dst-sz><div class="dst-sz-bas"><svg ' + SZ_IK + '><path d="M12 3l2.6 5.5 6 .8-4.4 4.2 1 6-5.2-2.9-5.2 2.9 1-6L3.4 9.3l6-.8z"/></svg>' +
             '<span>' + esc(bas) + '</span></div><ul>' + SZ.map(function (x) {
                 var d = szDurum(x);
-                return '<li data-oz="' + x.oz + '" data-s="' + d.s + '" title="' + esc(d.t) + '"><svg ' + SZ_IK + '>' + x.ik + '</svg><b>' + esc(x.ad) + '</b><em>' + esc(d.y) + '</em></li>';
+                return '<li data-oz="' + x.oz + '"' + (x.bulut ? ' data-bulut="1"' : '') + ' data-s="' + d.s + '" title="' + esc(d.t) + '"><svg ' + SZ_IK + '>' + x.ik + '</svg><b>' + esc(x.ad) + '</b><em>' + esc(d.y) + '</em></li>';
             }).join('') + '</ul><p class="dst-sz-alt">' + esc(alt) + ' Destekçilerin profiline animasyonlu destekçi rozeti gelir; Destekçiler köşesinde ad yazılmaz.</p></div>';
     }
     function sinirsizTazele() {
