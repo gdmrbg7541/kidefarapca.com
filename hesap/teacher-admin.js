@@ -1352,8 +1352,9 @@ function paylasilacakMesaj(uid, bilgi) {
         if (!window.KidefHosgeldin) return;
         var kod = '';
         try { if (window.OH && OH.koduTuret) kod = OH.koduTuret(uid) || ''; } catch (e) { kod = ''; }
+        /* E-POSTA (03.11.2026): kayıt e-postası da karta gider («E-postayla gönder») */
         window.KidefHosgeldin.goster((bilgi && bilgi.ad) || '', kod,
-                                    (bilgi && bilgi.tel) || '');
+                                    (bilgi && bilgi.tel) || '', (bilgi && bilgi.email) || '');
     } catch (e) {
         try { console.warn('Paylaşılacak mesaj açılamadı:', e); } catch (x) {}
     }
@@ -1393,7 +1394,7 @@ function ogretmenBelgeIste(uid) {
     var b = _onayBekleyen[uid] || {};
     try {
         if (window.KidefHosgeldin && KidefHosgeldin.ispatIste) {
-            KidefHosgeldin.ispatIste(b.ad || '', b.tel || '');
+            KidefHosgeldin.ispatIste(b.ad || '', b.tel || '', b.email || '');   /* E-POSTA (03.11.2026) */
         } else if (typeof showCustomAlert === 'function') {
             showCustomAlert('Mesaj penceresi yüklenemedi.');
         }

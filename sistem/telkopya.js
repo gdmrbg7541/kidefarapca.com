@@ -126,7 +126,10 @@
 
   /* Tek dinleyici: liste her yeniden çizildiğinde yeniden bağlamak yok. */
   document.addEventListener('click', function (e) {
-    var d = e.target && e.target.closest ? e.target.closest('[data-tel]') : null;
+    /* YALNIZ KENDİ ROZETİ (03.11.2026): eskiden sayfadaki HER [data-tel] öğesini yakalıyordu;
+       hoş geldin / belge iste kartının WhatsApp tuşu da numarayı data-tel'de taşıdığı için
+       tıklaması burada yutuluyor, WhatsApp hiç açılmıyordu (yalnız numara kopyalanıyordu). */
+    var d = e.target && e.target.closest ? e.target.closest('.tk-roz[data-tel]') : null;
     if (!d) return;
     e.preventDefault();
     e.stopPropagation();                 /* satırın kendi tıklaması tetiklenmesin */

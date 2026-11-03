@@ -22,6 +22,9 @@
    AD SOYAD: kayıt formunda tek alan var ("Ad soyad"), Firestore'da
    `name` olarak duruyor; mesaj onu olduğu gibi kullanıyor. Ad boşsa
    "hocam" diye başlıyor, boş bir satır kalmıyor.
+
+   03.11.2026: mesaj e-postayla da gönderilir; WhatsApp tuşu onarıldı
+   (aşağıda «GÖNDERME YOLLARI»).
    ===================================================================== */
 (function () {
   'use strict';
@@ -166,6 +169,23 @@
       '  display:inline-flex; align-items:center; gap:7px; font-weight:700;',
       '  font-size:.94rem; border-radius:11px; padding:11px 20px; }',
       '#hgmPerde .hgm-wa:hover{ background:#1DAE52; }',
+      /* GÖNDERME YOLLARI (03.11.2026): WhatsApp Web, e-posta, bilgi satırı, dar ekran */
+      '#hgmPerde .hgm-wa svg, #hgmPerde .hgm-eposta svg{ width:18px; height:18px; flex:none; }',
+      '#hgmPerde .hgm-wa-web{ background:#E3F7EA; color:#11743E; }',
+      '#hgmPerde .hgm-wa-web:hover{ background:#CFF0DB; }',
+      '#hgmPerde .hgm-eposta{ background:#2563EB; color:#fff; text-decoration:none;',
+      '  display:inline-flex; align-items:center; gap:7px; font-weight:700;',
+      '  font-size:.94rem; border-radius:11px; padding:11px 20px; }',
+      '#hgmPerde .hgm-eposta:hover{ background:#1D4ED8; }',
+      '#hgmPerde .hgm-gonder{ display:flex; gap:9px; flex-wrap:wrap; margin-top:14px; }',
+      '#hgmPerde .hgm-gonder + .hgm-tus{ margin-top:9px; }',
+      '#hgmPerde .hgm-not{ margin:10px 2px 0; font-size:.86rem; line-height:1.45; color:#0E7C66; }',
+      '#hgmPerde .hgm-not:empty{ display:none; }',
+      '@media (max-width:560px){',
+      '  #hgmPerde .hgm-kart{ padding:22px 18px 18px; }',
+      '  #hgmPerde .hgm-gonder > *{ flex:1 1 100%; justify-content:center; }',
+      '  #hgmPerde .hgm-tus > *{ flex:1 1 auto; justify-content:center; }',
+      '}',
       '#hgmPerde .hgm-kapat{ background:#EDF1F0; color:#55636E; margin-inline-start:auto; }',
       '#hgmPerde .hgm-kapat:hover{ background:#E0E7E5; }'
     ].join('\n');
@@ -204,8 +224,72 @@
     try { document.execCommand('copy'); tamam(); } catch (e) {}
   }
 
+  /* ---------------------------------------------- GÖNDERME YOLLARI (03.11.2026)
+     Yönetici: "belge isteme veya onay mesajını bi tuşla mail olarak ta gönderme seçeneği
+     olsun, ayrıca watsap otomotik açılmıyor" — seçimleri: Mac'te «Uygulama» ve «Web» iki ayrı
+     WhatsApp tuşu, e-posta Gmail'de açılsın.
+
+     WHATSAPP NEDEN AÇILMIYORDU: tuş numarayı data-tel'de taşıyordu. sistem/telkopya.js telefon
+     rozeti için belgedeki HER [data-tel] tıklamasını YAKALAMA aşamasında durduruyordu
+     (preventDefault + stopPropagation): tıklama tuşa hiç ulaşmıyor, yalnız numara panoya
+     kopyalanıyordu. Safari'ye özgü değildi, her tarayıcıda böyleydi. Numara artık
+     data-wa-num'da; telkopya da yalnız kendi rozetini (.tk-roz) dinliyor.
+
+     · Bilgisayarda iki WhatsApp tuşu:
+         «WhatsApp uygulaması» → whatsapp://send/?phone=… — WhatsApp'ın kendi «Sohbete devam et»
+           sayfasının uygulamayı açtığı adres. Tarayıcı bir kez «açılsın mı?» diye sorar.
+         «WhatsApp Web» → web.whatsapp.com/send?phone=…, yeni sekmede (08.10.2026'dan beri; wa.me
+           masaüstünde WhatsApp Web'e gitmiyor, ara sayfada kalıyordu).
+     · Telefonda tek tuş: uygulama (aynı whatsapp:// adresi; wa.me'nin «tarayıcıda aç» seçimine
+       takılmaz).
+     · «E-postayla gönder» öğretmenin kayıt e-postasına: bilgisayarda Gmail'in yeni ileti
+       penceresi (alıcı, konu, metin hazır; yönetici yalnız «Gönder»e basar), telefonda cihazın
+       e-posta uygulaması (mailto). Site statik; e-postayı kendiliğinden gönderecek sunucu yok.
+     · Gönder tuşları metni panoya da koyar: sohbet metinsiz açılırsa yapıştırmak yeter.
+     · Adresler tıklama anında yeniden kurulur: metin değiştirildiyse değişmiş hâli gider. */
+  var IK_SOHBET = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M20.4 11.7a8.3 8.3 0 0 1-12.2 7.3L3.6 20.4l1.5-4.3a8.3 8.3 0 1 1 15.3-4.4z"/></svg>';
+  var IK_WEB = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/>' +
+    '<path d="M3.6 12h16.8M12 3.4c2.3 2.4 3.5 5.3 3.5 8.6s-1.2 6.2-3.5 8.6c-2.3-2.4-3.5-5.3-3.5-8.6s1.2-6.2 3.5-8.6z"/></svg>';
+  var IK_ZARF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<rect x="3.2" y="5.4" width="17.6" height="13.2" rx="2.2"/><path d="M3.9 6.7l8.1 6.2 8.1-6.2"/></svg>';
+
+  function mobilMi() {
+    return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile Safari/i
+      .test(navigator.userAgent || '');
+  }
+  function epostaDuzelt(e) {
+    var s = String(e == null ? '' : e).trim();
+    return /^[^\s@<>"'&?#]+@[^\s@<>"'&?#]+\.[^\s@<>"'&?#]+$/.test(s) ? s : '';
+  }
+  /* tur: 'uygulama' (bilgisayar ve telefon) | 'web' */
+  function waAdres(tur, num, metin) {
+    var m = encodeURIComponent(metin || '');
+    if (tur === 'web') {
+      return 'https://web.whatsapp.com/send?' + (num ? 'phone=' + num + '&' : '') + 'text=' + m;
+    }
+    return num
+      ? ('whatsapp://send/?phone=' + num + '&text=' + m + '&type=phone_number&app_absent=0')
+      : ('whatsapp://send?text=' + m);
+  }
+  /* tur: 'gmail' (bilgisayar) | 'posta' (telefon: cihazın e-posta uygulaması) */
+  function epostaAdres(tur, adres, konu, metin) {
+    var a = epostaDuzelt(adres);
+    if (tur === 'gmail') {
+      return 'https://mail.google.com/mail/?view=cm&fs=1' +
+        (a ? '&to=' + encodeURIComponent(a) : '') +
+        '&su=' + encodeURIComponent(konu || '') + '&body=' + encodeURIComponent(metin || '');
+    }
+    return 'mailto:' + encodeURIComponent(a).replace(/%40/g, '@') +
+      '?subject=' + encodeURIComponent(konu || '') +
+      '&body=' + encodeURIComponent(String(metin || '').replace(/\r?\n/g, '\r\n'));   /* RFC 6068 */
+  }
+
   /* ORTAK KART — iki mesaj da aynı pencereyi kullanır (13.10.2026).
-     o = { baslik, metin, tel } */
+     o = { baslik, metin, tel, eposta, konu } */
   function kartAc(o) {
     stilKur();
     kapat();
@@ -216,78 +300,124 @@
     var m = o.metin || '';
     var numara = telDuzelt(o.tel);
     var numaraYazi = telGosterim(o.tel);
+    var eposta = epostaDuzelt(o.eposta);
+    var konu = o.konu || 'kidefarapca.com';
+    var mobil = mobilMi();
+    var epTur = mobil ? 'posta' : 'gmail';
+    var bilgi =
+      (numara ? ('WhatsApp: <b>' + kac(numaraYazi) + '</b>')
+              : 'WhatsApp: telefon kayıtlı değil, kişiyi sen seçeceksin') + ' · ' +
+      (eposta ? ('E-posta: <b>' + kac(eposta) + '</b>')
+              : 'E-posta: adres kayıtlı değil, alıcıyı sen yazacaksın') +
+      '. İstersen önce metni değiştir.';
+    function waTus(tur, yazi, sinif, ikon) {
+      return '<a class="' + sinif + '" href="' + kac(waAdres(tur, numara, m)) + '"' +
+        (tur === 'web' ? ' target="_blank" rel="noopener"' : '') +
+        ' data-wa="' + tur + '" data-wa-num="' + numara + '"' +
+        ' onclick="return KidefHosgeldin.waAc(this)">' + ikon + '<span>' + yazi + '</span></a>';
+    }
     p.innerHTML =
       '<div class="hgm-kart">' +
       '<h3>' + kac(o.baslik || 'Mesaj') + '</h3>' +
-      '<p class="hgm-alt">' +
-        (numara
-          ? ('WhatsApp doğrudan <b>' + kac(numaraYazi) + '</b> numarasına açılır ' +
-             '(bilgisayarda WhatsApp Web, telefonda uygulama). ' +
-             'İstersen önce metni değiştir.')
-          : ('Bu öğretmenin telefonu kayıtlı değil; WhatsApp açılınca kişiyi ' +
-             'sen seçeceksin. İstersen önce metni değiştir.')) +
-      '</p>' +
+      '<p class="hgm-alt">' + bilgi + '</p>' +
       '<textarea id="hgmMetin" spellcheck="false">' + kac(m) + '</textarea>' +
+      '<div class="hgm-gonder">' +
+      (mobil
+        ? waTus('uygulama', numara ? 'WhatsApp\'tan gönder' : 'WhatsApp\'ta aç', 'hgm-wa', IK_SOHBET)
+        : waTus('uygulama', 'WhatsApp uygulaması', 'hgm-wa', IK_SOHBET) +
+          waTus('web', 'WhatsApp Web', 'hgm-wa hgm-wa-web', IK_WEB)) +
+      '<a class="hgm-eposta" href="' + kac(epostaAdres(epTur, eposta, konu, m)) + '"' +
+        (epTur === 'gmail' ? ' target="_blank" rel="noopener"' : '') +
+        ' data-tur="' + epTur + '" data-eposta="' + kac(eposta) + '" data-konu="' + kac(konu) + '"' +
+        ' onclick="return KidefHosgeldin.epostaAc(this)">' + IK_ZARF + '<span>E-postayla gönder</span></a>' +
+      '</div>' +
       '<div class="hgm-tus">' +
       '<button type="button" class="hgm-kopya" onclick="KidefHosgeldin.kopyala(this)">Kopyala</button>' +
-      '<a class="hgm-wa" href="https://wa.me/' + numara + '" target="_blank" rel="noopener"' +
-      ' data-tel="' + numara + '"' +
-      ' onclick="return KidefHosgeldin.waAc(this)">' +
-      (numara ? 'WhatsApp\'tan gönder' : 'WhatsApp\'ta aç') + '</a>' +
       '<button type="button" class="hgm-kapat" onclick="KidefHosgeldin.kapat()">Kapat</button>' +
-      '</div></div>';
+      '</div>' +
+      '<p class="hgm-not" id="hgmNot" aria-live="polite"></p>' +
+      '</div>';
     p.addEventListener('click', function (e) { if (e.target === p) kapat(); });
     document.body.appendChild(p);
     document.addEventListener('keydown', tus);
-    /* WhatsApp bağlantısı metin değiştirilirse de güncel kalsın diye
-       tıklama anında kuruluyor (bkz. waAc). */
   }
 
   /* ONAY SONRASI hoş geldin mesajı */
-  function goster(ad, kod, tel) {
+  function goster(ad, kod, tel, eposta) {
     kartAc({
       baslik: (adDuzelt(ad) ? adDuzelt(ad) + ' onaylandı' : 'Öğretmen onaylandı'),
       metin: metin(ad, kod),
-      tel: tel
+      tel: tel,
+      eposta: eposta,
+      konu: 'kidefarapca.com · öğretmen hesabınız açıldı'
     });
   }
 
   /* ONAYDAN ÖNCE öğretmenlik belgesi isteyen mesaj */
-  function ispatIste(ad, tel) {
+  function ispatIste(ad, tel, eposta) {
     kartAc({
       baslik: (adDuzelt(ad) ? adDuzelt(ad) + ' — belge iste' : 'Öğretmenlik belgesi iste'),
       metin: ispatMetni(ad),
-      tel: tel
+      tel: tel,
+      eposta: eposta,
+      konu: 'kidefarapca.com · öğretmen başvurunuz'
     });
   }
 
-  /* Bağlantıyı tıklama anında kurar: kullanıcı metni değiştirdiyse
-     değiştirilmiş hâli gider. */
+  function notYaz(yazi) {
+    var n = document.getElementById('hgmNot');
+    if (n) n.textContent = yazi || '';
+  }
+  /* Yedek: gönder tuşları metni panoya da koyar. Yazılamazsa (izin yok) sessizce geçer;
+     bilgi satırı da "kopyalandı" demez. */
+  function panoyaKoy(metin, sonra) {
+    var bitti = false;
+    function son(ok) { if (!bitti) { bitti = true; sonra(ok); } }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(metin).then(function () { son(true); }, function () { son(false); });
+        return;
+      }
+    } catch (e) {}
+    son(false);
+  }
+
+  /* Bağlantıyı tıklama anında kurar: kullanıcı metni değiştirdiyse değiştirilmiş hâli gider. */
   function waAc(a) {
     var t = document.getElementById('hgmMetin');
-    var num = (a && a.getAttribute('data-tel')) || '';
-    var metin = encodeURIComponent(t ? t.value : '');
-    /* MASAÜSTÜNDE AÇILMIYORDU (08.10.2026) — öğretmen: "yönetici olarak bi
-       öğretmeni onayladıktan sonra onun numarasına bilgisayardan
-       WhatsApp'tan mesaj yazma kısmına tıklayınca açılmıyor".
-       SEBEP: wa.me masaüstünde WhatsApp Web'e GİTMEZ; uygulamayı protokolle
-       açmaya çalışan bir ara sayfaya gider. Uygulama kurulu/kayıtlı değilse
-       indirme sayfasında ya da boş ekranda kalır — tıklama "hiçbir şey
-       olmamış" gibi görünür. Masaüstünde doğru adres web.whatsapp.com/send:
-       sohbeti numarayla açar, metni de hazır getirir ve numarayı rehbere
-       kaydetmek gerekmez. Telefonda ise wa.me uygulamayı doğrudan açtığı
-       için orada olduğu gibi bırakıldı. */
-    var mobil = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile Safari/i
-      .test(navigator.userAgent || '');
-    a.href = mobil
-      ? ('https://wa.me/' + num + (metin ? '?text=' + metin : ''))
-      : ('https://web.whatsapp.com/send?' + (num ? 'phone=' + num + '&' : '') + 'text=' + metin);
+    var metin = t ? t.value : '';
+    var tur = (a && a.getAttribute('data-wa')) || 'uygulama';
+    var num = (a && a.getAttribute('data-wa-num')) || '';
+    if (a) a.href = waAdres(tur, num, metin);
+    notYaz(tur === 'web'
+      ? 'WhatsApp Web yeni sekmede açıldı; giriş isterse telefonundan QR kodu okut.'
+      : 'WhatsApp uygulaması açılıyor; tarayıcı izin sorarsa «Aç» ya da «İzin ver»e bas.');
+    panoyaKoy(metin, function (ok) {
+      var n = document.getElementById('hgmNot');
+      if (ok && n && n.textContent.indexOf('panoya') < 0) n.textContent += ' Metin panoya da kopyalandı.';
+    });
+    return true;
+  }
+
+  function epostaAc(a) {
+    var t = document.getElementById('hgmMetin');
+    var metin = t ? t.value : '';
+    var tur = (a && a.getAttribute('data-tur')) || 'gmail';
+    if (a) a.href = epostaAdres(tur, a.getAttribute('data-eposta') || '', a.getAttribute('data-konu') || '', metin);
+    notYaz(tur === 'gmail'
+      ? 'Gmail yeni sekmede açıldı: alıcı, konu ve metin hazır, «Gönder»e basman yeter.'
+      : 'E-posta uygulaması açılıyor: alıcı, konu ve metin hazır.');
+    panoyaKoy(metin, function (ok) {
+      var n = document.getElementById('hgmNot');
+      if (ok && n && n.textContent.indexOf('panoya') < 0) n.textContent += ' Metin panoya da kopyalandı.';
+    });
     return true;
   }
 
   window.KidefHosgeldin = {
     goster: goster, ispatIste: ispatIste, kapat: kapat, kopyala: kopyala,
-    waAc: waAc, metin: metin, ispatMetni: ispatMetni,
-    telDuzelt: telDuzelt, telGosterim: telGosterim
+    waAc: waAc, epostaAc: epostaAc, waAdres: waAdres, epostaAdres: epostaAdres,
+    metin: metin, ispatMetni: ispatMetni,
+    telDuzelt: telDuzelt, telGosterim: telGosterim, epostaDuzelt: epostaDuzelt
   };
 })();
