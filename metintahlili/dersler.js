@@ -352,8 +352,160 @@ window.METIN_TAHLILI = [
   "kitaplar": [
    {
     "yil": "2026-2027",
-    "ad": "Mektep Yayınları 2026-2027",
-    "alt": "Mektep Yayınları ders kitabı (6 ünite) · 2026-2027 öğretim yılı",
+    "ad": "Devlet Kitapları 2026-2027",
+    "alt": "MEB Devlet Kitapları ders kitabı (6 ünite) · 2026-2027 öğretim yılı",
+    "onek": "d2627/",
+    "uniteler": [
+     {
+      "ad": "1. Ünite: Meslekler",
+      "ar": "المِهَن",
+      "dersler": [
+       {
+        "id": "7_1_1",
+        "ad": "1. Ders: Mesleğin Ne?",
+        "ar": "ما مِهْنَتُك؟",
+        "cumle": 46
+       },
+       {
+        "id": "7_1_2",
+        "ad": "2. Ders: Öğretmenim",
+        "ar": "مُدَرِّسي",
+        "cumle": 39
+       },
+       {
+        "id": "7_1_3",
+        "ad": "3. Ders: Hayalim",
+        "ar": "أُمْنِيَّتي",
+        "cumle": 45
+       }
+      ]
+     },
+     {
+      "ad": "2. Ünite: Alışveriş",
+      "ar": "التَّسَوُّق",
+      "dersler": [
+       {
+        "id": "7_2_1",
+        "ad": "1. Ders: Bakkalda",
+        "ar": "في البَقّالة",
+        "cumle": 25
+       },
+       {
+        "id": "7_2_2",
+        "ad": "2. Ders: Kırtasiyede",
+        "ar": "في القِرْطاسِيّة",
+        "cumle": 34
+       },
+       {
+        "id": "7_2_3",
+        "ad": "3. Ders: Semt Pazarında",
+        "ar": "في السّوق الشَّعْبي",
+        "cumle": 31
+       }
+      ]
+     },
+     {
+      "ad": "3. Ünite: Hava Durumu",
+      "ar": "الأَحْوال الجَوِّيّة",
+      "dersler": [
+       {
+        "id": "7_3_1",
+        "ad": "1. Ders: Hava Yağmurlu",
+        "ar": "الجَوّ مُمْطِر",
+        "cumle": 47
+       },
+       {
+        "id": "7_3_2",
+        "ad": "2. Ders: Hava Karlı",
+        "ar": "الجَوّ مُثْلِج",
+        "cumle": 38
+       },
+       {
+        "id": "7_3_3",
+        "ad": "3. Ders: Hava Güneşli",
+        "ar": "الجَوّ مُشْمِس",
+        "cumle": 39
+       }
+      ]
+     },
+     {
+      "ad": "4. Ünite: Vatanım",
+      "ar": "وَطَنِي",
+      "dersler": [
+       {
+        "id": "7_4_1",
+        "ad": "1. Ders: Tarihî Yerler",
+        "ar": "الأَماكِن التّاريخِيّة",
+        "cumle": 33
+       },
+       {
+        "id": "7_4_2",
+        "ad": "2. Ders: Vatanımı Seviyorum",
+        "ar": "أُحِبُّ وَطَني",
+        "cumle": 39
+       },
+       {
+        "id": "7_4_3",
+        "ad": "3. Ders: Örnek Şahsiyetler",
+        "ar": "الشّخْصِيّات المِثالِيّة",
+        "cumle": 53
+       }
+      ]
+     },
+     {
+      "ad": "5. Ünite: İbadetler",
+      "ar": "العِبادات",
+      "dersler": [
+       {
+        "id": "7_5_1",
+        "ad": "1. Ders: Beş Vakit Namaz",
+        "ar": "الصَّلَوات الخَمْس",
+        "cumle": 46
+       },
+       {
+        "id": "7_5_2",
+        "ad": "2. Ders: Oruç",
+        "ar": "الصَّوْم",
+        "cumle": 42
+       },
+       {
+        "id": "7_5_3",
+        "ad": "3. Ders: Dinî Bayramlar",
+        "ar": "الأَعْياد الدّينِيّة",
+        "cumle": 30
+       }
+      ]
+     },
+     {
+      "ad": "6. Ünite: İletişim",
+      "ar": "الاِتِّصالات",
+      "dersler": [
+       {
+        "id": "7_6_1",
+        "ad": "1. Ders: Cep Telefonu",
+        "ar": "الهاتِف الجَوّال",
+        "cumle": 31
+       },
+       {
+        "id": "7_6_2",
+        "ad": "2. Ders: Bilgisayar",
+        "ar": "الحاسوب",
+        "cumle": 23
+       },
+       {
+        "id": "7_6_3",
+        "ad": "3. Ders: Mektup",
+        "ar": "الرِّسالة",
+        "cumle": 21
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "yil": "2025-2026",
+    "ad": "Mektep Yayınları 2025-2026",
+    "alt": "Mektep Yayınları ders kitabı (6 ünite) · 2025-2026 öğretim yılı",
     "onek": "y2627/",
     "uniteler": [
      {
@@ -497,62 +649,6 @@ window.METIN_TAHLILI = [
         "ad": "3. Ders: Mektup",
         "ar": "الرِّسالة",
         "cumle": 28
-       }
-      ]
-     }
-    ]
-   },
-   {
-    "yil": "2027-2028",
-    "ad": "2027-2028",
-    "alt": "2025 TYMM Maarif Arapça Programı · MEB ders kitabı (4 ünite) · 2027-2028 öğretim yılı",
-    "onek": "",
-    "uniteler": [
-     {
-      "ad": "1. Ünite: Bugün Ne Yaptım?",
-      "ar": "ماذا فَعَلْتُ اليَوْمَ؟",
-      "dersler": [
-       {
-        "id": "7_1",
-        "ad": "Günlük Etkinlikler ve Saatler",
-        "ar": "الأَنْشِطَةُ اليَوْمِيَّة وَالسّاعات",
-        "cumle": 74
-       }
-      ]
-     },
-     {
-      "ad": "2. Ünite: Alışveriş Zamanı",
-      "ar": "وَقْتُ التَّسَوُّق",
-      "dersler": [
-       {
-        "id": "7_2",
-        "ad": "Alışveriş, Miktar ve Sayılar",
-        "ar": "التَّسَوُّق وَالكَمِّيّات وَالأَعْداد",
-        "cumle": 18
-       }
-      ]
-     },
-     {
-      "ad": "3. Ünite: Nereye Seyahat Edelim?",
-      "ar": "إِلى أَيْن نُسافِرُ؟",
-      "dersler": [
-       {
-        "id": "7_3",
-        "ad": "Ulaşım ve Seyahat",
-        "ar": "المُواصَلات وَالسَّفَر",
-        "cumle": 42
-       }
-      ]
-     },
-     {
-      "ad": "4. Ünite: Şehrim ve Ülkem",
-      "ar": "مَدينَتي وَبَلَدي",
-      "dersler": [
-       {
-        "id": "7_4",
-        "ad": "Şehrim ve Ülkem",
-        "ar": "المَدينَة وَالبَلَد",
-        "cumle": 74
        }
       ]
      }
@@ -995,4 +1091,3 @@ window.METIN_TAHLILI = [
   ]
  }
 ];
-/* kelimeDizilisi 26.10.2026: ders verisi değişti, damga tazelensin */

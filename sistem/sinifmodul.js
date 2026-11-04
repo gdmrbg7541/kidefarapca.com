@@ -398,15 +398,15 @@
      Rozetteki sayı AŞAĞIDAKİ haritadan gelir; müfredat değişince
      sarf/ihkelime.js ile birlikte burası da güncellenir. */
   var IH_KELIME = {"5": {"unite": 4, "ders": 11, "veri": 11}, "6": {"unite": 6, "ders": 18, "veri": 18}, "7": {"unite": 4, "ders": 4, "veri": 4}, "8": {"unite": 6, "ders": 18, "veri": 18}, "9": {"unite": 4, "ders": 8, "veri": 8}, "10": {"unite": 4, "ders": 8, "veri": 8}};
-  /* >>> 7. SINIF MEKTEP YAYINLARI (yama7.py üretti; elle düzenlemeyin, yeniden üretin) */
-  /* 7. sınıfın iki kitabı var: rozet SEÇİLİ kitaba göre (sistem/sinifveri.js). */
-  var IH_KELIME_YIL = { "7": { "2026-2027": { "unite": 6, "ders": 18, "veri": 18 }, "2027-2028": IH_KELIME["7"] } };
+  /* >>> 7. SINIF İKİ KİTAP (yama7d.py üretti; elle düzenlemeyin, yeniden üretin) */
+  /* 7. sınıfın kitapları: rozet SEÇİLİ kitaba göre (sistem/sinifveri.js). */
+  var IH_KELIME_YIL = { "7": { "2026-2027": { "unite": 6, "ders": 18, "veri": 18 }, "2025-2026": { "unite": 6, "ders": 18, "veri": 18 }, "2027-2028": IH_KELIME["7"] } };
   function ihKelime(s) {
     var k = String(s), t = IH_KELIME_YIL[k], v = window.KidefSinifVeri;
     if (t && v && v.seciliVeriYili) { var y = v.seciliVeriYili(k); if (y && t[y.yil]) return t[y.yil]; }
     return IH_KELIME[k];
   }
-  /* <<< 7. SINIF MEKTEP YAYINLARI */
+  /* <<< 7. SINIF İKİ KİTAP */
 
   function kelSvg() {
     return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true">' +

@@ -214,3 +214,103 @@ exports.qrOturumSor = onCall(async (istek) => {
   await ref.update({ durum: 'kullanildi', kullanimZamani: admin.firestore.FieldValue.serverTimestamp() });
   return { durum: 'onayli', jeton, ad: v.onayAd || '', eposta: v.onayEposta || '' };
 });
+
+/* ======================================================================
+   HESAP YARDIMI — ŞİFRE BAĞLANTISI (04.11.2026) · E-POSTA DÜZELTME
+   ----------------------------------------------------------------------
+   Yönetici: bir öğretmene «Şifremi unuttum» e-postası (Hotmail) spam dahil
+   hiç ulaşmıyor. Firebase'in kendi gönderdiği ileti bazı sağlayıcılarda
+   (Hotmail/Outlook, okul adresleri) sessizce siliniyor. Yönetici panelinde
+   öğretmen penceresi → «Hesap · şifre» (hesap/hesapyardim.js):
+     sifreBaglantisi({uid})       şifre yenileme bağlantısı üretir (1 saat
+                                  geçerli, tek kullanımlık); yönetici
+                                  WhatsApp'tan ya da kendi e-postasından
+                                  gönderir. Bağlantı hiçbir yere yazılmaz.
+     epostaDuzelt({uid, email})   kayıtta yanlış yazılmış giriş e-postasını
+                                  düzeltir (Authentication + kullanicilar);
+                                  şifre ve veriler aynı kalır.
+   İkisi de YALNIZ yöneticiye açık: çağıranın kullanicilar belgesinde
+   role == 'admin' olmalı (Firestore kurallarındaki isAdmin() ile aynı).
+   Yükleme — yalnız bu iki işlev; kurallara ve öbür işlevlere dokunmaz:
+     firebase deploy --only functions:sifreBaglantisi,functions:epostaDuzelt
+   (GitHub klasöründeki fonksiyon-yukle.command bunu yapar.)
+   ====================================================================== */
+async function yoneticiDenetle(istek) {
+  const a = istek.auth;
+  if (!a || !a.uid) throw new HttpsError('unauthenticated', 'Önce yönetici hesabıyla giriş yapmalısın.');
+  const saglayici = a.token && a.token.firebase && a.token.firebase.sign_in_provider;
+  if (saglayici === 'anonymous') throw new HttpsError('permission-denied', 'Bu işlem yalnız yöneticiye açık.');
+  const b = await db.collection('kullanicilar').doc(a.uid).get();
+  if (!b.exists || (b.data() || {}).role !== 'admin') {
+    throw new HttpsError('permission-denied', 'Bu işlem yalnız yöneticiye açık.');
+  }
+}
+function hedefKimlik(v) {
+  const s = String(v || '');
+  if (!/^[A-Za-z0-9_-]{1,128}$/.test(s)) throw new HttpsError('invalid-argument', 'Kullanıcı kimliği geçersiz.');
+  return s;
+}
+function kisaHata(e) { return String((e && e.message) || e).slice(0, 200); }
+async function girisHesabi(uid) {
+  try {
+    return await admin.auth().getUser(uid);
+  } catch (e) {
+    if (e && e.code === 'auth/user-not-found') {
+      throw new HttpsError('not-found', 'Bu kişinin giriş hesabı yok (Firebase Authentication\'da bulunamadı).');
+    }
+    throw new HttpsError('internal', 'Giriş hesabı okunamadı: ' + kisaHata(e));
+  }
+}
+
+exports.sifreBaglantisi = onCall(async (istek) => {
+  await yoneticiDenetle(istek);
+  const uid = hedefKimlik(istek.data && istek.data.uid);
+  const k = await girisHesabi(uid);
+  if (!k.email) throw new HttpsError('failed-precondition', 'Bu hesabın e-postası yok; şifre bağlantısı üretilemez.');
+  let link;
+  try {
+    link = await admin.auth().generatePasswordResetLink(k.email);
+  } catch (e) {
+    throw new HttpsError('internal', 'Bağlantı üretilemedi: ' + kisaHata(e));
+  }
+  /* Firebase'in şifre sayfası Türkçe açılsın */
+  link = /[?&]lang=/.test(link) ? link.replace(/([?&])lang=[^&]*/, '$1lang=tr') : link + (link.indexOf('?') < 0 ? '?' : '&') + 'lang=tr';
+  return {
+    link,
+    email: k.email,
+    kapali: !!k.disabled,
+    sonGiris: (k.metadata && k.metadata.lastSignInTime) || '',
+    olusma: (k.metadata && k.metadata.creationTime) || '',
+    omurDk: 60
+  };
+});
+
+exports.epostaDuzelt = onCall(async (istek) => {
+  await yoneticiDenetle(istek);
+  const uid = hedefKimlik(istek.data && istek.data.uid);
+  const yeni = String((istek.data && istek.data.email) || '').trim().toLowerCase();
+  if (yeni.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(yeni)) {
+    throw new HttpsError('invalid-argument', 'Yeni e-posta geçersiz görünüyor; yazımını denetle.');
+  }
+  const k = await girisHesabi(uid);
+  const eski = k.email || '';
+  if (eski.toLowerCase() === yeni) return { eski, yeni, degismedi: true };
+  try {
+    await admin.auth().updateUser(uid, { email: yeni, emailVerified: false });
+  } catch (e) {
+    if (e && e.code === 'auth/email-already-exists') {
+      throw new HttpsError('already-exists', 'Bu e-postayla açılmış başka bir hesap var; önce o hesabı denetle.');
+    }
+    if (e && e.code === 'auth/invalid-email') throw new HttpsError('invalid-argument', 'Yeni e-posta geçersiz görünüyor; yazımını denetle.');
+    throw new HttpsError('internal', 'E-posta değiştirilemedi: ' + kisaHata(e));
+  }
+  const ref = db.collection('kullanicilar').doc(uid);
+  const b = await ref.get();
+  if (b.exists) {
+    await ref.set({
+      email: yeni,
+      epostaDuzeltme: { eski, yeni, zaman: admin.firestore.FieldValue.serverTimestamp(), yonetici: istek.auth.uid }
+    }, { merge: true });
+  }
+  return { eski, yeni, belge: b.exists };
+});

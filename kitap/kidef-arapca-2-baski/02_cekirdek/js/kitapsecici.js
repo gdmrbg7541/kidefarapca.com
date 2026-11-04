@@ -59,10 +59,15 @@
       renk: '#0E7C66', im: '5' },
     { id: '6-sinif-2026-2027',    ad: 'Arapça 6',     alt: 'Dijital ders kitabı · 2026-2027',
       renk: '#F39C12', im: '6', guncel: true },
-    /* 7. sınıf (17.10.2026): bu yıl okutulan Mektep Yayınları kitabı. Sayfaları
-       ve sesleri kidefarapca-materyal-7 deposunda. */
-    { id: '7-sinif-2026-2027',    ad: 'Arapça 7',     alt: 'Mektep Yayınları · 2026-2027',
+    /* 7. sınıf (04.11.2026): MEB Devlet Kitapları'nın kitabı — bu yıl okutulan kitap.
+       Sayfaları ve sesleri kidefarapca-materyal-7 deposunda (7-sinif-devlet-2026-2027). */
+    { id: '7-sinif-devlet-2026-2027', ad: 'Arapça 7', alt: 'Devlet Kitapları · 2026-2027',
       renk: '#2980B9', im: '7', guncel: true },
+    /* 7. sınıf Mektep Yayınları kitabı (17.10.2026): 2025-2026'da okutulmuştu; seçenek
+       olarak duruyor (klasörü 7-sinif-2026-2027 adıyla kaldı). Sayfaları ve sesleri
+       kidefarapca-materyal-7 deposunda. */
+    { id: '7-sinif-2026-2027',    ad: 'Arapça 7',     alt: 'Mektep Yayınları · 2025-2026',
+      renk: '#2471A3', im: '7' },
     /* GİZLİ (02.10.2026): 7. sınıf Maarif kitabı resmî olarak yayınlanamıyor.
        Listede yalnız o kitabın içindeyken görünür; başka kitaptan bağlantı
        verilmez, site kartı da portala gider. */

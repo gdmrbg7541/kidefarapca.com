@@ -12,6 +12,11 @@
    Bu yüzden hem doğrulama hem belge biçimi burada tutuluyor; iki dosya da
    buradan okuyor. Kayıt alanlarında bir değişiklik gerekirse YALNIZ BU
    DOSYA düzenlenir.
+
+   E-POSTA YAZIM ÖNERİSİ (03.11.2026): dosyanın sonunda — kayıt formlarında
+   «gmial.com» gibi yazımlara «gmail.com mu demek istedin?» önerisi.
+   GİRİŞTE YAZIM ÖNERİSİ (04.11.2026): girişte de, ama yalnız giriş başarısız
+   olunca ya da «Şifremi unuttum»a basınca.
    ========================================================================= */
 (function () {
     'use strict';
@@ -153,6 +158,8 @@
     K.hataMetni = function (e, kip) {
         if (e && e.metin) return e.metin;                      /* buradan çıkmış, Türkçesi hazır */
         var k = hamKod(e);
+        /* GİRİŞTE YAZIM ÖNERİSİ (04.11.2026): «e-posta ya da şifre hatalı» → adres yanlış yazılmış mı? */
+        if (kip === 'giris' && EP_GIRIS_HATA[k]) { try { setTimeout(epGirisHatasi, 0); } catch (x) { } }
         var unut = ' Şifreni unuttuysan «Şifremi unuttum» ile yenileyebilirsin.';
         switch (k) {
             case 'INVALID_LOGIN_CREDENTIALS': case 'INVALID_PASSWORD': case 'EMAIL_NOT_FOUND':
@@ -259,6 +266,339 @@
             var h = new Error(K.hataMetni(e, 'sifre')); h.metin = h.message; h.asil = e; throw h;
         });
     };
+
+    /* =====================================================================
+       E-POSTA YAZIM ÖNERİSİ (03.11.2026) — yönetici: "bi hesap için birden fazla
+       kişi oluşuyor, şuan bi öğrenciden 3 tane anket görünüyor". Aynı e-postayla
+       ikinci hesap açılamıyor (Firebase izin vermiyor; yukarıdaki varOlanHesap
+       ya giriş yapar ya «zaten kayıtlı» der). Ayrı hesaplar FARKLI YAZILMIŞ
+       adreslerle açılıyor: gmial.com, hotmial.com, gmail.co, gmail.com.tr…
+       Kayıt formunda alan adı bilinen bir adrese çok benziyorsa e-posta alanının
+       altında öneri çıkar: «… mu demek istedin? [Evet, düzelt] [Hayır, doğru
+       yazdım]». «Kayıt Ol»a ya da Enter'a basınca öneri yanıtsızsa kayıt bir kez
+       durur; öneriyi görüp 2 sn sonra yeniden basan geçer. Girişte öneri ÖNCEDEN
+       çıkmaz (yanlış yazılmış adresle açılmış eski hesabın sahibi yanlış yöne
+       çekilmesin); yalnız giriş başarısız olunca ya da «Şifremi unuttum»a basınca
+       çıkar — GİRİŞTE YAZIM ÖNERİSİ (04.11.2026), aşağıda.
+       Formlar: giriş penceresi #email (index + ortak pencere) · sepet
+       #checkout-email · bilgi yarışması paneli #biyg-email.
+       Bu dosya DOM'a yalnız bu bölümde dokunur.
+       ===================================================================== */
+    var EP_BILINEN = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com', 'yandex.com',
+        'live.com', 'msn.com', 'me.com', 'mail.com', 'ymail.com', 'aol.com', 'gmx.com', 'googlemail.com',
+        'proton.me', 'protonmail.com', 'protonmail.ch', 'hotmail.com.tr', 'outlook.com.tr', 'yahoo.com.tr',
+        'yandex.com.tr', 'live.com.tr', 'yandex.ru', 'windowslive.com', 'mynet.com', 'ttmail.com',
+        'meb.k12.tr', 'meb.gov.tr'];
+
+    /* iki yazım arası en az düzeltme sayısı (yer değiştiren iki komşu harf: 1) */
+    function epMesafe(a, b) {
+        var m = a.length, n = b.length, d = [], i, j, c;
+        for (i = 0; i <= m; i++) d[i] = [i];
+        for (j = 1; j <= n; j++) d[0][j] = j;
+        for (i = 1; i <= m; i++) {
+            for (j = 1; j <= n; j++) {
+                c = a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1;
+                d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + c);
+                if (i > 1 && j > 1 && a.charAt(i - 1) === b.charAt(j - 2) && a.charAt(i - 2) === b.charAt(j - 1)) {
+                    d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+                }
+            }
+        }
+        return d[m][n];
+    }
+    function epBilinen(a) { return EP_BILINEN.indexOf(a) >= 0; }
+
+    /* Önerilen tam adres ya da ''. Yalnız @'den sonrası düzeltilir. */
+    K.epostaOneri = function (e) {
+        e = String(e == null ? '' : e).trim();
+        var at = e.lastIndexOf('@');
+        if (at < 1 || at === e.length - 1) return '';
+        var yerel = e.slice(0, at), alan = e.slice(at + 1).toLowerCase();
+        if (epBilinen(alan)) return '';
+        var a = alan.replace(/̇/g, '').replace(/ı/g, 'i').replace(/ş/g, 's').replace(/ğ/g, 'g')
+            .replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ç/g, 'c')
+            .replace(/\s+/g, '').replace(/,/g, '.').replace(/\.{2,}/g, '.').replace(/^\.+|\.+$/g, '');
+        if (!a) return '';
+        var i, k, en = '', ed = 99, dd, sinir;
+        function oner(x) { return yerel + '@' + x; }
+        if (epBilinen(a)) return oner(a);                                   /* gmaıl.com · gmail.com. · gmail,com */
+        /* başka ülkenin gerçek adresi (hotmail.com.br, live.com.au, yandex.ua): dokunma */
+        var ul = /^(.+)\.([a-z]{2})$/.exec(a);
+        if (ul && ul[2] !== 'tr') {
+            if (epBilinen(ul[1])) return '';
+            for (i = 0; i < EP_BILINEN.length; i++) {
+                k = /^(.+)\.([a-z]{2})$/.exec(EP_BILINEN[i]);
+                if (k && k[1] === ul[1] && k[2] !== 'tr') return '';
+            }
+        }
+        /* bilinen adres + fazladan birkaç harf: gmail.com.tr · gmail.comm · hotmail.com.trr */
+        for (i = 0; i < EP_BILINEN.length; i++) {
+            k = EP_BILINEN[i];
+            if (a.length > k.length && a.length - k.length <= 4 && a.indexOf(k) === 0 && k.length > en.length) en = k;
+        }
+        if (en) return oner(en);
+        /* noktasız: gmail → gmail.com · gmial → gmail.com · gmailcom → gmail.com */
+        if (a.indexOf('.') < 0 && a.length >= 4) {
+            for (i = 0; i < EP_BILINEN.length; i++) {
+                k = EP_BILINEN[i].split('.')[0];
+                dd = epMesafe(a, EP_BILINEN[i].replace(/\./g, ''));
+                if (dd < ed && dd <= (a.length <= 7 ? 1 : 2)) { ed = dd; en = EP_BILINEN[i]; }
+                if (k.length < 4) continue;
+                dd = epMesafe(a, k);
+                if (dd < ed && dd <= (k.length <= 5 ? 1 : 2)) { ed = dd; en = EP_BILINEN[i]; }
+            }
+            return en ? oner(en) : '';
+        }
+        for (i = 0; i < EP_BILINEN.length; i++) {
+            dd = epMesafe(a, EP_BILINEN[i]);
+            if (dd < ed) { ed = dd; en = EP_BILINEN[i]; }
+        }
+        sinir = a.length <= 7 ? 1 : 2;
+        return (en && ed <= sinir) ? oner(en) : '';
+    };
+
+    /* ---- kayıt formlarındaki öneri kutusu ---- */
+    var EP_FORM = [
+        { e: 'email', grup: 're-password-group', tus: 'auth-action-btn' },               /* giriş penceresi */
+        { e: 'checkout-email', grup: 'checkout-re-password-group', tus: 'checkout-action-btn' },   /* sepet */
+        { e: 'biyg-email', ikinci: 'biyg-pass2', tus: 'biyg-gonder' }                    /* bilgi yarışması paneli */
+    ];
+    var _epRed = {};          /* «Hayır, doğru yazdım» denen adresler */
+    var _epDur = {};          /* adres → kaydın ilk durduğu an */
+    var _epSaat = 0;
+    var _epGiris = {};        /* girişi başarısız olan ya da «Şifremi unuttum» denen adresler: girişte de öneri */
+    function ep$(id) { return document.getElementById(id); }
+    function epForm(id) {
+        for (var i = 0; i < EP_FORM.length; i++) { if (EP_FORM[i].e === id || EP_FORM[i].tus === id) return EP_FORM[i]; }
+        return null;
+    }
+    function epKayitMi(f) {
+        if (f.ikinci) return !!ep$(f.ikinci);
+        var g = ep$(f.grup);
+        try { return !!g && getComputedStyle(g).display !== 'none'; } catch (x) { return false; }
+    }
+    function epGorunur(el) { return !!el && !!(el.offsetWidth || el.offsetHeight || (el.getClientRects && el.getClientRects().length)); }
+    function epDeger(inp) { return String((inp && inp.value) || '').trim(); }
+    function epBekleyen(f, girisDe) {
+        var inp = ep$(f.e);
+        if (!inp) return '';
+        var v = epDeger(inp);
+        if (!v || _epRed[v.toLowerCase()]) return '';
+        /* girişte: yalnız o adresle giriş başarısız olduysa ya da «Şifremi unuttum»a basıldıysa */
+        if (!epKayitMi(f) && !girisDe && !_epGiris[v.toLowerCase()]) return '';
+        return K.epostaOneri(v);
+    }
+    function epEsc(x) {
+        return String(x).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+    }
+    function epStil() {
+        if (ep$('kdepStil')) return;
+        var s = document.createElement('style');
+        s.id = 'kdepStil';
+        s.textContent =
+            '.kdep{display:block;margin:7px 0 2px;padding:9px 11px;border-radius:11px;background:#FFF8E6;border:1px solid #F3D28A;' +
+              'color:#6B4600;font-size:.88rem;font-weight:600;line-height:1.45;text-align:left;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere}' +
+            '.kdep b{color:#3F2A00;font-weight:800}' +
+            '.kdep .kdep-tus{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}' +
+            '.kdep .kdep-tus button{width:auto;margin:0;border:0;border-radius:9px;padding:7px 11px;font:inherit;font-size:.84rem;' +
+              'font-weight:800;line-height:1.2;cursor:pointer;box-shadow:none}' +
+            '.kdep .kdep-tus .kdep-evet{background:#0E7C66;color:#fff}' +
+            '.kdep .kdep-tus .kdep-hayir{background:#EEF2F6;color:#3F4B5B}' +
+            '.kdep.kdep-vurgu{animation:kdepTit .45s}' +
+            '@keyframes kdepTit{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}' +
+            '@media (prefers-reduced-motion:reduce){.kdep.kdep-vurgu{animation:none}}' +
+            /* HAZIR UZANTI TUŞLARI (04.11.2026) */
+            '.kdep-cip{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0 2px;align-items:center}' +
+            '.kdep-cip button{width:auto;margin:0;border:1px solid #DCE3EC;background:#F7F9FC;color:#3F4B5B;border-radius:999px;' +
+              'padding:5px 10px;font:inherit;font-size:.8rem;font-weight:700;line-height:1.2;cursor:pointer;box-shadow:none;' +
+              'direction:ltr;unicode-bidi:isolate;transition:border-color .15s,color .15s,background .15s}' +
+            '.kdep-cip button:hover,.kdep-cip button:focus-visible{border-color:#16A085;color:#0E7C66;background:#F0FAF7;outline:none}' +
+            '.kdep-cip .kdep-cip-not{flex:1 1 100%;font-size:.8rem;font-weight:700;color:#8A5A00;line-height:1.4}' +
+            '.kdep-cip .kdep-cip-not:empty{display:none}';
+        (document.head || document.documentElement).appendChild(s);
+    }
+    function epKutu(inp) {
+        var n = inp && inp.nextElementSibling;
+        return (n && n.classList && n.classList.contains('kdep')) ? n : null;
+    }
+    function epKaldir(f) {
+        var k = epKutu(ep$(f.e));
+        if (k && k.parentNode) k.parentNode.removeChild(k);
+    }
+    /* kip değişince (Kayıt Ol ↔ Giriş Yap) kutu kendini tazelesin */
+    function epGozle(f) {
+        var g = f.grup ? ep$(f.grup) : null;
+        if (!g || g.__kdep || typeof MutationObserver !== 'function') return;
+        g.__kdep = 1;
+        try { new MutationObserver(function () { epDegerlendir(f); }).observe(g, { attributes: true, attributeFilter: ['style', 'class'] }); } catch (x) { }
+    }
+    function epGoster(f, oneri, vurgu) {
+        var inp = ep$(f.e);
+        if (!inp || !inp.parentNode) return;
+        epStil(); epGozle(f);
+        var k = epKutu(inp), v = epDeger(inp), at = oneri.lastIndexOf('@');
+        if (!k) {
+            k = document.createElement('div');
+            k.className = 'kdep';
+            k.setAttribute('role', 'status');
+            k.setAttribute('aria-live', 'polite');
+            inp.parentNode.insertBefore(k, inp.nextSibling);
+        }
+        if (k.getAttribute('data-oneri') !== oneri) {
+            k.setAttribute('data-oneri', oneri);
+            k.innerHTML = '<span>«' + epEsc(v.slice(v.lastIndexOf('@') + 1)) + '» yazdın; ' + epEsc(oneri.slice(0, at + 1)) +
+                '<b>' + epEsc(oneri.slice(at + 1)) + '</b> mu demek istedin?</span>' +
+                '<span class="kdep-tus"><button type="button" class="kdep-evet">Evet, düzelt</button>' +
+                '<button type="button" class="kdep-hayir">Hayır, doğru yazdım</button></span>';
+        }
+        if (vurgu) {
+            k.classList.remove('kdep-vurgu'); void k.offsetWidth; k.classList.add('kdep-vurgu');
+            try { inp.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (x) { }
+        }
+    }
+    function epDegerlendir(f) {
+        if (!f) return;
+        var o = epBekleyen(f);
+        if (o) epGoster(f, o, false); else epKaldir(f);
+    }
+    /* «Kayıt Ol» / Enter: öneri yanıtsızsa bir kez dur */
+    function epDurdur(e, f, girisDe) {
+        if (!f) return false;
+        var inp = ep$(f.e), o = epBekleyen(f, girisDe);
+        if (!o || !epGorunur(inp)) return false;
+        if (girisDe) _epGiris[epDeger(inp).toLowerCase()] = 1;
+        var v = epDeger(inp).toLowerCase(), t = _epDur[v], simdi = Date.now();
+        if (t && simdi - t >= 2000) return false;                 /* öneriyi gördü, yine de bastı: geçsin */
+        if (!t) _epDur[v] = simdi;
+        e.preventDefault(); e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        epGoster(f, o, true);
+        return true;
+    }
+    K.epostaOneriTazele = function () { for (var i = 0; i < EP_FORM.length; i++) epDegerlendir(EP_FORM[i]); };
+
+    /* GİRİŞTE YAZIM ÖNERİSİ (04.11.2026) — yönetici: "öğretmen yanlış e posta yazmış, bu nedenle şifre yanlış
+       demiş"; «Şifremi unuttum» bağlantısı da (o adreste hesap olmadığı için) hiç gelmemiş. Giriş
+       «e-posta ya da şifre hatalı» ile dönünce görünür formdaki adres yanlış yazılmış görünüyorsa öneri
+       kutusu çıkar ve sallanır; giriş durdurulmaz. K.hataMetni(e, 'giris') çağırır. */
+    var EP_GIRIS_HATA = { 'INVALID_LOGIN_CREDENTIALS': 1, 'INVALID_PASSWORD': 1, 'EMAIL_NOT_FOUND': 1,
+        'auth/invalid-login-credentials': 1, 'auth/wrong-password': 1, 'auth/user-not-found': 1, 'auth/invalid-credential': 1 };
+    function epGirisHatasi() {
+        if (typeof document === 'undefined') return;
+        for (var i = 0; i < EP_FORM.length; i++) {
+            var f = EP_FORM[i], inp = ep$(f.e);
+            if (!inp || !epGorunur(inp) || epKayitMi(f)) continue;
+            var o = epBekleyen(f, true);
+            if (!o) continue;
+            _epGiris[epDeger(inp).toLowerCase()] = 1;
+            epGoster(f, o, true);
+        }
+    }
+
+    /* HAZIR UZANTI TUŞLARI (04.11.2026) — yönetici: "girişte hazırda @gmail.com, @hotmail.com gibi en çok
+       kullanılan beş tanesi hazır tuş olarak beklesin daha kolay olur". E-posta alanının altında beş tuş;
+       basınca @'den sonrası seçilen uzantı olur (yanlış yazılmış uzantı da değişir), sıra şifreye geçer.
+       Giriş ve kayıt kipinde, üç formda da. Öneri kutusu çıkarsa alanla tuşların ARASINA girer. */
+    var EP_HAZIR = ['gmail.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'yahoo.com'];
+    var EP_SIFRE = { 'email': 'password', 'checkout-email': 'checkout-password', 'biyg-email': 'biyg-pass' };
+    function epCipKur() {
+        if (typeof document === 'undefined' || !document.getElementById) return;
+        for (var i = 0; i < EP_FORM.length; i++) {
+            var inp = ep$(EP_FORM[i].e);
+            if (!inp || !inp.parentNode || inp.__kdepCip) continue;
+            epStil();
+            var r = document.createElement('div');
+            r.className = 'kdep-cip';
+            r.setAttribute('role', 'group');
+            r.setAttribute('aria-label', 'Sık kullanılan e-posta uzantıları');
+            r.setAttribute('data-kdep-icin', inp.id);
+            r.innerHTML = EP_HAZIR.map(function (a) {
+                return '<button type="button" data-kdep-alan="' + a + '" aria-label="E-postayı @' + a + ' ile tamamla">@' + a + '</button>';
+            }).join('') + '<span class="kdep-cip-not" aria-live="polite"></span>';
+            var k = epKutu(inp);
+            (k || inp).insertAdjacentElement('afterend', r);
+            inp.__kdepCip = r;
+        }
+    }
+    function epCipBas(c) {
+        var r = c.closest('.kdep-cip'), id = r ? r.getAttribute('data-kdep-icin') : '', inp = id ? ep$(id) : null;
+        if (!inp) return;
+        var not = r.querySelector('.kdep-cip-not');
+        var v = String(inp.value || '').replace(/\s+/g, ''), at = v.lastIndexOf('@'), yerel = at >= 0 ? v.slice(0, at) : v;
+        if (!yerel) {
+            if (not) not.textContent = 'Önce adresinin @ işaretinden önceki kısmını yaz, sonra uzantıya bas.';
+            try { inp.focus(); } catch (x) { }
+            return;
+        }
+        inp.value = yerel + '@' + c.getAttribute('data-kdep-alan');
+        if (not) not.textContent = '';
+        try { inp.dispatchEvent(new Event('input', { bubbles: true })); inp.dispatchEvent(new Event('change', { bubbles: true })); } catch (x) { }
+        var f = epForm(id);
+        if (f) epKaldir(f);
+        var s = ep$(EP_SIFRE[id]);
+        try { if (s && !s.value && epGorunur(s)) s.focus(); } catch (x) { }
+    }
+
+    if (typeof document !== 'undefined' && document.addEventListener) {
+        document.addEventListener('focusout', function (e) {
+            var t = e.target, f = t && t.id ? epForm(t.id) : null;
+            if (!f || t.id !== f.e) return;
+            clearTimeout(_epSaat);
+            _epSaat = setTimeout(function () { epDegerlendir(f); }, 180);     /* önce olası «Kayıt Ol» tıklaması işlensin */
+        }, true);
+        document.addEventListener('input', function (e) {
+            var t = e.target, f = t && t.id ? epForm(t.id) : null;
+            if (f && t.id === f.e && epKutu(t)) epDegerlendir(f);           /* açık öneri yazdıkça tazelenir ya da kalkar */
+        }, true);
+        document.addEventListener('click', function (e) {
+            var c = e.target && e.target.closest ? e.target.closest('[data-kdep-alan]') : null;
+            if (c) { epCipBas(c); return; }                        /* HAZIR UZANTI TUŞLARI (04.11.2026) */
+            var t = e.target && e.target.closest ? e.target.closest('.kdep-evet, .kdep-hayir, #auth-action-btn, #checkout-action-btn, #biyg-gonder, #sifre-unut-tus') : null;
+            if (!t) return;
+            if (t.classList.contains('kdep-evet') || t.classList.contains('kdep-hayir')) {
+                var kutu = t.closest('.kdep'), inp = kutu ? kutu.previousElementSibling : null, f = inp && inp.id ? epForm(inp.id) : null;
+                if (!f || inp.id !== f.e) return;
+                var v = epDeger(inp);
+                if (t.classList.contains('kdep-evet')) {
+                    var o = K.epostaOneri(v);
+                    if (o) {
+                        inp.value = o;
+                        try { inp.dispatchEvent(new Event('input', { bubbles: true })); inp.dispatchEvent(new Event('change', { bubbles: true })); } catch (x) { }
+                    }
+                } else {
+                    _epRed[v.toLowerCase()] = 1;
+                }
+                setTimeout(function () { epKaldir(f); }, 0);                 /* tıklama yolunu bozmadan kalksın */
+                return;
+            }
+            if (t.id === 'sifre-unut-tus') { epDurdur(e, EP_FORM[0], true); return; }   /* «Şifremi unuttum»: önce öner (04.11.2026) */
+            epDurdur(e, epForm(t.id));
+        }, true);
+        document.addEventListener('keydown', function (e) {
+            if (e.key !== 'Enter' || e.isComposing) return;
+            var t = e.target;
+            if (!t || !t.closest) return;
+            if (t.closest('.kdep')) { e.stopPropagation(); return; }         /* öneri tuşunda Enter: tuş çalışsın, form gitmesin */
+            if (t.tagName === 'TEXTAREA') return;
+            var m = ep$('login-modal');
+            if (m && (t.closest('#login-modal') || m.style.display === 'flex')) { epDurdur(e, EP_FORM[0]); return; }
+            if (t.closest('#biyg-kart')) epDurdur(e, EP_FORM[2]);
+        }, true);
+        /* HAZIR UZANTI TUŞLARI: pencere ve panel sonradan çizildiği için belge değiştikçe (en çok 60 ms'de bir) denetlenir */
+        epCipKur();
+        document.addEventListener('DOMContentLoaded', epCipKur);
+        window.addEventListener('load', epCipKur);
+        document.addEventListener('focusin', function (e) {
+            var t = e.target;
+            if (t && t.id && EP_SIFRE.hasOwnProperty(t.id)) epCipKur();
+        }, true);
+        try {
+            var _epCipBekle = 0;
+            new MutationObserver(function () {
+                if (_epCipBekle) return;
+                _epCipBekle = setTimeout(function () { _epCipBekle = 0; epCipKur(); }, 60);
+            }).observe(document.documentElement, { childList: true, subtree: true });
+        } catch (x) { }
+    }
 
     window.KidefKayit = K;
 })();

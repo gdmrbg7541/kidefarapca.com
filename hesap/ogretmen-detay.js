@@ -296,13 +296,17 @@
         genel: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
         ucret: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5C6 16.4 3.5 12.6 5.4 9.6c1.6-2.5 4.9-2.3 6.6.3 1.7-2.6 5-2.8 6.6-.3 1.9 3-.6 6.8-6.6 10.9Z"/></svg>',
         takvim: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>',
-        anket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 3.5h6v3H9zM8.5 11h7M8.5 15h5"/></svg>'
+        anket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 3.5h6v3H9zM8.5 11h7M8.5 15h5"/></svg>',
+        hesap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.2"/><path d="M11 12 20.5 2.5M16.5 6.5l3 3M14 9l2.2 2.2"/></svg>'
     };
     var SEKMELER = [
         { id: 'genel', ad: 'Genel' },
         { id: 'ucret', ad: 'Ücret durumu' },
         { id: 'takvim', ad: 'Takvim' },
-        { id: 'anket', ad: 'Kayıt anketi' }
+        { id: 'anket', ad: 'Kayıt anketi' },
+        /* ŞİFRE BAĞLANTISI (04.11.2026) — yönetici: Hotmail'e «Şifremi unuttum» e-postası hiç gelmiyor.
+           Şifre yenileme bağlantısı + e-posta düzeltme: hesap/hesapyardim.js (sunucu: functions/index.js) */
+        { id: 'hesap', ad: 'Hesap · şifre' }
     ];
 
     var _uid = null, _sekme = 'genel', _takvimYuklendi = false;
@@ -321,6 +325,7 @@
         if (e.key !== 'Escape') return;
         /* üstte sitenin uyarı kutusu açıksa önce o kapansın */
         if (document.getElementById('dstOrt')) return;
+        if (document.getElementById('hgmPerde')) return;              /* mesaj kartı açık: Esc onu kapatır (04.11.2026) */
         kapat();
     }
 
@@ -341,7 +346,8 @@
               esc(bas2(b.ad, b.email)) + '</span>' +
             '<div class="ogd-kim">' +
               '<div class="ogd-ad">' + esc(b.ad || '(isim yok)') + ' ' + durumRozet(onay) + '</div>' +
-              '<div class="ogd-eposta">' + esc(b.email || '') + '</div>' +
+              '<div class="ogd-eposta">' + esc(b.email || '') +
+                ((window.KidefHesapYardim && KidefHesapYardim.basUyari) ? KidefHesapYardim.basUyari(b.email) : '') + '</div>' +
               '<div class="ogd-cipler">' +
                 (tel ? ((window.KidefTelKopya && KidefTelKopya.rozet) ? KidefTelKopya.rozet(tel) : '<span class="ogd-cip">' + esc(tel) + '</span>') : '') +
                 (b.kod ? '<span class="ogd-cip">Kod <b style="font-family:monospace;">' + esc(b.kod) + '</b></span>' : '') +
@@ -391,6 +397,13 @@
             }
         } else if (_sekme === 'anket') {
             g.innerHTML = anketBolumu(b.anket);
+        } else if (_sekme === 'hesap') {                              /* ŞİFRE BAĞLANTISI (04.11.2026) */
+            if (window.KidefHesapYardim && KidefHesapYardim.bolum) {
+                g.innerHTML = '<div id="ogd-hesap"></div>';
+                KidefHesapYardim.bolum(document.getElementById('ogd-hesap'), _uid, b);
+            } else {
+                g.innerHTML = '<div class="ogd-bol"><p class="ogd-yok">Hesap modülü yüklenmedi (hesap/hesapyardim.js).</p></div>';
+            }
         }
     }
 

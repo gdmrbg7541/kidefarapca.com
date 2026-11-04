@@ -156,7 +156,7 @@
      bir yıla, 9-10'unki başka yıla ait. Etiketler bunu görünür kılar.
 
      ⚠️ YENİ YIL EKLEMEK — sınıfın dizisine bir satır ekle; İLK satır
-        varsayılandır (6'da yeni kitap, 7'de bu yıl okutulan Mektep kitabı). `onek`, o yılın ders verisinin nerede durduğunu söyler:
+        varsayılandır (6'da yeni kitap, 7'de bu yıl okutulan Devlet Kitapları kitabı). `onek`, o yılın ders verisinin nerede durduğunu söyler:
           onek: ''         → muhadese/veri/6_1_1.js      (bugünkü yer)
           onek: 'y2627/'   → muhadese/veri/y2627/6_1_1.js
         Böylece var olan dosyaların yeri değişmez; yeni yıl kendi
@@ -179,16 +179,20 @@
        Önceki kitap (6 ünite × 3 ders) yerinde duruyor, öneki boş. */
     6:  [{ yil: '2026-2027', program: '2025 TYMM Maarif Arapça Programı · yeni kitap (4 ünite)', onek: 'y2627/', maarif: true },
          { yil: '2025-2026', program: 'Önceki program · 2025 ders kitabı (6 ünite)', onek: '', maarif: false }],
-    /* 7. sınıfın İKİ KİTABI var (22.09.2026, Geylani): 2026-2027'de okutulan Mektep
-       Yayınları kitabı (6 ünite × 3 ders, ders verisi y2627/7_1_1 … 7_6_3) ve
-       2027-2028'de okutulacak MEB kitabı (4 ünite, ders verisi kökte 7_1 … 7_4).
-       İlk satır varsayılandır (bu yıl okutulan kitap). `ad`: seçicide ve rozette
-       yılın yerine yazılan ad. `desen`: o kitabın ders kimliği biçimi — derin
-       bağlantı (muhadese.html?ders=7_1) hangi kitap seçili olursa olsun doğru
-       klasöre gider. Mektep kitabı önceki programa göre yazıldığı için Maarif
-       etiketi yalnız 2027-2028 seçiliyken görünür. */
-    7:  [{ yil: '2026-2027', ad: 'Mektep Yayınları 2026-2027', program: 'Mektep Yayınları ders kitabı (6 ünite) · 2026-2027 öğretim yılı', onek: 'y2627/', maarif: false, desen: /^7_\d+_\d+$/ },
-         { yil: '2027-2028', ad: '2027-2028', program: '2025 TYMM Maarif Arapça Programı · MEB ders kitabı (4 ünite) · 2027-2028 öğretim yılı', onek: '', maarif: true, desen: /^7_\d+$/ }],
+    /* 7. sınıfın kitapları (04.11.2026, Geylani): 2026-2027'de okutulan MEB Devlet
+       Kitapları kitabı (6 ünite × 3 ders, ders verisi d2627/7_1_1 … 7_6_3), 2025-2026'da
+       okutulan Mektep Yayınları kitabı (6 ünite × 3 ders, y2627/ — önce "2026-2027"
+       sanılıp öyle etiketlenmişti; veri klasörünün adı değişmedi) ve 2027-2028'de
+       okutulacak Maarif kitabı (4 ünite, ders verisi kökte 7_1 … 7_4) — sonuncusu
+       henüz yayımlanmadığı için `gizli`: seçicide, rozette ve listelerde görünmez,
+       verisi yerinde durur. İlk satır varsayılandır (bu yıl okutulan kitap). `ad`:
+       seçicide ve rozette yılın yerine yazılan ad. `desen`: o kitabın ders kimliği
+       biçimi — derin bağlantı (muhadese.html?ders=7_1) hangi kitap seçili olursa
+       olsun doğru klasöre gider. İki kitap da 2016 programına göre yazıldığı için
+       Maarif etiketi görünmez. */
+    7:  [{ yil: '2026-2027', ad: 'Devlet Kitapları 2026-2027', program: 'MEB Devlet Kitapları ders kitabı (6 ünite) · 2026-2027 öğretim yılı', onek: 'd2627/', maarif: false, desen: /^7_\d+_\d+$/ },
+         { yil: '2025-2026', ad: 'Mektep Yayınları 2025-2026', program: 'Mektep Yayınları ders kitabı (6 ünite) · 2025-2026 öğretim yılı', onek: 'y2627/', maarif: false, desen: /^7_\d+_\d+$/ },
+         { yil: '2027-2028', ad: '2027-2028', program: '2025 TYMM Maarif Arapça Programı · MEB ders kitabı (4 ünite) · 2027-2028 öğretim yılı', onek: '', maarif: true, desen: /^7_\d+$/, gizli: true }],
     /* 8. sınıfın ders verisi 6 ünite × 3 ders (8_1_1 … 8_6_3) olarak
        yeni kitaptan çıkarıldı. MAARİF DEĞİL: 2026-2027'de Türkiye Yüzyılı
        Maarif Modeli ortaokulda 5, 6 ve 7. sınıflarda uygulanıyor; 8. sınıf
@@ -215,10 +219,13 @@
     try { localStorage.setItem(YIL_ANAHTAR, JSON.stringify(k || {})); } catch (e) {}
   }
 
-  /* Sınıfın yıl listesi — en yeni önce. Sınıf yoksa boş dizi. */
+  /* Sınıfın yıl listesi — en yeni önce. Sınıf yoksa boş dizi.
+     `gizli: true` olan kitap (7. sınıf 2027-2028, henüz yayımlanmadı; 04.11.2026)
+     listeye, seçiciye ve rozetlere girmez; verisi yerinde durur, o kitap seçili
+     kalmışsa seçim ilk kitaba düşer. */
   function veriYillari(sinif) {
     var n = sayi(sinif);
-    return (n && VERI_YILI[n]) ? VERI_YILI[n].slice() : [];
+    return (n && VERI_YILI[n]) ? VERI_YILI[n].filter(function (x) { return !x.gizli; }) : [];
   }
 
   /* Belirli bir yılın kaydı; yil verilmezse listenin ilki (en yeni). */
@@ -410,7 +417,7 @@
     /* Kimlik seçili kitabın biçimine uymuyorsa (7. sınıfta Mektep kitabı seçiliyken
        2027-2028 dersi 7_1 açılırsa) kimliğe uyan kitabın öneki kullanılır. */
     if (y && y.desen && !y.desen.test(id)) {
-      var d = veriYillari(m[1]);
+      var d = VERI_YILI[sayi(m[1])] || [];        /* gizli kitap dahil (2027-2028'in 7_1 … 7_4 dersleri) */
       for (var i = 0; i < d.length; i++) if (d[i].desen && d[i].desen.test(id)) { y = d[i]; break; }
     }
     return (y && y.onek) || '';

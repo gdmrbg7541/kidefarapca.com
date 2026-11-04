@@ -119,9 +119,11 @@
     7: {
       kitap: 'İHO Arapça 7',
       /* Bu etkinlikler MEB'in 2027-2028'de okutulacak 7. sınıf kitabına
-         (Maarif Modeli) girmiştir. 7. sınıfın İKİ kitabı olduğu için
-         (bkz. sistem/sinifveri.js → VERI_YILI) bölüm yalnız bu kitap
-         seçiliyken görünür; Mektep Yayınları 2026-2027 seçiliyken gizlenir. */
+         (Maarif Modeli) girmiştir; bölüm yalnız bu kitap seçiliyken görünür
+         (bkz. sistem/sinifveri.js → VERI_YILI). O kitap henüz yayımlanmadığı
+         için seçici dışı bırakıldı (gizli, 04.11.2026): Devlet Kitapları
+         2026-2027 ve Mektep Yayınları 2025-2026 seçiliyken kart basılmaz;
+         kitap yayımlanınca `gizli` kaldırılınca kart kendiliğinden döner. */
       yil: '2027-2028',
       uniteler: [
         { no: 1, ad: 'Bugün Ne Yaptım?', ar: 'ماذا فَعَلْتُ اليَوْم؟', etk: [

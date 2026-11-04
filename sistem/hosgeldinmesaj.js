@@ -364,6 +364,30 @@
     });
   }
 
+  /* ŞİFRE BAĞLANTISI (04.11.2026) — yönetici: bir öğretmene «Şifremi unuttum» e-postası (Hotmail)
+     spam dahil hiç ulaşmıyor. Yönetici panelindeki «Hesap · şifre» sekmesi (hesap/hesapyardim.js)
+     Firebase'in şifre yenileme bağlantısını sunucudan alır; bu kart WhatsApp'tan ya da yöneticinin
+     kendi e-postasından gönderir. Bağlantı 1 saat geçerli, bir kez kullanılır. */
+  function sifreMetni(ad, link, eposta) {
+    var a = adDuzelt(ad);
+    var selam = a ? ('Merhaba ' + a + ' hocam,') : 'Merhaba hocam,';
+    return selam + '\n\n' +
+      'kidefarapca.com şifrenizi yenilemek için aşağıdaki bağlantıya dokunun ve yeni şifrenizi yazın. ' +
+      'Bağlantı 1 saat geçerli ve bir kez kullanılabilir.\n\n' +
+      String(link || '') + '\n\n' +
+      'Sonra sitede ' + (eposta ? eposta + ' adresiniz' : 'e-posta adresiniz') + ' ve yeni şifrenizle giriş yapabilirsiniz.\n\n' +
+      'Kolaylıklar dilerim.\n' + IMZA;
+  }
+  function sifreGonder(ad, tel, eposta, link) {
+    kartAc({
+      baslik: (adDuzelt(ad) ? adDuzelt(ad) + ' — şifre bağlantısı' : 'Şifre yenileme bağlantısı'),
+      metin: sifreMetni(ad, link, eposta),
+      tel: tel,
+      eposta: eposta,
+      konu: 'kidefarapca.com · şifre yenileme bağlantınız'
+    });
+  }
+
   function notYaz(yazi) {
     var n = document.getElementById('hgmNot');
     if (n) n.textContent = yazi || '';
@@ -416,6 +440,7 @@
 
   window.KidefHosgeldin = {
     goster: goster, ispatIste: ispatIste, kapat: kapat, kopyala: kopyala,
+    sifreGonder: sifreGonder, sifreMetni: sifreMetni,                 /* ŞİFRE BAĞLANTISI (04.11.2026) */
     waAc: waAc, epostaAc: epostaAc, waAdres: waAdres, epostaAdres: epostaAdres,
     metin: metin, ispatMetni: ispatMetni,
     telDuzelt: telDuzelt, telGosterim: telGosterim, epostaDuzelt: epostaDuzelt

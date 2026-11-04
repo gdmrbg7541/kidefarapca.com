@@ -428,12 +428,63 @@ const educationDataYil = {
         ]
     },
     /* <<< 10. SINIF SEÇMELİ ARAPÇA */
-    /* >>> 7. SINIF MEKTEP YAYINLARI (yama7.py üretti; elle düzenlemeyin, yeniden üretin) */
-    /* 7. sınıf: 2026-2027'de okutulan Mektep Yayınları kitabı 6 ünite × 3 ders
-       (muhadese/veri/y2627/7_1_1 … 7_6_3). 2027-2028 MEB kitabı (4 ünite) yukarıdaki
-       educationData["7"] ağacıdır; o yıl seçilince oraya düşülür. */
+    /* >>> 7. SINIF İKİ KİTAP (yama7d.py üretti; elle düzenlemeyin, yeniden üretin) */
+    /* 7. sınıf (04.11.2026): 2026-2027'de okutulan MEB Devlet Kitapları kitabı (6 ünite × 3 ders,
+       muhadese/veri/d2627/7_1_1 … 7_6_3) ve 2025-2026'da okutulan Mektep Yayınları kitabı
+       (muhadese/veri/y2627/). 2027-2028 Maarif kitabı (4 ünite) kökteki ağaçtır; henüz
+       yayımlanmadığı için seçici dışı (sistem/sinifveri.js → gizli). */
     "7": {
         "2026-2027": [
+            {
+                unitName: "1. Ünite: Meslekler | المِهَن",
+                lessons: [
+                    { name: "1. Ders: Mesleğin Ne? | ما مِهْنَتُك؟", simultaneUrl: "muhadese.html?ders=7_1_1", aktif: true },
+                    { name: "2. Ders: Öğretmenim | مُدَرِّسي", simultaneUrl: "muhadese.html?ders=7_1_2", aktif: true },
+                    { name: "3. Ders: Hayalim | أُمْنِيَّتي", simultaneUrl: "muhadese.html?ders=7_1_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "2. Ünite: Alışveriş | التَّسَوُّق",
+                lessons: [
+                    { name: "1. Ders: Bakkalda | في البَقّالة", simultaneUrl: "muhadese.html?ders=7_2_1", aktif: true },
+                    { name: "2. Ders: Kırtasiyede | في القِرْطاسِيّة", simultaneUrl: "muhadese.html?ders=7_2_2", aktif: true },
+                    { name: "3. Ders: Semt Pazarında | في السّوق الشَّعْبي", simultaneUrl: "muhadese.html?ders=7_2_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "3. Ünite: Hava Durumu | الأَحْوال الجَوِّيّة",
+                lessons: [
+                    { name: "1. Ders: Hava Yağmurlu | الجَوّ مُمْطِر", simultaneUrl: "muhadese.html?ders=7_3_1", aktif: true },
+                    { name: "2. Ders: Hava Karlı | الجَوّ مُثْلِج", simultaneUrl: "muhadese.html?ders=7_3_2", aktif: true },
+                    { name: "3. Ders: Hava Güneşli | الجَوّ مُشْمِس", simultaneUrl: "muhadese.html?ders=7_3_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "4. Ünite: Vatanım | وَطَنِي",
+                lessons: [
+                    { name: "1. Ders: Tarihî Yerler | الأَماكِن التّاريخِيّة", simultaneUrl: "muhadese.html?ders=7_4_1", aktif: true },
+                    { name: "2. Ders: Vatanımı Seviyorum | أُحِبُّ وَطَني", simultaneUrl: "muhadese.html?ders=7_4_2", aktif: true },
+                    { name: "3. Ders: Örnek Şahsiyetler | الشّخْصِيّات المِثالِيّة", simultaneUrl: "muhadese.html?ders=7_4_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "5. Ünite: İbadetler | العِبادات",
+                lessons: [
+                    { name: "1. Ders: Beş Vakit Namaz | الصَّلَوات الخَمْس", simultaneUrl: "muhadese.html?ders=7_5_1", aktif: true },
+                    { name: "2. Ders: Oruç | الصَّوْم", simultaneUrl: "muhadese.html?ders=7_5_2", aktif: true },
+                    { name: "3. Ders: Dinî Bayramlar | الأَعْياد الدّينِيّة", simultaneUrl: "muhadese.html?ders=7_5_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "6. Ünite: İletişim | الاِتِّصالات",
+                lessons: [
+                    { name: "1. Ders: Cep Telefonu | الهاتِف الجَوّال", simultaneUrl: "muhadese.html?ders=7_6_1", aktif: true },
+                    { name: "2. Ders: Bilgisayar | الحاسوب", simultaneUrl: "muhadese.html?ders=7_6_2", aktif: true },
+                    { name: "3. Ders: Mektup | الرِّسالة", simultaneUrl: "muhadese.html?ders=7_6_3", aktif: true },
+                ]
+            },
+        ],
+        "2025-2026": [
             {
                 unitName: "1. Ünite: Meslekler | المِهَن",
                 lessons: [
@@ -484,7 +535,7 @@ const educationDataYil = {
             },
         ]
     },
-    /* <<< 7. SINIF MEKTEP YAYINLARI */
+    /* <<< 7. SINIF İKİ KİTAP */
     "6": {
         "2026-2027": [
             {

@@ -91,7 +91,7 @@
     if (durum === 1) return;
     durum = 1;
     var t = document.createElement('script');
-    t.src = 'sistem/ciktiveri.js?v=5894cc11';
+    t.src = 'sistem/ciktiveri.js?v=2ab4b242';
     t.onload = function () { durum = 2; bekleyenleriCagir(); };
     t.onerror = function () { durum = 3; bekleyenleriCagir(); };
     (document.head || document.documentElement).appendChild(t);

@@ -9,6 +9,8 @@
      6. sınıf   8 fiil   tekil: şimdiki zaman (ben, sen, o) + geçmiş (o)
                          2025-2026 kitabı seçiliyse geçmiş ve gelecek de tekil
      7. sınıf  10 fiil   tekil + biz: şimdiki, gelecek; geçmiş tekil
+                         (Devlet Kitapları 2026-2027 ve Mektep 2025-2026 aynı
+                         2016 programı: aynı fiil ve çekim kapsamı, 04.11.2026)
                          2027-2028 kitabı seçiliyse yalnız şimdiki zaman tekil
      8. sınıf  12 fiil   tekil + biz: geçmiş, şimdiki, gelecek; emir (erkeğe/kıza)
      9. sınıf  12 fiil   tekil: şimdiki ve geçmiş zaman (lise 9 kitabı
@@ -271,7 +273,11 @@
             z: { muzari: [12, 6, 9, 0, 3], mazi: [0, 3] } },
         '6@2025-2026': { k: 'tekil', f: ['أراد', 'فضل', 'ذهب', 'أكل', 'غسل', 'استيقظ', 'لعب', 'شرب'],
             z: { muzari: [12, 6, 9, 0, 3], mazi: [12, 6, 9, 0, 3], gelecek: [12, 6, 9, 0, 3] } },
+        /* 7. sınıf 2026-2027 = MEB Devlet Kitapları, 2025-2026 = Mektep Yayınları: aynı 2016
+           programı, aynı fiil ve çekim kapsamı (04.11.2026). */
         '7@2026-2027': { k: 'tekilbiz', f: ['أراد', 'فضل', 'زار', 'ذهب', 'اشترى', 'لعب', 'صلى', 'أحب', 'عمل', 'رسم'],
+            z: { muzari: [12, 13, 6, 9, 0, 3], gelecek: [12, 13, 6, 9, 0, 3], mazi: [12, 6, 9, 0, 3] } },
+        '7@2025-2026': { k: 'tekilbiz', f: ['أراد', 'فضل', 'زار', 'ذهب', 'اشترى', 'لعب', 'صلى', 'أحب', 'عمل', 'رسم'],
             z: { muzari: [12, 13, 6, 9, 0, 3], gelecek: [12, 13, 6, 9, 0, 3], mazi: [12, 6, 9, 0, 3] } },
         '7@2027-2028': { k: 'tekil', f: ['صلى', 'ذهب', 'رجع', 'أراد', 'أكل', 'ساعد', 'شرب', 'نام', 'نظف', 'استيقظ'],
             z: { muzari: [12, 6, 9, 0, 3] } }

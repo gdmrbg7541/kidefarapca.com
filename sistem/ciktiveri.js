@@ -7,7 +7,7 @@
        python3 _kaynak/uretici/ciktiHavuzu.py "$K"
 
    ANAHTAR  sistem/sinifveri.js'teki VERI_YILI ile aynı: "5", "6@2026-2027",
-   "7@2026-2027", "8", "9", "10@2026-2027", "10@secmeli". Tek kitabı olan
+   "7@2025-2026" (Mektep; Devlet Kitapları 2026-2027 için plan yok), "8", "9", "10@2026-2027", "10@secmeli". Tek kitabı olan
    sınıfta yalnız numara. Planı olmayan kitap havuzda YOKTUR — arayüz yanlış
    çıktı göstermek yerine "bu kitap için hazır çıktı yok" der.
 
@@ -689,7 +689,7 @@ window.KIDEF_CIKTI = {
   },
   "ad": "6. Sınıf · yeni MEB kitabı"
  },
- "7@2026-2027": {
+ "7@2025-2026": {
   "program": "2016 İlköğretim Arapça Dersi Öğretim Programı (2-8. sınıflar)",
   "saat": "2 saat / 74 saat",
   "yil": "14 Eylül 2026 - 25 Haziran 2027",
