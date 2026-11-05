@@ -893,15 +893,19 @@ function renderAdminStudentList(kaynak) {
         _abSnap('ogrenci', function () { return D.collection('kullanicilar').get(); }, onb),
         _abSnap('bag', function () { return D.collection('ogrenciBaglari').get(); }, onb).then(null, function () { return null; })
     ]).then(function (r) {
-        var L = [], ogtAd = {};
+        var L = [], ogtAd = {}, ogtSinif = {};
         r[0].forEach(function (d) {
             var v = d.data() || {};
-            if (v.role === 'teacher' || v.role === 'admin') { ogtAd[d.id] = _abAd(v, d.id); return; }
+            if (v.role === 'teacher' || v.role === 'admin') {
+                ogtAd[d.id] = _abAd(v, d.id);
+                ogtSinif[d.id] = _abSiniflar(v);         /* SINIF SEÇİMİ (05.11.2026): yönetici onayı için sınıf listesi */
+                return;
+            }
             if (v.role && v.role !== 'student') return;
             v._docId = d.id;
             L.push(v);
         });
-        _aosHazirla(kap, L, r[1], ogtAd);
+        _aosHazirla(kap, L, r[1], ogtAd, ogtSinif);
     }).catch(function (e) {
         kap.innerHTML = '<p style="color:#EF5350;">' + _fbEsc(_abHataMetni(e)) + '</p>' +
             '<button class="btn" onclick="renderAdminStudentList()" style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
@@ -920,7 +924,12 @@ function _aosBaglar(snap, ogtAd) {
         var L = B[ogr] = B[ogr] || [], i;
         var yeni = { ogt: ogt, ad: String(ogtAd[ogt] || v.ogretmenAd || '').trim(), durum: durum,
                      seviye: String(v.seviyeAd || ''), sinif: String(v.sinifAd || ''),
-                     t: _aogTms(v.onayTarih) || _aogTms(v.istekTarih) || _aogTms(v.guncelleme) || 0 };
+                     t: _aogTms(v.onayTarih) || _aogTms(v.istekTarih) || _aogTms(v.guncelleme) || 0,
+                     /* SINIF SEÇİMİ (05.11.2026): bekleyen istekte önerilen sınıf, kim önerdi, yönetici onayı */
+                     id: String(d.id), doc: v, satirVar: !!(v.lId && v.cId && v.tur !== 'ogretmen'),
+                     onerilenLId: v.onerilenLId ? String(v.onerilenLId) : '', onerilenCId: v.onerilenCId ? String(v.onerilenCId) : '',
+                     onerilenAd: String(v.onerilenAd || ''), onerenOgrenci: !!v.onerenOgrenci,
+                     yoneticiOnay: !!v.yoneticiOnay, yoneticiTanimli: !!v.yoneticiTanimli };
         if (!yeni.ad) yeni.ad = '(öğretmen ' + String(ogt).slice(0, 6) + '…)';
         for (i = 0; i < L.length; i++) if (L[i].ogt === ogt) break;          /* eski tek kimlikli + yeni belge: onaylı olan kalır */
         if (i < L.length) { if (yeni.durum === 'onayli' && L[i].durum !== 'onayli') L[i] = yeni; }
@@ -945,7 +954,8 @@ function _aosSonGun(gun) {
     var p = s.split('-');
     return new Date(+p[0], +p[1] - 1, +p[2]).getTime() || 0;
 }
-function _aosHazirla(kap, L, bagSnap, ogtAd) {
+function _aosHazirla(kap, L, bagSnap, ogtAd, ogtSinif) {
+    _aos.ogtSinif = ogtSinif || {};
     var B = _aosBaglar(bagSnap, ogtAd), simdi = Date.now(), hafta = simdi - 7 * 86400000;
     var veri = {}, liste = [], ogtler = {};
     L.forEach(function (v) {
@@ -989,6 +999,9 @@ function _aosOgtYazi(o) {
     if (!o.baglar.length) return 'öğretmene bağlı değil';
     var b = o.baglar[0], yer = b.seviye + (b.sinif ? ' / ' + b.sinif : '');
     var y = '👨‍🏫 <b>' + _fbEsc(b.ad) + '</b>' + (yer ? ' · ' + _fbEsc(yer) : '') + (b.durum === 'bekliyor' ? ' · onay bekliyor' : '');
+    /* SINIF SEÇİMİ (05.11.2026): bekleyen istekte önerilen sınıf ve yönetici onayı */
+    if (b.durum === 'bekliyor' && !yer && b.onerilenAd) y += ' · <i>' + _fbEsc(b.onerilenAd) + '</i>';
+    if (b.durum === 'bekliyor' && b.yoneticiOnay) y += ' · <i>yönetici onayladı</i>';
     if (o.baglar.length > 1) y += ' <small>+' + (o.baglar.length - 1) + ' öğretmen</small>';
     return y;
 }
@@ -1193,6 +1206,13 @@ function _aosStil() {
         '#student-card-overlay .sc-bag-ad{font-weight:800; color:#1F2430;}',
         '#student-card-overlay .sc-bag-yer{color:#55606D;}',
         '#student-card-overlay .sc-bag-t{margin-inline-start:auto; font-size:.76rem; color:#8A94A3;}',
+        /* bekleyen istek: sınıf seçimi + öğretmen adına onayla (SINIF SEÇİMİ, 05.11.2026) */
+        '#student-card-overlay .sc-bag-onay{flex-basis:100%; display:flex; flex-direction:column; gap:6px; padding-top:6px; border-top:1px dashed #E6EBF2; font-size:.82rem; color:#55606D;}',
+        '#student-card-overlay .sc-onay-ok{color:#1E8449; font-weight:700;}',
+        '#student-card-overlay .sc-bag-yok{color:#A9B2BD;}',
+        '#student-card-overlay .sc-bag-tus{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}',
+        '#student-card-overlay .sc-bag-sec{flex:1 1 180px; width:auto; padding:8px 10px; font-size:.86rem;}',
+        '#student-card-overlay .sc-onayla{flex:0 0 auto; padding:8px 12px; border:none; border-radius:9px; background:#16A085; color:#fff; font-weight:800; font-size:.84rem; cursor:pointer; font-family:inherit;}',
         '#student-card-overlay .sc-yok{margin:0; color:#A9B2BD; font-size:.88rem;}',
         '#student-card-overlay .sc-bilgi{display:flex; gap:8px 18px; flex-wrap:wrap; font-size:.86rem; color:#555;}',
         '#student-card-overlay .sc-alanlar{display:flex; flex-direction:column; gap:12px;}',
@@ -1223,10 +1243,35 @@ function openStudentCard(uidEnc) {
     else if (!o.baglar.length) bag = '<p class="sc-yok">Henüz bir öğretmene bağlı değil.</p>';
     else bag = o.baglar.map(function (b) {
         var yer = b.seviye + (b.sinif ? ' / ' + b.sinif : '');
-        return '<div class="sc-bag"><span class="sc-bag-ad">👨‍🏫 ' + e(b.ad) + '</span>' +
+        var satir = '<div class="sc-bag"><span class="sc-bag-ad">👨‍🏫 ' + e(b.ad) + '</span>' +
                (yer ? '<span class="sc-bag-yer">' + e(yer) + '</span>' : '') +
                _aosRozet(b.durum === 'onayli' ? 'bagli' : 'bekliyor') +
                (b.t ? '<span class="sc-bag-t">' + _aogGun(b.t) + '</span>' : '') + '</div>';
+        if (b.durum !== 'bekliyor') return satir;
+        /* SINIF SEÇİMİ · YÖNETİCİ ONAYI (05.11.2026) — yönetici: "öğretmen ister onaylar ister başka sınıfına
+           tanımlar, ayrıca yönetici de". Bekleyen istekte öğretmenin sınıfları listelenir (öğrencinin seçimi
+           hazır seçili); «Öğretmen adına onayla» isteğe yoneticiOnay yazar; öğretmenin tarayıcısı siteye girince
+           öğrenciyi o sınıfa kendiliğinden ekler. Kendi koduyla gelen istekte satır bellidir, sınıf seçilmez. */
+        var S = (_aos.ogtSinif && _aos.ogtSinif[b.ogt]) || [], sec = b.onerilenLId ? b.onerilenLId + '|||' + b.onerilenCId : '';
+        var kaynak = b.onerilenAd
+            ? (b.onerenOgrenci ? 'Öğrencinin seçtiği sınıf: <b>' + e(b.onerilenAd) + '</b>' : 'Önerilen sınıf: <b>' + e(b.onerilenAd) + '</b>')
+            : (b.satirVar ? 'Kendi koduyla geldi; satırı ' + e(yer || 'listede') + ' sınıfında' : 'Sınıf seçilmedi');
+        var durumYazi = b.yoneticiOnay
+            ? '<span class="sc-onay-ok">✅ Yönetici onayladı' + (b.onerilenAd ? ' · ' + e(b.onerilenAd) : '') + ' — öğretmen siteye girince eklenir</span>'
+            : '';
+        var secim = (!b.satirVar && S.length)
+            ? '<select id="sc-bag-sec-' + e(b.ogt) + '" class="sc-bag-sec"><option value="">— sınıf seç —</option>' +
+              S.map(function (c) {
+                  var v = c.lId + '|||' + c.cId;
+                  return '<option value="' + _aosAttr(v) + '" data-ad="' + _aosAttr(c.ad) + '"' + (v === sec ? ' selected' : '') + '>' + e(c.ad) + ' (' + c.mevcut + ')</option>';
+              }).join('') + '</select>'
+            : (!b.satirVar ? '<span class="sc-bag-yok">öğretmenin sınıf listesi okunamadı</span>' : '');
+        return satir.replace('</div>', '') +
+               '<div class="sc-bag-onay"><span class="sc-bag-kaynak">' + kaynak + '</span>' + durumYazi +
+                 '<div class="sc-bag-tus">' + secim +
+                   '<button type="button" class="sc-onayla" onclick="adminBagOnayla(\'' + encodeURIComponent(o.uid) + '\',\'' + encodeURIComponent(b.ogt) + '\')">' +
+                   (b.yoneticiOnay ? '🔁 Sınıfı güncelle' : '✅ Öğretmen adına onayla') + '</button>' +
+                 '</div></div></div>';
     }).join('');
 
     var sonYazi = '—';
@@ -1281,6 +1326,43 @@ function openStudentCard(uidEnc) {
         '</div>';
     document.body.appendChild(ov);
 }
+
+/* YÖNETİCİ ONAYI (05.11.2026): bekleyen isteğe önerilen sınıf + yoneticiOnay yazılır; ekleme öğretmenin
+   tarayıcısında olur (hesap/ogrencihesap.js → OH.yoneticiOnaylariIsle). Kendi koduyla gelen istekte sınıf
+   seçilmez, satır bellidir. */
+function adminBagOnayla(uidEnc, ogtEnc) {
+    var uid = decodeURIComponent(String(uidEnc || '')), ogt = decodeURIComponent(String(ogtEnc || ''));
+    var o = _aos.veri && _aos.veri[uid];
+    if (!o) return;
+    var b = o.baglar.filter(function (x) { return x.ogt === ogt; })[0];
+    if (!b || b.durum !== 'bekliyor') return;
+    var payload = { yoneticiOnay: true };
+    try { payload.yoneticiOnayTarih = firebase.firestore.FieldValue.serverTimestamp(); } catch (e) { payload.yoneticiOnayTarih = Date.now(); }
+    var secAd = '';
+    if (!b.satirVar) {
+        var sel = document.getElementById('sc-bag-sec-' + ogt), v = sel ? sel.value : '';
+        if (!v) { _abUyar('Önce öğrencinin ekleneceği sınıfı seç.'); return; }
+        var pr = v.split('|||'), opt = sel.options[sel.selectedIndex];
+        secAd = (opt && opt.getAttribute('data-ad')) || '';
+        payload.onerilenLId = pr[0]; payload.onerilenCId = pr[1]; payload.onerilenAd = secAd;
+        if (!(b.onerenOgrenci && v === b.onerilenLId + '|||' + b.onerilenCId)) payload.onerenOgrenci = false;
+    }
+    var bitti = function () {
+        Object.assign(b.doc, payload);                       /* önbellekteki bağ belgesi de güncel kalsın */
+        b.yoneticiOnay = true;
+        if (secAd) { b.onerilenLId = payload.onerilenLId; b.onerilenCId = payload.onerilenCId; b.onerilenAd = secAd; b.onerenOgrenci = !!payload.onerenOgrenci || b.onerenOgrenci; }
+        _abUyar('Onay yazıldı: «' + (o.ad || o.email) + '» → ' + b.ad + (secAd ? ' · ' + secAd : '') +
+                '. Öğretmen siteye girince öğrenci sınıfa kendiliğinden eklenir.');
+        renderAdminStudentList('onbellek');
+        openStudentCard(encodeURIComponent(uid));
+    };
+    if (typeof firebase !== 'undefined' && typeof isFirebaseReady !== 'undefined' && isFirebaseReady) {
+        firebase.firestore().collection('ogrenciBaglari').doc(b.id).set(payload, { merge: true }).then(bitti, function (err) {
+            _abUyar('Yazılamadı: ' + ((err && (err.message || err.code)) || err));
+        });
+    } else bitti();
+}
+window.adminBagOnayla = adminBagOnayla;
 
 function saveStudentCard(uidEnc) {
     var uid = decodeURIComponent(String(uidEnc || '')), o = _aos.veri && _aos.veri[uid];
@@ -3322,24 +3404,35 @@ function adminBaglamaYukle(zorla) {
 }
 window.adminBaglamaYukle = adminBaglamaYukle;
 
-/* Bir öğrencinin şu anki bağı: rozet + açıklama */
+/* Öğrencinin bağ belgeleri (eski tek kimlikli + yeni öğrenci__öğretmen kimlikli); ogretmenUid belge
+   kimliğinden tamamlanır — SINIF SEÇİMİ (05.11.2026): eskiden yalnız eski kimlik bakılıyordu. */
+function _abBaglari(uid) {
+    var L = [];
+    Object.keys(_abVeri.baglar).forEach(function (k) {
+        var b = _abVeri.baglar[k] || {}, p = String(k).split('__');
+        if (String(b.uid || p[0]) !== String(uid)) return;
+        var ogt = b.ogretmenUid || (p.length > 1 ? p[1] : '');
+        L.push(Object.assign({}, b, { _id: k, ogretmenUid: ogt }));
+    });
+    return L;
+}
+/* Bir öğrencinin şu anki bağı: rozet + açıklama (onaylı varsa o; yoksa bekleyen; önerilen sınıfla) */
 function _abDurum(uid) {
-    var b = _abVeri.baglar[uid];
-    if (!b || !b.durum || b.durum === 'red') {
-        return { renk: '#9aa5b1', zemin: '#F0F3F7', ad: 'Bağlı değil', not: '' };
-    }
+    var L = _abBaglari(uid).filter(function (b) { return b.durum === 'onayli' || b.durum === 'bekliyor'; });
+    L.sort(function (a, b) { return (a.durum === 'onayli' ? 0 : 1) - (b.durum === 'onayli' ? 0 : 1); });
+    var b = L[0];
+    if (!b) return { renk: '#9aa5b1', zemin: '#F0F3F7', ad: 'Bağlı değil', not: '' };
     var ogtAd = b.ogretmenAd || '';
-    if (!ogtAd) {
-        for (var i = 0; i < _abVeri.ogretmenler.length; i++) {
-            if (_abVeri.ogretmenler[i].uid === b.ogretmenUid) { ogtAd = _abVeri.ogretmenler[i].ad; break; }
-        }
+    for (var i = 0; i < _abVeri.ogretmenler.length; i++) {
+        if (_abVeri.ogretmenler[i].uid === b.ogretmenUid) { ogtAd = _abVeri.ogretmenler[i].ad; break; }
     }
     var yer = (b.seviyeAd || '') + (b.sinifAd ? ' / ' + b.sinifAd : '');
     if (b.durum === 'onayli') {
-        return { renk: '#1E8449', zemin: '#E8F6EF', ad: 'Onaylı',
+        return { renk: '#1E8449', zemin: '#E8F6EF', ad: 'Onaylı' + (L.length > 1 ? ' +' + (L.length - 1) : ''),
                  not: (ogtAd || '—') + (yer ? ' · ' + yer : '') };
     }
-    return { renk: '#B5670A', zemin: '#FEF3E2', ad: 'Bekliyor', not: (ogtAd || '—') };
+    return { renk: '#B5670A', zemin: '#FEF3E2', ad: b.yoneticiOnay ? 'Yönetici onayladı' : 'Bekliyor',
+             not: (ogtAd || '—') + (b.onerilenAd ? ' · ' + b.onerilenAd + (b.onerenOgrenci ? ' (öğrenci seçti)' : '') : (yer ? ' · ' + yer : '')) };
 }
 
 function _abCiz() {
@@ -3378,6 +3471,10 @@ function _abCiz() {
           '<label style="flex:1 1 240px; min-width:0;">' +
             '<span style="display:block; font-size:.78rem; font-weight:700; color:#16A085; margin-bottom:4px;">SINIF (isteğe bağlı)</span>' +
             '<select id="abSinif" style="width:100%; box-sizing:border-box; ' + kut + '"></select></label>' +
+          /* ÖĞRETMEN ADINA ONAYLA (SINIF SEÇİMİ, 05.11.2026) */
+          '<label style="flex:1 1 100%; display:flex; align-items:center; gap:8px; font-size:.86rem; color:#2c3e50; cursor:pointer;">' +
+            '<input type="checkbox" id="abOnayla" style="width:17px; height:17px;"> Öğretmen adına onayla ' +
+            '<small style="color:#8A94A3;">(sınıf seçiliyse; öğretmen siteye girince öğrenci o sınıfa kendiliğinden eklenir)</small></label>' +
         '</div>' +
 
         '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">' +
@@ -3510,19 +3607,23 @@ function adminOgrenciTanimla() {
 
     /* Zaten başka bir öğretmene ONAYLI bağlı olanları ayrıca söyle. */
     var cakisan = uidler.filter(function (u) {
-        var b = _abVeri.baglar[u];
-        return b && b.durum === 'onayli' && b.ogretmenUid && b.ogretmenUid !== ogtUid;
+        return _abBaglari(u).some(function (b) { return b.durum === 'onayli' && b.ogretmenUid && b.ogretmenUid !== ogtUid; });
     }).length;
+    /* ÖĞRETMEN ADINA ONAYLA (SINIF SEÇİMİ, 05.11.2026): sınıf seçiliyse istek yoneticiOnay ile gider,
+       öğretmenin tarayıcısı öğrenciyi o sınıfa kendiliğinden ekler. */
+    var onayKutu = document.getElementById('abOnayla'), onay = !!(onayKutu && onayKutu.checked);
+    if (onay && !snf) { _abUyar('Öğretmen adına onaylamak için bir sınıf seç.'); return; }
 
     var soru = uidler.length + ' öğrenci "' + ogt.ad + '" öğretmenine tanımlansın mı?' +
         (snf ? '\nÖnerilen sınıf: ' + snfAd : '\nSınıfı öğretmen kendisi seçecek.') +
+        (onay ? '\nÖğretmen adına ONAYLANACAK: öğretmen siteye girince öğrenci bu sınıfa kendiliğinden eklenir.' : '') +
         (cakisan ? '\n\nDİKKAT: ' + cakisan + ' öğrenci şu an BAŞKA bir öğretmene onaylı bağlı; bağları bu öğretmene taşınacak.' : '');
 
-    _abSor(soru, function () { _abYaz(uidler, ogt, snf, snfAd); });
+    _abSor(soru, function () { _abYaz(uidler, ogt, snf, snfAd, onay); });
 }
 window.adminOgrenciTanimla = adminOgrenciTanimla;
 
-function _abYaz(uidler, ogt, snf, snfAd) {
+function _abYaz(uidler, ogt, snf, snfAd, onay) {
     var db2 = firebase.firestore();
     var damga;
     try { damga = firebase.firestore.FieldValue.serverTimestamp(); } catch (e) { damga = Date.now(); }
@@ -3548,14 +3649,18 @@ function _abYaz(uidler, ogt, snf, snfAd) {
             kayit.onerilenLId = pr[0];
             kayit.onerilenCId = pr[1];
             kayit.onerilenAd = snfAd || '';
+            kayit.onerenOgrenci = false;
         }
+        if (onay && snf) { kayit.yoneticiOnay = true; kayit.yoneticiOnayTarih = damga; }   /* öğretmen adına onay (05.11.2026) */
         return db2.collection('ogrenciBaglari')
                   .doc(taBagKimlik(uid, ogt.uid)).set(kayit, { merge: true });
     });
 
     Promise.all(isler).then(function () {
-        _abUyar(uidler.length + ' öğrenci "' + ogt.ad +
-                '" öğretmenine tanımlandı. Öğretmen kendi panelindeki zilden onaylayacak.');
+        _abUyar(uidler.length + ' öğrenci "' + ogt.ad + '" öğretmenine tanımlandı. ' +
+                (onay && snf ? 'Öğretmen siteye girince öğrenciler ' + snfAd + ' sınıfına kendiliğinden eklenir.'
+                             : 'Öğretmen kendi panelindeki zilden onaylayacak.'));
+        delete _abOnbellek.bag;                               /* öğrenci listesi taze bağları görsün */
         adminBaglamaYukle(true);
     }).catch(function (e) {
         _abUyar('Tanımlama başarısız: ' + ((e && (e.code || e.message)) || e) +

@@ -295,6 +295,28 @@
        dogrudan ogretmen kodunu girip istek gonderebilir.
        Bu dokumanda lId/cId/sIdx YOKTUR; ogretmen onaylarken sinifi secer
        ve ogrenci satiri o an olusturulur.                                    */
+    /* SINIF SEÇİMİ (05.11.2026) — yönetici: "bi öğrenci öğretmen kodunu yazıp eşleşmek istediğinde o
+       öğretmenin sınıflarından hangi sınıftaysa seçebilsin". Öğretmen kodu davetine öğretmenin seviye/sınıf
+       listesi de yazılır (yalnız kimlik ve adlar; öğrenci adı yok). Öğrenci kodu girince listeden sınıfını
+       seçer; seçim isteğe ÖNERİ olarak gider (onerilenLId/onerilenCId/onerilenAd, onerenOgrenci) — satırı
+       yine öğretmen (ya da yönetici onayıyla öğretmenin tarayıcısı) açar. Liste yalnız bulut verisi
+       indikten sonra yazılır (yeni cihazdaki demo veri sızmasın); değişmediyse yazılmaz (imza). */
+    function sinifListesi() {
+        var d = (typeof data !== 'undefined' && data) ? data : null;
+        if (!d || !d.levels) return null;
+        var sira = (d.levelOrder && d.levelOrder.length) ? d.levelOrder : Object.keys(d.levels), L = [];
+        sira.forEach(function (lId) {
+            var lvl = d.levels[lId];
+            if (!lvl || !lvl.classes) return;
+            Object.keys(lvl.classes).forEach(function (cId) {
+                var cls = lvl.classes[cId] || {};
+                L.push({ lId: String(lId), cId: String(cId), seviyeAd: String(lvl.name || lId), sinifAd: String(cls.name || cId) });
+            });
+        });
+        return L;
+    }
+    OH.sinifListesi = sinifListesi;
+
     OH.ogretmenDavetiYayinla = function (zorla) {
         var u = oturum(), D = veri();
         if (!u || !D || !ogretmenMi()) return Promise.resolve('');
@@ -305,18 +327,25 @@
         try { tAd = (typeof appState !== 'undefined' && appState.currentUserName) ? appState.currentUserName : ''; } catch (e) { }
         if (!tAd || tAd === 'Belirtilmedi') tAd = (u.email || '\u00d6\u011fretmen');
 
-        var anahtar = 'oh_tkod_' + u.uid;
-        try { if (!zorla && localStorage.getItem(anahtar) === kod + '~' + tAd) return Promise.resolve(kod); } catch (e) { }
+        /* sınıf listesi: yalnız bu hesabın bulut verisi indiyse (SINIF SEÇİMİ, 05.11.2026) */
+        var L = null;
+        try { if (window._llBulutGeldi === u.uid) L = sinifListesi(); } catch (e) { L = null; }
+        var imza = kod + '~' + tAd + (L ? '~' + JSON.stringify(L) : '');
 
-        return D.collection(C_DAVET).doc(kod).set({
+        var anahtar = 'oh_tkod_' + u.uid;
+        try { if (!zorla && localStorage.getItem(anahtar) === imza) return Promise.resolve(kod); } catch (e) { }
+
+        var belge = {
             kod: kod,
             tur: 'ogretmen',
             ogretmenUid: u.uid,
             ogretmenAd: tAd,
             ogretmenKod: kod,
             guncelleme: Date.now()
-        }, { merge: true }).then(function () {
-            try { localStorage.setItem(anahtar, kod + '~' + tAd); } catch (e) { }
+        };
+        if (L) { belge.siniflar = L; belge.siniflarGuncelleme = Date.now(); }
+        return D.collection(C_DAVET).doc(kod).set(belge, { merge: true }).then(function () {
+            try { localStorage.setItem(anahtar, imza); } catch (e) { }
             OH._sonYayinHata = '';
             return kod;
         }).catch(function (e) {
@@ -425,6 +454,7 @@
         if (_kayitZaman) clearTimeout(_kayitZaman);
         _kayitZaman = setTimeout(function () {
             _kayitZaman = null;
+            OH.ogretmenDavetiYayinla();          /* sınıf listesi değiştiyse (SINIF SEÇİMİ, 05.11.2026) */
             OH.davetleriYayinla();
             OH.ozetleriYaz();
         }, 1500);
@@ -450,6 +480,7 @@
                         OH.istekler.push(v);
                     });
                     OH.rozetGuncelle();
+                    try { OH.yoneticiOnaylariIsle(); } catch (e) { }   /* YÖNETİCİ ONAYI (05.11.2026) */
                     var g = document.getElementById('ohIstekGovde');
                     if (g && document.getElementById('ohIstekModal') &&
                         document.getElementById('ohIstekModal').style.display !== 'none') OH.istekCiz();
@@ -521,6 +552,10 @@
     OH.tusYerlestir = function () {
         if (!ogretmenMi()) return;
         OH.rozetGuncelle();
+        /* SINIF SEÇİMİ · YÖNETİCİ ONAYI (05.11.2026): renderSidebar bulut verisi inince de çağrılır —
+           sınıf listesi davete yazılır (değiştiyse), bekleyen yönetici onayları işlenir. */
+        try { OH.ogretmenDavetiYayinla(); } catch (e) { }
+        try { OH.yoneticiOnaylariIsle(); } catch (e) { }
         var nav = document.getElementById('levelNav');
         if (!nav || document.getElementById('ohIstekTus')) return;
         var b = document.createElement('button');
@@ -752,6 +787,22 @@
 
             var trh = istekTarih(it);
             var yer = yeniMi ? '' : (esc(it.seviyeAd || '') + (it.sinifAd ? ' / ' + esc(it.sinifAd) : ''));
+            /* SINIF SEÇİMİ (05.11.2026): öğrencinin seçtiği / yöneticinin önerdiği ya da onayladığı sınıf */
+            var oneri = '';
+            if (it.onerilenLId && it.onerilenCId) {
+                var oAd = it.onerilenAd || (it.onerilenLId + ' / ' + it.onerilenCId), oVar = false;
+                try { oVar = !!(data.levels[it.onerilenLId].classes[it.onerilenCId]); } catch (e) { oVar = false; }
+                oneri = '<div style="font-size:.8rem; color:#9C3B0C; margin:0 0 8px;">' +
+                    (it.yoneticiOnay
+                        ? '\u2705 <b>Y\u00f6netici onaylad\u0131</b> \u00b7 s\u0131n\u0131f: <b>' + esc(oAd) + '</b> \u2014 ' +
+                          (oVar ? 'kendili\u011finden eklenir' : 'bu s\u0131n\u0131f listende yok; s\u0131n\u0131f\u0131 se\u00e7ip onayla')
+                        : (it.onerenOgrenci
+                            ? '\ud83c\udf93 \u00d6\u011frencinin se\u00e7ti\u011fi s\u0131n\u0131f: <b>' + esc(oAd) + '</b>'
+                            : '\ud83e\uddd1\u200d\ud83d\udcbc Y\u00f6neticinin \u00f6nerdi\u011fi s\u0131n\u0131f: <b>' + esc(oAd) + '</b>')) +
+                    '</div>';
+            } else if (it.yoneticiOnay) {
+                oneri = '<div style="font-size:.8rem; color:#9C3B0C; margin:0 0 8px;">\u2705 <b>Y\u00f6netici onaylad\u0131</b> \u2014 kendili\u011finden eklenir</div>';
+            }
 
             /* Secenek listesinde on secimi isaretle (yalniz ilk esleme). */
             var opts = sec ? secenekler.replace('value="' + esc(sec) + '"',
@@ -774,10 +825,12 @@
                    bir sinifta duruyor; oradan tasimak diger ogrencilerin
                    sIdx sirasini kaydiracagi icin burada sinif degistirilmez
                    (baska sinifa da eklemek icin: Listelerim > Kodla Ekle). */
+                oneri +
                 (yeniMi
                   ? '<div style="margin:0 0 10px; padding:9px 10px; background:#FFF6EC; border:1px dashed #F0C9A6;' +
                     'border-radius:10px;">' +
-                    '<div style="font-size:.78rem; color:#A6836E; margin-bottom:5px;">Hangi sınıfa eklensin?</div>' +
+                    '<div style="font-size:.78rem; color:#A6836E; margin-bottom:5px;">Hangi sınıfa eklensin?' +
+                    (it.onerilenLId ? ' <span style="color:#B34700;">(\u00f6neri haz\u0131r se\u00e7ili; de\u011fi\u015ftirebilirsin)</span>' : '') + '</div>' +
                     '<select id="ohSinifSec_' + esc(it._id) + '" style="width:100%; box-sizing:border-box; padding:9px;' +
                     'border:1px solid #E8A87C; border-radius:9px; font-family:inherit; font-size:.88rem;' +
                     'color:#B34700; background:#fff;">' + opts + '</select></div>'
@@ -827,12 +880,42 @@
         })();
     };
 
+    /* YÖNETİCİ ONAYI (05.11.2026) — yönetici panelinden «öğretmen adına onayla»: istek belgesinde
+       yoneticiOnay:true (+ önerilen sınıf). Öğrenci satırı öğretmenin KENDİ verisinde yaşadığı için ekleme
+       burada, öğretmenin tarayıcısında yapılır: istek düşünce ya da bulut verisi inince önerilen sınıfa
+       kendiliğinden eklenir (kendi koduyla gelen istekte satır zaten bellidir). Sınıf bulunamazsa istek
+       bekler, öğretmen kendi seçer. Her istek bir kez denenir. */
+    OH._otoOnay = {};
+    OH.yoneticiOnaylariIsle = function () {
+        var u = oturum();
+        if (!u || !ogretmenMi() || typeof save !== 'function') return;
+        if (window._llBulutGeldi !== u.uid) return;            /* bulut verisi inmeden satır açılmaz */
+        var d = (typeof data !== 'undefined' && data) ? data : null;
+        if (!d || !d.levels) return;
+        (OH.istekler || []).forEach(function (it) {
+            if (!it || !it.yoneticiOnay || it.durum !== 'bekliyor' || OH._otoOnay[it._id]) return;
+            var yeniMi = (it.tur === 'ogretmen' || !it.lId), deg = '';
+            if (yeniMi) {
+                var var_ = false;
+                try { var_ = !!(it.onerilenLId && it.onerilenCId && d.levels[it.onerilenLId].classes[it.onerilenCId]); } catch (e) { var_ = false; }
+                if (!var_) return;
+                deg = it.onerilenLId + '|||' + it.onerilenCId;
+            }
+            OH._otoOnay[it._id] = 1;
+            var p = OH.istekOnayla(it._id, true, deg);
+            if (p && p.then) p.then(function (ok) {
+                if (ok) OH.mujde((it.ad || '\u00d6\u011frenci') + ' y\u00f6neticinin onay\u0131yla ' +
+                                 (it.onerilenAd || it.sinifAd || 's\u0131n\u0131fa') + ' eklendi.');
+            });
+        });
+    };
+
     /* Onay: hesap ogrenci satirina kalici baglanir, kod tuketilir.
        toplu=true iken pencere acmaz, yalniz Promise doner (Hepsini Onayla). */
     /* bagKimlik: ogrenciBaglari BELGESININ kimligi (ogrenci uid'i DEGIL).
        Ogrencinin uid'i istegin 'uid' alanindan okunur — kimlik artik
        ogrenci+ogretmen cifti oldugu icin ikisi ayni sey degil.          */
-    OH.istekOnayla = function (bagKimlik, toplu) {
+    OH.istekOnayla = function (bagKimlik, toplu, secimDeg) {
         var u = oturum(), D = veri();
         if (!u || !D) return Promise.resolve(false);
         var it = OH.istekler.filter(function (x) { return x._id === bagKimlik; })[0];
@@ -847,7 +930,7 @@
                ve kisiye ozel kod (TCH-4582-XXXX) o an uretilir.          --- */
         if (it.tur === 'ogretmen' || !it.lId) {
             var sec = document.getElementById('ohSinifSec_' + it._id);
-            var deg = (sec && sec.value) || '';
+            var deg = secimDeg || (sec && sec.value) || '';          /* secimDeg: yönetici onayı (05.11.2026) */
             if (!deg) {
                 if (!toplu) OH.bilgi('\u00d6nce \u00f6\u011frencinin eklenece\u011fi seviye/s\u0131n\u0131f\u0131 se\u00e7.');
                 return Promise.resolve(false);
@@ -1163,6 +1246,14 @@
                 '<p style="margin:12px 0 6px; text-align:center; color:#B34700; font-size:1.05rem;">Onay bekleniyor</p>' +
                 '<p style="margin:0 0 6px; text-align:center; color:#6B4A38; font-size:.9rem;">İsteğin ' +
                 esc(OH.bag.ogretmenAd || 'öğretmenine') + ' iletildi. Onaylandığında sınıfın açılır.</p>' +
+                /* SINIF SEÇİMİ (05.11.2026): seçilen sınıf, yönetici onayı */
+                (OH.bag.onerilenAd
+                    ? '<p style="margin:0 0 6px; text-align:center; color:#9C3B0C; font-size:.88rem;">Seçtiğin sınıf: <b>' +
+                      esc(OH.bag.onerilenAd) + '</b>' + (OH.bag.onerenOgrenci ? ' — öğretmenin onaylarken değiştirebilir.' : '') + '</p>'
+                    : '') +
+                (OH.bag.yoneticiOnay
+                    ? '<p style="margin:0 0 6px; text-align:center; color:#1E8449; font-size:.88rem;">✅ Yönetici onayladı; öğretmenin siteye girince sınıfın açılır.</p>'
+                    : '') +
                 '<p style="margin:14px 0 0; text-align:center; color:#A6836E; font-size:.82rem;">Kod: ' +
                 esc(OH.bag.kod || '') + '</p>';
             return;
@@ -1206,7 +1297,7 @@
        hem kod penceresi (kodGonder) hem kayit formundan kalan bekleyen kod
        (bekleyenKoduIsle) bunu kullanir.
        Donen deger: { ok:true }  ya da  { ok:false, mesaj:'...' }            */
-    OH.kodIstekGonder = function (hamKod) {
+    OH.kodIstekGonder = function (hamKod, secim) {
         var u = oturum(), D = veri();
         if (!u || !D) return Promise.resolve({ ok: false, mesaj: 'Ba\u011flant\u0131 kurulamad\u0131. Sayfay\u0131 yenileyip tekrar dene.' });
         var kod = kodDuzelt(hamKod);
@@ -1250,6 +1341,18 @@
                 return { ok: false, mesaj: 'Bu kod daha \u00f6nce ba\u015fka bir hesaba ba\u011flanm\u0131\u015f.' };
             }
 
+            /* SINIF SEÇİMİ (05.11.2026): öğretmen kodu daveti sınıf listesi taşıyorsa ve öğrenci henüz
+               seçmediyse (secim === undefined) önce sınıf sorulur. secim: 'lId|||cId' ya da '' (öğretmen seçsin). */
+            var siniflar = (ogretmenKoduIle && Array.isArray(v.siniflar))
+                ? v.siniflar.filter(function (c) { return c && c.lId && c.cId; }) : [];
+            if (ogretmenKoduIle && siniflar.length && secim === undefined) {
+                return { ok: false, sinifSec: { kod: gercekKod, ham: hamKod, ogretmenAd: v.ogretmenAd || '', siniflar: siniflar } };
+            }
+            var secilen = null;
+            if (ogretmenKoduIle && secim) {
+                secilen = siniflar.filter(function (c) { return c.lId + '|||' + c.cId === secim; })[0] || null;
+            }
+
             var ad = '';
             try { ad = (typeof appState !== 'undefined' && appState.currentUserName) ? appState.currentUserName : ''; } catch (e) { }
             if (!ad || ad === 'Belirtilmedi' || ad === '\u00d6\u011frenci') ad = v.ad || (u.email || '');
@@ -1269,6 +1372,12 @@
             };
             /* Ogretmen kodunda koordinat yoktur; undefined yazmak Firestore'da hatadir. */
             if (!ogretmenKoduIle) { kayit.lId = v.lId; kayit.cId = v.cId; kayit.sIdx = v.sIdx; }
+            /* öğrencinin seçtiği sınıf: ÖNERİ (satırı öğretmen açar) — SINIF SEÇİMİ (05.11.2026) */
+            if (secilen) {
+                kayit.onerilenLId = String(secilen.lId); kayit.onerilenCId = String(secilen.cId);
+                kayit.onerilenAd = String(secilen.seviyeAd || secilen.lId) + ' / ' + String(secilen.sinifAd || secilen.cId);
+                kayit.onerenOgrenci = true;
+            }
 
             /* Kimlik ogrenci+ogretmen cifti: ayni ogrenci baska bir
                ogretmene istek gonderdiginde onceki bag EZILMEZ.          */
@@ -1280,6 +1389,8 @@
                     ogretmenUid: v.ogretmenUid, ogretmenAd: v.ogretmenAd || '',
                     lId: kayit.lId, cId: kayit.cId, sIdx: kayit.sIdx,
                     seviyeAd: v.seviyeAd || '', sinifAd: v.sinifAd || '',
+                    onerilenLId: kayit.onerilenLId, onerilenCId: kayit.onerilenCId,
+                    onerilenAd: kayit.onerilenAd || '', onerenOgrenci: !!kayit.onerenOgrenci,
                     durum: 'bekliyor', _id: kimlik, _eski: false
                 };
                 OH.baglar = (OH.baglar || []).filter(function (b) {
@@ -1296,13 +1407,18 @@
         });
     };
 
-    /* Kod penceresindeki "Istek Gonder" tusu. */
-    OH.kodGonder = function () {
+    /* Kod penceresindeki "Istek Gonder" tusu.
+       secim (SINIF SEÇİMİ, 05.11.2026): sınıf ekranından 'lId|||cId' ya da '' gelir; ilk basışta
+       yoktur — öğretmen kodunun sınıf listesi varsa kodIstekGonder önce sınıf ekranını ister. */
+    OH.kodGonder = function (secim) {
         var el = document.getElementById('ohKodGiris');
         var not = document.getElementById('ohKodNot');
+        var ham = (el && el.value) || (OH._sinifSec && OH._sinifSec.ham) || '';
         if (not) { not.style.color = '#16A085'; not.textContent = 'Kod kontrol ediliyor\u2026'; }
         var ekleme = OH._ekleKipi;
-        OH.kodIstekGonder((el && el.value) || '').then(function (r) {
+        OH.kodIstekGonder(ham, secim).then(function (r) {
+            if (r && r.sinifSec) { OH.sinifSecCiz(r.sinifSec); return; }
+            OH._sinifSec = null;
             if (r && r.ok) {
                 OH._ekleKipi = false;
                 if (ekleme) {
@@ -1311,20 +1427,86 @@
                        ayrica soylemek gerekiyor. */
                     var g2 = document.getElementById('ohKodGovde');
                     var son = OH.bekleyenBaglar();
-                    var kim = son.length ? (son[son.length - 1].ogretmenAd || 'öğretmenine') : 'öğretmenine';
+                    var sonB = son.length ? son[son.length - 1] : null;
+                    var kim = sonB ? (sonB.ogretmenAd || 'öğretmenine') : 'öğretmenine';
                     if (g2) g2.innerHTML =
                         '<div style="text-align:center; padding:10px 0 4px;">' + ikon('bekle', 'lli-xxl') + '</div>' +
                         '<p style="margin:12px 0 6px; text-align:center; color:#B34700; font-size:1.05rem;">İstek gönderildi</p>' +
                         '<p style="margin:0 0 6px; text-align:center; color:#6B4A38; font-size:.9rem;">' +
-                        'Katılım isteğin iletildi: <b>' + esc(kim) + '</b>. Onaylandığında ekranın ' +
-                        'üstünde iki öğretmen arasında geçiş yapabileceğin bir seçici çıkar.</p>' +
+                        'Katılım isteğin iletildi: <b>' + esc(kim) + '</b>' +
+                        (sonB && sonB.onerilenAd ? ' (seçtiğin sınıf: <b>' + esc(sonB.onerilenAd) + '</b>)' : '') +
+                        '. Onaylandığında ekranın üstünde iki öğretmen arasında geçiş yapabileceğin bir seçici çıkar.</p>' +
                         '<p style="margin:14px 0 0; text-align:center; color:#A6836E; font-size:.82rem;">' +
                         'Eski öğretmenin ve sınıfın aynen duruyor.</p>';
                 } else OH.kodCiz();
                 OH.bannerGuncelle();
             }
-            else OH.kodCiz((r && r.mesaj) || '\u0130stek g\u00f6nderilemedi.', true);
+            else {
+                OH.kodCiz((r && r.mesaj) || '\u0130stek g\u00f6nderilemedi.', true);
+                var i2 = document.getElementById('ohKodGiris');
+                if (i2 && ham && !i2.value) i2.value = ham;          /* yazdığı kod kaybolmasın */
+            }
         });
+    };
+
+    /* SINIF SEÇME EKRANI (05.11.2026) — yönetici: "bi öğrenci öğretmen kodunu yazıp eşleşmek istediğinde o
+       öğretmenin sınıflarından hangi sınıftaysa seçebilsin". Öğretmen kodu çözülünce davetteki sınıf
+       listesi burada sorulur; seçim (ya da «öğretmenim seçsin») isteğe eklenir. */
+    OH._sinifSec = null;
+    OH.sinifSecCiz = function (s, hata) {
+        var g = document.getElementById('ohKodGovde');
+        if (!g || !s) return;
+        OH._sinifSec = s;
+        var satir = function (deg, ad, alt) {
+            return '<label class="oh-snf" style="display:flex; align-items:center; gap:10px; padding:10px 12px; margin:0 0 7px;' +
+                   'border-radius:11px; cursor:pointer; border:1.5px solid #F0DACA; background:#fff;">' +
+                   '<input type="radio" name="ohSinif" value="' + esc(deg) + '" onchange="OH.sinifSecIsaretle()" ' +
+                   'style="width:18px; height:18px; margin:0; flex:none; accent-color:#D84315;">' +
+                   '<span style="flex:1; min-width:0;"><b style="display:block; color:#9C3B0C; font-size:.95rem;">' + esc(ad) + '</b>' +
+                   (alt ? '<span style="font-size:.78rem; color:#A6836E;">' + esc(alt) + '</span>' : '') + '</span></label>';
+        };
+        g.innerHTML =
+            '<p style="margin:0 0 4px; color:#6B4A38; line-height:1.6;">\u00d6\u011fretmenin: <b>' + esc(s.ogretmenAd || '\u00d6\u011fretmen') + '</b> ' +
+            '<span style="color:#A6836E; font-size:.82rem;">(' + esc(s.kod || '') + ')</span></p>' +
+            '<p style="margin:0 0 12px; color:#9C3B0C; font-weight:700; font-size:1.02rem;">Hangi s\u0131n\u0131ftas\u0131n?</p>' +
+            '<div id="ohSinifListe" style="max-height:46vh; overflow-y:auto; margin:0 0 4px;">' +
+            s.siniflar.map(function (c) {
+                return satir(c.lId + '|||' + c.cId, String(c.seviyeAd || c.lId) + ' / ' + String(c.sinifAd || c.cId), '');
+            }).join('') +
+            satir('', 'Bilmiyorum \u2014 \u00f6\u011fretmenim se\u00e7sin', '\u0130ste\u011fin s\u0131n\u0131fs\u0131z gider; \u00f6\u011fretmenin onaylarken se\u00e7er.') +
+            '</div>' +
+            '<p id="ohKodNot" style="min-height:18px; margin:9px 0; font-size:.85rem; color:' + (hata ? '#E74C3C' : '#16A085') + ';">' + esc(hata || '') + '</p>' +
+            '<button type="button" id="ohKodTus" onclick="OH.sinifSecGonder()" ' +
+            'style="width:100%; padding:13px; border:none; border-radius:12px; cursor:pointer; font-family:inherit;' +
+            'font-weight:700; font-size:1rem; color:#fff; background:linear-gradient(135deg,#F39C12,#D84315);">\u0130stek G\u00f6nder</button>' +
+            '<button type="button" onclick="OH.sinifSecGeri()" ' +
+            'style="width:100%; margin-top:8px; padding:10px; border:1px solid #F0DACA; border-radius:12px; cursor:pointer;' +
+            'font-family:inherit; font-weight:700; color:#B34700; background:#fff;">\u2190 Kodu de\u011fi\u015ftir</button>';
+    };
+    OH.sinifSecIsaretle = function () {
+        var L = document.querySelectorAll('#ohSinifListe .oh-snf');
+        for (var i = 0; i < L.length; i++) {
+            var r = L[i].querySelector('input'), sec = !!(r && r.checked);
+            L[i].style.borderColor = sec ? '#E67E22' : '#F0DACA';
+            L[i].style.background = sec ? '#FFF1E2' : '#fff';
+        }
+        var not = document.getElementById('ohKodNot');
+        if (not) not.textContent = '';
+    };
+    OH.sinifSecGonder = function () {
+        var r = document.querySelector('#ohSinifListe input[name="ohSinif"]:checked');
+        if (!r) {
+            var not = document.getElementById('ohKodNot');
+            if (not) { not.style.color = '#E74C3C'; not.textContent = '\u00d6nce s\u0131n\u0131f\u0131n\u0131 se\u00e7 (bilmiyorsan son se\u00e7ene\u011fi i\u015faretle).'; }
+            return;
+        }
+        OH.kodGonder(r.value);
+    };
+    OH.sinifSecGeri = function () {
+        var s = OH._sinifSec; OH._sinifSec = null;
+        OH.kodCiz();
+        var inp = document.getElementById('ohKodGiris');
+        if (inp && s) inp.value = s.ham || s.kod || '';
     };
 
     /* KAYIT FORMUNDA girilen ogretmen kodu (oh_beklenen_kod):
@@ -1342,6 +1524,7 @@
             try { localStorage.removeItem('oh_beklenen_kod'); } catch (e) { }
             OH.bannerGuncelle();
             OH.kodModalAc();
+            if (r && r.sinifSec) { OH.sinifSecCiz(r.sinifSec); return; }     /* SINIF SEÇİMİ (05.11.2026) */
             if (!(r && r.ok)) OH.kodCiz((r && r.mesaj) || '\u0130stek g\u00f6nderilemedi.', true);
         });
     };
@@ -1533,7 +1716,12 @@
             var bekNot = bekleyen.length
                 ? '<div style="margin-top:8px; padding:9px 13px; border-radius:12px; background:#FEF5E7;' +
                   'border:1px solid #F5D9A8; color:#B9770E; font-size:.82rem;">' +
-                  bekleyen.length + ' katılım isteğin onay bekliyor.</div>'
+                  bekleyen.length + ' katılım isteğin onay bekliyor: ' +
+                  /* SINIF SEÇİMİ (05.11.2026): öğretmen + seçilen sınıf */
+                  bekleyen.map(function (b) {
+                      return '<b>' + esc(kisaAd(b)) + '</b>' + (b.onerilenAd ? ' · ' + esc(b.onerilenAd) : '') +
+                             (b.yoneticiOnay ? ' (yönetici onayladı)' : '');
+                  }).join(', ') + '</div>'
                 : '';
 
             var ekleTus = (sec.ekle === false)
