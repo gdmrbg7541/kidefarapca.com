@@ -140,7 +140,8 @@ function renderAdminPanel() {
 
     adminSection.innerHTML = `
         <div class="glass-card">
-            <!-- CANLI ÖĞRETMEN SAYACI (02.11.2026): en üstte, yalnız yönetici; panel açılınca N-10'dan N'ye sayar -->
+            <!-- SAYAÇ KUTUSU (02.11.2026 · 05.11.2026): en üstte, yalnız yönetici; öğretmen ve öğrenci sayısı.
+                 Animasyon yok — yönetici: "rakam animasyonunu kaldıralım, en son rakam neyse o görünsün". -->
             ${_aonYoneticiMi() ? _ogsHtml() : ''}
             <!-- ÖĞRETMEN ONAYLARI EN ÜSTTE (27.10.2026): yalnız yönetici; açık başlar,
                  akordiyondan ayrı; liste 30 sn'de bir kendiliğinden yenilenir.
@@ -176,6 +177,16 @@ function renderAdminPanel() {
                             📋 Tüm kayıt anketleri</button>
                     </div>
                     <div id="admin-teacher-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 560px; overflow-y: auto;">Bölümü açınca yüklenir…</div>
+                </details>
+                <!-- ÖĞRENCİ LİSTESİ AYRINTILI (05.11.2026) — yönetici: "öğrenciler kısmını öğretmenler kısmındaki
+                     benzer şekilde daha detaylı bilgi içeren bi hale getirelim, öğretmenler sekmesinin altında
+                     olsun … öğrencilerin hangi öğretmene bağlı olduğu, siteyi ne kadar kullandığı gibi detaylar".
+                     Eski «Kayıtlı Öğrenciler (Alfabetik)» bölümü buraya taşındı: büyük sayılar, arama, süzgeç
+                     (bağ durumu, öğretmen), sıralama; kartta bağlı öğretmen + sınıf, kullanım süresi, son görülme,
+                     gün sayısı. Açılınca okunur (kullanicilar + ogrenciBaglari), 10 dk önbellek. -->
+                <details class="aog-bolum" id="admin-ogrenci-liste" name="admin-accordion" ontoggle="if(this.open) renderAdminStudentList('onbellek')">
+                    <summary>🎓 Öğrenci listesi <small>arama · süzgeç · sıralama</small></summary>
+                    <div id="admin-student-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 560px; overflow-y: auto;">Bölümü açınca yüklenir…</div>
                 </details>
             </details>` : ''}
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
@@ -227,11 +238,8 @@ function renderAdminPanel() {
                 </div>
             </details>
 
-            <!-- OKUMA AZALT (27.10.2026): liste bölüm açılınca okunur, 10 dk saklanır -->
-            <details class="admin-details" name="admin-accordion" ontoggle="if(this.open) renderAdminStudentList('onbellek')">
-                <summary class="admin-summary">Kayıtlı Öğrenciler (Alfabetik)</summary>
-                <div id="admin-student-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;">Bölümü açınca yüklenir…</div>
-            </details>
+            <!-- «Kayıtlı Öğrenciler» bölümü «👨‍🏫 Öğretmenler» bölümünün içine, öğretmen listesinin altına
+                 taşındı (ÖĞRENCİ LİSTESİ AYRINTILI, 05.11.2026). -->
 
             <!-- ÖĞRETMEN OLABİLECEK ÖĞRENCİLER (02.11.2026): öğretmen gibi kullanan öğrenci hesapları; açınca okunur -->
             ${_aonYoneticiMi() ? `
@@ -316,7 +324,7 @@ function renderAdminPanel() {
     renderAdminOnlinePackages();
     if (typeof loadPaymentOrders === 'function') loadPaymentOrders();
     _aonBaslat();                                    /* öğretmen onayları: ilk yükleme + 30 sn */
-    _ogsKur();                                       /* canlı öğretmen sayacı (02.11.2026) */
+    _ogsKur();                                       /* sayaç kutusu: öğretmen + öğrenci (02.11 · 05.11.2026) */
 }
 
 /* ==========================================
@@ -842,203 +850,486 @@ function _abSnap(ad, sorgu, onbellek) {
         return sahte;
     });
 }
+/* ==========================================================================
+   ÖĞRENCİ LİSTESİ AYRINTILI (05.11.2026) — yönetici: "öğrenciler kısmını öğretmenler kısmındaki
+   benzer şekilde daha detaylı bilgi içeren bi hale getirelim, öğretmenler sekmesinin altında olsun
+   … öğrencilerin hangi öğretmene bağlı olduğu, siteyi ne kadar kullandığı gibi detaylar".
+   · «👨‍🏫 Öğretmenler» bölümünün içinde, öğretmen listesinin altında (#admin-ogrenci-liste).
+   · Okuma: kullanicilar ('ogrenci' önbelleği — «öğretmen olabilecek öğrenciler» ile ortak; rolü
+     student ya da hiç yazılmamış hesaplar) + ogrenciBaglari ('bag' önbelleği). İkisi de 10 dk
+     saklanır; ek sorgu yok. Öğretmen adları aynı kullanicilar okumasından (role teacher/admin),
+     yoksa bağdaki ogretmenAd. Bağ: onaylı ya da bekliyor sayılır; kopuk / red bağ yok demektir.
+   · Büyük sayılar: öğrenci · öğretmene bağlı (onaylı bağı var) · onay bekliyor · bağlı değil;
+     Σ süre · son 7 günde giren · kullanım kaydı yok. Üstteki sayaç kutusuna da öğrenci sayısı
+     bildirilir (_ogsBildirOgr).
+   · Kart: ad, bağ rozeti, e-posta, bağlı öğretmen + seviye/sınıf, toplam süre · gün · son görülme,
+     kayıt tarihi (kayıt sıralamasında). Karta basınca öğrenci penceresi (openStudentCard).
+   · Arama: ad, e-posta, telefon, öğretmen adı, sınıf. Süzgeç: Hepsi · Bağlı · Onay bekleyen ·
+     Bağlı değil · Son 7 gün; öğretmen seçimi (yalnız o öğretmenin öğrencileri).
+   · Sıralama (hatırlanır, kidef_aos_sira): A→Z (harf başlıkları) · En çok kullanan · Son kullanan ·
+     Kayıt tarihi (ay başlıkları) · Öğretmen (öğretmen başlıkları; bağsızlar en sonda).
+   ========================================================================== */
+var _aos = { L: [], veri: {}, ogt: {}, suzgec: 'hepsi', ogtSec: '', bagYok: false,
+             sira: (function () { try { var v = localStorage.getItem('kidef_aos_sira'); return /^(ad|sure|son|kayit|ogretmen)$/.test(v || '') ? v : 'ad'; } catch (e) { return 'ad'; } })() };
+
 function renderAdminStudentList(kaynak) {
-    const listContainer = document.getElementById('admin-student-list');
-    if (!listContainer) return;
+    var kap = document.getElementById('admin-student-list');
+    if (!kap) return;
+    if (window.KidefOgretmenDetay && KidefOgretmenDetay.stil) KidefOgretmenDetay.stil();
+    _ogtStil();
 
-    if (typeof firebase !== 'undefined' && isFirebaseReady) {
-        _abSnap('ogrenci', function () { return db.collection('kullanicilar').get(); }, kaynak === 'onbellek').then(snapshot => {
-            let users = {};
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                if (data.role === 'student' || !data.role) {
-                    data._docId = doc.id;
-                    const key = data.email || doc.id;
-                    users[key] = data;
-                }
-            });
-            drawAdminStudentList(listContainer, users);
-        }).catch(err => {
-            console.error("Öğrenci listesi alınamadı:", err);
-            listContainer.innerHTML = "<p>Öğrenci listesi yüklenirken hata oluştu.</p>";
-        });
-    } else {
-        let users = JSON.parse(localStorage.getItem('mockUsers') || '{}');
-        drawAdminStudentList(listContainer, users);
-    }
-}
-
-function drawAdminStudentList(listContainer, users) {
-    window._adminStudentsData = users || {};
-    let emails = Object.keys(users);
-
-    if (emails.length === 0) {
-        listContainer.innerHTML = "<p>Henüz kayıtlı öğrenci bulunmuyor.</p>";
+    if (typeof firebase === 'undefined' || typeof isFirebaseReady === 'undefined' || !isFirebaseReady) {
+        /* Firebase yok (yerel deneme): tarayıcıdaki mockUsers */
+        var users = {};
+        try { users = JSON.parse(localStorage.getItem('mockUsers') || '{}'); } catch (e) { }
+        _aosHazirla(kap, Object.keys(users).map(function (k) {
+            var v = users[k] || {}; v._docId = v._docId || k; v.email = v.email || k; return v;
+        }), null, {});
         return;
     }
-
-    let groups = {};
-    emails.forEach(email => {
-        let studentData = users[email];
-        let hasName = studentData.name && studentData.name !== "Belirtilmedi";
-        let displayName = hasName ? studentData.name : email;
-        let firstLetter = displayName.charAt(0).toUpperCase();
-        let g = (studentData.cinsiyet || '');
-
-        if (!groups[firstLetter]) groups[firstLetter] = [];
-        groups[firstLetter].push({ email: email, name: displayName, gender: g });
-    });
-
-    let html = '';
-    Object.keys(groups).sort().forEach(letter => {
-        // İsimlere göre alfabetik sırala (grup içinde)
-        groups[letter].sort((a, b) => a.name.localeCompare(b.name, 'tr'));
-
-        html += `<div style="background: #F0F4F8; padding: 10px; margin-bottom: 15px; border-radius: 8px;">
-                    <h4 style="margin: 0 0 10px 0; color: #16A085;">${letter}</h4>
-                    <div style="display:flex; flex-direction:column; gap:6px;">`;
-        groups[letter].forEach(student => {
-            const emj = student.gender === 'kadin' ? '👩‍🎓' : (student.gender === 'erkek' ? '👨‍🎓' : '👤');
-            html += `<button type="button" onclick="openStudentCard('${encodeURIComponent(student.email)}')"
-                        style="display:flex; align-items:center; gap:10px; width:100%; box-sizing:border-box; text-align:left; background:#fff; border:1px solid #E9EEF5; border-radius:10px; padding:11px 14px; cursor:pointer; font-family:inherit; font-size:0.95rem; color:#2c3e50; transition:0.15s;"
-                        onmouseover="this.style.background='#FEF9EC'; this.style.borderColor='#F39C12';"
-                        onmouseout="this.style.background='#fff'; this.style.borderColor='#E9EEF5';">
-                        <span style="font-size:1.2rem; flex-shrink:0;">${emj}</span>
-                        <strong style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${student.name}</strong>
-                        <span style="color:#F39C12; font-size:0.85rem; font-weight:600; flex-shrink:0;">Detay ›</span>
-                    </button>`;
+    kap.innerHTML = '<p style="color:#7f8c8d;">Yükleniyor…</p>';
+    var D = firebase.firestore(), onb = kaynak === 'onbellek';
+    Promise.all([
+        _abSnap('ogrenci', function () { return D.collection('kullanicilar').get(); }, onb),
+        _abSnap('bag', function () { return D.collection('ogrenciBaglari').get(); }, onb).then(null, function () { return null; })
+    ]).then(function (r) {
+        var L = [], ogtAd = {};
+        r[0].forEach(function (d) {
+            var v = d.data() || {};
+            if (v.role === 'teacher' || v.role === 'admin') { ogtAd[d.id] = _abAd(v, d.id); return; }
+            if (v.role && v.role !== 'student') return;
+            v._docId = d.id;
+            L.push(v);
         });
-        html += `</div></div>`;
+        _aosHazirla(kap, L, r[1], ogtAd);
+    }).catch(function (e) {
+        kap.innerHTML = '<p style="color:#EF5350;">' + _fbEsc(_abHataMetni(e)) + '</p>' +
+            '<button class="btn" onclick="renderAdminStudentList()" style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
     });
-
-    listContainer.innerHTML = html;
 }
 
-function openStudentCard(emailEnc) {
-    const email = decodeURIComponent(emailEnc);
-    const data = (window._adminStudentsData && window._adminStudentsData[email]) || {};
-    const safeEmailId = email.replace(/[^a-zA-Z0-9]/g, '_');
-    const rawName = (data.name && data.name !== "Belirtilmedi") ? data.name : "";
-    const phone = data.phone || "";
-    const meslek = data.meslek || data.profession || "";
-    const cinsiyet = data.cinsiyet || "";
-    const genderEmoji = cinsiyet === 'kadin' ? '👩‍🎓' : (cinsiyet === 'erkek' ? '👨‍🎓' : '🎓');
-
-    let kayitStr = "—";
-    try {
-        if (data.createdAt && data.createdAt.toDate) kayitStr = data.createdAt.toDate().toLocaleDateString('tr-TR');
-        else if (data.createdAt && data.createdAt.seconds) kayitStr = new Date(data.createdAt.seconds * 1000).toLocaleDateString('tr-TR');
-    } catch (e) {}
-    const pkgCount = Array.isArray(data.packages) ? data.packages.length : 0;
-
-    const lblStyle = "font-size:0.78rem; font-weight:700; color:#16A085; margin-bottom:4px; display:block; text-transform:uppercase; letter-spacing:0.3px;";
-    const inpStyle = "width:100%; padding:11px 12px; border:1px solid #E9EEF5; border-radius:10px; font-family:inherit; font-size:0.95rem; box-sizing:border-box; background:#FCFDFE;";
-
-    let overlay = document.getElementById('student-card-overlay');
-    if (overlay) overlay.remove();
-    overlay = document.createElement('div');
-    overlay.id = 'student-card-overlay';
-    overlay.style.cssText = "position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px;";
-    overlay.onclick = function (e) { if (e.target === overlay) overlay.remove(); };
-
-    overlay.innerHTML =
-      '<div style="background:#fff; border-radius:18px; width:100%; max-width:460px; max-height:90vh; overflow:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); font-family:inherit;">' +
-        '<div style="background:linear-gradient(135deg,#16A085,#F39C12); padding:22px 24px; border-radius:18px 18px 0 0; color:#fff; display:flex; align-items:center; gap:14px;">' +
-            '<div style="font-size:2.4rem; line-height:1;">' + genderEmoji + '</div>' +
-            '<div style="flex:1; min-width:0;">' +
-                '<div style="font-size:1.2rem; font-weight:700; overflow:hidden; text-overflow:ellipsis;">' + (rawName || 'İsimsiz Öğrenci') + '</div>' +
-                '<div style="font-size:0.82rem; opacity:0.92; overflow:hidden; text-overflow:ellipsis;">' + email + '</div>' +
-            '</div>' +
-            '<button onclick="document.getElementById(\'student-card-overlay\').remove()" style="background:rgba(255,255,255,0.25); border:none; color:#fff; width:34px; height:34px; border-radius:50%; font-size:1.4rem; cursor:pointer; flex-shrink:0; line-height:1;">&times;</button>' +
-        '</div>' +
-        '<div style="padding:22px 24px; display:flex; flex-direction:column; gap:14px;">' +
-            '<div><label style="' + lblStyle + '">Ad Soyad</label>' +
-                '<input id="sc-name-' + safeEmailId + '" value="' + rawName.replace(/"/g, '&quot;') + '" placeholder="Belirtilmedi" style="' + inpStyle + '"></div>' +
-            '<div><label style="' + lblStyle + '">Telefon</label>' +
-                '<input id="sc-phone-' + safeEmailId + '" value="' + phone.replace(/"/g, '&quot;') + '" placeholder="Belirtilmedi" style="' + inpStyle + '"></div>' +
-            '<div><label style="' + lblStyle + '">Meslek</label>' +
-                '<input id="sc-meslek-' + safeEmailId + '" value="' + meslek.replace(/"/g, '&quot;') + '" placeholder="Belirtilmedi" style="' + inpStyle + '"></div>' +
-            '<div><label style="' + lblStyle + '">Cinsiyet</label>' +
-                '<select id="sc-gender-' + safeEmailId + '" style="' + inpStyle + '">' +
-                    '<option value=""' + (cinsiyet === '' ? ' selected' : '') + '>Belirtilmedi</option>' +
-                    '<option value="erkek"' + (cinsiyet === 'erkek' ? ' selected' : '') + '>Erkek</option>' +
-                    '<option value="kadin"' + (cinsiyet === 'kadin' ? ' selected' : '') + '>Kadın</option>' +
-                '</select></div>' +
-            '<div style="display:flex; gap:12px; margin-top:2px; padding:12px 14px; background:#F0F4F8; border-radius:10px; font-size:0.88rem; color:#555;">' +
-                '<div style="flex:1;">📦 <strong>Paket:</strong> ' + pkgCount + '</div>' +
-                '<div style="flex:1;">📅 <strong>Kayıt:</strong> ' + kayitStr + '</div>' +
-            '</div>' +
-            '<div style="display:flex; gap:10px; margin-top:6px;">' +
-                '<button onclick="saveStudentCard(\'' + encodeURIComponent(email) + '\',\'' + safeEmailId + '\')" style="flex:1; padding:12px; border:none; border-radius:10px; background:#16A085; color:#fff; font-weight:700; cursor:pointer; font-family:inherit; font-size:0.95rem;">💾 Kaydet</button>' +
-                '<button onclick="deleteStudentCard(\'' + encodeURIComponent(email) + '\')" style="padding:12px 16px; border:none; border-radius:10px; background:#EF5350; color:#fff; font-weight:700; cursor:pointer; font-family:inherit; font-size:0.95rem;">🗑️ Sil</button>' +
-            '</div>' +
-        '</div>' +
-      '</div>';
-    document.body.appendChild(overlay);
+/* bağ belgeleri → { öğrenciUid: [{ogt, ad, durum, seviye, sinif, t}] }  (null: okunamadı) */
+function _aosBaglar(snap, ogtAd) {
+    if (!snap) return null;
+    var B = {};
+    snap.forEach(function (d) {
+        var v = d.data() || {}, p = String(d.id).split('__');
+        var ogr = v.uid || p[0], ogt = v.ogretmenUid || (p.length > 1 ? p[1] : '');
+        var durum = v.durum === 'onayli' ? 'onayli' : (v.durum === 'bekliyor' ? 'bekliyor' : '');
+        if (!ogr || !ogt || !durum) return;                                  /* kopuk / red: bağ yok */
+        var L = B[ogr] = B[ogr] || [], i;
+        var yeni = { ogt: ogt, ad: String(ogtAd[ogt] || v.ogretmenAd || '').trim(), durum: durum,
+                     seviye: String(v.seviyeAd || ''), sinif: String(v.sinifAd || ''),
+                     t: _aogTms(v.onayTarih) || _aogTms(v.istekTarih) || _aogTms(v.guncelleme) || 0 };
+        if (!yeni.ad) yeni.ad = '(öğretmen ' + String(ogt).slice(0, 6) + '…)';
+        for (i = 0; i < L.length; i++) if (L[i].ogt === ogt) break;          /* eski tek kimlikli + yeni belge: onaylı olan kalır */
+        if (i < L.length) { if (yeni.durum === 'onayli' && L[i].durum !== 'onayli') L[i] = yeni; }
+        else L.push(yeni);
+    });
+    return B;
 }
-
-function saveStudentCard(emailEnc, safeEmailId) {
-    const email = decodeURIComponent(emailEnc);
-    const data = (window._adminStudentsData && window._adminStudentsData[email]) || {};
-    const newName = (document.getElementById('sc-name-' + safeEmailId).value || '').trim();
-    const newPhone = (document.getElementById('sc-phone-' + safeEmailId).value || '').trim();
-    const newMeslek = (document.getElementById('sc-meslek-' + safeEmailId).value || '').trim();
-    const newGender = document.getElementById('sc-gender-' + safeEmailId).value || '';
-
-    const payload = {
-        name: newName || "Belirtilmedi",
-        phone: newPhone,
-        meslek: newMeslek,
-        cinsiyet: newGender
+function _aosGunAd(ms) {
+    var t = new Date(ms), a = t.getMonth() + 1, g = t.getDate();
+    return t.getFullYear() + '-' + (a < 10 ? '0' : '') + a + '-' + (g < 10 ? '0' : '') + g;
+}
+/* son 7 günün toplamı (kullanim.gun) */
+function _aosHaftaSn(gun, simdi) {
+    var top = 0;
+    for (var i = 0; i < 7; i++) top += +gun[_aosGunAd(simdi - i * 86400000)] || 0;
+    return top;
+}
+/* sonGoruldu yoksa: sitede görüldüğü son gün */
+function _aosSonGun(gun) {
+    var k = Object.keys(gun || {}).sort(), s = k[k.length - 1];
+    if (!s) return 0;
+    var p = s.split('-');
+    return new Date(+p[0], +p[1] - 1, +p[2]).getTime() || 0;
+}
+function _aosHazirla(kap, L, bagSnap, ogtAd) {
+    var B = _aosBaglar(bagSnap, ogtAd), simdi = Date.now(), hafta = simdi - 7 * 86400000;
+    var veri = {}, liste = [], ogtler = {};
+    L.forEach(function (v) {
+        var uid = String(v._docId), kul = v.kullanim || {}, gun = kul.gun || {};
+        var baglar = ((B && B[uid]) || []).slice().sort(function (a, b) {
+            return ((a.durum === 'onayli' ? 0 : 1) - (b.durum === 'onayli' ? 0 : 1)) || a.ad.localeCompare(b.ad, 'tr');
+        });
+        var durum = !B ? 'bilinmiyor'
+                  : (baglar.some(function (b) { return b.durum === 'onayli'; }) ? 'bagli' : (baglar.length ? 'bekliyor' : 'bagsiz'));
+        var son = _aogTms(kul.sonGoruldu) || _aosSonGun(gun);
+        var o = { uid: uid, ad: (v.name && v.name !== 'Belirtilmedi') ? String(v.name).trim() : '',
+                  email: String(v.email || ''), tel: String(v.phone || ''), meslek: String(v.meslek || v.profession || ''),
+                  cinsiyet: String(v.cinsiyet || ''), anket: v.anket || null,
+                  paket: Array.isArray(v.packages) ? v.packages.length : 0,
+                  sure: +kul.toplamSn || 0, son: son, gun: Object.keys(gun).length, hafta: _aosHaftaSn(gun, simdi),
+                  alan: kul.alan || {}, oturum: +kul.oturum || 0, kayit: _aogKayitMs(v),
+                  baglar: baglar, durum: durum, aktif: !!son && son >= hafta, doc: v };
+        baglar.forEach(function (b) {
+            var t = ogtler[b.ogt] = ogtler[b.ogt] || { ad: b.ad, n: 0, bek: 0 };
+            if (b.durum === 'onayli') t.n++; else t.bek++;
+        });
+        veri[uid] = o; liste.push(o);
+    });
+    _aos.L = liste; _aos.veri = veri; _aos.ogt = ogtler; _aos.bagYok = !B;
+    window._adminStudentsData = veri;
+    /* üstteki sayaç kutusu: liste okunduğu anın öğrenci sayısı */
+    if (typeof _ogsBildirOgr === 'function') _ogsBildirOgr(liste.length, (_abOnbellek.ogrenci && _abOnbellek.ogrenci.t) || Date.now());
+    _aosCiz(kap);
+}
+function _aosAttr(t) { return _fbEsc(t).replace(/"/g, '&quot;'); }
+function _aosRozet(durum) {
+    var r = durum === 'bagli' ? { renk: '#1E8449', zemin: '#E8F6EF', ad: 'Bağlı' }
+          : (durum === 'bekliyor' ? { renk: '#B5670A', zemin: '#FEF3E2', ad: 'Bekliyor' }
+          : (durum === 'bagsiz' ? { renk: '#7f8c8d', zemin: '#EDF1F7', ad: 'Bağlı değil' } : null));
+    if (!r) return '';
+    return '<span class="aos-rozet" style="display:inline-block; padding:3px 10px; border-radius:999px; font-size:.78rem; font-weight:700; color:' +
+           r.renk + '; background:' + r.zemin + ';">' + r.ad + '</span>';
+}
+function _aosOgtYazi(o) {
+    if (_aos.bagYok) return '<i>bağ bilgisi okunamadı</i>';
+    if (!o.baglar.length) return 'öğretmene bağlı değil';
+    var b = o.baglar[0], yer = b.seviye + (b.sinif ? ' / ' + b.sinif : '');
+    var y = '👨‍🏫 <b>' + _fbEsc(b.ad) + '</b>' + (yer ? ' · ' + _fbEsc(yer) : '') + (b.durum === 'bekliyor' ? ' · onay bekliyor' : '');
+    if (o.baglar.length > 1) y += ' <small>+' + (o.baglar.length - 1) + ' öğretmen</small>';
+    return y;
+}
+function _aosKart(o) {
+    var ton = (window.KidefOgretmenDetay && KidefOgretmenDetay.renkTonu) ? KidefOgretmenDetay.renkTonu(o.uid) : 160;
+    var harf = (window.KidefOgretmenDetay && KidefOgretmenDetay.basHarf) ? KidefOgretmenDetay.basHarf(o.ad, o.email)
+             : (o.ad || o.email || '?').charAt(0).toLocaleUpperCase('tr-TR');
+    var kul = [];
+    if (o.sure) kul.push('<b>' + _sureBicim(o.sure) + '</b>');
+    if (o.gun) kul.push(o.gun + ' gün');
+    if (o.son) kul.push('son ' + _aogGun(o.son));
+    var ara = (o.ad + ' ' + o.email + ' ' + o.tel + ' ' +
+               o.baglar.map(function (b) { return b.ad + ' ' + b.seviye + ' ' + b.sinif; }).join(' ')).toLocaleLowerCase('tr-TR');
+    /* isimsizler en sonda, «#» başlığı altında (U+FFFF her harften sonra dizilir) */
+    var siraAd = o.ad ? o.ad.toLocaleLowerCase('tr-TR') : ('￿' + o.email.toLocaleLowerCase('tr-TR'));
+    var ilkOgt = o.baglar.length ? o.baglar[0].ad : '';          /* «Öğretmen» sıralamasının başlığı */
+    return '<button type="button" class="aog-kart aos-kart" data-aos-ara="' + _aosAttr(ara) + '" data-aos-durum="' + o.durum + '"' +
+        ' data-aos-ad="' + _aosAttr(siraAd) + '" data-aos-sure="' + o.sure + '" data-aos-son="' + o.son + '" data-aos-kayit="' + o.kayit + '"' +
+        ' data-aos-hafta="' + (o.aktif ? 1 : 0) + '" data-aos-ogt=" ' + _aosAttr(o.baglar.map(function (b) { return b.ogt; }).join(' ')) + ' "' +
+        ' data-aos-ogtad="' + _aosAttr(ilkOgt) + '"' +
+        ' onclick="openStudentCard(\'' + encodeURIComponent(o.uid) + '\')" title="Öğrenci bilgileri ve düzenleme">' +
+          '<span class="aog-avatar" style="background:hsl(' + ton + ',60%,92%); color:hsl(' + ton + ',40%,30%);">' + _fbEsc(harf) + '</span>' +
+          '<span class="aog-govde">' +
+            '<span class="aog-ust"><span class="aog-ad">' + _fbEsc(o.ad || '(isim yok)') + '</span>' + _aosRozet(o.durum) + '</span>' +
+            '<span class="aog-eposta">' + _fbEsc(o.email || '—') + '</span>' +
+            '<span class="aog-alt aos-ogt-satir">' + _aosOgtYazi(o) + '</span>' +
+            '<span class="aog-alt aos-kul-satir">' + (kul.length ? kul.join(' · ') : 'kullanım kaydı yok') + '</span>' +
+            '<span class="aog-kayit">' + (o.kayit ? 'kayıt ' + _aogGun(o.kayit) : 'kayıt tarihi yok') + '</span>' +
+          '</span>' +
+          '<span class="aog-ok" aria-hidden="true">›</span>' +
+        '</button>';
+}
+function _aosCiz(kap) {
+    var L = _aos.L;
+    if (!L.length) {
+        kap.innerHTML = '<p style="color:#7f8c8d;">Kayıtlı öğrenci yok.</p>' +
+            '<button class="btn" onclick="renderAdminStudentList()" style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
+        return;
+    }
+    var s = { bagli: 0, bekliyor: 0, bagsiz: 0, hafta: 0, hic: 0, sure: 0 };
+    L.forEach(function (o) {
+        if (o.durum === 'bagli') s.bagli++; else if (o.durum === 'bekliyor') s.bekliyor++; else if (o.durum === 'bagsiz') s.bagsiz++;
+        if (o.aktif) s.hafta++;
+        if (!o.sure) s.hic++;
+        s.sure += o.sure;
+    });
+    var suz = function (id, yazi) {
+        return '<button type="button" class="aog-suz' + (_aos.suzgec === id ? ' sec' : '') + '" data-aos-suz="' + id + '"' +
+               ' onclick="adminOgrenciSuz(\'' + id + '\')">' + yazi + '</button>';
     };
+    var sira = function (id, yazi, ip) {
+        return '<button type="button" class="aog-suz aog-sir' + (_aos.sira === id ? ' sec' : '') + '" data-aos-sira="' + id + '" title="' + ip + '"' +
+               ' onclick="adminOgrenciSirala(\'' + id + '\')">' + yazi + '</button>';
+    };
+    var ogtler = Object.keys(_aos.ogt).map(function (u) { return { uid: u, ad: _aos.ogt[u].ad, n: _aos.ogt[u].n, bek: _aos.ogt[u].bek }; })
+        .sort(function (a, b) { return a.ad.localeCompare(b.ad, 'tr'); });
+    var ogtOpt = '<option value="">👨‍🏫 Öğretmen: hepsi</option>' + ogtler.map(function (t) {
+        return '<option value="' + _aosAttr(t.uid) + '"' + (_aos.ogtSec === t.uid ? ' selected' : '') + '>' + _fbEsc(t.ad) +
+               ' (' + t.n + (t.bek ? ' + ' + t.bek + ' bekleyen' : '') + ')</option>';
+    }).join('');
+    kap.innerHTML =
+        /* BÜYÜK SAYILAR — öğretmen listesindeki gibi */
+        '<div class="aog-sayilar">' +
+          '<span class="aog-sayi ana"><b>' + L.length + '</b><small>öğrenci</small></span>' +
+          (_aos.bagYok
+            ? '<span class="aog-sayi sifir" title="ogrenciBaglari okunamadı"><b>?</b><small>bağ bilgisi yok</small></span>'
+            : '<span class="aog-sayi ok' + (s.bagli ? '' : ' sifir') + '"><b>' + s.bagli + '</b><small>öğretmene bağlı</small></span>' +
+              '<span class="aog-sayi bek' + (s.bekliyor ? '' : ' sifir') + '"><b>' + s.bekliyor + '</b><small>onay bekliyor</small></span>' +
+              '<span class="aog-sayi gri' + (s.bagsiz ? '' : ' sifir') + '"><b>' + s.bagsiz + '</b><small>bağlı değil</small></span>') +
+          '<span class="aog-sayi-ek">Σ ' + _sureBicim(s.sure) + ' · son 7 günde ' + s.hafta + ' · kullanım kaydı yok ' + s.hic + '</span>' +
+          '<button class="btn" onclick="renderAdminStudentList()" style="margin-inline-start:auto; align-self:center; font-size:.85rem;">🔄 Yenile</button>' +
+        '</div>' +
+        '<div class="aog-ara">' +
+          '<input type="search" id="aosAra" placeholder="Ad, e-posta, telefon, öğretmen ya da sınıf ara…" oninput="adminOgrenciSuz()">' +
+          suz('hepsi', 'Hepsi') + suz('bagli', 'Bağlı') + suz('bekliyor', 'Onay bekleyen') + suz('bagsiz', 'Bağlı değil') + suz('hafta', 'Son 7 gün') +
+          (ogtler.length ? '<select id="aosOgt" class="aos-ogt" onchange="adminOgrenciSuz()" title="Yalnız seçilen öğretmenin öğrencileri">' + ogtOpt + '</select>' : '') +
+          '<span class="aog-sira-grup"><span class="aog-sira">Sırala:</span>' +
+          sira('ad', 'A → Z', 'Ada göre, baş harf başlıklarıyla') +
+          sira('sure', 'En çok kullanan', 'Sitede geçirilen toplam süreye göre, çoktan aza') +
+          sira('son', 'Son kullanan', 'Son görülme tarihine göre, yeniden eskiye') +
+          sira('kayit', 'Kayıt tarihi', 'Kayıt tarihine göre, yeniden eskiye (ay başlıklarıyla)') +
+          sira('ogretmen', 'Öğretmen', 'Bağlı olduğu öğretmene göre (öğretmen başlıklarıyla; bağsızlar en sonda)') + '</span>' +
+        '</div>' +
+        '<div class="aog-grid" id="aosGrid">' + L.map(_aosKart).join('') +
+          '<p class="aog-bos" id="aosBos" style="display:none;">Bu süzgece uyan öğrenci yok.</p></div>';
+    adminOgrenciSirala();
+}
 
-    // Yerel önbelleği güncelle
-    if (window._adminStudentsData && window._adminStudentsData[email]) {
-        Object.assign(window._adminStudentsData[email], payload);
+/* Arama kutusu, süzgeç çipleri ve öğretmen seçimi: kartları gizler/gösterir (yeniden sorgu yok). */
+function adminOgrenciSuz(yeni) {
+    if (yeni) _aos.suzgec = yeni;
+    var ara = ((document.getElementById('aosAra') || {}).value || '').trim().toLocaleLowerCase('tr-TR');
+    var sel = document.getElementById('aosOgt');
+    _aos.ogtSec = sel ? sel.value : '';
+    var gorunen = 0;
+    [].forEach.call(document.querySelectorAll('#aosGrid .aos-kart'), function (k) {
+        var uy = !ara || (k.getAttribute('data-aos-ara') || '').indexOf(ara) >= 0, d = k.getAttribute('data-aos-durum');
+        if (uy && _aos.suzgec === 'bagli') uy = d === 'bagli';
+        else if (uy && _aos.suzgec === 'bekliyor') uy = d === 'bekliyor';
+        else if (uy && _aos.suzgec === 'bagsiz') uy = d === 'bagsiz';
+        else if (uy && _aos.suzgec === 'hafta') uy = k.getAttribute('data-aos-hafta') === '1';
+        if (uy && _aos.ogtSec) uy = (k.getAttribute('data-aos-ogt') || '').indexOf(' ' + _aos.ogtSec + ' ') >= 0;
+        k.style.display = uy ? '' : 'none';
+        if (uy) gorunen++;
+    });
+    /* başlık: altındaki kartların hepsi gizliyse o da gizli */
+    [].forEach.call(document.querySelectorAll('#aosGrid .aog-harf'), function (h) {
+        var e = h.nextElementSibling, var_ = false;
+        while (e && !e.classList.contains('aog-harf')) { if (e.classList.contains('aos-kart') && e.style.display !== 'none') { var_ = true; break; } e = e.nextElementSibling; }
+        h.style.display = var_ ? '' : 'none';
+    });
+    [].forEach.call(document.querySelectorAll('#admin-student-list [data-aos-suz]'), function (b) {
+        b.classList.toggle('sec', b.getAttribute('data-aos-suz') === _aos.suzgec);
+    });
+    var bos = document.getElementById('aosBos');
+    if (bos) bos.style.display = gorunen ? 'none' : '';
+}
+window.adminOgrenciSuz = adminOgrenciSuz;
+
+/* Kartları yerinde sıralar: ad (A→Z, harf başlıkları) · sure · son · kayit (ay başlıkları) ·
+   ogretmen (bağlı öğretmen başlıkları; bağsızlar en sonda). Eşitlikte ada göre. */
+function adminOgrenciSirala(yeni) {
+    if (yeni) { _aos.sira = yeni; try { localStorage.setItem('kidef_aos_sira', yeni); } catch (e) { } }
+    var grid = document.getElementById('aosGrid');
+    if (!grid) return;
+    var S = _aos.sira;
+    var kartlar = [].slice.call(grid.querySelectorAll('.aos-kart'));
+    [].forEach.call(grid.querySelectorAll('.aog-harf'), function (h) { h.parentNode.removeChild(h); });
+    var ad = function (k) { return k.getAttribute('data-aos-ad') || ''; };
+    var say = function (k, n) { return parseFloat(k.getAttribute(n)) || 0; };
+    var ogt = function (k) { var v = k.getAttribute('data-aos-ogtad') || ''; return v ? v.toLocaleLowerCase('tr-TR') : '￿'; };
+    kartlar.sort(function (a, b) {
+        var f = 0;
+        if (S === 'sure') f = say(b, 'data-aos-sure') - say(a, 'data-aos-sure');
+        else if (S === 'son') f = say(b, 'data-aos-son') - say(a, 'data-aos-son');
+        else if (S === 'kayit') f = (say(b, 'data-aos-kayit') || -1) - (say(a, 'data-aos-kayit') || -1);
+        else if (S === 'ogretmen') f = ogt(a).localeCompare(ogt(b), 'tr');
+        return f || ad(a).localeCompare(ad(b), 'tr');
+    });
+    var bos = document.getElementById('aosBos'), sonBaslik = null;
+    kartlar.forEach(function (k) {
+        var baslik = null, sinif = 'aog-harf';
+        if (S === 'ad') {
+            baslik = (ad(k).charAt(0) || '#').toLocaleUpperCase('tr-TR');
+            if (!/[A-ZÇĞİÖŞÜ]/.test(baslik)) baslik = '#';
+        } else if (S === 'kayit') { baslik = _aogAy(say(k, 'data-aos-kayit')); sinif = 'aog-harf aog-ay'; }
+        else if (S === 'ogretmen') { baslik = k.getAttribute('data-aos-ogtad') || 'Öğretmene bağlı değil'; sinif = 'aog-harf aos-ogt-baslik'; }
+        if (baslik !== null && baslik !== sonBaslik) {
+            sonBaslik = baslik;
+            var b = document.createElement('div');
+            b.className = sinif; b.textContent = baslik;
+            grid.insertBefore(b, bos);
+        }
+        grid.insertBefore(k, bos);
+    });
+    grid.classList.toggle('aog-sira-kayit', S === 'kayit');
+    [].forEach.call(document.querySelectorAll('#admin-student-list [data-aos-sira]'), function (b) {
+        b.classList.toggle('sec', b.getAttribute('data-aos-sira') === S);
+    });
+    adminOgrenciSuz();
+}
+window.adminOgrenciSirala = adminOgrenciSirala;
+
+/* kayıt anketi cevapları → okunur yazı (hesap/kayitanketi.js'in soru listesinden) */
+function _aosAnketYazi(anket) {
+    if (!anket || typeof anket !== 'object') return '';
+    var S = (window.KidefAnket && KidefAnket.sorular && KidefAnket.sorular.student) || [];
+    var p = [];
+    ['sinif', 'seviye', 'amac'].forEach(function (id) {
+        var v = anket[id];
+        if (!v) return;
+        var soru = S.filter(function (q) { return q.id === id; })[0];
+        var sec = soru ? (soru.c || []).filter(function (c) { return c[0] === v; })[0] : null;
+        p.push(sec ? sec[1] : String(v));
+    });
+    return p.join(' · ');
+}
+function _aosStil() {
+    if (document.getElementById('aos-stil')) return;
+    var st = document.createElement('style');
+    st.id = 'aos-stil';
+    st.textContent = [
+        '#student-card-overlay .sc-pencere{background:#fff; border-radius:18px; width:100%; max-width:520px; max-height:92vh; overflow:auto; box-shadow:0 20px 60px rgba(0,0,0,.3); font-family:inherit;}',
+        '#student-card-overlay .sc-bas{background:linear-gradient(135deg,#16A085,#F39C12); padding:20px 22px; border-radius:18px 18px 0 0; color:#fff; display:flex; align-items:center; gap:14px;}',
+        '#student-card-overlay .sc-simge{font-size:2.3rem; line-height:1;}',
+        '#student-card-overlay .sc-bas-yazi{flex:1; min-width:0;}',
+        '#student-card-overlay .sc-ad{font-size:1.15rem; font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}',
+        '#student-card-overlay .sc-ep{font-size:.82rem; opacity:.92; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}',
+        '#student-card-overlay .sc-kapat{background:rgba(255,255,255,.25); border:none; color:#fff; width:34px; height:34px; border-radius:50%; font-size:1.4rem; cursor:pointer; flex-shrink:0; line-height:1;}',
+        '#student-card-overlay .sc-bol{padding:14px 22px; border-bottom:1px solid #EEF2F7;}',
+        '#student-card-overlay .sc-bol:last-child{border-bottom:0;}',
+        '#student-card-overlay h4{margin:0 0 10px; font-size:.9rem; color:#1B4F9C; font-weight:900;}',
+        '#student-card-overlay .sc-kutular{display:flex; gap:8px; flex-wrap:wrap;}',
+        '#student-card-overlay .sc-k{flex:1 1 95px; background:#F7F9FC; border:1px solid #E6EBF2; border-radius:12px; padding:9px 12px;}',
+        '#student-card-overlay .sc-k b{display:block; font-size:1.15rem; color:#1F2430; line-height:1.2;}',
+        '#student-card-overlay .sc-k span{font-size:.76rem; color:#8A94A3; font-weight:700;}',
+        '#student-card-overlay .sc-satir{font-size:.86rem; color:#55606D; margin-top:8px;}',
+        '#student-card-overlay .sc-alan{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; font-size:.8rem; color:#5B6B7C;}',
+        '#student-card-overlay .sc-alan span{background:#F4F7FB; border:1px solid #E3E9F1; border-radius:999px; padding:3px 10px;}',
+        '#student-card-overlay .sc-alan b{color:#1B4F9C;}',
+        '#student-card-overlay .sc-bag{display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:8px 10px; border-radius:10px; background:#F7F9FC; border:1px solid #E6EBF2; margin-bottom:6px; font-size:.88rem;}',
+        '#student-card-overlay .sc-bag-ad{font-weight:800; color:#1F2430;}',
+        '#student-card-overlay .sc-bag-yer{color:#55606D;}',
+        '#student-card-overlay .sc-bag-t{margin-inline-start:auto; font-size:.76rem; color:#8A94A3;}',
+        '#student-card-overlay .sc-yok{margin:0; color:#A9B2BD; font-size:.88rem;}',
+        '#student-card-overlay .sc-bilgi{display:flex; gap:8px 18px; flex-wrap:wrap; font-size:.86rem; color:#555;}',
+        '#student-card-overlay .sc-alanlar{display:flex; flex-direction:column; gap:12px;}',
+        '#student-card-overlay label{font-size:.76rem; font-weight:700; color:#16A085; margin-bottom:4px; display:block; text-transform:uppercase; letter-spacing:.3px;}',
+        '#student-card-overlay input, #student-card-overlay select{width:100%; padding:10px 12px; border:1px solid #E9EEF5; border-radius:10px; font-family:inherit; font-size:.95rem; box-sizing:border-box; background:#FCFDFE;}',
+        '#student-card-overlay .sc-tus{display:flex; gap:10px; margin-top:4px;}',
+        '#student-card-overlay .sc-kaydet{flex:1; padding:12px; border:none; border-radius:10px; background:#16A085; color:#fff; font-weight:700; cursor:pointer; font-family:inherit; font-size:.95rem;}',
+        '#student-card-overlay .sc-sil{padding:12px 16px; border:none; border-radius:10px; background:#EF5350; color:#fff; font-weight:700; cursor:pointer; font-family:inherit; font-size:.95rem;}',
+        '@media (max-width:560px){ #student-card-overlay{padding:0 !important;} #student-card-overlay .sc-pencere{max-height:100vh; border-radius:0;}',
+        '  #student-card-overlay .sc-bas{border-radius:0;} #student-card-overlay .sc-bol{padding:12px 14px;} }'
+    ].join('\n');
+    (document.head || document.documentElement).appendChild(st);
+}
+
+/* ÖĞRENCİ PENCERESİ: öğretmen bağları, kullanım, kayıt/paket/anket; ad · telefon · meslek · cinsiyet
+   düzenleme ve sil (eski karttaki gibi). uid = kullanicilar belge kimliği (yerel denemede e-posta). */
+function openStudentCard(uidEnc) {
+    var uid = decodeURIComponent(String(uidEnc || ''));
+    var o = _aos.veri && _aos.veri[uid];
+    if (!o) return;
+    _aosStil();
+    var e = _fbEsc;
+    var simge = o.cinsiyet === 'kadin' ? '👩‍🎓' : (o.cinsiyet === 'erkek' ? '👨‍🎓' : '🎓');
+    var kutu = function (b, s) { return '<div class="sc-k"><b>' + b + '</b><span>' + s + '</span></div>'; };
+
+    var bag;
+    if (_aos.bagYok) bag = '<p class="sc-yok">Bağ bilgisi okunamadı (ogrenciBaglari).</p>';
+    else if (!o.baglar.length) bag = '<p class="sc-yok">Henüz bir öğretmene bağlı değil.</p>';
+    else bag = o.baglar.map(function (b) {
+        var yer = b.seviye + (b.sinif ? ' / ' + b.sinif : '');
+        return '<div class="sc-bag"><span class="sc-bag-ad">👨‍🏫 ' + e(b.ad) + '</span>' +
+               (yer ? '<span class="sc-bag-yer">' + e(yer) + '</span>' : '') +
+               _aosRozet(b.durum === 'onayli' ? 'bagli' : 'bekliyor') +
+               (b.t ? '<span class="sc-bag-t">' + _aogGun(b.t) + '</span>' : '') + '</div>';
+    }).join('');
+
+    var sonYazi = '—';
+    if (o.son) {
+        try { sonYazi = new Date(o.son).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+        catch (x) { sonYazi = _aogGun(o.son); }
     }
+    var ALAN = [['site', 'Ana sayfa'], ['kitap', 'Dijital kitap'], ['defter', 'Defter'], ['tahta', 'Tahta'], ['etkinlik', 'Etkinlik ve araçlar']];
+    var alan = ALAN.filter(function (x) { return (+o.alan[x[0]] || 0) >= 60; })
+        .map(function (x) { return '<span><b>' + e(_sureBicim(o.alan[x[0]])) + '</b> ' + x[1] + '</span>'; }).join('');
+    var kul = (o.sure || o.gun)
+        ? '<div class="sc-kutular">' + kutu(e(_sureBicim(o.sure)), 'toplam süre') + kutu(o.gun, 'gün girdi') +
+          kutu(e(_sureBicim(o.hafta)), 'son 7 gün') + (o.oturum ? kutu(o.oturum, 'ziyaret') : '') + '</div>' +
+          '<div class="sc-satir">Son görülme: <b>' + e(sonYazi) + '</b></div>' +
+          (alan ? '<div class="sc-alan">' + alan + '</div>' : '')
+        : '<p class="sc-yok">Kullanım kaydı yok — siteyi henüz kullanmamış.</p>';
 
-    if (typeof firebase !== 'undefined' && isFirebaseReady && data._docId) {
-        db.collection('kullanicilar').doc(data._docId).update(payload).then(function () {
-            if (typeof showCustomAlert === 'function') showCustomAlert("Öğrenci bilgileri güncellendi.");
-            const ov = document.getElementById('student-card-overlay'); if (ov) ov.remove();
-            renderAdminStudentList();
-        }).catch(function (err) {
-            if (typeof showCustomAlert === 'function') showCustomAlert("Güncellenemedi: " + (err.message || err));
+    var anket = _aosAnketYazi(o.anket);
+    var bilgi = '<div class="sc-bilgi"><span>📅 <b>Kayıt:</b> ' + (o.kayit ? _aogGun(o.kayit) : '—') + '</span>' +
+                '<span>📦 <b>Paket:</b> ' + o.paket + '</span>' +
+                (anket ? '<span>📝 <b>Anket:</b> ' + e(anket) + '</span>' : '') + '</div>';
+
+    var sec = function (v, y) { return '<option value="' + v + '"' + (o.cinsiyet === v ? ' selected' : '') + '>' + y + '</option>'; };
+    var duzen =
+        '<div class="sc-alanlar">' +
+          '<div><label for="sc-ad">Ad Soyad</label><input id="sc-ad" value="' + e(o.ad).replace(/"/g, '&quot;') + '" placeholder="Belirtilmedi"></div>' +
+          '<div><label for="sc-tel">Telefon</label><input id="sc-tel" value="' + e(o.tel).replace(/"/g, '&quot;') + '" placeholder="Belirtilmedi"></div>' +
+          '<div><label for="sc-meslek">Meslek</label><input id="sc-meslek" value="' + e(o.meslek).replace(/"/g, '&quot;') + '" placeholder="Belirtilmedi"></div>' +
+          '<div><label for="sc-cins">Cinsiyet</label><select id="sc-cins">' + sec('', 'Belirtilmedi') + sec('erkek', 'Erkek') + sec('kadin', 'Kadın') + '</select></div>' +
+          '<div class="sc-tus">' +
+            '<button type="button" class="sc-kaydet" onclick="saveStudentCard(\'' + encodeURIComponent(uid) + '\')">💾 Kaydet</button>' +
+            '<button type="button" class="sc-sil" onclick="deleteStudentCard(\'' + encodeURIComponent(uid) + '\')">🗑️ Sil</button>' +
+          '</div>' +
+        '</div>';
+
+    var ov = document.getElementById('student-card-overlay');
+    if (ov) ov.remove();
+    ov = document.createElement('div');
+    ov.id = 'student-card-overlay';
+    ov.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px;';
+    ov.onclick = function (ev) { if (ev.target === ov) ov.remove(); };
+    ov.innerHTML =
+        '<div class="sc-pencere" role="dialog" aria-label="Öğrenci bilgileri">' +
+          '<div class="sc-bas"><div class="sc-simge">' + simge + '</div>' +
+            '<div class="sc-bas-yazi"><div class="sc-ad">' + e(o.ad || 'İsimsiz Öğrenci') + '</div><div class="sc-ep">' + e(o.email || '—') + '</div></div>' +
+            '<button type="button" class="sc-kapat" onclick="document.getElementById(\'student-card-overlay\').remove()" aria-label="Kapat">&times;</button>' +
+          '</div>' +
+          '<div class="sc-bol"><h4>🔗 Öğretmen bağı</h4>' + bag + '</div>' +
+          '<div class="sc-bol"><h4>⏱ Site kullanımı</h4>' + kul + '</div>' +
+          '<div class="sc-bol">' + bilgi + '</div>' +
+          '<div class="sc-bol">' + duzen + '</div>' +
+        '</div>';
+    document.body.appendChild(ov);
+}
+
+function saveStudentCard(uidEnc) {
+    var uid = decodeURIComponent(String(uidEnc || '')), o = _aos.veri && _aos.veri[uid];
+    if (!o) return;
+    var al = function (id) { var el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; };
+    var payload = { name: al('sc-ad') || 'Belirtilmedi', phone: al('sc-tel'), meslek: al('sc-meslek'), cinsiyet: al('sc-cins') };
+    var bitti = function () {
+        Object.assign(o.doc, payload);                       /* önbellekteki belge de güncel kalsın (10 dk) */
+        _abUyar('Öğrenci bilgileri güncellendi.');
+        var ov = document.getElementById('student-card-overlay'); if (ov) ov.remove();
+        renderAdminStudentList('onbellek');
+    };
+    if (typeof firebase !== 'undefined' && typeof isFirebaseReady !== 'undefined' && isFirebaseReady) {
+        firebase.firestore().collection('kullanicilar').doc(uid).update(payload).then(bitti, function (err) {
+            _abUyar('Güncellenemedi: ' + ((err && (err.message || err.code)) || err));
         });
     } else {
-        // localStorage yedeği
-        let users = JSON.parse(localStorage.getItem('mockUsers') || '{}');
-        if (users[email]) { Object.assign(users[email], payload); users[email].profession = newMeslek; localStorage.setItem('mockUsers', JSON.stringify(users)); }
-        if (typeof showCustomAlert === 'function') showCustomAlert("Öğrenci bilgileri güncellendi.");
-        const ov = document.getElementById('student-card-overlay'); if (ov) ov.remove();
-        renderAdminStudentList();
+        try {
+            var users = JSON.parse(localStorage.getItem('mockUsers') || '{}');
+            if (users[uid]) { Object.assign(users[uid], payload); users[uid].profession = payload.meslek; localStorage.setItem('mockUsers', JSON.stringify(users)); }
+        } catch (e) { }
+        bitti();
     }
 }
 
-function deleteStudentCard(emailEnc) {
-    const email = decodeURIComponent(emailEnc);
-    if (!confirm("Bu öğrenciyi listeden silmek istediğinize emin misiniz?\n\n" + email + "\n\n(Bu işlem öğrencinin kayıt bilgisini kaldırır.)")) return;
-    const data = (window._adminStudentsData && window._adminStudentsData[email]) || {};
-
-    if (typeof firebase !== 'undefined' && isFirebaseReady && data._docId) {
-        db.collection('kullanicilar').doc(data._docId).delete().then(function () {
-            if (typeof showCustomAlert === 'function') showCustomAlert("Öğrenci silindi.");
-            const ov = document.getElementById('student-card-overlay'); if (ov) ov.remove();
+function deleteStudentCard(uidEnc) {
+    var uid = decodeURIComponent(String(uidEnc || '')), o = _aos.veri && _aos.veri[uid];
+    if (!o) return;
+    _abSor('Bu öğrenciyi listeden silmek istediğinize emin misiniz?\n\n' + (o.ad ? o.ad + ' — ' : '') + (o.email || uid) +
+           '\n\n(Bu işlem öğrencinin kayıt bilgisini kaldırır.)', function () {
+        var bitti = function () {
+            _abUyar('Öğrenci silindi.');
+            var ov = document.getElementById('student-card-overlay'); if (ov) ov.remove();
+            delete _abOnbellek.ogrenci;                        /* önbellek eski: liste yeniden okunur */
             renderAdminStudentList();
-        }).catch(function (err) {
-            if (typeof showCustomAlert === 'function') showCustomAlert("Silinemedi: " + (err.message || err));
-        });
-    } else {
-        let users = JSON.parse(localStorage.getItem('mockUsers') || '{}');
-        delete users[email];
-        localStorage.setItem('mockUsers', JSON.stringify(users));
-        if (typeof showCustomAlert === 'function') showCustomAlert("Öğrenci silindi.");
-        const ov = document.getElementById('student-card-overlay'); if (ov) ov.remove();
-        renderAdminStudentList();
-    }
+        };
+        if (typeof firebase !== 'undefined' && typeof isFirebaseReady !== 'undefined' && isFirebaseReady) {
+            firebase.firestore().collection('kullanicilar').doc(uid).delete().then(bitti, function (err) {
+                _abUyar('Silinemedi: ' + ((err && (err.message || err.code)) || err));
+            });
+        } else {
+            try {
+                var users = JSON.parse(localStorage.getItem('mockUsers') || '{}');
+                delete users[uid]; localStorage.setItem('mockUsers', JSON.stringify(users));
+            } catch (e) { }
+            bitti();
+        }
+    });
 }
-
-
 
 
 /* ==========================================================================
@@ -1503,35 +1794,47 @@ function _ogtStil() {
     st.id = 'ogt-birlesik-stil';
     st.textContent = [
         '#admin-onay-details .aon-alt-baslik{font-weight:800; color:#B5670A; font-size:1.02rem; margin:2px 0 6px;}',
-        '#admin-ogretmen-liste{margin-top:14px; padding-top:12px; border-top:1px dashed #D5DEE8;}',
-        '#admin-ogretmen-liste > summary{cursor:pointer; list-style:none; display:flex; align-items:center; gap:8px;',
+        /* iç bölümler: öğretmen listesi + öğrenci listesi (ÖĞRENCİ LİSTESİ AYRINTILI, 05.11.2026) */
+        '#admin-onay-details .aog-bolum{margin-top:14px; padding-top:12px; border-top:1px dashed #D5DEE8;}',
+        '#admin-onay-details .aog-bolum > summary{cursor:pointer; list-style:none; display:flex; align-items:center; gap:8px;',
         '  font-weight:800; font-size:1.08rem; color:#1f5f99; outline:none;}',
-        '#admin-ogretmen-liste > summary::-webkit-details-marker{display:none;}',
-        '#admin-ogretmen-liste > summary::before{content:"\\25B6"; font-size:.8rem; color:#F39C12; transition:transform .3s;}',
-        '#admin-ogretmen-liste[open] > summary::before{transform:rotate(90deg);}',
-        '#admin-ogretmen-liste > summary small{font-weight:600; font-size:.78rem; color:#8A94A3;}',
-        /* büyük sayılar */
-        '#admin-teacher-list .aog-sayilar{display:flex; align-items:stretch; gap:8px; flex-wrap:wrap; margin:0 0 12px;}',
-        '#admin-teacher-list .aog-sayi{display:flex; flex-direction:column; justify-content:center; min-width:86px;',
+        '#admin-onay-details .aog-bolum > summary::-webkit-details-marker{display:none;}',
+        '#admin-onay-details .aog-bolum > summary::before{content:"\\25B6"; font-size:.8rem; color:#F39C12; transition:transform .3s;}',
+        '#admin-onay-details .aog-bolum[open] > summary::before{transform:rotate(90deg);}',
+        '#admin-onay-details .aog-bolum > summary small{font-weight:600; font-size:.78rem; color:#8A94A3;}',
+        '#admin-ogrenci-liste > summary{color:#0E7C66;}',
+        /* büyük sayılar (iki listede) */
+        '#admin-onay-details .aog-sayilar{display:flex; align-items:stretch; gap:8px; flex-wrap:wrap; margin:0 0 12px;}',
+        '#admin-onay-details .aog-sayi{display:flex; flex-direction:column; justify-content:center; min-width:86px;',
         '  padding:8px 14px; border-radius:12px; background:#F4F7FB; border:1px solid #E3E9F1;}',
-        '#admin-teacher-list .aog-sayi b{font-size:1.9rem; line-height:1.05; font-weight:900; color:#2c3e50; font-variant-numeric:tabular-nums;}',
-        '#admin-teacher-list .aog-sayi small{font-size:.78rem; font-weight:700; color:#7f8c8d; margin-top:3px;}',
-        '#admin-teacher-list .aog-sayi.ana{background:#EEF4FF; border-color:#D3E2FB;}',
-        '#admin-teacher-list .aog-sayi.ana b{font-size:2.3rem; color:#1B4F9C;}',
-        '#admin-teacher-list .aog-sayi.ok{background:#EAF7F3; border-color:#CDEBE2;}',
-        '#admin-teacher-list .aog-sayi.ok b{color:#16A085;}',
-        '#admin-teacher-list .aog-sayi.bek{background:#FFF4E6; border-color:#F8DDB8;}',
-        '#admin-teacher-list .aog-sayi.bek b{color:#E67E22;}',
-        '#admin-teacher-list .aog-sayi.red{background:#FDEDEC; border-color:#F5C6C1;}',
-        '#admin-teacher-list .aog-sayi.red b{color:#B03A2E;}',
-        '#admin-teacher-list .aog-sayi.sifir b{color:#B8C1CC;}',
-        '#admin-teacher-list .aog-sayi-ek{align-self:center; font-size:.9rem; color:#1B4F9C; font-weight:700;}',
+        '#admin-onay-details .aog-sayi b{font-size:1.9rem; line-height:1.05; font-weight:900; color:#2c3e50; font-variant-numeric:tabular-nums;}',
+        '#admin-onay-details .aog-sayi small{font-size:.78rem; font-weight:700; color:#7f8c8d; margin-top:3px;}',
+        '#admin-onay-details .aog-sayi.ana{background:#EEF4FF; border-color:#D3E2FB;}',
+        '#admin-onay-details .aog-sayi.ana b{font-size:2.3rem; color:#1B4F9C;}',
+        '#admin-student-list .aog-sayi.ana{background:#EAF7F3; border-color:#CDEBE2;}',
+        '#admin-student-list .aog-sayi.ana b{color:#0E7C66;}',
+        '#admin-onay-details .aog-sayi.ok{background:#EAF7F3; border-color:#CDEBE2;}',
+        '#admin-onay-details .aog-sayi.ok b{color:#16A085;}',
+        '#admin-onay-details .aog-sayi.bek{background:#FFF4E6; border-color:#F8DDB8;}',
+        '#admin-onay-details .aog-sayi.bek b{color:#E67E22;}',
+        '#admin-onay-details .aog-sayi.red{background:#FDEDEC; border-color:#F5C6C1;}',
+        '#admin-onay-details .aog-sayi.red b{color:#B03A2E;}',
+        '#admin-onay-details .aog-sayi.gri b{color:#55606D;}',
+        '#admin-onay-details .aog-sayi.sifir b{color:#B8C1CC;}',
+        '#admin-onay-details .aog-sayi-ek{align-self:center; font-size:.9rem; color:#1B4F9C; font-weight:700;}',
+        '#admin-student-list .aog-sayi-ek{color:#0E7C66;}',
         '@media (max-width:560px){',
-        '  #admin-teacher-list .aog-sayi{min-width:0; flex:1 1 40%; padding:6px 10px;}',
-        '  #admin-teacher-list .aog-sayi b{font-size:1.6rem;} #admin-teacher-list .aog-sayi.ana b{font-size:1.9rem;}}',
+        '  #admin-onay-details .aog-sayi{min-width:0; flex:1 1 40%; padding:6px 10px;}',
+        '  #admin-onay-details .aog-sayi b{font-size:1.6rem;} #admin-onay-details .aog-sayi.ana b{font-size:1.9rem;}}',
         /* kayıt tarihi: yalnız «Kayıt tarihi» sıralamasında görünür */
-        '#aogGrid .aog-kayit{display:none; font-size:.76rem; color:#8A94A3;}',
-        '#aogGrid.aog-sira-kayit .aog-kayit{display:block;}',
+        '#aogGrid .aog-kayit, #aosGrid .aog-kayit{display:none; font-size:.76rem; color:#8A94A3;}',
+        '#aogGrid.aog-sira-kayit .aog-kayit, #aosGrid.aog-sira-kayit .aog-kayit{display:block;}',
+        /* öğrenci listesi (05.11.2026): öğretmen seçimi, kart satırları, öğretmen başlıkları */
+        '#admin-student-list .aos-ogt{border:1.5px solid #E1E7EF; border-radius:999px; padding:6px 10px; font-family:inherit; font-size:.82rem;',
+        '  font-weight:800; color:#55606D; background:#fff; max-width:260px;}',
+        '#aosGrid .aog-alt small{color:#8A94A3; font-weight:700;}',
+        '#aosGrid .aog-alt i{color:#A9B2BD;}',
+        '#aosGrid .aos-ogt-baslik{color:#0E7C66;}',
         /* Beklenen Destek kendi akordiyonunda: içteki başlık tekrar etmesin */
         '#admin-destek-details #admin-destek-ayar .dst-a-ust > b:first-child{display:none;}'
     ].join('\n');
@@ -1569,231 +1872,152 @@ function _aogAy(ms) {
 }
 
 /* ==========================================================================
-   CANLI ÖĞRETMEN SAYACI (02.11.2026) — yönetici: "yönetici giriş yaptığında güncel öğretmen
-   sayısı en üstte görünsün, yönetici paneli açıldığında öğretmen sayısı şöyle bi animasyonla
-   görünsün, örneğin 250 tane varsa 240'tan 250 ye kadar sayı artma animasyonu olsun, yaylanma
-   ve esneme efekti de olsun".
+   SAYAÇ KUTUSU — ÖĞRETMEN VE ÖĞRENCİ SAYISI (02.11.2026 · 05.11.2026)
+   02.11 — yönetici: "yönetici giriş yaptığında güncel öğretmen sayısı en üstte görünsün …" (o gün
+   sayma animasyonu, yaylanma ve esneme ile).
+   05.11 — yönetici: "öğretmen kısmını açıncaki rakam animasyonunu kaldıralım, en son rakam neyse o
+   görünsün, öğrencilerde de rakam görünsün": animasyon kalktı; bilinen son sayı anında yazılır,
+   taze sayı gelince sessizce değişir. Kutuda iki sayı: 👨‍🏫 öğretmen · 🎓 öğrenci.
    · Yalnız yönetici, panelin en üstünde. Öğretmenlere hiçbir yerde görünmez (sayı belli olmasın).
-   · Sayı: kullanicilar'da role=='teacher' (öğretmen listesindeki «öğretmen» kutusuyla aynı).
-     Firestore REST runAggregationQuery/count ile gelir: bütün listeyi okumadan, tek okuma.
-     REST kalıcı reddederse (kural, anahtar) listeden sayılır (listeyle aynı 10 dk önbellek).
-     Yönetici girince (panel arkada çizilir) sayılır; panel açılırken 60 sn'den eskiyse tazelenir;
-     öğretmen listesi okununca listeden; yeni öğretmen kaydı (canlı onay dinleyicisi) gelince
-     yeniden sayılır. Son sayı tarayıcıda (kidef_ogs_son): sayım gecikirse açılış onunla başlar.
-   · Animasyon panel EKRANA GELİNCE oynar (her açılışta yeniden); panel ekrandayken yeniden
-     çizilirse sayı hareketsiz yazılır. N-10'dan N'ye 10 adım, sona doğru yavaşlayarak; her
-     adımda küçük zıplama, son adımlarda yay gerilir (esneme), N'de bırakılır: zıplar, basılır,
-     sönerek oturur (yaylanma). Sayı değişirse eski sayıdan yeniye aynı hareket, daha hafif.
-     «Hareketi azalt» açık cihazda sayı hareketsiz yazılır.
+   · Öğretmen: kullanicilar'da role=='teacher' (öğretmen listesindeki kutuyla aynı). Öğrenci:
+     role=='student' ya da rolü hiç yazılmamış eski hesaplar (öğrenci listesiyle aynı) = bütün
+     belgeler − öğretmenler − yöneticiler. Firestore REST runAggregationQuery/count ile, üç sayım
+     paralel (bütün listeyi okumadan; her sayım 1 okuma). REST kalıcı reddederse (kural, anahtar)
+     kullanicilar okumasından sayılır (öğrenci listesiyle ortak 10 dk önbellek).
+   · Ne zaman: yönetici girince (panel arkada çizilir); panel açılırken 60 sn'den eskiyse; öğretmen
+     ya da öğrenci listesi okununca listeden; yeni öğretmen kaydı (canlı onay dinleyicisi) gelince.
+     Son sayılar tarayıcıda (kidef_ogs_son): sayım gecikirse kutu onlarla açılır. Hiç sayı yoksa
+     1,2 sn sonra «—».
    ========================================================================== */
-var _ogs = { n: null, t: 0, taze: false, ekran: null, oynadi: false, gorunur: false, gozcu: null, hedef: null,
-             istek: null, surer: false, restYok: false, tekrar: false, sonIstek: 0, zam: [], bosZam: null,
-             anim: false, bek: null, beklendi: false, yay: null };
+var _ogs = { n: null, t: 0, taze: false, o: null, ot: 0, oTaze: false, gorunur: false, gozcu: null, hedef: null,
+             istek: null, surer: false, restYok: false, tekrar: false, sonIstek: 0, zam: [], bosZam: null, bek: null };
 var OGS_DEPO = 'kidef_ogs_son', OGS_TTL = 60e3;
-/* bırakış: [an, yukarı(px), en, boy] — gerilmiş duruştan başlar, zıplar, basılır, söner */
-var OGS_YAY = [[0, 0, .92, 1.16], [.12, -14, .95, 1.10], [.26, 0, 1.18, .80], [.38, -5, .94, 1.08],
-               [.50, 0, 1.07, .93], [.62, -1.5, .98, 1.03], [.74, 0, 1.02, .98], [.86, 0, .995, 1.006], [1, 0, 1, 1]];
 
 function _ogsBicim(n) {
     if (n == null || !isFinite(n)) return '—';
     try { return Number(n).toLocaleString('tr-TR'); } catch (e) { return String(n); }
 }
-function _ogsAzHareket() {
-    try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
-    catch (e) { return false; }
-}
+function _ogsSayiMi(x) { return typeof x === 'number' && isFinite(x) && x >= 0; }
 function _ogsDepoOku() {
-    if (_ogs.n != null) return;
     try {
         var v = JSON.parse(localStorage.getItem(OGS_DEPO) || 'null');
-        if (v && isFinite(v.n) && v.n >= 0) { _ogs.n = +v.n; _ogs.t = +v.t || 0; _ogs.taze = false; }
+        if (!v) return;
+        if (_ogs.n == null && _ogsSayiMi(v.n)) { _ogs.n = v.n; _ogs.t = +v.t || 0; _ogs.taze = false; }
+        if (_ogs.o == null && _ogsSayiMi(v.o)) { _ogs.o = v.o; _ogs.ot = +v.ot || 0; _ogs.oTaze = false; }
     } catch (e) { }
+}
+function _ogsDepoYaz() {
+    try { localStorage.setItem(OGS_DEPO, JSON.stringify({ n: _ogs.n, t: _ogs.t, o: _ogs.o, ot: _ogs.ot })); } catch (e) { }
 }
 function _ogsStil() {
     if (document.getElementById('ogs-stil')) return;
     var st = document.createElement('style');
     st.id = 'ogs-stil';
     st.textContent = [
-        '.ogs-kutu{display:flex; align-items:center; gap:16px; margin:0 0 16px; padding:14px 24px 14px 14px;',
+        '.ogs-kutu{display:flex; align-items:center; flex-wrap:wrap; gap:10px 0; margin:0 0 16px; padding:12px 24px 12px 14px;',
         '  border-radius:18px; border:1px solid #D3E2FB;',
         '  background:linear-gradient(120deg,#EEF4FF 0%,#F8FBFF 55%,#EAF7F3 100%); box-shadow:0 6px 18px rgba(27,79,156,.08);}',
         '.ogs-kutu.ogs-ilk{visibility:hidden;}',
+        '.ogs-oge{display:flex; align-items:center; gap:14px; min-width:0; padding:2px 28px 2px 0;}',
+        '.ogs-oge + .ogs-oge{border-inline-start:1px solid #D3E2FB; padding-inline-start:28px;}',
         '.ogs-simge{flex:0 0 auto; width:56px; height:56px; border-radius:16px; display:flex; align-items:center;',
         '  justify-content:center; font-size:1.9rem; background:#fff; box-shadow:0 2px 8px rgba(27,79,156,.12);}',
-        '.ogs-yay{display:inline-block; transform-origin:50% 100%;}',
         '.ogs-sayi{display:inline-block; font-size:3.4rem; line-height:1; font-weight:900; color:#1B4F9C;',
         '  letter-spacing:-.02em; font-variant-numeric:tabular-nums; min-width:1ch;}',
-        '.ogs-kutu.ogs-bos .ogs-sayi{color:#B8C1CC;}',
+        '.ogs-ogr .ogs-sayi{color:#0E7C66;}',
+        '.ogs-sayi.ogs-bos{color:#B8C1CC;}',
         '.ogs-yazi{display:flex; flex-direction:column; font-size:1.15rem; font-weight:800; color:#2c3e50; line-height:1.15;}',
         '.ogs-yazi small{font-size:.8rem; font-weight:700; color:#8A94A3; margin-top:2px;}',
-        '@media (max-width:560px){ .ogs-kutu{gap:12px; padding:12px 16px 12px 12px;}',
-        '  .ogs-simge{width:46px; height:46px; font-size:1.5rem;} .ogs-sayi{font-size:2.7rem;} .ogs-yazi{font-size:1rem;} }'
+        '@media (max-width:560px){ .ogs-kutu{padding:10px 14px 10px 12px; gap:8px 0;}',
+        '  .ogs-oge{gap:10px; padding:2px 14px 2px 0;} .ogs-oge + .ogs-oge{border:0; padding-inline-start:0;}',
+        '  .ogs-simge{width:44px; height:44px; font-size:1.4rem;} .ogs-sayi{font-size:2.4rem;} .ogs-yazi{font-size:.95rem;} }'
     ].join('\n');
     (document.head || document.documentElement).appendChild(st);
 }
-/* renderAdminPanel içinde, en üstte */
+function _ogsEtiket() {
+    var p = [];
+    if (_ogs.n != null) p.push(_ogsBicim(_ogs.n) + ' kayıtlı öğretmen');
+    if (_ogs.o != null) p.push(_ogsBicim(_ogs.o) + ' kayıtlı öğrenci');
+    return p.length ? p.join(', ') : 'Kayıtlı öğretmen ve öğrenci sayısı';
+}
+function _ogsOge(tur, simge, id, v, yazi) {
+    return '<span class="ogs-oge ogs-' + tur + '" aria-hidden="true">' +
+             '<span class="ogs-simge">' + simge + '</span>' +
+             '<b class="ogs-sayi" id="' + id + '">' + (v == null ? '' : _ogsBicim(v)) + '</b>' +
+             '<span class="ogs-yazi">' + yazi + '<small>kayıtlı</small></span>' +
+           '</span>';
+}
+/* renderAdminPanel içinde, en üstte: bilinen son sayılar anında yazılır (animasyon yok) */
 function _ogsHtml() {
     _ogsStil(); _ogsDepoOku();
-    var hazir = _ogs.oynadi && _ogs.ekran != null;          /* açılış oynadıysa: yeniden çizim hareketsiz */
-    return '<div class="ogs-kutu' + (hazir ? '' : ' ogs-ilk') + '" id="ogs-kutu" role="status"' +
-             ' aria-label="' + (hazir ? _ogsBicim(_ogs.ekran) + ' kayıtlı öğretmen' : 'Kayıtlı öğretmen sayısı') + '">' +
-             '<span class="ogs-simge" aria-hidden="true">👨‍🏫</span>' +
-             '<span class="ogs-yay" id="ogs-yay" aria-hidden="true"><b class="ogs-sayi" id="ogs-sayi">' +
-               (hazir ? _ogsBicim(_ogs.ekran) : '') + '</b></span>' +
-             '<span class="ogs-yazi" aria-hidden="true">öğretmen<small>kayıtlı</small></span>' +
+    var bilinen = _ogs.n != null || _ogs.o != null;
+    return '<div class="ogs-kutu' + (bilinen ? '' : ' ogs-ilk') + '" id="ogs-kutu" role="status" aria-label="' + _ogsEtiket() + '">' +
+             _ogsOge('ogt', '👨‍🏫', 'ogs-sayi', _ogs.n, 'öğretmen') +
+             _ogsOge('ogr', '🎓', 'ogs-sayi-ogr', _ogs.o, 'öğrenci') +
            '</div>';
 }
 function _ogsZaman(f, ms) { var id = setTimeout(f, ms); _ogs.zam.push(id); return id; }
 function _ogsDur() {
     _ogs.zam.forEach(function (id) { clearTimeout(id); });
-    _ogs.zam = []; _ogs.bosZam = null; _ogs.anim = false;
-    if (_ogs.yay) { try { _ogs.yay.cancel(); } catch (e) { } _ogs.yay = null; }
+    _ogs.zam = []; _ogs.bosZam = null;
 }
-function _ogsYaz(v) {
-    var s = document.getElementById('ogs-sayi'), k = document.getElementById('ogs-kutu');
-    if (s) s.textContent = _ogsBicim(v);
-    if (k) k.setAttribute('aria-label', v == null ? 'Kayıtlı öğretmen sayısı' : _ogsBicim(v) + ' kayıtlı öğretmen');
-    _ogs.ekran = v;
+function _ogsYaz(id, v) {
+    var s = document.getElementById(id);
+    if (s && v != null) { s.textContent = _ogsBicim(v); s.classList.remove('ogs-bos'); }
 }
-function _ogsAnim(el, kare, sec) {
-    if (!el || typeof el.animate !== 'function') return null;
-    try { return el.animate(kare, sec); } catch (e) { return null; }
-}
-/* açılış: kutu süzülür, sayı küçükten büyüyüp hafif taşarak yerine oturur */
-function _ogsGiris() {
-    _ogsAnim(document.getElementById('ogs-kutu'),
-        [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0px)' }],
-        { duration: 320, easing: 'cubic-bezier(.2,.8,.2,1)' });
-    _ogsAnim(document.getElementById('ogs-yay'), [
-        { opacity: 0, transform: 'translateY(8px) scale(.45,.45)' },
-        { opacity: 1, transform: 'translateY(-4px) scale(1.12,1.12)', offset: .55 },
-        { opacity: 1, transform: 'translateY(0px) scale(.97,1.03)', offset: .8 },
-        { opacity: 1, transform: 'translateY(0px) scale(1,1)' }], { duration: 440, easing: 'ease-out' });
-}
-/* her adımda küçük zıplama (sona doğru azalır) */
-function _ogsTik(k) {
-    var h = 6 - 4 * k;
-    _ogsAnim(document.getElementById('ogs-sayi'), [
-        { transform: 'translateY(0px)' }, { transform: 'translateY(' + (-h).toFixed(1) + 'px)', offset: .4 },
-        { transform: 'translateY(0px)' }], { duration: 140, easing: 'ease-out' });
-}
-/* esneme: son adımlarda yay gerilir — dikine uzar, enine incelir */
-function _ogsGer(sure, a) {
-    var y = document.getElementById('ogs-yay');
-    if (!y || sure < 30) return;
-    if (_ogs.yay) { try { _ogs.yay.cancel(); } catch (e) { } }
-    _ogs.yay = _ogsAnim(y, [{ transform: 'translateY(0px) scale(1,1)' },
-        { transform: 'translateY(0px) scale(' + (1 - .08 * a).toFixed(4) + ',' + (1 + .16 * a).toFixed(4) + ')' }],
-        { duration: sure, easing: 'cubic-bezier(.55,0,.85,.4)', fill: 'forwards' });
-}
-/* yaylanma: bırakılır — zıplar, basılır, sönerek oturur; kutu bir kez parlar */
-function _ogsBirak(a) {
-    var y = document.getElementById('ogs-yay');
-    if (_ogs.yay) { try { _ogs.yay.cancel(); } catch (e) { } _ogs.yay = null; }
-    if (!y) return;
-    _ogsAnim(y, OGS_YAY.map(function (r) {
-        return { offset: r[0], easing: 'ease-in-out',
-                 transform: 'translateY(' + (r[1] * a).toFixed(2) + 'px) scale(' + (1 + (r[2] - 1) * a).toFixed(4) +
-                            ',' + (1 + (r[3] - 1) * a).toFixed(4) + ')' };
-    }), { duration: 1000 });
-    _ogsAnim(document.getElementById('ogs-kutu'), [
-        { boxShadow: '0 6px 18px rgba(27,79,156,.08), 0 0 0 0 rgba(27,79,156,' + (.30 * a).toFixed(2) + ')' },
-        { boxShadow: '0 6px 18px rgba(27,79,156,.08), 0 0 0 18px rgba(27,79,156,0)' }],
-        { duration: 800, easing: 'ease-out' });
-}
-/* bas → son: en çok 10 adım (fark büyükse atlayarak), sona doğru yavaşlar */
-function _ogsOynat(bas, son, ilk) {
-    _ogsDur();
-    var kutu = document.getElementById('ogs-kutu');
-    if (!kutu) return;
-    kutu.classList.remove('ogs-ilk', 'ogs-bos');
-    var a = ilk ? 1 : .6;
-    if (_ogsAzHareket()) { _ogsYaz(son); return; }
-    if (bas === son) {
-        _ogsYaz(son);
-        if (ilk) { _ogsGiris(); _ogsZaman(function () { _ogsBirak(a); }, 300); }
-        return;
-    }
-    var fark = Math.abs(son - bas), yon = son > bas ? 1 : -1, n = Math.min(fark, 10), t = ilk ? 260 : 60;
-    var zaman = [], deger = [];
-    for (var i = 1; i <= n; i++) {
-        var k = i / n;
-        t += (ilk ? 45 : 70) + 230 * Math.pow(k, 3);
-        zaman.push(Math.round(t)); deger.push(i === n ? son : Math.round(bas + yon * fark * k));
-    }
-    var gi = Math.min(n - 1, Math.max(0, Math.ceil(n * .6) - 1));
-    var gerBas = gi >= n - 1 ? (ilk ? 300 : 40) : zaman[gi];
-    _ogs.anim = true;
-    _ogsYaz(bas);
-    if (ilk) _ogsGiris();
-    deger.forEach(function (v, i) {
-        _ogsZaman(function () {
-            _ogsYaz(v);
-            if (i < n - 1) { _ogsTik((i + 1) / n); return; }
-            _ogs.anim = false;
-            _ogsBirak(a);
-            _ogsZaman(_ogsGoster, 1050);             /* bu arada sayı değiştiyse yeniye */
-        }, zaman[i]);
-    });
-    _ogsZaman(function () { _ogsGer(zaman[n - 1] - gerBas, a); }, gerBas);
-}
-/* sayı hiç yoksa (çevrimdışı, ilk giriş) bir süre sonra «—» */
+/* bir süre sayı gelmezse (çevrimdışı, ilk giriş) o sayı «—» */
 function _ogsBosBekle() {
     if (_ogs.bosZam) return;
     _ogs.bosZam = _ogsZaman(function () {
         _ogs.bosZam = null;
         var k = document.getElementById('ogs-kutu');
-        if (!k || _ogs.n != null) return;
-        k.classList.remove('ogs-ilk'); k.classList.add('ogs-bos');
-        _ogsYaz(null);
+        if (!k) return;
+        k.classList.remove('ogs-ilk');
+        [['ogs-sayi', _ogs.n], ['ogs-sayi-ogr', _ogs.o]].forEach(function (p) {
+            var s = document.getElementById(p[0]);
+            if (s && p[1] == null) { s.textContent = '—'; s.classList.add('ogs-bos'); }
+        });
+        k.setAttribute('aria-label', _ogsEtiket());
     }, 1200);
 }
+/* bilinen sayıları yazar — animasyon yok (05.11.2026) */
 function _ogsGoster() {
     var kutu = document.getElementById('ogs-kutu');
-    if (!kutu || !_ogs.gorunur || _ogs.anim) return;
-    if (!_ogs.oynadi) {
-        if (_ogs.n == null) { _ogsBosBekle(); return; }
-        if (!_ogs.taze && _ogs.surer && !_ogs.beklendi) {   /* taze sayı yolda: biraz bekle, gelmezse saklı sayıyla */
-            _ogs.beklendi = true;
-            _ogsZaman(_ogsGoster, 900);
-            return;
-        }
-        _ogs.oynadi = true;
-        _ogsOynat(Math.max(0, _ogs.n - 10), _ogs.n, true);
-        return;
-    }
-    if (_ogs.n != null && _ogs.ekran !== _ogs.n)
-        _ogsOynat(_ogs.ekran == null ? Math.max(0, _ogs.n - 10) : _ogs.ekran, _ogs.n, false);
-    else if (kutu.classList.contains('ogs-ilk') && _ogs.ekran != null) { kutu.classList.remove('ogs-ilk'); _ogsYaz(_ogs.ekran); }
+    if (!kutu) return;
+    if (_ogs.n == null && _ogs.o == null) { _ogsBosBekle(); return; }
+    kutu.classList.remove('ogs-ilk');
+    _ogsYaz('ogs-sayi', _ogs.n); _ogsYaz('ogs-sayi-ogr', _ogs.o);
+    kutu.setAttribute('aria-label', _ogsEtiket());
+    if (_ogs.n == null || _ogs.o == null) _ogsBosBekle();
 }
-/* yeni sayı: sayımdan ya da öğretmen listesinden (t: alındığı an; eskisi yenisini ezmez) */
+/* yeni öğretmen sayısı: sayımdan ya da öğretmen listesinden (t: alındığı an; eskisi yenisini ezmez) */
 function _ogsBildir(n, t) {
     n = +n; t = +t || Date.now();
     if (!isFinite(n) || n < 0) return;
     if (_ogs.taze && t < _ogs.t) return;
     _ogs.n = n; _ogs.t = t; _ogs.taze = true;
-    try { localStorage.setItem(OGS_DEPO, JSON.stringify({ n: n, t: t })); } catch (e) { }
-    _ogsGoster();
+    _ogsDepoYaz(); _ogsGoster();
 }
-/* Firestore REST count: kurallar yöneticinin kimliğiyle denetlenir; okuma faturası 1 */
-function _ogsSay() {
-    if (_ogs.istek) return _ogs.istek;
-    var u = null, op = null;
-    try { u = firebase.auth().currentUser; op = (firebase.app && firebase.app().options) || null; } catch (e) { }
-    if (!u || typeof u.getIdToken !== 'function' || !op || !op.projectId || typeof fetch !== 'function')
-        return Promise.resolve(null);
+/* yeni öğrenci sayısı: sayımdan ya da öğrenci listesinden (05.11.2026) */
+function _ogsBildirOgr(n, t) {
+    n = +n; t = +t || Date.now();
+    if (!isFinite(n) || n < 0) return;
+    if (_ogs.oTaze && t < _ogs.ot) return;
+    _ogs.o = n; _ogs.ot = t; _ogs.oTaze = true;
+    _ogsDepoYaz(); _ogsGoster();
+}
+/* Firestore REST count — rol: 'teacher' | 'admin' | null (bütün belgeler). Kurallar yöneticinin
+   kimliğiyle denetlenir; her sayım 1 okuma faturalanır. null döner: alınamadı (4xx → restYok). */
+function _ogsRestSay(op, jeton, rol) {
     var iptal = (typeof AbortController === 'function') ? new AbortController() : null;
     var sure = setTimeout(function () { try { if (iptal) iptal.abort(); } catch (e) { } }, 8000);
-    _ogs.istek = u.getIdToken().then(function (jeton) {
-        return fetch('https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(op.projectId) +
-                     '/databases/(default)/documents:runAggregationQuery' + (op.apiKey ? '?key=' + encodeURIComponent(op.apiKey) : ''), {
-            method: 'POST', cache: 'no-store', credentials: 'omit', signal: iptal ? iptal.signal : undefined,
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jeton },
-            body: JSON.stringify({ structuredAggregationQuery: {
-                structuredQuery: { from: [{ collectionId: 'kullanicilar' }],
-                    where: { fieldFilter: { field: { fieldPath: 'role' }, op: 'EQUAL', value: { stringValue: 'teacher' } } } },
-                aggregations: [{ alias: 'n', count: {} }] } })
-        });
+    var sorgu = { from: [{ collectionId: 'kullanicilar' }] };
+    if (rol) sorgu.where = { fieldFilter: { field: { fieldPath: 'role' }, op: 'EQUAL', value: { stringValue: rol } } };
+    return fetch('https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(op.projectId) +
+                 '/databases/(default)/documents:runAggregationQuery' + (op.apiKey ? '?key=' + encodeURIComponent(op.apiKey) : ''), {
+        method: 'POST', cache: 'no-store', credentials: 'omit', signal: iptal ? iptal.signal : undefined,
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jeton },
+        body: JSON.stringify({ structuredAggregationQuery: { structuredQuery: sorgu, aggregations: [{ alias: 'n', count: {} }] } })
     }).then(function (r) {
         if (!r || !r.ok) {
             /* kalıcı ret (kural, adres, anahtar): bu oturumda listeden sayılır */
@@ -1808,36 +2032,60 @@ function _ogsSay() {
             if (f) { var v = +(f.integerValue != null ? f.integerValue : f.doubleValue); if (isFinite(v)) return v; }
         }
         throw new Error('sayı yok');
-    }).then(function (v) { clearTimeout(sure); _ogs.istek = null; return v; },
+    }).then(function (v) { clearTimeout(sure); return v; },
             function (e) {
-                clearTimeout(sure); _ogs.istek = null;
-                try { console.warn('öğretmen sayısı alınamadı:', (e && (e.message || e.name)) || e); } catch (x) { }
+                clearTimeout(sure);
+                try { console.warn((rol || 'kullanıcı') + ' sayısı alınamadı:', (e && (e.message || e.name)) || e); } catch (x) { }
                 return null;
             });
+}
+/* üç sayım paralel: öğretmen · bütün belgeler · yönetici → {n: öğretmen, o: öğrenci} (o hesaplanamadıysa null) */
+function _ogsSay() {
+    if (_ogs.istek) return _ogs.istek;
+    var u = null, op = null;
+    try { u = firebase.auth().currentUser; op = (firebase.app && firebase.app().options) || null; } catch (e) { }
+    if (!u || typeof u.getIdToken !== 'function' || !op || !op.projectId || typeof fetch !== 'function')
+        return Promise.resolve(null);
+    _ogs.istek = u.getIdToken().then(function (jeton) {
+        return Promise.all([_ogsRestSay(op, jeton, 'teacher'), _ogsRestSay(op, jeton, null), _ogsRestSay(op, jeton, 'admin')]);
+    }).then(function (r) {
+        _ogs.istek = null;
+        if (r[0] == null) return null;
+        return { n: r[0], o: (r[1] != null && r[2] != null) ? Math.max(0, r[1] - r[0] - r[2]) : null };
+    }, function (e) {
+        _ogs.istek = null;
+        try { console.warn('sayım yapılamadı:', (e && (e.message || e.name)) || e); } catch (x) { }
+        return null;
+    });
     return _ogs.istek;
 }
-/* yedek yol (REST kalıcı reddederse): öğretmen listesini okuyup sayar — liste ile aynı 10 dk önbellek */
+/* yedek yol (REST kalıcı reddederse): kullanicilar okunur, iki sayı da oradan — öğrenci listesiyle
+   ortak 10 dk önbellek ('ogrenci' = bütün kullanıcılar) */
 function _ogsListedenSay(zorla) {
     if (typeof firebase === 'undefined' || typeof isFirebaseReady === 'undefined' || !isFirebaseReady) return Promise.resolve(null);
-    return _abSnap('ogretmen', function () {
-        return firebase.firestore().collection('kullanicilar').where('role', '==', 'teacher').get();
+    return _abSnap('ogrenci', function () {
+        return firebase.firestore().collection('kullanicilar').get();
     }, !zorla).then(function (snap) {
-        return { n: snap.size, t: (_abOnbellek.ogretmen && _abOnbellek.ogretmen.t) || Date.now() };
+        var n = 0, o = 0;
+        snap.forEach(function (d) { var v = d.data() || {}; if (v.role === 'teacher') n++; else if (v.role === 'student' || !v.role) o++; });
+        return { n: n, o: o, t: (_abOnbellek.ogrenci && _abOnbellek.ogrenci.t) || Date.now() };
     }, function () { return null; });
 }
 function _ogsTazele(zorla) {
     if (_ogs.surer) { if (zorla) _ogs.tekrar = true; return; }
-    if (!zorla && _ogs.taze && Date.now() - _ogs.t < (_ogs.restYok ? AB_TTL : OGS_TTL)) return;
-    if (!zorla && Date.now() - _ogs.sonIstek < 15e3) return;      /* üst üste çizimlerde tek istek */
-    _ogs.sonIstek = Date.now(); _ogs.surer = true;
-    var is = _ogs.restYok ? _ogsListedenSay(zorla) : _ogsSay().then(function (n) {
-        if (n != null) return { n: n, t: Date.now() };
+    var ttl = _ogs.restYok ? AB_TTL : OGS_TTL, simdi = Date.now();
+    var tazeN = _ogs.taze && simdi - _ogs.t < ttl, tazeO = _ogs.oTaze && simdi - _ogs.ot < ttl;
+    if (!zorla && tazeN && tazeO) return;
+    if (!zorla && simdi - _ogs.sonIstek < 15e3) return;      /* üst üste çizimlerde tek istek */
+    _ogs.sonIstek = simdi; _ogs.surer = true;
+    var is = _ogs.restYok ? _ogsListedenSay(zorla) : _ogsSay().then(function (r) {
+        if (r) return { n: r.n, o: r.o, t: Date.now() };
         return _ogs.restYok ? _ogsListedenSay(zorla) : null;
     });
     is.then(null, function () { return null; }).then(function (r) {
         _ogs.surer = false;
-        if (r) _ogsBildir(r.n, r.t);
-        else _ogsGoster();                                         /* bekleyen açılış saklı sayıyla başlasın */
+        if (r) { _ogsBildir(r.n, r.t); if (r.o != null) _ogsBildirOgr(r.o, r.t); else _ogsGoster(); }
+        else _ogsGoster();                                         /* saklı sayılarla */
         if (_ogs.tekrar) { _ogs.tekrar = false; _ogsTazele(true); }
     });
 }
@@ -1853,7 +2101,7 @@ function _ogsGozcuHaber(es) {
     var e = es[es.length - 1], g = !!(e && e.isIntersecting);
     if (g === _ogs.gorunur) return;
     _ogs.gorunur = g;
-    if (!g) { _ogsDur(); _ogs.oynadi = false; _ogs.beklendi = false; return; }
+    if (!g) { _ogsDur(); return; }
     _ogsTazele(false);                                 /* 60 sn'den eskiyse */
     _ogsGoster();
 }
@@ -2101,7 +2349,7 @@ function adminOgretmenSuz(yeni) {
         while (e && !e.classList.contains('aog-harf')) { if (e.classList.contains('aog-kart') && e.style.display !== 'none') { var_ = true; break; } e = e.nextElementSibling; }
         h.style.display = var_ ? '' : 'none';
     });
-    [].forEach.call(document.querySelectorAll('.aog-suz:not(.aog-sir)'), function (b) {
+    [].forEach.call(document.querySelectorAll('#admin-teacher-list .aog-suz:not(.aog-sir)'), function (b) {
         b.classList.toggle('sec', b.getAttribute('data-aog-suz') === _aogSuzgec);
     });
     var bos = document.getElementById('aogBos');
@@ -2151,7 +2399,7 @@ function adminOgretmenSirala(yeni) {
         grid.insertBefore(k, bos);
     });
     grid.classList.toggle('aog-sira-kayit', _aogSira === 'kayit');
-    [].forEach.call(document.querySelectorAll('.aog-sir'), function (b) {
+    [].forEach.call(document.querySelectorAll('#admin-teacher-list .aog-sir'), function (b) {
         b.classList.toggle('sec', b.getAttribute('data-aog-sira') === _aogSira);
     });
     adminOgretmenSuz();
