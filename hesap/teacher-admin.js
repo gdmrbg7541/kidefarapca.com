@@ -200,7 +200,7 @@ function renderAdminPanel() {
             </div>
             
             <div style="margin-bottom: 25px;">
-                <button class="btn btn-primary" style="background-color: #ff3b30; border-color: #ff3b30; font-size: 1.1rem; padding: 12px 24px; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);" onclick="openLiveClassRoom()">
+                <button class="btn btn-primary" style="background-color: #ff3b30; border-color: #ff3b30; font-size: 1.1rem; padding: 12px 24px; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);" onclick="window.kidefCanliBaslat?kidefCanliBaslat():openLiveClassRoom()">
                     <span class="live-dot" style="background-color: white;"></span> Canlı Ders Başlat
                 </button>
             </div>
@@ -2732,7 +2732,7 @@ function renderTeacherPanel() {
             ${teacherKodKarti()}
 
             <div style="margin-bottom: 20px;">
-                <button class="btn btn-primary" style="background-color: #ff3b30; border-color: #ff3b30; font-size: 1.1rem; padding: 12px 24px; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);" onclick="openLiveClassRoom()">
+                <button class="btn btn-primary" style="background-color: #ff3b30; border-color: #ff3b30; font-size: 1.1rem; padding: 12px 24px; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);" onclick="window.kidefCanliBaslat?kidefCanliBaslat():openLiveClassRoom()">
                     <span class="live-dot" style="background-color: white;"></span> Canlı Ders Başlat
                 </button>
             </div>

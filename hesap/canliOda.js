@@ -95,7 +95,8 @@
     bitir: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
     kucult: '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>',
     buyut: '<svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg>',
-    yenile: '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>'
+    yenile: '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>',
+    bag: '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>'
   };
 
   /* ------------------------------------------------------------ biçim */
@@ -146,7 +147,12 @@
       /* canlı derste kalkan kumanda tuşları: öğrenci lider olamaz, cihaz ad/işaret yok */
       'body.th-canli #thKipDug,body.th-canli [data-th="zkip"],body.th-canli [data-th="unut"],body.th-canli [data-th="ad"],',
       'body.th-canli .th-zadver,body.th-canli .th-zunut,body.th-canli .th-unut,body.th-canli [data-th="zperde"],body.th-canli #thHedef{display:none !important}',
-      '@media (max-width:600px){.cd-kutu{width:min(236px,calc(100vw - 24px))}.cd-ipucu{display:none}}'
+      '@media (max-width:600px){.cd-kutu{width:min(236px,calc(100vw - 24px))}.cd-ipucu{display:none}}',
+      /* katılım bağlantısı (elle kopyalama kutusu) */
+      '.cd-bag{display:block;width:100%;box-sizing:border-box;margin:6px 0 0;padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.25);color:#fff;font:12px/1.35 inherit;user-select:all;-webkit-user-select:all}',
+      /* TELEFONDA KÜÇÜK KAMERA (06.11.2026) — yönetici: "telefondan katılan kişi için kamera görüntüsü çok daha
+         küçük olsun": dar ekranda (dikey) ve kısa dokunmatik ekranda (yatay telefon) görüntü küçük kutu */
+      '@media (max-width:600px),(max-height:500px) and (pointer:coarse){.cd-video{width:112px;max-width:50%}.cd-video .cd-ben{width:40%}}'
     ].join('\n');
     document.head.appendChild(s);
     document.body.classList.add('th-canli');
@@ -214,6 +220,7 @@
       else if (is === 'mikdene') mikAc(true);
       else if (is === 'cagir') { D.listeAcik = !D.listeAcik; ciz(); }
       else if (is === 'bitir') bitir();
+      else if (is === 'bag') baglantiPaylas();
       else if (is === 'ayril') ayril();
     });
     $('cdUyari').addEventListener('click', function (e) {
@@ -222,6 +229,7 @@
       var is = b.getAttribute('data-cd');
       if (is === 'kameraEvet') { D.kameraSor = false; D.kameraOnay = true; kameraDegistir(); }
       else if (is === 'kameraHayir') { D.kameraSor = false; ciz(); }
+      else if (is === 'bagKapat') { D.bagGoster = false; ciz(); }
     });
     var l = $('cdListe');
     if (l) l.addEventListener('click', function (e) {
@@ -229,6 +237,32 @@
       if (b) cagir(b.getAttribute('data-uid'), b.getAttribute('data-ad'));
     });
     return k;
+  }
+  /* KATILIM BAĞLANTISI (06.11.2026) — yönetici: "canlı ders için link kopyalayıp başka cihazdan giriş yapmak
+     isteyince …". Öğrencinin bağlantısı (tahta.html?rol=izle&canli=<oda>): telefonda paylaşma penceresi
+     (WhatsApp vb.), bilgisayarda panoya; olmazsa elle kopyalama kutusu. Yalnız çağrılan öğrenci girer
+     (veritabanı kuralı); girişsiz açılırsa giriş yapınca ders kendiliğinden açılır. */
+  function baglantiAdres() { return location.origin + '/tahta.html?rol=izle&canli=' + encodeURIComponent(ODA); }
+  function baglantiPaylas() {
+    var adres = baglantiAdres();
+    var tamam = function () { bildir('Katılım bağlantısı kopyalandı — öğrenciye gönder. Yalnız çağırdığın öğrenci girebilir.', 4000); };
+    var elle = function () {
+      D.bagGoster = true; ciz();
+      setTimeout(function () { var g = $('cdBagYazi'); if (g) { try { g.focus(); g.select(); } catch (e) { } } }, 30);
+    };
+    var kopyala = function () {
+      try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(adres).then(tamam, elle); return; } } catch (e) { }
+      elle();
+    };
+    var dokunmatik = false;
+    try { dokunmatik = !!(window.matchMedia && window.matchMedia('(pointer:coarse)').matches); } catch (e) { }
+    if (dokunmatik && navigator.share) {
+      try {
+        navigator.share({ title: 'Canlı ders', text: 'Canlı derse katıl:', url: adres }).catch(function (e) { if (!e || e.name !== 'AbortError') kopyala(); });
+        return;
+      } catch (e) { }
+    }
+    kopyala();
   }
   function sureYaz() {
     var e = $('cdSure'); if (!e) return;
@@ -277,15 +311,21 @@
     if (OGR) t += '<button type="button" class="cd-dug kirmizi" data-cd="ayril" title="Dersten ayrıl, ana sayfaya dön">' + SVG.bitir + '<span>Ayrıl</span></button>';
     else {
       t += '<button type="button" class="cd-dug yesil" data-cd="cagir" title="Öğrenciyi derse çağır">' + SVG.cagir + '<span>' + (D.davetli ? 'Değiştir' : 'Öğrenciyi çağır') + '</span></button>';
+      if (D.davetli) t += '<button type="button" class="cd-dug" data-cd="bag" title="Katılım bağlantısı: kopyala ya da gönder (yalnız çağırdığın öğrenci girer)">' + SVG.bag + '</button>';
       t += '<button type="button" class="cd-dug kirmizi" data-cd="bitir" title="Dersi bitir: öğrenci ana sayfaya döner, sen bu sayfada kalırsın">' + SVG.bitir + '<span>Bitir</span></button>';
     }
     $('cdTuslar').innerHTML = t;
-    $('cdUyari').innerHTML = D.kameraSor
+    var uy = D.kameraSor
       ? '<div class="cd-uyari">Kamera görüntüsü veri tüketir (saatte yaklaşık 0,3–0,5 GB). Aylık ücretsiz pay aşılırsa fark ' +
         (OGR ? 'öğretmene' : 'sana') + ' aittir; ses tek başına ücretsiz payı aşmaz.' +
         '<div class="cd-tuslar"><button type="button" class="cd-dug yesil" data-cd="kameraEvet">' + SVG.kamera + '<span>Kamerayı aç</span></button>' +
         '<button type="button" class="cd-dug" data-cd="kameraHayir">Vazgeç</button></div></div>'
-      : '';
+      : (D.bagGoster && !OGR && D.davetli)
+        ? '<div class="cd-uyari">Katılım bağlantısı — kopyala, öğrenciye gönder (yalnız çağırdığın öğrenci girer):' +
+          '<input id="cdBagYazi" class="cd-bag" readonly value="' + kac(baglantiAdres()) + '">' +
+          '<div class="cd-tuslar"><button type="button" class="cd-dug" data-cd="bagKapat">Tamam</button></div></div>'
+        : '';
+    if (D.uyariSon !== uy) { $('cdUyari').innerHTML = uy; D.uyariSon = uy; }   /* değişmediyse yeniden çizilmez (seçim/odak korunur) */
     if (!OGR) {
       var cv = $('cdVeri');
       if (cv) cv.textContent = veriYazisi();

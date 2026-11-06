@@ -76,6 +76,13 @@
     var deneme = !!window.__kapiDeneme;
     if (!deneme && (location.protocol === 'file:' || h === 'localhost' || h === '127.0.0.1' || h === '')) return;
     if (/[?&]oda=/.test(location.search)) return;                 /* karekodla yarışmaya katılım */
+    /* CANLI DERS (06.11.2026) — yönetici: "canlı ders için link kopyalayıp başka cihazdan giriş yapmak
+       isteyince siteye giriş istiyor, giriş yapıyorum ama tekrar giriş sayfasına yönlendiriyor".
+       Öğrencinin ders sayfası (tahta.html?rol=izle&canli=ders_…) site kilidine bağlı değil: derse kim
+       girer, kabuk ve veritabanı kuralı (çağrılan öğrenci) karar verir. Girişsiz açılırsa kabuk girişe
+       gönderir, giriş yapınca ders kendiliğinden açılır (hesap/canliders.js, ?canlidonus=). */
+    if (/\/tahta\.html$/i.test(location.pathname) && /[?&]rol=izle\b/.test(location.search) &&
+        /[?&]canli=ders_[A-Za-z0-9]{1,64}(?:&|$)/.test(location.search)) return;
 
     var yabanciCerceve = false;
     try {

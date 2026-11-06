@@ -30,6 +30,10 @@
        cizilmez — tanitim sayfasi her kademede acik kalir; sayfa yalniz
        SiteKilit.izinliMi() ile karari sorar. */
     var GOZLE = !!window.SITE_KILIT_GOZLE;
+    /* CANLI DERS ÇERÇEVESİ (06.11.2026): çağrılan öğrencinin ders kabuğundaki (tahta.html?rol=izle&canli=…)
+       sayfa perde çizmez — derse kim girer, kabuk ve veritabanı kuralı karar verir (sistem/kapi.js'teki
+       «kararı üstteki sayfa verir» gibi). Site «Sadece Yönetici»deyken de öğrenci öğretmenin açtığını görür. */
+    try { if (!GOZLE && window.parent !== window && window.parent.KidefTahta && window.parent.KidefTahta.canliOgr) GOZLE = true; } catch (e) { }
 
     /* Bu betik tek basina da calisabilsin (SDK'siz sayfalar): gerekirse
        Firebase'i kendi yukler, uygulama yoksa kendi baslatir. auth.js'teki

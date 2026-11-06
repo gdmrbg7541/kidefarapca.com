@@ -176,7 +176,8 @@
       'th.b_ekran_devir': 'Ders başka bir cihazında açıldı. Bu cihaz dersten çıkıyor…', 'th.b_ekran_devir_yok': 'Ders başka bir cihazda açıldı. Bu cihaz dersten çıkıyor…',
       'th.z_ipucu': 'Öğretmen dersi başlatınca açtığı sayfalar burada kendiliğinden görünür.',
       'th.giris_alt': 'Canlı ders, siteye giriş yapınca açılır.', 'th.vt_bas': 'Ders bağlantısı kurulamadı',
-      'th.perde_metin': 'Öğretmen ekranı kısa bir süre kapattı'
+      'th.perde_metin': 'Öğretmen ekranı kısa bir süre kapattı',
+      'th.kumanda_tus': 'Ekran yansıtma', 'th.canli_giris': 'Giriş yap'
     } : {
       'th.yansitiliyor': 'Canlı ders', 'th.sinif_ekrani': 'Canlı ders',
       'th.tahta_bekleniyor': 'Öğrenci bekleniyor…', 'th.tahta_bagli': 'Öğrenci bağlı', 'th.tahta_cok': '{n} cihaz bağlı',
@@ -192,7 +193,8 @@
       'th.alan_bas': 'Öğrenci ekranı', 'th.alan_bekle': 'öğrenci bekleniyor…', 'th.alan_ip': 'Öğrencinin ekran oranında alan: içinde öğrencinin gördüğü',
       'th.b_birlikte_tahta': 'Öğrenci dersten ayrıldı.',
       'th.giris_alt': 'Canlı ders, siteye giriş yapınca açılır.', 'th.vt_bas': 'Ders bağlantısı kurulamadı',
-      'th.devam_aciliyor': 'Canlı ders açılıyor…', 'th.devam_esit': 'Canlı ders açılıyor…'
+      'th.devam_aciliyor': 'Canlı ders açılıyor…', 'th.devam_esit': 'Canlı ders açılıyor…',
+      'th.kumanda_tus': 'Ekran yansıtma', 'th.canli_giris': 'Giriş yap'
     };
   var SIMDI = function () { return Date.now(); };
   var has = function (o, k) { return Object.prototype.hasOwnProperty.call(o, k); };
@@ -713,6 +715,9 @@
     esitle: '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>',
     bitir: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
     kumanda: '<svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.5"/><circle cx="12" cy="7" r="1.1"/><path d="M10 11.5h4M10 15h4M10 18.5h4"/></svg>',
+    /* EKRAN YANSITMA (06.11.2026) — yönetici: "canlı derste ekran yansıtma olunca kumanda svg si yerine
+       ekran yansıtma svg si çıksın": canlı derste yüzen tuş bu simgeyle */
+    yansit: '<svg viewBox="0 0 24 24"><path d="M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"/><path d="M2 12.1A8 8 0 0 1 9.9 20"/><path d="M2 16.1A4 4 0 0 1 5.9 20"/><path d="M2 20h.01"/></svg>',
     tam: '<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
     tamcik: '<svg viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>',
     lazer: '<svg viewBox="0 0 24 24"><path d="M3.5 20.5l9-9"/><circle cx="16.6" cy="7.4" r="2.5" fill="currentColor" stroke="none"/>' +
@@ -760,7 +765,9 @@
     } else if (tur === 'giris') {
       ic = '<h1>' + kac(kd('th.giris_bas', 'Önce giriş yap')) + '</h1>' +
         '<p>' + kac(kd('th.giris_alt', 'Tahtaya yansıtma, bilgisayarla tahtada aynı hesapla giriş yapınca çalışır.')) + '</p>' +
-        '<div class="th-tuslar"><button type="button" class="th-ana" data-th="anasayfa">' + kac(kd('th.anasayfaya', 'Ana sayfaya git')) + '</button></div>';
+        /* canlı ders (06.11.2026): kabukta giriş penceresi yok — ana sayfada giriş, sonra derse dönüş (hesap/canliders.js) */
+        '<div class="th-tuslar"><button type="button" class="th-ana" data-th="' + (CANLI ? 'canligiris' : 'anasayfa') + '">' +
+        kac(CANLI ? kd('th.canli_giris', 'Giriş yap') : kd('th.anasayfaya', 'Ana sayfaya git')) + '</button></div>';
     } else if (tur === 'ogrenci') {
       ic = '<h1>' + kac(kd('th.ogr_bas', 'Tahta öğretmen hesabıyla açılır')) + '</h1>' +
         '<p>' + kac(kd('th.ogr_alt', 'Bu bir öğrenci hesabı. Tahtaya yansıtma ve kumanda, öğretmenlerin derste kullandığı araçlar.')) + '</p>' +
@@ -928,6 +935,7 @@
     if (!t) return;
     var is = t.getAttribute('data-th');
     if (is === 'anasayfa') cik('index.html');
+    else if (is === 'canligiris') location.href = 'index.html?canlidonus=' + encodeURIComponent(CANLI);   /* girişten sonra derse (06.11.2026) */
     else if (is === 'yenile') location.reload();
     else if (is === 'cik') cik(ROL === 'izle' ? 'index.html' : (adresAl(CERCEVE.contentWindow) || 'index.html'), true);   /* bilerek: öbür cihaz da çıkar (26.10.2026) */
     else if (is === 'tam') { TAM.istek = true; tamEkran(); setTimeout(tamTusTazele, 400); }
@@ -999,6 +1007,12 @@
         }
       }
       S.uid = u.uid;
+      if (CANLI && !CANLI_OGR && CANLI !== 'ders_' + u.uid) {
+        /* CANLI DERS BAĞLANTISI (06.11.2026): öğretmenin bağlantısı (adres çubuğundan kopyalanmış) başka
+           hesapla açıldı — öğrenci görünümüne geçilir; kim girer, veritabanı kuralı (davetli) karar verir */
+        try { location.replace('tahta.html?rol=izle&canli=' + encodeURIComponent(CANLI)); } catch (e) { cik('index.html'); }
+        return;
+      }
       if (CANLI_OGR) {
         /* canlı ders, öğrenci: davetli izleyici (okuma izni veritabanı kuralında); öğrenci kapısı işlemez */
         hazir(vt.ref('canli/' + CANLI + '/oda'));
@@ -2889,7 +2903,7 @@
     t.type = 'button'; t.id = 'thKTus'; t.className = 'th-ktus';
     t.setAttribute('aria-label', kd('th.kumanda_tus', 'Kumanda'));
     t.setAttribute('aria-expanded', 'false');
-    t.innerHTML = SVG.kumanda + '<span class="th-nokta bekle" id="thKNokta"></span>';
+    t.innerHTML = (CANLI ? SVG.yansit : SVG.kumanda) + '<span class="th-nokta bekle" id="thKNokta"></span>';   /* canlı ders: ekran yansıtma simgesi */
     document.body.appendChild(t);
     ktBaslangic(t);
     t.addEventListener('pointerdown', function (e) {

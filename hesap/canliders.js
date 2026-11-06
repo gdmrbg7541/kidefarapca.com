@@ -25,7 +25,14 @@
 (function () {
     'use strict';
     if (window.KidefCanli) return;
-    try { if (window.name === 'kidefTahta' || (window.parent !== window && window.parent.KidefTahta)) { window.KidefCanli = { ac: function () { }, kabukta: true }; return; } } catch (e) { }
+    try { if (window.name === 'kidefTahta' || (window.parent !== window && window.parent.KidefTahta)) {
+        window.KidefCanli = { ac: function () { }, kabukta: true, yetkili: function () { return false; } };
+        /* paneldeki «Canlı Ders Başlat» kabuğun içinde (06.11.2026): yeni ders açılmaz, kısa bilgi */
+        window.kidefCanliBaslat = function () {
+            try { var T = window.parent.KidefTahta; T.bildir(T.canli ? 'Zaten canlı ders ekranındasın.' : 'Canlı dersi başlatmak için önce tahtaya yansıtmayı bitir.', 3000); } catch (e) { }
+        };
+        return;
+    } } catch (e) { }
     var C = window.KidefCanli = {};
     /* ŞİMDİLİK YALNIZ YÖNETİCİ (05.11.2026): öğretmenlere açılınca 'teacher' eklenir */
     var KIMLER = ['admin'];
@@ -171,6 +178,14 @@
         var z = setTimeout(function () { git([]); }, 4000);
         C.liste().then(function (L) { clearTimeout(z); git(L); }, function () { clearTimeout(z); git([]); });
     };
+    C.yetkili = function () { return yetkili() && !!oturum(); };
+    /* PANELDEKİ «CANLI DERS BAŞLAT» (06.11.2026) — yönetici: "yönetici panelinden açınca farklı ve eski olan
+       açıldı". Yönetici/öğretmen panelindeki düğme (hesap/teacher-admin.js) bu yeni canlı dersi açar (yetki:
+       KIMLER); yetkisi henüz olmayan hesap (şimdilik öğretmen) eski odayla (hesap/live-lesson.js) sürer. */
+    window.kidefCanliBaslat = function () {
+        if (C.yetkili()) { C.ac(); return; }
+        if (typeof window.openLiveClassRoom === 'function') window.openLiveClassRoom();
+    };
 
     /* ================================================================ ÖĞRENCİ */
     var S = { ref: null, uid: null, kart: null, zilZaman: null, sonZil: 0, son: null };
@@ -248,6 +263,58 @@
         location.href = 'tahta.html?rol=izle&canli=' + encodeURIComponent(oda);
     };
 
+    /* ================================================================ BAĞLANTIYLA KATILIM (06.11.2026)
+       Yönetici: "canlı ders için link kopyalayıp başka cihazdan giriş yapmak isteyince siteye giriş istiyor,
+       giriş yapıyorum ama tekrar giriş sayfasına yönlendiriyor". Ders kabuğu (tahta.html) giriş penceresi
+       taşımaz; girişsiz açılan ders bağlantısı buraya gelir:
+       · ?canlidonus=<oda> (kabuğun «Giriş yap» tuşu): giriş penceresi açılır, giriş yapınca derse dönülür.
+       · ?donus=/tahta.html?…canli=<oda>… (sistem/kapi.js, öğretmen bağlantısı): giriş yapan odanın sahibi
+         değilse öğrenci görünümüne gider — site kilidi («Sadece Yönetici» dahil) beklemez; sahibin
+         dönüşünü sistem/kilit.js yapar.
+       Odanın sahibi öğretmen görünümüne, başkası öğrenci görünümüne gider; kim girer, veritabanı kuralı
+       (çağrılan öğrenci) karar verir. */
+    function canliHedef() {
+        try {
+            var q = new URLSearchParams(location.search), oda = q.get('canlidonus') || '', yol = 'canlidonus';
+            if (!oda) {
+                var m = /^\/tahta\.html\?(?:[^#]*&)?canli=(ders_[A-Za-z0-9]{1,64})(?:&|#|$)/.exec(q.get('donus') || '');
+                if (m) { oda = m[1]; yol = 'donus'; }
+            }
+            return /^ders_[A-Za-z0-9]{1,64}$/.test(oda) ? { oda: oda, yol: yol } : null;
+        } catch (e) { return null; }
+    }
+    function biletHazir(u) {        /* sahibin öğretmen görünümü kapıdan geçer: ana sayfanın bileti yazılmış olsun */
+        try { var b = JSON.parse(localStorage.getItem('kidefKapiBilet') || 'null'); return !!(b && b.uid === u.uid && b.t && Date.now() - b.t < 20 * 3600000); } catch (e) { return true; }
+    }
+    function canliDonusKur() {
+        var h = canliHedef();
+        if (!h || C.donusKuruldu) return;
+        var f = fb();
+        if (!f || !f.auth) { setTimeout(canliDonusKur, 300); return; }
+        C.donusKuruldu = true;
+        var bekle = 0;
+        var git = function (u) {
+            if (C.donuldu) return;
+            var sahip = h.oda === C.odaId(u.uid);
+            if (sahip && h.yol === 'donus') return;
+            if (sahip && !biletHazir(u) && bekle++ < 20) { setTimeout(function () { git(u); }, 300); return; }
+            C.donuldu = true;
+            var hedef = sahip ? 'tahta.html?rol=yansit&canli=' + encodeURIComponent(h.oda) + '&sayfa=index.html'
+                              : 'tahta.html?rol=izle&canli=' + encodeURIComponent(h.oda);
+            try { location.replace(hedef); } catch (e) { location.href = hedef; }
+        };
+        f.auth().onAuthStateChanged(function (u) {
+            if (u && !u.isAnonymous) { git(u); return; }
+            if (h.yol === 'canlidonus' && !C.girisAcildi) {
+                C.girisAcildi = true;
+                setTimeout(function () {
+                    var o = oturum();
+                    if ((!o || o.isAnonymous) && typeof window.openLoginModal === 'function') { try { window.openLoginModal(); } catch (e) { } }
+                }, 500);
+            }
+        });
+    }
+
     /* ================================================================ BAŞLIK + LİSTELERİM DÜĞMELERİ, DÖNGÜ */
     function dugmeGuncelle() {
         var gor = yetkili() && !!oturum();
@@ -283,6 +350,7 @@
     function basla() {
         dugmeGuncelle();
         setInterval(dugmeGuncelle, 1500);
+        canliDonusKur();
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', basla);
     else basla();
