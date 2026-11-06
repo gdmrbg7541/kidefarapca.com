@@ -314,3 +314,106 @@ exports.epostaDuzelt = onCall(async (istek) => {
   }
   return { eski, yeni, belge: b.exists };
 });
+
+
+/* ======================================================================
+   CANLI DERS — CLOUDFLARE TURN KİMLİĞİ  (SİTE İÇİ ÇAĞRI (05.11.2026))
+   ----------------------------------------------------------------------
+   Birebir canlı derste (hesap/live-lesson.js) iki taraf mobil ağ / NAT
+   arkasındaysa görüntü ancak bir TURN aktarıcısıyla akar. Eskiden ücretsiz
+   herkese açık relay (openrelay) kullanılıyordu; güvenilmez. Artık
+   Cloudflare TURN: bu işlev, giriş yapmış kullanıcıya 4 saat geçerli
+   kısa ömürlü kimlik üretir. TURN anahtarı tarayıcıya hiç gitmez.
+   GİZLER (turn-yukle.command sorar):  CF_TURN_KEY_ID · CF_TURN_API_TOKEN
+   (Cloudflare panosu → Realtime → TURN → anahtar oluştur)
+   ====================================================================== */
+const { defineSecret } = require('firebase-functions/params');
+const CF_TURN_KEY_ID = defineSecret('CF_TURN_KEY_ID');
+const CF_TURN_API_TOKEN = defineSecret('CF_TURN_API_TOKEN');
+
+exports.turnKimlik = onCall({ secrets: [CF_TURN_KEY_ID, CF_TURN_API_TOKEN] }, async (istek) => {
+  if (!istek.auth) throw new HttpsError('unauthenticated', 'Giriş gerekli.');
+  const keyId = (CF_TURN_KEY_ID.value() || '').trim();
+  const token = (CF_TURN_API_TOKEN.value() || '').trim();
+  if (!keyId || !token) throw new HttpsError('failed-precondition', 'TURN anahtarı tanımlı değil (turn-yukle.command ile CF_TURN_KEY_ID ve CF_TURN_API_TOKEN gizlerini gir).');
+  const ttl = 4 * 3600;
+  let r;
+  try {
+    r = await fetch('https://rtc.live.cloudflare.com/v1/turn/keys/' + encodeURIComponent(keyId) + '/credentials/generate-ice-servers', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ttl })
+    });
+  } catch (e) {
+    throw new HttpsError('unavailable', 'Cloudflare TURN sunucusuna ulaşılamadı: ' + ((e && e.message) || e));
+  }
+  if (!r.ok) throw new HttpsError('internal', 'Cloudflare TURN yanıtı: HTTP ' + r.status);
+  const j = await r.json();
+  let L = j && j.iceServers;
+  if (L && !Array.isArray(L)) L = [L];
+  if (!Array.isArray(L) || !L.length) throw new HttpsError('internal', 'TURN sunucu listesi boş döndü.');
+  /* 53 numaralı kapı adreslerini at (tarayıcılar engeller; trickle ICE'siz zaman aşımı yapar) */
+  L = L.map((s) => Object.assign({}, s, { urls: [].concat(s.urls || []).filter((u) => !/:53(\?|$)/.test(String(u))) }))
+       .filter((s) => s.urls.length);
+  return { iceServers: L, ttl, t: Date.now() };
+});
+
+
+/* ======================================================================
+   CANLI DERS — CLOUDFLARE REALTIME SFU KÖPRÜSÜ  (06.11.2026)
+   ----------------------------------------------------------------------
+   Yönetici: "sfu kuruyorum". Ses/görüntü eşten eşe değil Cloudflare'in
+   SFU'su üzerinden akar: her katılımcı kendi oturumunu açar, izlerini
+   yayınlar, öbürlerinin izlerine abone olur (hesap/canliOda.js). Bütün
+   SFU istekleri Cloudflare'e BURADAN gider: uygulama gizi tarayıcıya hiç
+   inmez. Giriş yapmış kullanıcı ister; işlem adı ve oturum kimliği
+   denetlenir; cevap olduğu gibi döner (errorCode'u istemci okur).
+   GİZLER (canli-yukle.command sorar): CF_SFU_APP_ID · CF_SFU_APP_SECRET
+   (Cloudflare panosu → Realtime → SFU → uygulama: App ID + App Secret)
+   İşlemler: oturum (sessions/new) · iz (tracks/new) · guncelle (tracks/update) ·
+   anlas (renegotiate) · kapat (tracks/close) · durum (session)
+   ====================================================================== */
+const CF_SFU_APP_ID = defineSecret('CF_SFU_APP_ID');
+const CF_SFU_APP_SECRET = defineSecret('CF_SFU_APP_SECRET');
+
+exports.sfu = onCall({ secrets: [CF_SFU_APP_ID, CF_SFU_APP_SECRET] }, async (istek) => {
+  if (!istek.auth) throw new HttpsError('unauthenticated', 'Giriş gerekli.');
+  const appId = (CF_SFU_APP_ID.value() || '').trim();
+  const secret = (CF_SFU_APP_SECRET.value() || '').trim();
+  if (!appId || !secret || appId === 'yok' || secret === 'yok') {
+    throw new HttpsError('failed-precondition', 'SFU uygulaması tanımlı değil (canli-yukle.command ile CF_SFU_APP_ID ve CF_SFU_APP_SECRET gizlerini gir).');
+  }
+  const d = (istek.data && typeof istek.data === 'object') ? istek.data : {};
+  const YOL = {
+    oturum: ['POST', '/sessions/new'],
+    iz: ['POST', '/sessions/{sid}/tracks/new'],
+    guncelle: ['PUT', '/sessions/{sid}/tracks/update'],
+    anlas: ['PUT', '/sessions/{sid}/renegotiate'],
+    kapat: ['PUT', '/sessions/{sid}/tracks/close'],
+    durum: ['GET', '/sessions/{sid}']
+  };
+  const islem = String(d.islem || '');
+  if (!YOL[islem]) throw new HttpsError('invalid-argument', 'Bilinmeyen işlem: ' + islem.slice(0, 20));
+  const sid = String(d.sid || '');
+  if (islem !== 'oturum' && !/^[A-Za-z0-9_-]{8,128}$/.test(sid)) throw new HttpsError('invalid-argument', 'Oturum kimliği geçersiz.');
+  const [yontem, yol] = YOL[islem];
+  const adres = 'https://rtc.live.cloudflare.com/v1/apps/' + encodeURIComponent(appId) + yol.replace('{sid}', encodeURIComponent(sid));
+  const govde = (d.govde && typeof d.govde === 'object') ? d.govde : {};
+  const metinGovde = JSON.stringify(govde);
+  if (metinGovde.length > 200000) throw new HttpsError('invalid-argument', 'İstek çok büyük.');
+  let r;
+  try {
+    r = await fetch(adres, {
+      method: yontem,
+      headers: { 'Authorization': 'Bearer ' + secret, 'Content-Type': 'application/json' },
+      body: yontem === 'GET' ? undefined : metinGovde
+    });
+  } catch (e) {
+    throw new HttpsError('unavailable', 'Cloudflare SFU sunucusuna ulaşılamadı: ' + ((e && e.message) || e));
+  }
+  const metin = await r.text();
+  let j = {};
+  try { j = metin ? JSON.parse(metin) : {}; } catch (e) { j = { ham: String(metin).slice(0, 300) }; }
+  if (!r.ok) throw new HttpsError('internal', 'Cloudflare SFU: HTTP ' + r.status + (j && j.errorDescription ? ' — ' + j.errorDescription : ''));
+  return j;
+});

@@ -52,6 +52,36 @@ let _chatFirstSnap = true;     // sohbet ilk yükleme (eski mesajlar için kırm
 
 function _escLive(t) { return String(t).replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
+/* ICE SUNUCULARI — SİTE İÇİ ÇAĞRI (05.11.2026): önce Cloudflare TURN (Cloud Function «turnKimlik»; kısa ömürlü
+   kimlik, tarayıcıda süresi dolana dek saklanır), alınamazsa aşağıdaki eski liste (Google STUN + ücretsiz relay). */
+var YEDEK_ICE = null;      /* aşağıdaki configuration */
+var TURN_DEPO = 'kidef_turn', TURN_BOLGE = 'europe-west1';
+async function _iceYapilandirma() {
+    var cf = null;
+    try {
+        var v = JSON.parse(localStorage.getItem(TURN_DEPO) || 'null');
+        if (v && Array.isArray(v.iceServers) && v.iceServers.length && v.son > Date.now() + 60000) cf = v.iceServers;
+    } catch (e) { }
+    if (!cf) {
+        try {
+            var u = firebase.auth().currentUser;
+            if (u && firebase.app().functions) {
+                var cagir = firebase.app().functions(TURN_BOLGE).httpsCallable('turnKimlik');
+                var r = await Promise.race([cagir({}), new Promise(function (_, rej) { setTimeout(function () { rej(new Error('zaman aşımı')); }, 6000); })]);
+                var d = r && r.data;
+                if (d && Array.isArray(d.iceServers) && d.iceServers.length) {
+                    cf = d.iceServers.map(function (s) { return Object.assign({}, s, { urls: [].concat(s.urls || []).filter(function (x) { return !/:53(\?|$)/.test(String(x)); }) }); })
+                                     .filter(function (s) { return s.urls.length; });
+                    try { localStorage.setItem(TURN_DEPO, JSON.stringify({ iceServers: cf, son: Date.now() + Math.max(600, (+d.ttl || 3600) - 600) * 1000 })); } catch (e) { }
+                }
+            }
+        } catch (e) { console.warn('TURN kimliği alınamadı, yedek sunucular kullanılacak:', (e && (e.message || e.code)) || e); }
+    }
+    if (!cf) return configuration;
+    return { iceServers: cf.concat([{ urls: 'stun:stun.l.google.com:19302' }]), iceCandidatePoolSize: 4 };
+}
+var _sonOgrenciDurum = null;   /* ev sahibi: öğrencinin katıldı/ayrıldı durumu (site içi çağrı) */
+
 const configuration = {
     iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
@@ -165,7 +195,8 @@ async function initWebRTCRoom(roomId, isHost) {
     _appliedAnswerSdp = null;
     if (_iceRestartTimer) { clearTimeout(_iceRestartTimer); _iceRestartTimer = null; }
 
-    peerConnection = new RTCPeerConnection(configuration);
+    _sonOgrenciDurum = null;
+    peerConnection = new RTCPeerConnection(await _iceYapilandirma());   /* Cloudflare TURN varsa onunla (05.11.2026) */
 
     // Sohbet geçmişini temizle (eski mesajlar tekrar yığılmasın)
     const chatContainer0 = document.getElementById('chat-messages');
@@ -223,7 +254,8 @@ async function initWebRTCRoom(roomId, isHost) {
     // Karşı tarafın görüntüsü geldiğinde ekranda göster
     peerConnection.ontrack = event => {
         const stream = event.streams[0];
-        const participantName = appState.isRoomHost ? "Öğrenci" : "Öğretmen";
+        const participantName = appState.canliKarsiAd || (appState.isRoomHost ? "Öğrenci" : "Öğretmen");   /* karşı tarafın adı (05.11.2026) */
+        try { if (window.KidefCanli && KidefCanli.odaDurum) KidefCanli.odaDurum(); } catch (e) {}
 
         const grid = document.getElementById('main-video-grid');
         if (grid && !document.getElementById('remote-box')) {
@@ -290,10 +322,16 @@ async function initWebRTCRoom(roomId, isHost) {
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
 
+        /* SİTE İÇİ ÇAĞRI (05.11.2026): öğrencinin dinlediği belge — öğretmen adı; davetli/öğrenci durumu sıfır (yeni ders) */
+        let _hostAd = '';
+        try { _hostAd = (appState.currentUserName && appState.currentUserName !== 'Belirtilmedi') ? appState.currentUserName : ''; } catch (e) {}
         await roomRef.set({
             offer: { type: offer.type, sdp: offer.sdp },
             createdAt: new Date(),
-            status: 'active'
+            status: 'active',
+            ogretmenUid: (firebase.auth().currentUser && firebase.auth().currentUser.uid) || null,
+            ogretmenAd: _hostAd || 'Öğretmen',
+            davetli: null, davetliAd: null, ogrenciDurum: null, ogrenciUid: null, ogrenciAd: null
         });
 
         _setLiveStatus('Öğrenci bekleniyor…', '#ccc');
@@ -302,6 +340,18 @@ async function initWebRTCRoom(roomId, isHost) {
         appState.unsubscribeStatus = roomRef.onSnapshot(async snapshot => {
             const data = snapshot.data();
             if (!data) return;
+            /* SİTE İÇİ ÇAĞRI (05.11.2026): öğrencinin katıldı / ayrıldı durumu + odadaki çağrı paneli */
+            try {
+                const _oAd = data.ogrenciAd || data.davetliAd || 'Öğrenci';
+                if (data.ogrenciDurum === 'ayrildi' && _sonOgrenciDurum !== 'ayrildi') {
+                    const rb = document.getElementById('remote-box'); if (rb) rb.remove();
+                    _setLiveStatus(_oAd + ' dersten ayrıldı.', '#F39C12');
+                } else if (data.ogrenciDurum === 'katildi' && _sonOgrenciDurum !== 'katildi' && !document.getElementById('remote-box')) {
+                    _setLiveStatus(_oAd + ' bağlanıyor…', '#ccc');
+                }
+                _sonOgrenciDurum = data.ogrenciDurum || null;
+                if (window.KidefCanli && KidefCanli.odaDurum) KidefCanli.odaDurum(data);
+            } catch (e) {}
             if (data.answer && data.answer.sdp !== _appliedAnswerSdp) {
                 try {
                     _appliedAnswerSdp = data.answer.sdp;
@@ -335,6 +385,16 @@ async function initWebRTCRoom(roomId, isHost) {
         appState.unsubscribeStatus = roomRef.onSnapshot(async snapshot => {
             const data = snapshot.data();
             if (!data) { _setLiveStatus('Öğretmen bekleniyor…', '#ccc'); return; }
+
+            /* ERİŞİM (05.11.2026): öğretmen belli bir öğrenciyi çağırdıysa odaya yalnız o girer */
+            try {
+                const _ben = firebase.auth().currentUser && firebase.auth().currentUser.uid;
+                if (data.davetli && _ben && data.davetli !== _ben) {
+                    showCustomAlert("Bu ders başka bir öğrenci için açılmış; öğretmenin seni çağırmasını bekle.");
+                    closeLiveClassRoom();
+                    return;
+                }
+            } catch (e) {}
 
             if (data.status === 'closed') {
                 showCustomAlert("Dersi başlatan kişi (Öğretmen/Yönetici) dersten ayrıldı. Ders sonlandırılıyor.");
@@ -587,9 +647,18 @@ async function openLiveClassRoom() {
             const urlParams = new URLSearchParams(window.location.search);
             const inviteRoomId = urlParams.get('liveRoom');
             if (appState.isInviteMode && inviteRoomId) {
-                // Davet linkiyle gelen: mevcut odaya katıl
+                // Davet linkiyle gelen: mevcut odaya katıl (05.11.2026: davetli başkasıysa girilmez)
+                if (!(await _odayaGirebilirMi(inviteRoomId))) return;
                 appState.activeRoomId = inviteRoomId;
                 await initWebRTCRoom(inviteRoomId, false);
+                _ogrenciKatildiYaz(inviteRoomId);
+            } else if (appState.davetOda) {
+                // SİTE İÇİ ÇAĞRI (05.11.2026): öğretmenin çağırdığı öğrenci site içinden katılır (hesap/canliders.js)
+                const _oda = appState.davetOda; appState.davetOda = null;
+                if (!(await _odayaGirebilirMi(_oda))) return;
+                appState.activeRoomId = _oda;
+                await initWebRTCRoom(_oda, false);
+                _ogrenciKatildiYaz(_oda);
             } else if (appState.userRole === 'teacher' || appState.userRole === 'admin') {
                 // Öğretmen/Yönetici: SABİT oda kur (davet linki hep aynı, tekrar kullanılabilir)
                 if (!appState.activeRoomId) {
@@ -600,8 +669,41 @@ async function openLiveClassRoom() {
         } catch (e) {
             console.error('Canlı ders bağlantısı kurulamadı:', e);
         }
+        /* davet linki tuşu yalnız ev sahibinde (05.11.2026) */
+        try { const bi = document.getElementById('btn-invite'); if (bi) bi.style.display = appState.isRoomHost ? '' : 'none'; } catch (e) {}
 
     }
+}
+
+/* ERİŞİM (05.11.2026): öğretmen belli bir öğrenciyi çağırdıysa odaya yalnız o girer — girişten ÖNCE bakılır
+   (girip hemen atılmak öğretmene yanlış «katıldı/ayrıldı» yazmasın). Belge okunamazsa girişe izin verilir. */
+async function _odayaGirebilirMi(rid) {
+    try {
+        const u = firebase.auth().currentUser;
+        if (!u || typeof db === 'undefined' || !db) return true;
+        const d = await db.collection('rooms').doc(rid).get();
+        const v = (d && d.exists) ? (d.data() || {}) : {};
+        if (v.davetli && v.davetli !== u.uid) {
+            showCustomAlert("Bu ders başka bir öğrenci için açılmış; öğretmenin seni çağırmasını bekle.");
+            const modal = document.getElementById('live-class-modal');
+            if (modal) modal.style.display = 'none';
+            if (appState.localStream) { appState.localStream.getTracks().forEach(t => t.stop()); appState.localStream = null; }
+            return false;
+        }
+    } catch (e) {}
+    return true;
+}
+let _katildiYazildi = false;
+/* SİTE İÇİ ÇAĞRI (05.11.2026): öğrenci odaya girince / ayrılınca öğretmene durum (oda belgesi) */
+function _ogrenciKatildiYaz(rid) {
+    try {
+        const u = firebase.auth().currentUser;
+        if (!u || typeof db === 'undefined' || !db) return;
+        _katildiYazildi = true;
+        let ad = '';
+        try { ad = (appState.currentUserName && appState.currentUserName !== 'Belirtilmedi' && appState.currentUserName !== 'Misafir Öğrenci') ? appState.currentUserName : ''; } catch (e) {}
+        db.collection('rooms').doc(rid).set({ ogrenciDurum: 'katildi', ogrenciUid: u.uid, ogrenciAd: ad || u.displayName || u.email || 'Öğrenci', katildiT: Date.now() }, { merge: true }).catch(() => {});
+    } catch (e) {}
 }
 
 function closeLiveClassRoom() {
@@ -639,7 +741,13 @@ function closeLiveClassRoom() {
         const rref = db.collection('rooms').doc(rid);
         rref.set({ status: 'closed', offer: null, answer: null }, { merge: true }).catch(() => {});
         _clearRoomSignaling(rref).catch(() => {}); // sinyal alt-koleksiyonlarını temizle (şişmesin)
+        try { if (window.KidefCanli && KidefCanli.odaKapandi) KidefCanli.odaKapandi(); } catch (e) {}   /* ders kaydı (05.11.2026) */
+    } else if (!appState.isRoomHost && appState.activeRoomId && _katildiYazildi && typeof db !== 'undefined' && db) {
+        /* SİTE İÇİ ÇAĞRI (05.11.2026): öğrenci ayrıldı — öğretmen görsün */
+        try { db.collection('rooms').doc(appState.activeRoomId).set({ ogrenciDurum: 'ayrildi', ayrildiT: Date.now() }, { merge: true }).catch(() => {}); } catch (e) {}
     }
+    _katildiYazildi = false;
+    appState.davetOda = null; appState.canliKarsiAd = null;
 
     // Firestore dinleyicilerini kapat
     ['unsubscribeChat', 'unsubscribeStatus', 'unsubscribeAnswer', 'unsubscribeIce'].forEach(k => {

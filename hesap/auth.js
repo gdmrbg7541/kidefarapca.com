@@ -402,6 +402,10 @@ function authIslemi() {
 
         if (pass !== pass2) { errorEl.innerText = "Şifreler uyuşmuyor."; return; }
         if (!sName) { errorEl.innerText = "Lütfen isminizi girin."; return; }
+        /* AD + SOYAD ZORUNLU (06.11.2026): öğretmen kaydında soyadsız ad durur (hesap/kayitalani.js) */
+        if (window.KidefKayit && KidefKayit.adSoyadTam && KidefKayit.soyadGerekli(selectedRole === 'admin' ? 'student' : selectedRole) && !KidefKayit.adSoyadTam(sName)) {
+            errorEl.innerText = KidefKayit.AD_SOYAD_HATA; return;
+        }
         if (!sProf) { errorEl.innerText = "Lütfen mesleğinizi girin (zorunlu)."; return; }
         if (!/^5[0-9]{9}$/.test(phone)) { errorEl.innerText = "Geçerli bir telefon numarası girin: 5XX XXX XX XX (zorunlu)."; return; }
         if (!sGender) { errorEl.innerText = "Lütfen cinsiyetinizi seçin (zorunlu)."; return; }

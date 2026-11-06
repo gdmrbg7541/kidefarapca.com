@@ -379,7 +379,16 @@
         });
         g.scrollTop = 0;
         if (_sekme === 'genel') {
-            g.innerHTML = sureBolumu(b.kullanim || {}) + sinifBolumu(b.userData || '', b.ogrenci || {});
+            /* CANLI DERS KULLANIMI (06.11.2026): ay ay döküm, son dersler (hesap/canlikullanim.js) */
+            var canli = '';
+            try {
+                if (window.KidefCanliKullanim && KidefCanliKullanim.bolum) {
+                    var _hepsi = []; var _ao = window._adminOgretmenler || {};
+                    for (var _k in _ao) if (Object.prototype.hasOwnProperty.call(_ao, _k) && _ao[_k] && _ao[_k].doc) _hepsi.push(_ao[_k].doc);
+                    canli = KidefCanliKullanim.bolum(b.doc || {}, _hepsi);
+                }
+            } catch (e) { canli = ''; }
+            g.innerHTML = sureBolumu(b.kullanim || {}) + canli + sinifBolumu(b.userData || '', b.ogrenci || {});
         } else if (_sekme === 'ucret') {
             g.innerHTML = '<div class="ogd-bol"><h4>Beklenen Destek · ücret durumu</h4><div id="ogd-ucret"></div></div>';
             var k = document.getElementById('ogd-ucret');

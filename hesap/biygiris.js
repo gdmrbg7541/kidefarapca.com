@@ -193,7 +193,7 @@
             email: email, pass: pass, pass2: $('biyg-pass2').value,
             ad: $('biyg-ad').value, meslek: $('biyg-meslek').value,
             tel: $('biyg-tel').value, cinsiyet: $('biyg-cinsiyet').value
-        });
+        }, { rol: 'teacher' });                                   /* AD + SOYAD ZORUNLU (06.11.2026): öğretmen kaydı */
         if (!s.tamam) { hata(s.hata); return; }
         if (!agVar()) { hata('Bağlantı yok: kayıt için internet gerekiyor.'); return; }
 

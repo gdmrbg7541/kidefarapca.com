@@ -109,6 +109,25 @@
          ".read":  "auth != null && auth.uid === $uid",
          ".write": "auth != null && auth.uid === $uid" } } } }
    Veri yolu: tahta/<uid>/ yayin · olay/0..63 · kay · alan · ayar · izle/<cihaz> · isaret (lazer/büyüteç)
+
+   CANLI DERS (05.11.2026, hesap/canliOda.js + hesap/canliders.js): aynı motor, kök
+   canli/<oda>/oda (oda = ders_<öğretmen uid>); öğretmen yazar, çağrılan öğrenci (davetli)
+   okur ve yalnız izleyici yollarına yazar. Kurala eklenecek bölüm:
+     "canli": { "$oda": {
+       ".read":  "auth != null && ($oda === 'ders_' + auth.uid || data.child('davetli').val() === auth.uid)",
+       ".write": "auth != null && $oda === 'ders_' + auth.uid",
+       "oda": {
+         "izle":      { "$c": { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" } },
+         "yokla":     { "$c": { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" } },
+         "gorus":     { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" },
+         "kanalIste": { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" },
+         "cikis":     { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" },
+         "ekran":     { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" } },
+       "ses": { "ogr": { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" } } } },
+     "canliCagri": { "$uid": {
+       ".read":  "auth != null && auth.uid === $uid",
+       ".write": "auth != null && ((auth.uid === $uid && !newData.exists()) || root.child('canli/ders_' + auth.uid + '/davetli').val() === $uid || (!newData.exists() && data.child('oda').val() === 'ders_' + auth.uid))" } }
+   Veri yolu: canli/<oda>/ davetli · davetliAd · davetT · oda/(motor) · ses/ogt · ses/ogr ; canliCagri/<öğrenci uid> = { oda, ad, t }
    ===================================================================== */
 (function () {
   'use strict';
@@ -135,13 +154,55 @@
   var ROL = /[?&]rol=izle\b/.test(location.search) ? 'izle' : 'yansit';
   var CIHAZ = ROL === 'izle' ? 'tahta' : 'bilgisayar';
   var CERCEVE = document.getElementById('tahtaCerceve');
+  /* CANLI DERS (05.11.2026) — öğretmen: "amacımız kameradan çok sitedeki dosyaları kolaylıkla
+     yansıtmak ... öğrencinin cihazına öğretmenin kullandığı şekilde yansıtmak ... kusursuz olmalı".
+     Aynı motor, başka kök: tahta/<uid> yerine canli/<oda>/oda (oda = ders_<öğretmen uid>).
+     Öğretmen tahta.html?rol=yansit&canli=<oda>, çağrılan öğrenci tahta.html?rol=izle&canli=<oda>.
+     Öğrenci yalnız İZLER: lider ve vekil olmaz, Sınıf Ekranı işareti (kidef_tahta_cihaz) ve
+     kumanda dönüş kaydı yazılmaz, öğrenci-hesabı kapısı bu kipte açık (okuma izni veritabanı
+     kuralında: canli/<oda>/davetli === uid). Ses ve çağrı: hesap/canliOda.js. */
+  var CANLI = (function () { var m = /[?&]canli=(ders_[A-Za-z0-9]{1,64})(?:&|$)/.exec(location.search); return m ? m[1] : ''; })();
+  var CANLI_OGR = !!(CANLI && ROL === 'izle');
+  var CANLI_METIN = !CANLI ? {} : CANLI_OGR ? {
+      'th.sinif_ekrani': 'Canlı ders', 'th.cik': 'Dersten ayrıl', 'th.z_cik_ip': 'Dersten ayrıl, ana sayfaya dön',
+      'th.z_bagli': 'Öğretmen bağlı', 'th.z_bekle': 'Öğretmen bekleniyor', 'th.z_yok': 'Öğretmen bağlı değil', 'th.z_durak': 'Öğretmen duraklattı',
+      'th.bilgisayar_bagli': 'Öğretmen bağlı', 'th.bilgisayar_yok': 'Öğretmen bağlı değil.', 'th.bilgisayar_durak': 'Öğretmen dersi duraklattı.',
+      'th.yalniz_gosterir': 'Öğretmenin açtığı sayfa burada görünür.',
+      'th.z_esitle_ip': 'Sayfayı öğretmenden yeniden iste', 'th.b_z_esitle': 'Sayfa öğretmenden yeniden isteniyor…',
+      'th.serit_ayrildi': 'Öğretmen ayrıldı — son görüntü', 'th.serit_durak': 'Öğretmen dersi duraklattı',
+      'th.kumanda_uyku': 'Öğretmenin cihazı şu an bağlı değil (uykuda). Ders son görüntüde bekliyor.',
+      'th.kumanda_uyku_kisa': 'Öğretmenin cihazı uykuda — son görüntü',
+      'th.b_birlikte_kumanda': 'Öğretmen dersi bitirdi. Ana sayfaya dönülüyor…',
+      'th.b_ekran_devir': 'Ders başka bir cihazında açıldı. Bu cihaz dersten çıkıyor…', 'th.b_ekran_devir_yok': 'Ders başka bir cihazda açıldı. Bu cihaz dersten çıkıyor…',
+      'th.z_ipucu': 'Öğretmen dersi başlatınca açtığı sayfalar burada kendiliğinden görünür.',
+      'th.giris_alt': 'Canlı ders, siteye giriş yapınca açılır.', 'th.vt_bas': 'Ders bağlantısı kurulamadı',
+      'th.perde_metin': 'Öğretmen ekranı kısa bir süre kapattı'
+    } : {
+      'th.yansitiliyor': 'Canlı ders', 'th.sinif_ekrani': 'Canlı ders',
+      'th.tahta_bekleniyor': 'Öğrenci bekleniyor…', 'th.tahta_bagli': 'Öğrenci bağlı', 'th.tahta_cok': '{n} cihaz bağlı',
+      'th.b_tahta_geldi': 'Öğrenci bağlandı.', 'th.hedef_bekleniyor': '{ad} bekleniyor…',
+      'th.bitir': 'Dersi bitir', 'th.bitir_ip': 'Canlı dersi bitir, bu sayfada kal',
+      'th.durak_ip': 'Öğrenci son görüntüde dursun; sen burada serbestçe gez',
+      'th.b_durak': 'Duraklatıldı: öğrenci son görüntüde bekliyor.', 'th.b_devam': 'Sürdürüldü: öğrenci bu ekrana eşitlendi.',
+      'th.esitle_ip': 'Öğrencideki sayfayı bu ekranla yeniden eşitle', 'th.esitleniyor': 'Öğrenciyle eşitleniyor…',
+      'th.b_esitle': 'Öğrencinin ekranı bu ekrana eşitleniyor…',
+      'th.perde_ip': 'Öğrencinin ekranını karart', 'th.b_perde_acik': 'Öğrencinin ekranı karartıldı.', 'th.b_perde_kapali': 'Öğrencinin ekranı yeniden görünüyor.',
+      'th.lazer_ip': 'Parmağını ya da fareyi gezdir: öğrencide kırmızı nokta aynı yeri gösterir, bıraktığın yerde kalır',
+      'th.buyutec_ip': 'Gezdirdiğin yer öğrencide yuvarlak bir mercekle büyür',
+      'th.alan_bas': 'Öğrenci ekranı', 'th.alan_bekle': 'öğrenci bekleniyor…', 'th.alan_ip': 'Öğrencinin ekran oranında alan: içinde öğrencinin gördüğü',
+      'th.b_birlikte_tahta': 'Öğrenci dersten ayrıldı.',
+      'th.giris_alt': 'Canlı ders, siteye giriş yapınca açılır.', 'th.vt_bas': 'Ders bağlantısı kurulamadı',
+      'th.devam_aciliyor': 'Canlı ders açılıyor…', 'th.devam_esit': 'Canlı ders açılıyor…'
+    };
   var SIMDI = function () { return Date.now(); };
   var has = function (o, k) { return Object.prototype.hasOwnProperty.call(o, k); };
 
   /* -------------------------------------------------------- yardımcılar */
   function $(id) { return document.getElementById(id); }
   function kd(k, tr, yer) {
-    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    var m;
+    if (CANLI && has(CANLI_METIN, k)) m = CANLI_METIN[k];                 /* canlı ders metinleri (05.11.2026) */
+    else m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
     if (!yer || m == null) return m;
     return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
       return has(yer, ad) ? String(yer[ad]) : t;
@@ -222,6 +283,7 @@
      Tahta 3KD). hesap/cihazlar.js (Çıkış yap penceresi) aynı kuralla yazar. */
   function tahtaAdi() {                    /* elle verilen ad (yoksa boş) */
     var ad = '';
+    if (CANLI_OGR) return String(window.__kidefCanliAd || 'Öğrenci').slice(0, 40);          /* canlı ders: öğrencinin adı */
     if (window.__kidefTahtaAd != null) return String(window.__kidefTahtaAd).slice(0, 40);     /* deneme kancası */
     try { ad = (localStorage.getItem('kidef_cihaz_ad') || localStorage.getItem('kidef_tahta_ad') || '').trim(); } catch (e) { }
     return ad.slice(0, 40);
@@ -307,7 +369,7 @@
     uid: null, bas: null, devam: false, esitBekle: false, donus: 0, karar: false
   };
   function oturumVar() { return !!(S.yayin && S.yayin.cevrimici); }
-  function cift() { return S.ayar.kip !== 'tek'; }
+  function cift() { return !CANLI && S.ayar.kip !== 'tek'; }          /* canlı ders: öğrenci yalnız izler */
   function takipte() { return !S.lider && oturumVar(); }      /* başka cihazı izliyor */
 
   /* görünürlük: telefon kilitlenince / uyanınca (medya süzgeci, bağlantı yoklama) */
@@ -815,7 +877,7 @@
         /* "Bitir": ders bitti (bitir) — tahta onu üstlenmez, ana sayfa kumandaya geri dönmez */
         k.update({ 'yayin/cevrimici': false, 'yayin/bitir': true, 'yayin/vekil': null, 'yayin/ts': TS(), 'olay': null, 'kay': null, 'alan': null, 'ayar/perde': false, 'ayar/kg': false, 'isaret': null, 'gorus': null, 'kanal': null, 'kanalIste': null });
         k.child('izle/' + BEN).remove();
-        try { localStorage.removeItem('kidef_kumanda_son'); } catch (e) { }
+        try { localStorage.removeItem(SON_ANAHTAR); } catch (e) { }
       } else if (k) {
         /* "Çık": aynı yansıtma sürdükçe ana sayfa tahtayı geri sürüklemesin
            (sistem/tahtagir.js bakar; yeni yansıtmada tahta yine kendiliğinden açılır) */
@@ -853,6 +915,7 @@
   }
   /* kumanda: tahtadan bilerek çıkıldı (tahta/<uid>/cikis) — bu oturumun Sınıf Ekranıysa kumanda da çıkar */
   function cikisGeldi(v) {
+    if (CANLI) return;                                               /* canlı ders: öğrenci ayrılınca öğretmen odada kalır */
     if (CIHAZ !== 'bilgisayar' || !S.kok || S.cikiyor || S.devredildi || !v || !v.id || v.id === BEN) return;
     var bas = S.bas || (S.yayin && S.yayin.bas) || null;
     if (!bas || v.bas !== bas) return;                               /* başka (eski) yansıtmanın çıkışı */
@@ -928,7 +991,7 @@
          (hesap/oturumguvenlik.js çerçevede yüklü değilken 40 dk kuralı işlemiyordu).
          Girişin üstünden 2 dakikadan çok geçmişse ve son hareketin (kg_son_hareket)
          ya da girişin üstünden 40 dakika geçmişse tahta açılışta çıkar. */
-      if (CIHAZ === 'tahta' && !bayatBakildi) {
+      if (CIHAZ === 'tahta' && !CANLI_OGR && !bayatBakildi) {
         bayatBakildi = true;
         if (bayatOturum(u)) {
           try { auth.signOut(); } catch (e) { }
@@ -936,9 +999,18 @@
         }
       }
       S.uid = u.uid;
+      if (CANLI_OGR) {
+        /* canlı ders, öğrenci: davetli izleyici (okuma izni veritabanı kuralında); öğrenci kapısı işlemez */
+        hazir(vt.ref('canli/' + CANLI + '/oda'));
+        return;
+      }
       /* ÖĞRENCİ HESABI (02.11.2026): kapı bileti «öğrenci» diyorsa tahta hiç başlamaz */
       if (OGR_KAPALI || ogrenciBileti(u)) { ogrenciKapat(); return; }
-      hazir(vt.ref('tahta/' + u.uid));
+      if (CANLI) {
+        /* canlı ders, öğretmen: yalnız kendi odası */
+        if (CANLI !== 'ders_' + u.uid) { cik('index.html'); return; }
+        hazir(vt.ref('canli/' + CANLI + '/oda'));
+      } else hazir(vt.ref('tahta/' + u.uid));
       rolDenetle(u);
     });
   }
@@ -1070,6 +1142,7 @@
   /* bu cihaz bir dersin kumandası (bilgisayar/telefon): site yeniden açılınca
      ana sayfa buraya döner (sistem/tahtagir.js) — "Bitir" bunu siler */
   var kumandaSonZ = 0;
+  var SON_ANAHTAR = CANLI ? 'kidef_canli_son' : 'kidef_kumanda_son';     /* canlı ders: ayrı kayıt (sistem/tahtagir.js bakmaz) */
   function kumandaSonYaz(zorla) {
     if (CIHAZ !== 'bilgisayar' || !S.kok || !S.uid) return;
     var z = SIMDI();
@@ -1077,7 +1150,7 @@
     var bas = S.bas || (S.yayin && S.yayin.bas) || null;
     if (!bas) return;
     kumandaSonZ = z;
-    try { localStorage.setItem('kidef_kumanda_son', JSON.stringify({ uid: S.uid, bas: bas, ben: BEN, t: z })); } catch (e) { }
+    try { localStorage.setItem(SON_ANAHTAR, JSON.stringify({ uid: S.uid, bas: bas, ben: BEN, t: z })); } catch (e) { }
   }
   function baslikYaz(d) {
     if (CIHAZ !== 'bilgisayar') return;
@@ -2081,6 +2154,7 @@
      · Birden çok tahta varsa yalnız biri (kimliği en küçük olan) üstlenir. */
   function uzaktaMi() { return !!(Z.uzak && !(S.yayin && S.yayin.bitir)); }
   function vekilAday() {
+    if (CANLI_OGR) return false;                                     /* canlı ders: öğrenci dersi üstlenmez */
     if (CIHAZ !== 'tahta' || !S.kok || S.lider || oturumVar()) return false;
     var y = S.yayin, c = Z.sonCanli;
     if (!c || !y || y.bitir || y.durak || c.durak) return false;      /* duraklatılmış ders: tahta son görüntüde bekler */
@@ -2496,7 +2570,7 @@
      başlanır (tahta yenilenmez); sürmüyorsa her zamanki gibi bu cihaz yansıtır */
   function devamKarar(kok) {
     var yr = null, iz = null, n = 0, son = null;
-    try { son = JSON.parse(localStorage.getItem('kidef_kumanda_son') || 'null'); } catch (e) { }
+    try { son = JSON.parse(localStorage.getItem(SON_ANAHTAR) || 'null'); } catch (e) { }
     var bitti = function (zorla) {
       if (S.karar) return;
       if (!zorla && ++n < 2) return;
@@ -2557,8 +2631,8 @@
       }
     } catch (e) { }
     try {
-      var son = JSON.parse(localStorage.getItem('kidef_kumanda_son') || 'null');
-      if (son && (!son.ben || son.ben === BEN)) localStorage.removeItem('kidef_kumanda_son');
+      var son = JSON.parse(localStorage.getItem(SON_ANAHTAR) || 'null');
+      if (son && (!son.ben || son.ben === BEN)) localStorage.removeItem(SON_ANAHTAR);
     } catch (e) { }
     var ad = (y && y.kimlik === KIMLIK) ? '' : String((y && y.cihazAd) || '').slice(0, 40);
     try { sessionStorage.setItem('kidef_kumanda_devir', JSON.stringify({ ad: ad, bitti: !!(y && y.bitir), t: SIMDI() })); } catch (e) { }
@@ -2606,7 +2680,7 @@
   /* bilgisayar: üst şerit */
   function kipYaz(k) {
     S.ayar.kip = k;
-    try { localStorage.setItem('kidef_tahta_kip', k); } catch (e) { }
+    try { if (!CANLI) localStorage.setItem('kidef_tahta_kip', k); } catch (e) { }
     if (S.kok) S.kok.child('ayar').update({ kip: k });
     arayuzTazele();
   }
@@ -4517,8 +4591,8 @@
     stilKur(); bekleGoster(null);
     document.body.classList.add('th-yansit');
     if (MOBIL) document.body.classList.add('th-mobil');
-    var kip = 'cift';
-    try { if (localStorage.getItem('kidef_tahta_kip') === 'tek') kip = 'tek'; } catch (e) { }
+    var kip = CANLI ? 'tek' : 'cift';
+    try { if (!CANLI && localStorage.getItem('kidef_tahta_kip') === 'tek') kip = 'tek'; } catch (e) { }
     S.ayar = { kip: kip, perde: false, kg: false };
     /* yeni yansıtma: önceki oturumdan kalan lider (varsa) bırakır */
     /* yayin/bas: bu yansıtma oturumunun kimliği (tahta "Çık" ile ayrıldıysa
@@ -4564,8 +4638,8 @@
     devamGoster(kd('th.devam_esit', 'Tahtadaki ders açılıyor…'));
     document.body.classList.add('th-yansit');
     if (MOBIL) document.body.classList.add('th-mobil');
-    var kip = 'cift';
-    try { if (localStorage.getItem('kidef_tahta_kip') === 'tek') kip = 'tek'; } catch (e) { }
+    var kip = CANLI ? 'tek' : 'cift';
+    try { if (!CANLI && localStorage.getItem('kidef_tahta_kip') === 'tek') kip = 'tek'; } catch (e) { }
     S.ayar = { kip: kip, perde: false, kg: false };          /* gerçeği dinleyiciden gelir */
     S.yayin = y; Z.yayin = y;
     if (y.cevrimici) Z.sonCanli = y;
@@ -4703,7 +4777,7 @@
       S.devam = !m;
       S.hedef = hedef;
       S.al = /[?&]al=1(?:&|$)/.test(location.search);     /* karekodla «Evet»: kumandayı al (21.10.2026) */
-      try { history.replaceState(history.state, '', location.pathname + '?rol=yansit'); } catch (e) { }
+      try { history.replaceState(history.state, '', location.pathname + '?rol=yansit' + (CANLI ? '&canli=' + CANLI : '')); } catch (e) { }
       if (S.devam) devamGoster(kd('th.devam_aciliyor', 'Kaldığın yerden açılıyor…'));
       else {
         /* bilgisayar baştan lider: ilk sayfanın tohumu ve köprüsü giriş beklenmeden kurulur */
@@ -4722,11 +4796,11 @@
       });
       setInterval(uyanikDenetle, 30000);
     } else {
-      try { localStorage.setItem('kidef_tahta_cihaz', 'tahta'); } catch (e) { }
+      try { if (!CANLI) localStorage.setItem('kidef_tahta_cihaz', 'tahta'); } catch (e) { }   /* canlı ders: öğrencinin cihazı tahta değil */
       /* tahtada "Ana ekrana ekle / Uygulamayı yükle": her açılışta tam ekran
          açılan uygulama (bilgisayarda yükleme önerisi çıkmasın diye yalnız burada) */
       try {
-        if (!document.querySelector('link[rel="manifest"]')) {
+        if (!CANLI && !document.querySelector('link[rel="manifest"]')) {
           var mf = document.createElement('link');
           mf.rel = 'manifest'; mf.href = 'tahta.webmanifest';
           document.head.appendChild(mf);
@@ -4749,6 +4823,7 @@
   }
   window.KidefTahta = {
     kimlik: KIMLIK, hedefSec: hedefSec, tahtaListesi: tahtaListesi, tahtaAdiYaz: tahtaAdiYaz, cihazAdi: cihazAdi,
+    canli: CANLI, canliOgr: CANLI_OGR, bildir: bildir, cik: cik,
     rol: ROL, cihaz: CIHAZ, id: BEN, S: S, Y: Y, Z: Z, yolAl: yolAl, yolBul: yolBul, VT_ADRES: VT_ADRES,
     liderOl: liderOl, lider: function () { return S.lider; },
     arac: function (a) { aracSec(a); return IA.arac; }, IA: IA, IZ: IZ, noktaBilgisi: noktaBilgisi, isaretNokta: isaretNokta,

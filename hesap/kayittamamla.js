@@ -167,7 +167,7 @@
         var s = KidefKayit.dogrula({
             email: u.email, ad: $('ktAd').value, meslek: $('ktMeslek').value,
             tel: $('ktTel').value, cinsiyet: $('ktCinsiyet').value
-        }, { sifresiz: true });
+        }, { sifresiz: true, rol: S.rol });                       /* AD + SOYAD ZORUNLU (06.11.2026): rol */
         if (!s.tamam) { hata(s.hata); return; }
         var rol = S.rol, ref;
         try { ref = firebase.firestore().collection('kullanicilar').doc(u.uid); }

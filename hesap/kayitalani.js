@@ -17,6 +17,8 @@
    «gmial.com» gibi yazımlara «gmail.com mu demek istedin?» önerisi.
    GİRİŞTE YAZIM ÖNERİSİ (04.11.2026): girişte de, ama yalnız giriş başarısız
    olunca ya da «Şifremi unuttum»a basınca.
+   AD + SOYAD ZORUNLU (06.11.2026): öğretmen kaydında ad en az iki sözcük
+   (adSoyadTam, SOYAD_ZORUNLU); dogrula(a, {rol}) ile.
    ========================================================================= */
 (function () {
     'use strict';
@@ -57,6 +59,27 @@
         }).join(' ');
     };
 
+    /* ----------------------------------------------- AD + SOYAD ZORUNLU (06.11.2026)
+       Yönetici: "sadece ismini yazıp soy ismini yazmayan öğretmenler oluyor bunu
+       engelleyelim". Öğretmen kaydında ad en az İKİ sözcük olmalı; her sözcükte en
+       az iki harf («Ali Y.» geçmez; «Dr. Ayşe Yılmaz» ve «Ayşe Nur Yılmaz» geçer).
+       Öğrenci kaydı eskisi gibi (SOYAD_ZORUNLU.student). Harf: Latin (Türkçe),
+       Kiril, Arap alfabesi. Ana sayfanın kayıt formu (hesap/auth.js) da aynı
+       denetimi buradan kullanır. */
+    K.SOYAD_ZORUNLU = { teacher: true, student: false };
+    K.AD_SOYAD_HATA = 'Lütfen adını ve soyadını birlikte yaz (örn. Ayşe Yılmaz).';
+    K.adSoyadTam = function (ad) {
+        var s = String(ad == null ? '' : ad).replace(/\s+/g, ' ').trim();
+        if (!s) return false;
+        var n = 0, p = s.split(' ');
+        for (var i = 0; i < p.length; i++) {
+            var harf = p[i].replace(/[^A-Za-zÀ-ɏЀ-ӿ؀-ۿ]/g, '');
+            if (harf.length >= 2) n++;
+        }
+        return n >= 2;
+    };
+    K.soyadGerekli = function (rol) { return !!K.SOYAD_ZORUNLU[rol === 'teacher' ? 'teacher' : 'student']; };
+
     /* Formun doğrulaması. Dönen değer:
          { tamam:true, veri:{…} }            — her şey yolunda
          { tamam:false, hata:'…' }           — ilk hatalı alanın mesajı
@@ -79,6 +102,7 @@
         if (!email || (!pass && !sifresiz)) return { tamam: false, hata: 'Lütfen tüm alanları doldurun.' };
         if (!sifresiz && pass !== pass2) return { tamam: false, hata: 'Şifreler uyuşmuyor.' };
         if (!ad) return { tamam: false, hata: 'Lütfen isminizi girin.' };
+        if (sec && K.soyadGerekli(sec.rol) && !K.adSoyadTam(ad)) return { tamam: false, hata: K.AD_SOYAD_HATA };   /* AD + SOYAD ZORUNLU (06.11.2026) */
         if (!meslek) return { tamam: false, hata: 'Lütfen mesleğinizi girin (zorunlu).' };
         if (!K.TELEFON.test(tel)) {
             return { tamam: false, hata: 'Geçerli bir telefon numarası girin: 5XX XXX XX XX (zorunlu).' };

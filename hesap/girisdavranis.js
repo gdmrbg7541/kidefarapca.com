@@ -156,7 +156,7 @@
       meslek: el('student-profession') ? el('student-profession').value : '',
       tel: el('phone') ? el('phone').value : '',
       cinsiyet: el('student-gender') ? el('student-gender').value : ''
-    });
+    }, { rol: (D.rol === 'teacher') ? 'teacher' : 'student' });       /* AD + SOYAD ZORUNLU (06.11.2026): rol */
     if (!s.tamam) { hata(s.hata); return; }
 
     var rol = (D.rol === 'teacher') ? 'teacher' : 'student';

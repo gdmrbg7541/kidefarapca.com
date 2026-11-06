@@ -2289,6 +2289,8 @@ function renderAdminTeacherList(kaynak) {
                 if (say.sinif) ozet.push(say.sinif + ' sınıf');
                 if (kul.toplamSn) ozet.push('<b>' + _sureBicim(kul.toplamSn) + '</b>');
                 if (kul.sonGoruldu) ozet.push('son ' + _ogrTarih(kul.sonGoruldu));
+                /* CANLI DERS KULLANIMI (06.11.2026): bu ayki ders, süre, veri (hesap/canlikullanim.js) */
+                try { var _ckl = (window.KidefCanliKullanim && KidefCanliKullanim.satir) ? KidefCanliKullanim.satir(o) : ''; if (_ckl) ozet.push(_ckl); } catch (e) { }
                 var ara = (ad + ' ' + (o.email || '') + ' ' + kod + ' ' + (o.phone || '')).toLocaleLowerCase('tr-TR');
                 var sonMs = 0;
                 try { if (kul.sonGoruldu && kul.sonGoruldu.toDate) sonMs = kul.sonGoruldu.toDate().getTime() || 0; else if (typeof kul.sonGoruldu === 'number') sonMs = kul.sonGoruldu; } catch (e) { }
@@ -2341,6 +2343,8 @@ function renderAdminTeacherList(kaynak) {
                     'Σ ' + _sureBicim(toplam.sure) + ' · ' + toplam.ogrenci + ' öğrenci · ' +
                     toplam.sinif + ' sınıf · ' + toplam.anketli + ' anket' +
                   '</span>' +
+                  /* CANLI DERS KULLANIMI (06.11.2026): bu ayın toplamı ve ücretsiz paya göre durum */
+                  ((window.KidefCanliKullanim && KidefCanliKullanim.toplamSatir) ? KidefCanliKullanim.toplamSatir(liste) : '') +
                   '<button class="btn" onclick="renderAdminTeacherList()" ' +
                     'style="margin-inline-start:auto; align-self:center; font-size:.85rem;">🔄 Yenile</button>' +
                 '</div>' +
