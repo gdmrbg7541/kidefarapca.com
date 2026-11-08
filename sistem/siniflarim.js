@@ -856,14 +856,15 @@
             bolum = document.createElement('section');
             bolum.id = BOLUM_ID;
             bolum.className = 'content-section';
-            /* ÇAPA #guncellemeler (18.10.2026) — öğretmen: "sitede yeni ve galeri
-               kısmını sınıflarım kategorisinden sonraya alalım". Sıra: katalog →
-               Sınıflarım → Sınıfta Yeni + Galeri → İmam Hatip. Sınıflarım
-               en üstte, kataloğun altında kalmalı. (06.10–18.10 arası bölüm
-               İmam Hatip'in altındaydı, çapa #imam-hatip'ti.) */
-            var once = document.getElementById('guncellemeler') ||
-                       document.getElementById('imam-hatip');
-            if (once && once.parentNode) once.parentNode.insertBefore(bolum, once);
+            /* SINIFTA YENİ ÜSTTE (08.11.2026) — öğretmen: "sınıfta ve galeri üstte olsun".
+               Sıra: Sınıfta Yeni + Galeri → Sınıflarım → İmam Hatip. Sınıflarım
+               #guncellemeler'in ARDINA girer; o yoksa İmam Hatip'in önüne.
+               (18.10–08.11 arası Sınıflarım üstteydi, çapa #guncellemeler'in önüydü;
+               06.10–18.10 arası bölüm İmam Hatip'in altındaydı.) */
+            var gd = document.getElementById('guncellemeler');
+            var once = gd ? gd.nextSibling : document.getElementById('imam-hatip');
+            if (gd && gd.parentNode) gd.parentNode.insertBefore(bolum, once);
+            else if (once && once.parentNode) once.parentNode.insertBefore(bolum, once);
             else {
                 var hub = document.getElementById('home-hub-section');
                 if (!hub) return null;
