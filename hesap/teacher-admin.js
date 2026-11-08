@@ -927,9 +927,10 @@ function _aosBaglar(snap, ogtAd) {
                      t: _aogTms(v.onayTarih) || _aogTms(v.istekTarih) || _aogTms(v.guncelleme) || 0,
                      /* SINIF SEÇİMİ (05.11.2026): bekleyen istekte önerilen sınıf, kim önerdi, yönetici onayı */
                      id: String(d.id), doc: v, satirVar: !!(v.lId && v.cId && v.tur !== 'ogretmen'),
-                     onerilenLId: v.onerilenLId ? String(v.onerilenLId) : '', onerilenCId: v.onerilenCId ? String(v.onerilenCId) : '',
-                     onerilenAd: String(v.onerilenAd || ''), onerenOgrenci: !!v.onerenOgrenci,
-                     yoneticiOnay: !!v.yoneticiOnay, yoneticiTanimli: !!v.yoneticiTanimli };
+                     onerilenLId: _aoyOneri(v) ? String(v.onerilenLId) : '', onerilenCId: _aoyOneri(v) ? String(v.onerilenCId) : '',
+                     onerilenAd: _aoyOneri(v) ? String(v.onerilenAd || '') : '', onerenOgrenci: !!v.onerenOgrenci,
+                     /* SINIF TAZELİĞİ (08.11.2026): eskimiş onay ve onunla yazılmış öneri sayılmaz */
+                     yoneticiOnay: _aoyOnayGecerli(v), yoneticiTanimli: !!v.yoneticiTanimli };
         if (!yeni.ad) yeni.ad = '(öğretmen ' + String(ogt).slice(0, 6) + '…)';
         for (i = 0; i < L.length; i++) if (L[i].ogt === ogt) break;          /* eski tek kimlikli + yeni belge: onaylı olan kalır */
         if (i < L.length) { if (yeni.durum === 'onayli' && L[i].durum !== 'onayli') L[i] = yeni; }
@@ -1933,6 +1934,20 @@ function _aogTms(t) {
         var d = new Date(t).getTime();
         return isNaN(d) ? 0 : d;
     } catch (e) { return 0; }
+}
+/* SINIF TAZELİĞİ (08.11.2026): «yönetici onayladı» işareti istek belgesinde kalıcı durur; öğrenci sonradan
+   yeniden istek gönderince (istekTarih yenilenir) eski onay geçerli sayılmaz. hesap/ogrencihesap.js →
+   OH.yoneticiOnayGecerli ile aynı kural; öğretmenin tarayıcısı da eski onayla öğrenci eklemez. */
+function _aoyOnayGecerli(v) {
+    if (!v || !v.yoneticiOnay) return false;
+    var y = _aogTms(v.yoneticiOnayTarih), i = _aogTms(v.istekTarih);
+    return !(y && i && y < i);
+}
+/* Önerilen sınıf eskimiş onayla birlikte yazıldıysa (öğrenci kendisi seçmediyse) o da eskidir: seçim kutusunda
+   hazır seçili gelmez, «önerilen sınıf» yazmaz — yönetici öğrenciyi yanlışlıkla yine eski sınıfa onaylamasın. */
+function _aoyOneri(v) {
+    if (!v || !v.onerilenLId || !v.onerilenCId) return false;
+    return !(v.yoneticiOnay && !_aoyOnayGecerli(v) && !v.onerenOgrenci);
 }
 function _aogKayitMs(o) {
     var ms = _aogTms(o && o.createdAt) || _aogTms(o && o.onayIstekTarihi);
@@ -3435,8 +3450,8 @@ function _abDurum(uid) {
         return { renk: '#1E8449', zemin: '#E8F6EF', ad: 'Onaylı' + (L.length > 1 ? ' +' + (L.length - 1) : ''),
                  not: (ogtAd || '—') + (yer ? ' · ' + yer : '') };
     }
-    return { renk: '#B5670A', zemin: '#FEF3E2', ad: b.yoneticiOnay ? 'Yönetici onayladı' : 'Bekliyor',
-             not: (ogtAd || '—') + (b.onerilenAd ? ' · ' + b.onerilenAd + (b.onerenOgrenci ? ' (öğrenci seçti)' : '') : (yer ? ' · ' + yer : '')) };
+    return { renk: '#B5670A', zemin: '#FEF3E2', ad: _aoyOnayGecerli(b) ? 'Yönetici onayladı' : 'Bekliyor',
+             not: (ogtAd || '—') + ((_aoyOneri(b) && b.onerilenAd) ? ' · ' + b.onerilenAd + (b.onerenOgrenci ? ' (öğrenci seçti)' : '') : (yer ? ' · ' + yer : '')) };
 }
 
 function _abCiz() {

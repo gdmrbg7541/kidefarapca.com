@@ -148,6 +148,70 @@
     /* Eski kayitlarda kimlik yalnizca ogrencinin uid'iydi. */
     OH.eskiKimlikMi = function (id, ogrenciUid) { return String(id) === String(ogrenciUid); };
 
+    /* SINIF TAZELİĞİ (08.11.2026) — bir öğretmen yazdı: öğrenci 7. sınıfı seçip istek gönderiyor, onaydan
+       sonra öğrencide 6A görünüyor; sınıftan çıkarıp yeniden eklemek de düzeltmiyor, öğretmende ise 7A.
+         1) Öğrencinin gördüğü sınıf bağ belgesinden (lId, cId, sIdx, seviyeAd, sinifAd) okunuyordu ve bu
+            alanlar yalnız onay anında yazılıyordu; öğretmen öğrenciyi taşıyınca ya da sınıfın adını
+            değiştirince eski kalıyordu. Artık öğretmenin tarayıcısı kayıttan sonra (yerleşim değiştiyse)
+            bağları kendi verisine eşitler (OH.baglariEsitle; bağ temizliği de adları ve sırayı tazeler),
+            öğrenci de ayna kayıttaki (ogrenciOzet) güncel sınıfı esas alır (OH.ogrenciVeriKur).
+         2) Aynı hesap birden çok satırda olabilir («Kodla Ekle»): ayna kayıt son satırı, bağ temizliği ilk
+            satırı alıyordu. Tek kural: en son onaylanan satır (hesapT), eşitse sonuncusu (OH.ogrenciYerleri).
+         3) «Yönetici onayladı» işareti ve önerilen sınıf istek belgesinde kalıcı duruyordu; öğrenci yeniden
+            istek gönderince öğretmenin tarayıcısı eski onayla öğrenciyi eski sınıfa ekliyordu. Onay, istekten
+            (istekTarih) sonra verildiyse geçerlidir (OH.yoneticiOnayGecerli).
+         4) Öğretmen koduyla yeniden gelen istekte eski satırın koordinatı kutuda hazır seçili geliyordu;
+            «Bilmiyorum» seçilince önceki öneri kalıyordu. İkisi de giderildi.                            */
+    function zamanMs(t) {
+        try {
+            if (!t) return 0;
+            if (typeof t === 'number') return t;
+            if (typeof t.toMillis === 'function') return t.toMillis() || 0;
+            if (typeof t.toDate === 'function') return t.toDate().getTime() || 0;
+            if (typeof t.seconds === 'number') return t.seconds * 1000;
+        } catch (e) { }
+        return 0;
+    }
+    OH.yoneticiOnayGecerli = function (b) {
+        if (!b || !b.yoneticiOnay) return false;
+        var y = zamanMs(b.yoneticiOnayTarih), i = zamanMs(b.istekTarih);
+        return !(y && i && y < i);
+    };
+    /* Önerilen sınıf eskimiş bir yönetici onayıyla birlikte yazıldıysa (öğrenci kendisi seçmediyse) o da eskidir. */
+    OH.oneriGecerli = function (b) {
+        if (!b || !b.onerilenLId || !b.onerilenCId) return false;
+        return !(b.yoneticiOnay && !OH.yoneticiOnayGecerli(b) && !b.onerenOgrenci);
+    };
+    /* Öğretmenin verisinde her hesabın ASIL satırı:
+       { ogrenciUid: { lId, cId, sIdx, seviyeAd, sinifAd, kod, t, n } }   (n: hesabın kaç satırda geçtiği) */
+    OH.ogrenciYerleri = function (d) {
+        var H = {};
+        if (!d || !d.levels) return H;
+        Object.keys(d.levels).forEach(function (lId) {
+            var lvl = d.levels[lId];
+            if (!lvl || !lvl.classes) return;
+            Object.keys(lvl.classes).forEach(function (cId) {
+                var cls = lvl.classes[cId] || {};
+                (cls.students || []).forEach(function (s, si) {
+                    if (!s || !s.hesapUid) return;
+                    var k = String(s.hesapUid), t = parseInt(s.hesapT, 10) || 0, o = H[k];
+                    if (o && t < o.t) { o.n++; return; }
+                    H[k] = { lId: String(lId), cId: String(cId), sIdx: si, t: t, n: (o ? o.n : 0) + 1,
+                             seviyeAd: String(lvl.name || lId), sinifAd: String(cls.name || cId),
+                             kod: String(s.loginCode || '').trim().toUpperCase() };
+                });
+            });
+        });
+        return H;
+    };
+    /* Yerleşim imzası: asıl satır + satır sayısı (kopyası silinen hesabın kopuk bağı da yakalansın) */
+    function yerImza(uid, H) {
+        return String(uid) + '#' + Object.keys(H).sort().map(function (k) {
+            var y = H[k];
+            return [k, y.lId, y.cId, y.sIdx, y.seviyeAd, y.sinifAd, y.n].join('|');
+        }).join('~');
+    }
+
     OH.bagliMi = function () { return !!(OH.bag && OH.bag.durum === 'onayli'); };
     OH.bekliyorMu = function () { return !!(OH.bag && OH.bag.durum === 'bekliyor'); };
 
@@ -386,6 +450,7 @@
         if (!u || !D || !ogretmenMi()) return Promise.resolve(0);
         var d = (typeof data !== 'undefined' && data) ? data : null;
         if (!d || !d.levels) return Promise.resolve(0);
+        var yerler = OH.ogrenciYerleri(d);     /* SINIF TAZELİĞİ (08.11.2026) */
 
         var mesajlar = (Array.isArray(d.mesajlar) ? d.mesajlar : []);
         var isler = [];
@@ -400,6 +465,10 @@
                 var ogr = (cls && cls.students) || [];
                 ogr.forEach(function (s, si) {
                     if (!s || !s.hesapUid) return;
+                    /* SINIF TAZELİĞİ (08.11.2026): hesap birden çok satırdaysa ayna kayıt YALNIZ asıl satırdan
+                       yazılır (eskiden hepsi aynı belgeye sırayla yazıyordu, bağ başka satırı gösterebiliyordu) */
+                    var asil = yerler[String(s.hesapUid)];
+                    if (asil && (asil.lId !== String(lId) || asil.cId !== String(cId) || asil.sIdx !== si)) return;
                     var K = lId + '|' + cId + '|' + si;
                     /* Yalnizca bu ogrenciye gelen mesajlar + kendi cevaplari */
                     var benim = mesajlar.filter(function (m) {
@@ -457,7 +526,67 @@
             OH.ogretmenDavetiYayinla();          /* sınıf listesi değiştiyse (SINIF SEÇİMİ, 05.11.2026) */
             OH.davetleriYayinla();
             OH.ozetleriYaz();
+            OH.baglariEsitle();                  /* öğrencinin sınıfı bağda da güncel (SINIF TAZELİĞİ, 08.11.2026) */
         }, 1500);
+    };
+
+    /* SINIF TAZELİĞİ (08.11.2026) — öğretmen öğrenciyi başka sınıfa aldığında, sınıfın ya da seviyenin adını
+       değiştirdiğinde, öğrenciyi bir sınıftan silip «Kodla Ekle» ile eklediği başka sınıfta tuttuğunda
+       öğrencinin bağ belgesi (ogrenciBaglari: lId, cId, sIdx, seviyeAd, sinifAd) öğretmenin verisine eşitlenir.
+       · Yalnız bu hesabın bulut verisi indiyse (yeni cihazdaki demo veri bağları bozmasın).
+       · Yerleşim imzası değişmediyse hiçbir şey okunmaz; her kayıtta sorgu atılmaz.
+       · Onaylı bağ güncellenir; KOPUK bağ, öğrenci hâlâ bir satırda duruyorsa onarılır (bağ temizliğiyle aynı
+         kural). Bağ burada hiç oluşturulmaz, hiç koparılmaz. */
+    OH._bagEsitImza = '';
+    OH._bagEsitSuruyor = false;
+    OH._bagEsitTekrar = false;
+    OH.baglariEsitle = function () {
+        var u = oturum(), D = veri();
+        if (!u || !D || !ogretmenMi()) return Promise.resolve(0);
+        if (window._llBulutGeldi !== u.uid) return Promise.resolve(0);
+        var d = (typeof data !== 'undefined' && data) ? data : null;
+        if (!d || !d.levels) return Promise.resolve(0);
+        var yerler = OH.ogrenciYerleri(d), imza = yerImza(u.uid, yerler);
+        if (imza === OH._bagEsitImza) return Promise.resolve(0);
+        if (OH._bagEsitSuruyor) { OH._bagEsitTekrar = true; return Promise.resolve(0); }
+        OH._bagEsitSuruyor = true;
+        return D.collection(C_BAG).where('ogretmenUid', '==', u.uid).get().then(function (snap) {
+            var isler = [];
+            snap.forEach(function (doc) {
+                var v = doc.data() || {};
+                if (v.durum !== 'onayli' && v.durum !== 'kopuk') return;
+                var ogrUid = String(v.uid || String(doc.id).split(AYRAC)[0]);
+                var y = yerler[ogrUid];
+                if (!y) return;
+                if (v.durum === 'onayli' && String(v.lId) === y.lId && String(v.cId) === y.cId && v.sIdx === y.sIdx &&
+                    String(v.seviyeAd || '') === y.seviyeAd && String(v.sinifAd || '') === y.sinifAd) return;
+                var yeni = { lId: y.lId, cId: y.cId, sIdx: y.sIdx, seviyeAd: y.seviyeAd, sinifAd: y.sinifAd, guncelleme: Date.now() };
+                var onar = (v.durum === 'kopuk');
+                if (onar) yeni.durum = 'onayli';
+                var kod = y.kod || String(v.kod || '').trim().toUpperCase();
+                isler.push(D.collection(C_BAG).doc(doc.id).set(yeni, { merge: true }).then(function () {
+                    /* onarılan bağın giriş kodu yeniden «kullanıldı» (koparırken boşa çıkarılmıştı) */
+                    if (onar && kod) return D.collection(C_DAVET).doc(kod)
+                        .set({ kod: kod, ogretmenUid: u.uid, kullanildi: true, ogrenciUid: ogrUid, guncelleme: Date.now() }, { merge: true })
+                        .catch(function () { });
+                }));
+            });
+            return Promise.all(isler).then(function () {
+                OH._bagEsitImza = imza;
+                if (isler.length) console.log('OH: ' + isler.length + ' öğrencinin bağı güncel sınıfa eşitlendi.');
+                return isler.length;
+            });
+        }).catch(function (e) {
+            console.warn('OH bağ eşitleme:', e && (e.code || e.message));
+            return 0;
+        }).then(function (n) {
+            OH._bagEsitSuruyor = false;
+            if (OH._bagEsitTekrar) {
+                OH._bagEsitTekrar = false;
+                setTimeout(function () { try { OH.baglariEsitle(); } catch (e) { } }, 300);
+            }
+            return n;
+        });
     };
 
     /* ================================================================ 3. OGRETMEN: BEKLEYEN ISTEKLER */
@@ -556,6 +685,8 @@
            sınıf listesi davete yazılır (değiştiyse), bekleyen yönetici onayları işlenir. */
         try { OH.ogretmenDavetiYayinla(); } catch (e) { }
         try { OH.yoneticiOnaylariIsle(); } catch (e) { }
+        /* bulut verisi indikten sonra bağlar bir kez eşitlenir (SINIF TAZELİĞİ, 08.11.2026) */
+        try { if (OH._bagTemizlendi) OH.baglariEsitle(); } catch (e) { }
         var nav = document.getElementById('levelNav');
         if (!nav || document.getElementById('ohIstekTus')) return;
         var b = document.createElement('button');
@@ -730,8 +861,9 @@
          2) istegin kendi koordinati varsa o,
          3) yoksa ogretmenin en son kullandigi sinif.                        */
     function onSecim(it) {
-        if (it.onerilenLId && it.onerilenCId) return it.onerilenLId + '|||' + it.onerilenCId;
-        if (it.lId && it.cId) return it.lId + '|||' + it.cId;
+        if (OH.oneriGecerli(it)) return it.onerilenLId + '|||' + it.onerilenCId;
+        /* öğretmen koduyla gelen istekte koordinat olmaz; varsa önceki onaydan kalmadır (SINIF TAZELİĞİ, 08.11.2026) */
+        if (it.lId && it.cId && it.tur !== 'ogretmen') return it.lId + '|||' + it.cId;
         return sonSinif();
     }
 
@@ -787,20 +919,36 @@
 
             var trh = istekTarih(it);
             var yer = yeniMi ? '' : (esc(it.seviyeAd || '') + (it.sinifAd ? ' / ' + esc(it.sinifAd) : ''));
+            /* kendi koduyla gelen istekte satırın ŞU ANKİ sınıfı yazılır; istekteki ad davetin yazıldığı günden
+               kalmadır (öğrenci başka sınıfa alınmış olabilir) — SINIF TAZELİĞİ (08.11.2026) */
+            if (!yeniMi && it.kod) {
+                try {
+                    var kodB = String(it.kod).toUpperCase();
+                    Object.keys(data.levels || {}).forEach(function (l) {
+                        var lv = data.levels[l];
+                        Object.keys((lv && lv.classes) || {}).forEach(function (c) {
+                            (lv.classes[c].students || []).forEach(function (st) {
+                                if (st && String(st.loginCode || '').toUpperCase() === kodB)
+                                    yer = esc(lv.name || l) + ' / ' + esc(lv.classes[c].name || c);
+                            });
+                        });
+                    });
+                } catch (e) { }
+            }
             /* SINIF SEÇİMİ (05.11.2026): öğrencinin seçtiği / yöneticinin önerdiği ya da onayladığı sınıf */
             var oneri = '';
-            if (it.onerilenLId && it.onerilenCId) {
+            if (OH.oneriGecerli(it)) {          /* eskimiş öneri gösterilmez (SINIF TAZELİĞİ, 08.11.2026) */
                 var oAd = it.onerilenAd || (it.onerilenLId + ' / ' + it.onerilenCId), oVar = false;
                 try { oVar = !!(data.levels[it.onerilenLId].classes[it.onerilenCId]); } catch (e) { oVar = false; }
                 oneri = '<div style="font-size:.8rem; color:#9C3B0C; margin:0 0 8px;">' +
-                    (it.yoneticiOnay
+                    (OH.yoneticiOnayGecerli(it)
                         ? '\u2705 <b>Y\u00f6netici onaylad\u0131</b> \u00b7 s\u0131n\u0131f: <b>' + esc(oAd) + '</b> \u2014 ' +
                           (oVar ? 'kendili\u011finden eklenir' : 'bu s\u0131n\u0131f listende yok; s\u0131n\u0131f\u0131 se\u00e7ip onayla')
                         : (it.onerenOgrenci
                             ? '\ud83c\udf93 \u00d6\u011frencinin se\u00e7ti\u011fi s\u0131n\u0131f: <b>' + esc(oAd) + '</b>'
                             : '\ud83e\uddd1\u200d\ud83d\udcbc Y\u00f6neticinin \u00f6nerdi\u011fi s\u0131n\u0131f: <b>' + esc(oAd) + '</b>')) +
                     '</div>';
-            } else if (it.yoneticiOnay) {
+            } else if (OH.yoneticiOnayGecerli(it)) {
                 oneri = '<div style="font-size:.8rem; color:#9C3B0C; margin:0 0 8px;">\u2705 <b>Y\u00f6netici onaylad\u0131</b> \u2014 kendili\u011finden eklenir</div>';
             }
 
@@ -830,7 +978,7 @@
                   ? '<div style="margin:0 0 10px; padding:9px 10px; background:#FFF6EC; border:1px dashed #F0C9A6;' +
                     'border-radius:10px;">' +
                     '<div style="font-size:.78rem; color:#A6836E; margin-bottom:5px;">Hangi sınıfa eklensin?' +
-                    (it.onerilenLId ? ' <span style="color:#B34700;">(\u00f6neri haz\u0131r se\u00e7ili; de\u011fi\u015ftirebilirsin)</span>' : '') + '</div>' +
+                    (OH.oneriGecerli(it) ? ' <span style="color:#B34700;">(\u00f6neri haz\u0131r se\u00e7ili; de\u011fi\u015ftirebilirsin)</span>' : '') + '</div>' +
                     '<select id="ohSinifSec_' + esc(it._id) + '" style="width:100%; box-sizing:border-box; padding:9px;' +
                     'border:1px solid #E8A87C; border-radius:9px; font-family:inherit; font-size:.88rem;' +
                     'color:#B34700; background:#fff;">' + opts + '</select></div>'
@@ -893,7 +1041,8 @@
         var d = (typeof data !== 'undefined' && data) ? data : null;
         if (!d || !d.levels) return;
         (OH.istekler || []).forEach(function (it) {
-            if (!it || !it.yoneticiOnay || it.durum !== 'bekliyor' || OH._otoOnay[it._id]) return;
+            /* öğrenci sonradan yeniden istek gönderdiyse eski onay sayılmaz (SINIF TAZELİĞİ, 08.11.2026) */
+            if (!it || !OH.yoneticiOnayGecerli(it) || it.durum !== 'bekliyor' || OH._otoOnay[it._id]) return;
             var yeniMi = (it.tur === 'ogretmen' || !it.lId), deg = '';
             if (yeniMi) {
                 var var_ = false;
@@ -953,10 +1102,23 @@
                 skills: { 'Konu\u015fma': 5, 'Yazma': 5, 'Okuma': 5, 'Vezin': 5, 'S\u00f6zl\u00fck': 5, 'Terc\u00fcme': 5 },
                 notes: ''
             };
-            ncls.students.push(yeniSatir);
-            satir = yeniSatir;
-            it.lId = nlId; it.cId = ncId; it.sIdx = ncls.students.length - 1;
-            it.kod = yeniKod;
+            /* SINIF TAZELİĞİ (08.11.2026): öğrenci bu sınıfta aynı hesapla zaten duruyorsa ikinci satır açılmaz */
+            var varOlan = -1;
+            ncls.students.forEach(function (s, i) {
+                if (varOlan < 0 && s && s.hesapUid && String(s.hesapUid) === String(ogrUid)) varOlan = i;
+            });
+            if (varOlan >= 0) {
+                satir = ncls.students[varOlan];
+                if (!satir.loginCode) satir.loginCode = yeniKod;
+                it.sIdx = varOlan;
+                it.kod = String(satir.loginCode).trim().toUpperCase();
+            } else {
+                ncls.students.push(yeniSatir);
+                satir = yeniSatir;
+                it.sIdx = ncls.students.length - 1;
+                it.kod = yeniKod;
+            }
+            it.lId = nlId; it.cId = ncId;
             it.seviyeAd = (d.levels[nlId] && d.levels[nlId].name) || nlId;
             it.sinifAd = (ncls.name || ncId);
             it.tur = 'ogrenci';
@@ -992,6 +1154,14 @@
 
         satir.hesapUid = ogrUid;
         satir.hesapEmail = it.email || '';
+        satir.hesapT = Date.now();     /* en son onaylanan satır hesabın asıl satırıdır (SINIF TAZELİĞİ, 08.11.2026) */
+        /* bağa yazılacak adlar satırın ŞU ANKİ yerinden: kişisel kodla gelen istekte satır kaymış olabilir,
+           istekteki adlar davetin yazıldığı günden kalmadır (SINIF TAZELİĞİ, 08.11.2026) */
+        try {
+            var yerLv = d.levels[it.lId], yerCl = yerLv.classes[it.cId];
+            it.seviyeAd = String(yerLv.name || it.lId);
+            it.sinifAd = String(yerCl.name || it.cId);
+        } catch (e) { }
         if (typeof save === 'function') save();
 
         var tAdO = '';
@@ -1247,11 +1417,11 @@
                 '<p style="margin:0 0 6px; text-align:center; color:#6B4A38; font-size:.9rem;">İsteğin ' +
                 esc(OH.bag.ogretmenAd || 'öğretmenine') + ' iletildi. Onaylandığında sınıfın açılır.</p>' +
                 /* SINIF SEÇİMİ (05.11.2026): seçilen sınıf, yönetici onayı */
-                (OH.bag.onerilenAd
+                (OH.bag.onerilenAd && OH.oneriGecerli(OH.bag)
                     ? '<p style="margin:0 0 6px; text-align:center; color:#9C3B0C; font-size:.88rem;">Seçtiğin sınıf: <b>' +
                       esc(OH.bag.onerilenAd) + '</b>' + (OH.bag.onerenOgrenci ? ' — öğretmenin onaylarken değiştirebilir.' : '') + '</p>'
                     : '') +
-                (OH.bag.yoneticiOnay
+                (OH.yoneticiOnayGecerli(OH.bag)
                     ? '<p style="margin:0 0 6px; text-align:center; color:#1E8449; font-size:.88rem;">✅ Yönetici onayladı; öğretmenin siteye girince sınıfın açılır.</p>'
                     : '') +
                 '<p style="margin:14px 0 0; text-align:center; color:#A6836E; font-size:.82rem;">Kod: ' +
@@ -1377,6 +1547,9 @@
                 kayit.onerilenLId = String(secilen.lId); kayit.onerilenCId = String(secilen.cId);
                 kayit.onerilenAd = String(secilen.seviyeAd || secilen.lId) + ' / ' + String(secilen.sinifAd || secilen.cId);
                 kayit.onerenOgrenci = true;
+            } else {
+                /* önceki istekten kalan öneri yeni isteğe taşınmasın (belge merge ile yazılır) — SINIF TAZELİĞİ (08.11.2026) */
+                kayit.onerilenLId = ''; kayit.onerilenCId = ''; kayit.onerilenAd = ''; kayit.onerenOgrenci = false;
             }
 
             /* Kimlik ogrenci+ogretmen cifti: ayni ogrenci baska bir
@@ -1539,6 +1712,20 @@
     OH.ogrenciVeriKur = function (ozet) {
         if (!OH.bag || !ozet) return;
         OH.sonOzet = ozet;   /* profil not ozeti (gorev.js) buradan okur */
+        /* SINIF TAZELİĞİ (08.11.2026): ayna kayıt öğretmenin her kaydında öğrencinin GÜNCEL satırıyla yazılır;
+           bağ belgesi eskimiş olabilir (öğretmen taşıdı, sınıfın adını değiştirdi). Aynı öğretmenin kaydıysa
+           sınıf bilgisi buradan alınır: «Sınıfım», mesajlar ve bağlantı ekranı güncel sınıfı gösterir. */
+        if (ozet.ogretmenUid && String(ozet.ogretmenUid) === String(OH.bag.ogretmenUid || '')) {
+            var oncekiYer = [OH.bag.lId, OH.bag.cId, OH.bag.sIdx, OH.bag.seviyeAd, OH.bag.sinifAd].join('|');
+            if (ozet.lId != null && ozet.lId !== '' && ozet.cId != null && ozet.cId !== '') {
+                OH.bag.lId = String(ozet.lId); OH.bag.cId = String(ozet.cId);
+                if (typeof ozet.sIdx === 'number' && ozet.sIdx >= 0) OH.bag.sIdx = ozet.sIdx;
+            }
+            if (ozet.seviyeAd) OH.bag.seviyeAd = String(ozet.seviyeAd);
+            if (ozet.sinifAd) OH.bag.sinifAd = String(ozet.sinifAd);
+            if (oncekiYer !== [OH.bag.lId, OH.bag.cId, OH.bag.sIdx, OH.bag.seviyeAd, OH.bag.sinifAd].join('|'))
+                setTimeout(function () { try { OH.bannerGuncelle(); } catch (e) { } }, 0);
+        }
         var lId = OH.bag.lId, cId = OH.bag.cId, si = OH.bag.sIdx;
         var ogrenciler = [];
         for (var i = 0; i < si; i++) ogrenciler.push({ name: '', loginCode: '', hw: [], ex: [], skills: {}, notes: '' });
@@ -1719,8 +1906,8 @@
                   bekleyen.length + ' katılım isteğin onay bekliyor: ' +
                   /* SINIF SEÇİMİ (05.11.2026): öğretmen + seçilen sınıf */
                   bekleyen.map(function (b) {
-                      return '<b>' + esc(kisaAd(b)) + '</b>' + (b.onerilenAd ? ' · ' + esc(b.onerilenAd) : '') +
-                             (b.yoneticiOnay ? ' (yönetici onayladı)' : '');
+                      return '<b>' + esc(kisaAd(b)) + '</b>' + (b.onerilenAd && OH.oneriGecerli(b) ? ' · ' + esc(b.onerilenAd) : '') +
+                             (OH.yoneticiOnayGecerli(b) ? ' (yönetici onayladı)' : '');
                   }).join(', ') + '</div>'
                 : '';
 
@@ -2119,6 +2306,8 @@
         }
         D.collection(C_BAG).where('ogretmenUid', '==', u.uid).get().then(function (snap) {
             var iyilesen = 0;
+            /* SINIF TAZELİĞİ (08.11.2026): ayna kayıtla aynı asıl satır; adlar/sıra yalnız bulut verisiyle */
+            var yerler = OH.ogrenciYerleri(d), bulutVar = (window._llBulutGeldi === u.uid);
             snap.forEach(function (doc) {
                 var v = doc.data() || {};
                 if (v.durum !== 'onayli' && v.durum !== 'kopuk') return;
@@ -2145,26 +2334,16 @@
                         });
                 }
 
-                /* Ogrenci su an hangi sinifta? (varsa yerini de al) */
-                var yer = null;
-                try {
-                    Object.keys(d.levels).forEach(function (lId) {
-                        var cl = d.levels[lId].classes || {};
-                        Object.keys(cl).forEach(function (cId) {
-                            (cl[cId].students || []).forEach(function (st) {
-                                if (st && st.hesapUid === ogrUid && !yer) {
-                                    yer = { lId: lId, cId: cId,
-                                            seviyeAd: d.levels[lId].name || lId,
-                                            sinifAd: (cl[cId].name || cId) };
-                                }
-                            });
-                        });
-                    });
-                } catch (e) { }
+                /* Ogrenci su an hangi sinifta? (varsa yerini de al)
+                   SINIF TAZELİĞİ (08.11.2026): birden çok satırdaysa asıl satır (OH.ogrenciYerleri) */
+                var yer = yerler[String(ogrUid)] || null;
+                /* eski kimlikli belge yukarıda yeni kimliğe taşınıyor: aşağıdaki yazmalar YENİ belgeye gider
+                   (eskisini silindikten sonra yarım belge olarak yeniden yaratmasın) — SINIF TAZELİĞİ (08.11.2026) */
+                var hedefId = (OH.eskiKimlikMi(doc.id, ogrUid) && ogrUid) ? OH.bagId(ogrUid, u.uid) : doc.id;
 
                 if (v.durum === 'onayli' && !yer) {
                     /* onayli ama hicbir sinifta yok -> bagi kopar */
-                    D.collection(C_BAG).doc(doc.id).set({ durum: 'kopuk', guncelleme: Date.now() }, { merge: true }).catch(function () { });
+                    D.collection(C_BAG).doc(hedefId).set({ durum: 'kopuk', guncelleme: Date.now() }, { merge: true }).catch(function () { });
                     /* Ayna kayit iki kimlikte de olabilir (tasima oncesi/sonrasi) */
                     D.collection(C_OZET).doc(ozetKimlik).delete().catch(function () { });
                     if (ozetKimlik !== ogrUid) D.collection(C_OZET).doc(ogrUid).delete().catch(function () { });
@@ -2176,25 +2355,31 @@
                        (sinif yeniden olusturuldugunda ogrenciye tekrar kod
                        girdirmeye gerek kalmaz). */
                     iyilesen++;
-                    D.collection(C_BAG).doc(doc.id).set({
+                    D.collection(C_BAG).doc(hedefId).set({
                         durum: 'onayli',
-                        lId: yer.lId, cId: yer.cId,
+                        lId: yer.lId, cId: yer.cId, sIdx: yer.sIdx,
                         seviyeAd: yer.seviyeAd, sinifAd: yer.sinifAd,
                         guncelleme: Date.now()
                     }, { merge: true }).catch(function () { });
                     if (v.kod) D.collection(C_DAVET).doc(String(v.kod).toUpperCase())
                         .set({ kullanildi: true, ogrenciUid: ogrUid, guncelleme: Date.now() }, { merge: true }).catch(function () { });
                     console.log('OH: "' + (v.ad || ogrUid) + '" sınıfta bulundu — bağ yeniden ONARILDI (' + yer.seviyeAd + '/' + yer.sinifAd + ').');
-                } else if (v.durum === 'onayli' && yer && (v.lId !== yer.lId || v.cId !== yer.cId)) {
-                    /* sinif degismis/tasinmis -> koordinatlari tazele */
-                    D.collection(C_BAG).doc(doc.id).set({
-                        lId: yer.lId, cId: yer.cId,
+                } else if (v.durum === 'onayli' && yer && (String(v.lId) !== yer.lId || String(v.cId) !== yer.cId ||
+                           (bulutVar && (v.sIdx !== yer.sIdx || String(v.seviyeAd || '') !== yer.seviyeAd ||
+                                         String(v.sinifAd || '') !== yer.sinifAd)))) {
+                    /* sinif degismis/tasinmis -> koordinatlari tazele; bulut verisi indiyse sıra ve adlar da
+                       (sınıfın adı değişmiş olabilir) — SINIF TAZELİĞİ (08.11.2026) */
+                    D.collection(C_BAG).doc(hedefId).set({
+                        lId: yer.lId, cId: yer.cId, sIdx: yer.sIdx,
                         seviyeAd: yer.seviyeAd, sinifAd: yer.sinifAd,
                         guncelleme: Date.now()
                     }, { merge: true }).catch(function () { });
-                    console.log('OH: "' + (v.ad || doc.id) + '" sınıf koordinatı güncellendi.');
+                    console.log('OH: "' + (v.ad || doc.id) + '" sınıf bilgisi güncellendi.');
                 }
             });
+            /* bağlar bu yerleşime eşitlendi: kayıttan sonraki eşitleme yeniden okumasın (SINIF TAZELİĞİ, 08.11.2026) */
+            OH._bagTemizlendi = true;
+            if (bulutVar) OH._bagEsitImza = yerImza(u.uid, yerler);
             /* Onarilan varsa ozet kayitlarini yeniden yaz (notlar ogrenciye aksin) */
             if (iyilesen && typeof OH.ozetleriYaz === 'function')
                 setTimeout(function () { try { OH.ozetleriYaz(); } catch (e) { } }, 1200);
