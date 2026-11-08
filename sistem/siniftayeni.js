@@ -29,6 +29,51 @@
    (öğretmen profilindeki "yenilik" şeridi).
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
+  /* SINIFTA YENİ 08.11.2026 — öğretmen: "sitede öğrenciyi kendi hesabıyla eşleştiren öğretmenlerin tüm
+     öğrencilerinin sitede aldığı puanları ve geçirdikleri süreyi, öğrencilere dijital ödev olarak görev
+     gönderebileceklerini vurgulayalım duyurular kısmında, ayrıca eklememiz gereken yeni yaptıklarımızdan
+     neler varsa madde madde ekleyelim, çok teknik detaya girmeyelim" · "görev gönderme ve öğrenci
+     etkinliklerini kontrol etme kısmı için svg animasyonlar ekle". İlk iki sayfa animasyonlu (g 'gorev',
+     g 'etkinlik' — dosyanın sonunda); ödeme konusu yok. */
+  { t: '2026-11-08', e: 'Görev ve ödev', g: 'gorev', b: 'Ödevi dijital gönder, sonucu canlı izle',
+    m: 'Öğrencin siteye kendi e-postasıyla kaydolup senin kodunla sınıfına bağlanınca ödevi kâğıtsız verirsin; kim yaptı, kaç aldı, hepsi önüne gelir.',
+    L: [
+      'Sınıfında «Görev Gönder»e dokun, oyunu ya da etkinliği seç.',
+      'Ödevi bütün sınıfa, bütün seviyeye ya da tek öğrenciye gönderirsin.',
+      'Son tarihi sen koyarsın; istersen ödevi performans notu yaparsın.',
+      'Öğrenci ödevi «Görevlerim»de görür, telefondan da yapar.',
+      'Kim yaptı, kaç aldı, ne kadar sürdü: sonuçlar sana canlı gelir.',
+      'Performans ödevinin sonuçları «Notlara işle» ile not listene geçer.'
+    ] },
+
+  { t: '2026-11-08', e: 'Öğrenci gelişimi', g: 'etkinlik', b: 'Öğrencinin puanını ve süresini gör',
+    m: 'Hesabıyla sınıfına bağlı öğrencin sitede ne çalışırsa, ödev vermesen de senin ekranına düşer.',
+    L: [
+      'Sınıfında «Etkinlikler»e dokun: hesabıyla bağlı bütün öğrencilerin bir arada.',
+      'Her oyun ve etkinlikte öğrencinin en yüksek puanı (rekoru) görünür.',
+      'Gelişim çizgisi, son çalıştığı gün ve 30 günlük ilerleme de orada.',
+      'Hangi etkinlikte ne kadar süre çalıştığını görürsün.',
+      'Henüz açmadığı etkinlikler de listede; kimin neyi atladığı belli.',
+      'Öğrenci çalıştıkça tablo kendiliğinden güncellenir.'
+    ] },
+
+  { t: '2026-11-08', e: 'Öğrenci hesabı', b: 'Öğrencin sınıfını kendisi seçsin, sen tek dokunuşla onayla',
+    L: [
+      'Öğretmen kodun profilinde yazar; öğrencilerine bu kodu vermen yeter.',
+      'Öğrenci kendi e-postasıyla kaydolur, kodu girer, sınıflarından kendi şubesini seçer.',
+      'İstek zile düşer; seçtiği sınıf hazır gelir, istersen başka sınıfına alırsın.',
+      'Öğrenciyi başka sınıfa alınca ya da sınıfın adını değiştirince öğrencinin ekranı da güncellenir.',
+      'Kayıtta e-posta yanlış yazılırsa (gmial.com gibi) site doğrusunu önerir.',
+      'Giriş olmazsa e-posta önerisi ve @gmail.com gibi hazır uzantı tuşları çıkar.'
+    ] },
+
+  { t: '2026-11-04', e: 'Dijital kitap', b: '7. sınıfın yeni Devlet kitabı sitede, sesleriyle',
+    L: [
+      '7. sınıfa MEB Devlet Kitapları 2026-2027 kitabı eklendi; sayfa sayfa ve sesleriyle.',
+      '7. sınıfta kitap seçiminde bu yılın Devlet kitabı hazır; Mektep kitabı «2025-2026» adıyla duruyor.',
+      'Altı ünitenin 18 dersindeki kelime, cümle ve diyaloglar Muhâdese ve kelime çalışmalarında.'
+    ] },
+
   /* SINIFTA YENİ 02.11.2026 — öğretmen: "sınıfta yeni kısmına yeni özellikleri de ekleyelim, madde madde
      sınıflandırarak yapalım, ücret konusundan bahsetmiyoruz". 28.10–02.11.2026 yenilikleri yedi
      sayfada; her madde tek kısa cümle (L), sayfa başına en çok altı madde. */
@@ -558,6 +603,341 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
     if (!document.getElementById('syGorselStil')) {
       var s = document.createElement('style');
       s.id = 'syGorselStil';
+      s.textContent = STIL;
+      (document.head || document.documentElement).appendChild(s);
+    }
+  } catch (e) { }
+})();
+
+/* ---------------------------------------------------------------------------
+   GÖREV VE ÖĞRENCİ GELİŞİMİ GÖRSELLERİ (08.11.2026) — öğretmen: "sitede öğrenciyi
+   kendi hesabıyla eşleştiren öğretmenlerin tüm öğrencilerinin sitede aldığı puanları
+   ve geçirdikleri süreyi, öğrencilere dijital ödev olarak görev gönderebileceklerini
+   vurgulayalım" · "görev gönderme ve öğrenci etkinliklerini kontrol etme kısmı için
+   svg animasyonlar ekle".
+     g: 'gorev'    — öğretmenin ekranından ödev uçar, öğrencilerin telefonuna düşer,
+                     yapılır (✓), sonuçlar öğretmenin ekranına döner (10 sn döngü)
+     g: 'etkinlik' — Etkinlikler tablosu: rekor halkaları dolar, gelişim çizgisi
+                     çizilir, saat işler; öğrencinin telefonundan yeni sonuç gelince
+                     satır kendiliğinden güncellenir (9 sn döngü)
+   Biçim tahta görseliyle ortak (.ty-kutu, .ty-svg, .ty-cipler, .ty-cip, .ty-vurgu);
+   bu görsellere özgü olanlar gy- önekli. «Hareketi azalt»ta son hâl durağan görünür.
+   --------------------------------------------------------------------------- */
+(function () {
+  var G = window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
+  var SIM = function (ic) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ic + '</svg>'; };
+  var CIP = function (ic, yazi) { return '<span class="ty-cip">' + SIM(ic) + yazi + '</span>'; };
+
+  /* ------------------------------------------------ 1) GÖREV GÖNDER (10 sn) */
+  /* öğrenci telefonu: rozet, görev satırı, ilerleme, ✓, altında öğrenci */
+  var TEL = function (x, n, renk) {
+    return '<g class="gy-tel">' +
+      '<rect x="' + x + '" y="30" width="42" height="80" rx="7" fill="#1F2937"/>' +
+      '<rect x="' + (x + 3) + '" y="37" width="36" height="66" rx="3" fill="#fff"/>' +
+      '<rect x="' + (x + 15) + '" y="33" width="12" height="1.6" rx=".8" fill="#64748B"/>' +
+      '<rect x="' + (x + 7) + '" y="42" width="28" height="6" rx="3" fill="#FDEBD0"/>' +
+      '<g class="gy-satir n' + n + '"><rect x="' + (x + 7) + '" y="53" width="28" height="14" rx="3" fill="#FFF7ED" stroke="#F6C878" stroke-width="1.2"/>' +
+        '<path d="M' + (x + 11) + ' 58.5h13M' + (x + 11) + ' 62.5h8" stroke="#F39C12" stroke-width="1.6" stroke-linecap="round"/></g>' +
+      '<rect x="' + (x + 7) + '" y="74" width="28" height="6" rx="3" fill="#EEF2F7"/>' +
+      '<rect class="gy-pb n' + n + '" x="' + (x + 7) + '" y="74" width="28" height="6" rx="3" fill="#16A085"/>' +
+      '<g class="gy-tik n' + n + '"><circle cx="' + (x + 21) + '" cy="92" r="7.5" fill="#16A085"/>' +
+        '<path d="M' + (x + 17.4) + ' 92.2l2.6 2.6 5-5.2" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g>' +
+      '<g class="gy-rozet n' + n + '"><circle cx="' + (x + 39) + '" cy="32" r="7" fill="#E74C3C" stroke="#fff" stroke-width="2"/>' +
+        '<path d="M' + (x + 38) + ' 29.4l1.6-1.2v7.4" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>' +
+      /* öğrenci */
+      '<circle cx="' + (x + 21) + '" cy="136" r="11" fill="#F2C9A0"/>' +
+      '<path d="M' + (x + 10) + ' 133C' + (x + 9) + ' 119 ' + (x + 33) + ' 119 ' + (x + 32) + ' 133C' + (x + 27) + ' 127 ' + (x + 16) + ' 126 ' + (x + 10) + ' 133Z" fill="#3B2F2F"/>' +
+      '<path d="M' + (x + 1) + ' 176C' + (x + 1) + ' 158 ' + (x + 10) + ' 150 ' + (x + 21) + ' 150C' + (x + 32) + ' 150 ' + (x + 41) + ' 158 ' + (x + 41) + ' 176Z" fill="' + renk + '"/>' +
+      '</g>';
+  };
+  /* öğretmenin ekranındaki sonuç satırı: öğrenci rengi, dolan çubuk, ✓, saat */
+  var SONUC = function (y, n, renk, oran) {
+    return '<circle cx="54" cy="' + (y + 4) + '" r="7" fill="' + renk + '"/>' +
+      '<rect x="67" y="' + y + '" width="80" height="8" rx="4" fill="#EEF2F7"/>' +
+      '<rect class="gy-sb n' + n + '" x="67" y="' + y + '" width="' + Math.round(80 * oran) + '" height="8" rx="4" fill="' + renk + '"/>' +
+      '<g class="gy-st n' + n + '"><circle cx="164" cy="' + (y + 4) + '" r="6.5" fill="#E8F6F2" stroke="#16A085" stroke-width="1.4"/>' +
+        '<path d="M164 ' + (y + 0.6) + 'v3.6l2.2 1.6" fill="none" stroke="#16A085" stroke-width="1.5" stroke-linecap="round"/></g>';
+  };
+  var GOREV_SAHNE =
+    '<div class="ty-kutu gy-kutu"><svg class="ty-svg gy-svg" viewBox="0 0 480 214" role="img" aria-label="Öğretmen ekranından ödevi gönderiyor; ödev öğrencilerin telefonuna düşüyor, öğrenciler yapıyor, sonuçlar öğretmenin ekranına geri geliyor">' +
+    '<rect x="0" y="0" width="480" height="214" rx="16" fill="#FBF6F1"/>' +
+    '<path d="M0 176H480V198a16 16 0 0 1-16 16H16a16 16 0 0 1-16-16Z" fill="#F6EADF"/>' +
+    '<path d="M0 176H480" stroke="#EEDBC9" stroke-width="2"/>' +
+    /* öğretmenin dizüstü bilgisayarı */
+    '<path d="M10 178H214L204 167H20Z" fill="#475569"/>' +
+    '<rect x="30" y="38" width="164" height="128" rx="8" fill="#1F2937"/>' +
+    '<rect x="37" y="45" width="150" height="114" rx="4" fill="#fff"/>' +
+    /* ekran A: görev kartı */
+    '<g class="gy-ekran-a">' +
+      '<path d="M37 49a4 4 0 0 1 4-4H183a4 4 0 0 1 4 4V66H37Z" fill="#F39C12"/>' +
+      '<g transform="translate(46 49) scale(.55)" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M12 2c3.2 2.4 4.8 6 4.8 9.6L15 15H9L7.2 11.6C7.2 8 8.8 4.4 12 2z"/><circle cx="12" cy="9" r="1.8"/><path d="M9.4 18.4L8 22M14.6 18.4L16 22"/></g>' +
+      '<rect x="64" y="52" width="62" height="7" rx="3.5" fill="#fff" opacity=".9"/>' +
+      '<rect x="46" y="76" width="22" height="22" rx="6" fill="#7C3AED"/>' +
+      '<path d="M57 81.5l1.9 3.9 4.3.6-3.1 3 .7 4.3-3.8-2-3.8 2 .7-4.3-3.1-3 4.3-.6z" fill="#FDE68A"/>' +
+      '<rect x="76" y="79" width="84" height="7" rx="3.5" fill="#CBD5E1"/>' +
+      '<rect x="76" y="90" width="54" height="6" rx="3" fill="#E2E8F0"/>' +
+      /* hedef: sınıf ve tek öğrenci çipleri, son tarih */
+      '<rect x="46" y="106" width="44" height="16" rx="8" fill="#FDEBD0"/>' +
+      '<g fill="#B45309"><circle cx="58" cy="112" r="2.6"/><path d="M53.6 119.2a4.4 4.4 0 0 1 8.8 0z"/><circle cx="66" cy="112" r="2.6"/><path d="M61.6 119.2a4.4 4.4 0 0 1 8.8 0z"/></g>' +
+      '<rect x="74" y="111" width="11" height="5" rx="2.5" fill="#F6C878"/>' +
+      '<rect x="96" y="106" width="44" height="16" rx="8" fill="#EDE9FE"/>' +
+      '<g fill="none" stroke="#6D28D9" stroke-width="1.6" stroke-linecap="round"><rect x="103" y="109" width="11" height="10" rx="2"/><path d="M103 112.6h11M106 107.4v3M111 107.4v3"/></g>' +
+      '<rect x="118" y="111" width="15" height="5" rx="2.5" fill="#C4B5FD"/>' +
+      '<g class="gy-gonder"><rect x="46" y="130" width="132" height="22" rx="11" fill="#D84315"/>' +
+        '<path d="M103 136.6l15 4.4-15 4.4 2.8-4.4z" fill="#fff"/><path d="M105.8 141h12" stroke="#FAD7C8" stroke-width="1.2"/>' +
+        '<rect x="123" y="139" width="24" height="4.4" rx="2.2" fill="#fff" opacity=".85"/></g>' +
+    '</g>' +
+    /* ekran B: sonuçlar canlı */
+    '<g class="gy-ekran-b">' +
+      '<path d="M37 49a4 4 0 0 1 4-4H183a4 4 0 0 1 4 4V66H37Z" fill="#7B1FA2"/>' +
+      '<g transform="translate(46 49.5) scale(.55)" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></g>' +
+      '<rect x="64" y="52" width="54" height="7" rx="3.5" fill="#fff" opacity=".9"/>' +
+      '<circle class="gy-canli" cx="174" cy="55.5" r="4" fill="#4ADE80"/>' +
+      SONUC(78, 1, '#16A085', .92) + SONUC(104, 2, '#2563EB', .78) + SONUC(130, 3, '#F39C12', .64) +
+    '</g>' +
+    /* uçuş yolu ve kâğıt uçak (ödev) */
+    '<path d="M180 120C222 62 270 40 318 58" fill="none" stroke="#F39C12" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round" opacity=".55"/>' +
+    '<g class="gy-ucak"><path d="M-10 -7L12 0L-10 7L-6 0Z" fill="#D84315"/><path d="M-6 0H12" stroke="#FAD7C8" stroke-width="1.4"/></g>' +
+    /* sonuçlar geri döner */
+    '<circle class="gy-geri n1" r="5" fill="#16A085"/>' +
+    '<circle class="gy-geri n2" r="5" fill="#2563EB"/>' +
+    '<circle class="gy-geri n3" r="5" fill="#F39C12"/>' +
+    /* öğrenciler */
+    TEL(310, 1, '#16A085') + TEL(366, 2, '#2563EB') + TEL(422, 3, '#F39C12') +
+    '</svg>';
+
+  var ADIM = function (n, ic, yazi) {
+    return '<span class="gy-adim a' + n + '">' + SIM(ic) + yazi + '</span>';
+  };
+  var OK = '<span class="gy-ok" aria-hidden="true">' + SIM('<path class="ty-okc" d="M3 12h15"/><path d="M14 7l5 5-5 5"/>') + '</span>';
+  /* svg'nin yanında dikey üç adım (telefonda yan yana); sahneyle aynı 10 sn'de sırayla parlar */
+  var GOREV_VURGU = '<div class="ty-vurgu gy-vurgu gy-yan">' +
+    '<span class="ty-gizli">Ödevi gönder, öğrencin yapsın, sonuç sana gelsin</span>' +
+    ADIM(1, '<path d="M3 11.5L21 3l-6.5 18-3.4-7.3z"/><path d="M11.1 13.7L21 3"/>', 'Gönder') + OK +
+    ADIM(2, '<rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M9.8 12.4l1.6 1.6 3-3.2"/>', 'Öğrenci yapar') + OK +
+    ADIM(3, '<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>', 'Sonuç sende') +
+    '</div>';
+  var GOREV_CIPLER = '<div class="ty-cipler gy-cipler">' +
+    CIP('<circle cx="8" cy="8" r="3"/><path d="M2.5 20a5.5 5.5 0 0 1 11 0"/><circle class="gy-c-tek" cx="17.5" cy="9.5" r="2.4"/><path class="gy-c-tek" d="M14 20a3.8 3.8 0 0 1 7.2-1.6"/>', 'Sınıfa ya da tek öğrenciye') +
+    CIP('<rect x="3.5" y="5" width="17" height="15.5" rx="2.4"/><path d="M3.5 10h17M8 2.8v4M16 2.8v4"/><path class="gy-c-gun" d="M8.5 14.6l2.2 2.2 4.6-4.6"/>', 'Son tarih') +
+    CIP('<rect x="6.5" y="2.5" width="11" height="19" rx="2.4"/><path d="M10.6 18.6h2.8"/><circle class="gy-c-rozet" cx="17.4" cy="5.6" r="2.6"/>', '«Görevlerim»de') +
+    CIP('<path d="M3 12h3.6l2.4-6 4 12 2.4-6H21"/><circle class="gy-c-canli" cx="21" cy="12" r="1.6"/>', 'Canlı sonuç') +
+    CIP('<rect x="3" y="4" width="18" height="16" rx="2.2"/><path d="M3 9.4h18M9.4 9.4V20"/><path class="gy-c-not" d="M12.6 15l2 2 4-4"/>', 'Notlara işle') +
+    '</div>';
+  G.gorev = GOREV_SAHNE + GOREV_VURGU + GOREV_CIPLER + '</div>';
+
+  /* ------------------------------------------- 2) ÖĞRENCİ GELİŞİMİ (9 sn) */
+  /* Etkinlikler tablosunda bir satır: öğrenci, rekor halkası + yüzde, gelişim çizgisi, saat + süre */
+  var SATIR = function (y, n, renk, rekor, cizgi, sure, yeni) {
+    return '<g class="gy-sat n' + n + '">' +
+      '<circle cx="42" cy="' + y + '" r="9" fill="' + renk + '"/>' +
+      '<rect x="57" y="' + (y - 6) + '" width="46" height="6" rx="3" fill="#CBD5E1"/>' +
+      '<rect x="57" y="' + (y + 3) + '" width="30" height="5" rx="2.5" fill="#E2E8F0"/>' +
+      '<circle cx="128" cy="' + y + '" r="10" fill="none" stroke="#EEF2F7" stroke-width="5"/>' +
+      '<circle class="gy-halka n' + n + '" cx="128" cy="' + y + '" r="10" fill="none" stroke="' + renk + '" stroke-width="5" stroke-linecap="round" pathLength="100" transform="rotate(-90 128 ' + y + ')"/>' +
+      '<text class="gy-yuzde n' + n + (yeni ? ' gy-eski' : '') + '" x="145" y="' + (y + 5.5) + '">' + rekor + '</text>' +
+      (yeni ? '<text class="gy-yuzde gy-yeni n' + n + '" x="145" y="' + (y + 5.5) + '">' + yeni + '</text>' : '') +
+      '<path class="gy-cizgi n' + n + '" d="' + cizgi + '" pathLength="100" fill="none" stroke="' + renk + '" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<circle cx="251" cy="' + y + '" r="7.5" fill="#fff" stroke="#64748B" stroke-width="1.8"/>' +
+      '<path class="gy-akrep n' + n + '" d="M251 ' + y + 'V' + (y - 5) + '" stroke="#64748B" stroke-width="1.8" stroke-linecap="round"/>' +
+      '<text class="gy-sure n' + n + '" x="263" y="' + (y + 5.5) + '">' + sure + '</text>' +
+      '</g>';
+  };
+  var ETK_SAHNE =
+    '<div class="ty-kutu gy-kutu"><svg class="ty-svg gy-svg" viewBox="0 0 480 214" role="img" aria-label="Etkinlikler tablosu: her öğrencinin rekoru, gelişim çizgisi ve çalıştığı süre; öğrenci telefondan çalıştıkça tablo kendiliğinden güncelleniyor">' +
+    '<rect x="0" y="0" width="480" height="214" rx="16" fill="#F4F8FB"/>' +
+    /* öğretmenin ekranı */
+    '<rect x="14" y="12" width="318" height="166" rx="9" fill="#1F2937"/>' +
+    '<rect x="21" y="19" width="304" height="152" rx="4" fill="#fff"/>' +
+    '<path d="M150 178h46l6 18h-58z" fill="#94A3B8"/><rect x="130" y="194" width="86" height="6" rx="3" fill="#64748B"/>' +
+    '<path d="M21 23a4 4 0 0 1 4-4H321a4 4 0 0 1 4 4V40H21Z" fill="#E67E22"/>' +
+    '<g transform="translate(30 22) scale(.62)" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<circle cx="14.6" cy="4.4" r="2.2" fill="#fff"/><path d="M6 21l3.6-6.2 3.4 2.6V22M9.6 14.8l1.8-5.6 4.6 1.6 2.6 3.4M11.4 9.2L7.4 11"/></g>' +
+    '<rect x="50" y="26" width="64" height="7" rx="3.5" fill="#fff" opacity=".9"/>' +
+    '<circle class="gy-canli" cx="312" cy="29.5" r="4" fill="#4ADE80"/>' +
+    /* sütun başları (simge): rekor kupası, çizgi, saat */
+    '<g fill="none" stroke="#94A3B8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M121 47h14v4a7 7 0 0 1-14 0zM124 58h8M128 55v3"/>' +
+      '<path d="M180 58l9-7 7 4 10-8 8 3"/>' +
+      '<circle cx="251" cy="52" r="5.5"/><path d="M251 49v3l2 1.4"/></g>' +
+    '<path d="M27 64H319" stroke="#EEF2F7" stroke-width="1.5"/>' +
+    '<rect class="gy-parla" x="25" y="130" width="296" height="32" rx="6" fill="#FEF3C7"/>' +
+    SATIR(80, 1, '#16A085', '%92', 'M178 88l10-6 9 2 10-9 10 1 10-9', '18 dk') +
+    SATIR(113, 2, '#2563EB', '%76', 'M178 119l10-4 9 3 10-7 10 3 10-6', '9 dk') +
+    SATIR(146, 3, '#F39C12', '%58', 'M178 153l10-2 9-3 10 2 10-5 10-1', '4 dk', '%70') +
+    '<g class="gy-arti"><rect x="293" y="139" width="28" height="15" rx="7.5" fill="#16A085"/><path d="M298.6 146.5h6M301.6 143.5v6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>' +
+      '<rect x="307" y="144" width="9" height="5" rx="2.5" fill="#fff"/></g>' +
+    /* öğrencinin telefonu: etkinlik oynanıyor, sonuç tabloya akar */
+    '<path class="ty-akis gy-hat" d="M384 118C362 136 346 146 330 146" fill="none" stroke="#16A085" stroke-width="3" stroke-linecap="round"/>' +
+    '<circle class="gy-damla n1" r="3.4" fill="#16A085"/><circle class="gy-damla n2" r="3.4" fill="#16A085"/><circle class="gy-damla n3" r="3.4" fill="#16A085"/>' +
+    '<rect x="388" y="34" width="70" height="118" rx="10" fill="#1F2937"/>' +
+    '<rect x="393" y="43" width="60" height="100" rx="4" fill="#fff"/>' +
+    '<rect x="417" y="38" width="12" height="2" rx="1" fill="#64748B"/>' +
+    '<rect x="399" y="49" width="48" height="8" rx="4" fill="#F3E8FF"/>' +
+    '<rect class="gy-sure-cubuk" x="399" y="49" width="48" height="8" rx="4" fill="#C084FC"/>' +
+    '<g class="gy-kare k1"><rect x="399" y="64" width="22" height="22" rx="5" fill="#E0F2FE"/><path d="M406 75h8" stroke="#0284C7" stroke-width="2.4" stroke-linecap="round"/></g>' +
+    '<g class="gy-kare k2"><rect x="425" y="64" width="22" height="22" rx="5" fill="#E0F2FE"/><circle cx="436" cy="75" r="3.6" fill="none" stroke="#0284C7" stroke-width="2.2"/></g>' +
+    '<g class="gy-kare k3"><rect x="399" y="90" width="22" height="22" rx="5" fill="#E0F2FE"/><path d="M406 101l3.4-5 3.4 5" fill="none" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g>' +
+    '<g class="gy-kare k4"><rect x="425" y="90" width="22" height="22" rx="5" fill="#E0F2FE"/><path d="M431 101h10M436 96v10" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round"/></g>' +
+    '<g class="gy-yildiz"><path d="M423 120.5l2.4 4.8 5.3.8-3.8 3.7.9 5.3-4.8-2.5-4.8 2.5.9-5.3-3.8-3.7 5.3-.8z" fill="#FBBF24"/></g>' +
+    '<ellipse cx="452" cy="146" rx="9" ry="13" fill="#F2C9A0" transform="rotate(-18 452 146)"/>' +
+    '</svg>';
+
+  var DONEN = function (n, ic, yazi) {
+    return '<span class="gy-d gy-d' + n + '">' + SIM(ic) + yazi + '</span>';
+  };
+  var ETK_VURGU = '<div class="ty-vurgu gy-vurgu gy-yan">' +
+    '<span class="ty-gizli">Hesabıyla bağlı öğrencinin puanı, süresi ve gelişimi senin ekranında</span>' +
+    '<span class="gy-sabit-sol" aria-hidden="true">' + SIM('<circle cx="12" cy="7.6" r="4"/><path d="M4.6 21a7.4 7.4 0 0 1 14.8 0"/><path class="gy-bag" d="M16.6 13.6l1.6 1.6 3.2-3.4"/>') + 'Hesabıyla bağlı öğrencinin</span>' +
+    '<span class="gy-donen" aria-hidden="true">' +
+      DONEN(1, '<path d="M6 3h12v4.6a6 6 0 0 1-12 0zM9 20h6M12 13.6V20"/><path d="M6 5H3v1.6A3.4 3.4 0 0 0 6 10M18 5h3v1.6a3.4 3.4 0 0 1-3 3.4"/>', 'puanı') +
+      DONEN(2, '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.8 2M9.6 2.8h4.8"/>', 'süresi') +
+      DONEN(3, '<path d="M3 17l5.4-5.4 4 4L21 7"/><path d="M15.4 7H21v5.6"/>', 'gelişimi') +
+    '</span>' +
+    '<span class="ty-sabit" aria-hidden="true">' + SIM('<rect x="2.5" y="4" width="19" height="12" rx="1.6"/><path d="M8 20h8M12 16v4"/>') + 'senin ekranında</span>' +
+    '</div>';
+  var ETK_CIPLER = '<div class="ty-cipler gy-cipler">' +
+    CIP('<path d="M6 3h12v4.6a6 6 0 0 1-12 0zM9 20h6M12 13.6V20"/><path class="gy-c-parla" d="M6 5H3v1.6A3.4 3.4 0 0 0 6 10M18 5h3v1.6a3.4 3.4 0 0 1-3 3.4"/>', 'Rekor') +
+    CIP('<path class="gy-c-cizgi" d="M3 17l5.4-5.4 4 4L21 7"/><path d="M15.4 7H21v5.6"/>', 'Gelişim çizgisi') +
+    CIP('<circle cx="12" cy="13" r="8"/><path class="gy-c-akrep" d="M12 13V8.6"/><path d="M9.6 2.8h4.8"/>', 'Çalışma süresi') +
+    CIP('<rect x="3.5" y="5" width="17" height="15.5" rx="2.4"/><path d="M3.5 10h17M8 2.8v4M16 2.8v4"/><path class="gy-c-gun" d="M7.4 15.4h3M13.6 15.4h3"/>', 'Son çalıştığı gün') +
+    CIP('<circle cx="12" cy="12" r="8.6" stroke-dasharray="3 3.2"/><path d="M9 12h6"/>', 'Açmadıkları da görünür') +
+    CIP('<path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20.4 3.6v3.8h-3.8"/>', 'Kendiliğinden güncellenir') +
+    '</div>';
+  G.etkinlik = ETK_SAHNE + ETK_VURGU + ETK_CIPLER + '</div>';
+
+  var STIL = [
+    /* ortak */
+    '.gy-svg text{ font-family:inherit; font-weight:900; font-size:15px; fill:#1F2937; }',
+    '.gy-canli{ animation:gyCanli 1.4s ease-in-out infinite; }',
+    '@keyframes gyCanli{ 0%,100%{ opacity:1; } 50%{ opacity:.25; } }',
+    /* 1) GÖREV — 10 sn döngü */
+    '.gy-ekran-a{ opacity:0; animation:gyEkranA 10s ease-in-out infinite; }',
+    '.gy-ekran-b{ animation:gyEkranB 10s ease-in-out infinite; }',
+    '@keyframes gyEkranA{ 0%,47%{ opacity:1; } 51%,95%{ opacity:0; } 99%,100%{ opacity:1; } }',
+    '@keyframes gyEkranB{ 0%,47%{ opacity:0; } 51%,95%{ opacity:1; } 99%,100%{ opacity:0; } }',
+    '.gy-gonder{ transform-box:fill-box; transform-origin:center; animation:gyGonder 10s ease-in-out infinite; }',
+    '@keyframes gyGonder{ 0%,3%{ transform:scale(1); } 6%{ transform:scale(1.07); } 9%{ transform:scale(.94); } 12%,100%{ transform:scale(1); } }',
+    '.gy-ucak{ opacity:0; animation:gyUcak 10s linear infinite; }',
+    '@keyframes gyUcak{ 0%,9%{ opacity:0; transform:translate(180px,120px) rotate(-52deg) scale(.6); }',
+    '  11%{ opacity:1; transform:translate(188px,109px) rotate(-50deg) scale(1); }',
+    '  15%{ transform:translate(212px,80px) rotate(-38deg); } 20%{ transform:translate(246px,59px) rotate(-21deg); }',
+    '  25%{ transform:translate(282px,51.5px) rotate(-1deg); } 29%{ opacity:1; transform:translate(312px,56px) rotate(16deg) scale(1); }',
+    '  31%,100%{ opacity:0; transform:translate(322px,60px) rotate(20deg) scale(.4); } }',
+    '.gy-rozet{ transform-box:fill-box; transform-origin:center; animation:gyRozet 10s ease-out infinite both; }',
+    '.gy-rozet.n2{ animation-delay:.15s; } .gy-rozet.n3{ animation-delay:.3s; }',
+    '@keyframes gyRozet{ 0%,29%{ opacity:0; transform:scale(0); } 32%{ opacity:1; transform:scale(1.3); } 35%,90%{ opacity:1; transform:scale(1); } 95%,100%{ opacity:0; transform:scale(1); } }',
+    '.gy-satir{ animation:gySatir 10s ease-out infinite both; }',
+    '.gy-satir.n2{ animation-delay:.15s; } .gy-satir.n3{ animation-delay:.3s; }',
+    '@keyframes gySatir{ 0%,30%{ opacity:0; } 34%,90%{ opacity:1; } 95%,100%{ opacity:0; } }',
+    '.gy-pb{ transform-box:fill-box; transform-origin:0 50%; animation:gyPb 10s ease-in-out infinite both; }',
+    '.gy-pb.n2{ animation-delay:.25s; } .gy-pb.n3{ animation-delay:.5s; }',
+    '@keyframes gyPb{ 0%,36%{ transform:scaleX(0); } 48%,90%{ transform:scaleX(1); } 95%,100%{ transform:scaleX(0); } }',
+    '.gy-tik{ transform-box:fill-box; transform-origin:center; animation:gyTik 10s ease-out infinite both; }',
+    '.gy-tik.n2{ animation-delay:.25s; } .gy-tik.n3{ animation-delay:.5s; }',
+    '@keyframes gyTik{ 0%,48%{ opacity:0; transform:scale(.2); } 51%{ opacity:1; transform:scale(1.25); } 54%,90%{ opacity:1; transform:scale(1); } 95%,100%{ opacity:0; transform:scale(1); } }',
+    '.gy-geri{ opacity:0; animation:gyGeri1 10s ease-in-out infinite both; }',
+    '.gy-geri.n2{ animation-name:gyGeri2; } .gy-geri.n3{ animation-name:gyGeri3; }',
+    '@keyframes gyGeri1{ 0%,55%{ opacity:0; transform:translate(331px,92px); } 56%{ opacity:1; } 61%{ transform:translate(258px,64px); } 65%{ opacity:1; transform:translate(176px,82px); } 66%,100%{ opacity:0; transform:translate(176px,82px); } }',
+    '@keyframes gyGeri2{ 0%,57%{ opacity:0; transform:translate(387px,92px); } 58%{ opacity:1; } 63%{ transform:translate(282px,70px); } 67%{ opacity:1; transform:translate(176px,108px); } 68%,100%{ opacity:0; transform:translate(176px,108px); } }',
+    '@keyframes gyGeri3{ 0%,59%{ opacity:0; transform:translate(443px,92px); } 60%{ opacity:1; } 65%{ transform:translate(306px,78px); } 69%{ opacity:1; transform:translate(176px,134px); } 70%,100%{ opacity:0; transform:translate(176px,134px); } }',
+    '.gy-sb{ transform-box:fill-box; transform-origin:0 50%; animation:gySb 10s ease-out infinite both; }',
+    '.gy-sb.n2{ animation-delay:.2s; } .gy-sb.n3{ animation-delay:.4s; }',
+    '@keyframes gySb{ 0%,64%{ transform:scaleX(0); } 72%,96%{ transform:scaleX(1); } 100%{ transform:scaleX(0); } }',
+    '.gy-st{ transform-box:fill-box; transform-origin:center; animation:gySt 10s ease-out infinite both; }',
+    '.gy-st.n2{ animation-delay:.2s; } .gy-st.n3{ animation-delay:.4s; }',
+    '@keyframes gySt{ 0%,70%{ opacity:0; transform:scale(.3); } 74%,96%{ opacity:1; transform:scale(1); } 100%{ opacity:0; } }',
+    /* yerleşim: görsel ile yanındaki dikey vurgu üstte, çipler altta tam genişlik (kâğıt sabit boy:
+       animasyon ilk bakışta görünsün) */
+    '.gy-kutu{ align-items:center; }',
+    '.gy-kutu .ty-svg{ max-width:330px; }',
+    '.gy-yan{ flex:1 1 160px; flex-direction:column; flex-wrap:nowrap; align-items:flex-start; gap:4px; margin:0; font-size:18px; }',
+    '.gy-yan > span{ max-width:100%; }',
+    '.gy-kutu .gy-cipler{ flex:1 1 100%; }',
+    '@media (max-width:860px){ .gy-yan{ font-size:15px; } }',
+    /* üç adım: Gönder → Öğrenci yapar → Sonuç sende (sahneyle aynı 10 sn) */
+    '.gy-adim{ display:inline-flex; align-items:center; gap:7px; padding:6px 12px 6px 9px; border-radius:12px; background:#F1F5F9; color:#64748B;',
+    '  border:1.5px solid #E2E8F0; animation:gyAdim1 10s ease-in-out infinite; }',
+    '.gy-adim.a2{ animation-name:gyAdim2; } .gy-adim.a3{ animation-name:gyAdim3; }',
+    '@keyframes gyAdim1{ 0%,30%{ background:#FFF1D6; color:#B45309; border-color:#F6C878; transform:translateY(-2px); } 34%,96%{ background:#F1F5F9; color:#64748B; border-color:#E2E8F0; transform:none; } 100%{ background:#FFF1D6; color:#B45309; border-color:#F6C878; transform:translateY(-2px); } }',
+    '@keyframes gyAdim2{ 0%,30%{ background:#F1F5F9; color:#64748B; border-color:#E2E8F0; transform:none; } 34%,54%{ background:#E8F6F2; color:#0E7C66; border-color:#A9DFCB; transform:translateY(-2px); } 58%,100%{ background:#F1F5F9; color:#64748B; border-color:#E2E8F0; transform:none; } }',
+    '@keyframes gyAdim3{ 0%,54%{ background:#F1F5F9; color:#64748B; border-color:#E2E8F0; transform:none; } 58%,94%{ background:#F3E8FF; color:#7B1FA2; border-color:#D8B4FE; transform:translateY(-2px); } 98%,100%{ background:#F1F5F9; color:#64748B; border-color:#E2E8F0; transform:none; } }',
+    '.gy-ok{ display:inline-flex; color:#94A3B8; margin-inline-start:16px; }',
+    '.gy-ok svg{ width:19px; height:19px; transform:rotate(90deg); }',
+    /* çip simgelerinin küçük hareketleri */
+    '.gy-c-tek{ animation:gyYanSon 2s ease-in-out infinite; }',
+    '.gy-c-gun{ stroke-dasharray:12; animation:gyCizC 2.6s ease-in-out infinite; }',
+    '.gy-c-rozet{ fill:#E74C3C; stroke:#E74C3C; transform-box:fill-box; transform-origin:center; animation:gyNabiz 1.6s ease-in-out infinite; }',
+    '.gy-c-canli{ fill:#16A085; animation:gyYanSon 1.2s ease-in-out infinite; }',
+    '.gy-c-not{ stroke-dasharray:10; animation:gyCizC 2.4s ease-in-out infinite; }',
+    '.gy-c-parla{ animation:gyYanSon 2.2s ease-in-out infinite; }',
+    '.gy-c-cizgi{ stroke-dasharray:26; animation:gyCizC 3s ease-in-out infinite; }',
+    '.gy-c-akrep{ transform-box:fill-box; transform-origin:50% 100%; animation:gyDon 4s linear infinite; }',
+    '@keyframes gyYanSon{ 50%{ opacity:.25; } }',
+    '@keyframes gyNabiz{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.3); } }',
+    '@keyframes gyCizC{ 0%{ stroke-dashoffset:26; } 45%,85%{ stroke-dashoffset:0; } 100%{ stroke-dashoffset:-26; } }',
+    '@keyframes gyDon{ to{ transform:rotate(360deg); } }',
+    /* 2) ETKİNLİK — 9 sn döngü */
+    '.gy-sat{ animation:gySat 9s ease-out infinite both; }',
+    '.gy-sat.n2{ animation-delay:.2s; } .gy-sat.n3{ animation-delay:.4s; }',
+    '@keyframes gySat{ 0%{ opacity:0; transform:translateX(-8px); } 7%,93%{ opacity:1; transform:none; } 100%{ opacity:0; } }',
+    '.gy-halka{ stroke-dasharray:100 100; stroke-dashoffset:8; animation:gyHalka1 9s ease-in-out infinite both; }',
+    '.gy-halka.n2{ stroke-dashoffset:24; animation-name:gyHalka2; animation-delay:.2s; }',
+    '.gy-halka.n3{ stroke-dashoffset:30; animation-name:gyHalka3; animation-delay:.4s; }',
+    '@keyframes gyHalka1{ 0%,8%{ stroke-dashoffset:100; } 30%,94%{ stroke-dashoffset:8; } 100%{ stroke-dashoffset:100; } }',
+    '@keyframes gyHalka2{ 0%,8%{ stroke-dashoffset:100; } 30%,94%{ stroke-dashoffset:24; } 100%{ stroke-dashoffset:100; } }',
+    '@keyframes gyHalka3{ 0%,8%{ stroke-dashoffset:100; } 30%,64%{ stroke-dashoffset:42; } 70%,94%{ stroke-dashoffset:30; } 100%{ stroke-dashoffset:100; } }',
+    '.gy-yuzde{ animation:gyYuzde 9s ease-out infinite both; }',
+    '.gy-yuzde.n2{ animation-delay:.2s; } .gy-yuzde.n3{ animation-delay:.4s; }',
+    '.gy-yuzde.gy-eski{ animation-name:gyYuzdeEski; } .gy-yuzde.gy-yeni{ opacity:0; animation-name:gyYuzdeYeni; }',
+    '@keyframes gyYuzdeEski{ 0%,22%{ opacity:0; } 30%,64%{ opacity:1; } 67%,100%{ opacity:0; } }',
+    '@keyframes gyYuzdeYeni{ 0%,65%{ opacity:0; } 69%,94%{ opacity:1; } 100%{ opacity:0; } }',
+    '@keyframes gyYuzde{ 0%,22%{ opacity:0; } 30%,94%{ opacity:1; } 100%{ opacity:0; } }',
+    '.gy-cizgi{ stroke-dasharray:100 120; stroke-dashoffset:0; animation:gyCizgi 9s ease-in-out infinite both; }',
+    '.gy-cizgi.n2{ animation-delay:.25s; } .gy-cizgi.n3{ animation-delay:.5s; }',
+    '@keyframes gyCizgi{ 0%,12%{ stroke-dashoffset:101; } 38%,94%{ stroke-dashoffset:0; } 100%{ stroke-dashoffset:101; } }',
+    '.gy-akrep{ transform-box:fill-box; transform-origin:50% 100%; animation:gyDon 3s linear infinite; }',
+    '.gy-akrep.n2{ animation-duration:4.5s; } .gy-akrep.n3{ animation-duration:6s; }',
+    '.gy-sure{ animation:gyYuzde 9s ease-out infinite both; }',
+    '.gy-sure.n2{ animation-delay:.3s; } .gy-sure.n3{ animation-delay:.6s; }',
+    '.gy-parla{ opacity:0; animation:gyParla 9s ease-in-out infinite; }',
+    '@keyframes gyParla{ 0%,62%{ opacity:0; } 68%{ opacity:1; } 80%,100%{ opacity:0; } }',
+    '.gy-arti{ opacity:0; animation:gyArti 9s ease-out infinite; }',
+    '@keyframes gyArti{ 0%,64%{ opacity:0; transform:translateY(6px); } 69%,82%{ opacity:1; transform:none; } 88%,100%{ opacity:0; transform:translateY(-6px); } }',
+    '.gy-hat{ opacity:.85; }',
+    '.gy-damla{ opacity:0; animation:gyDamla 9s ease-in-out infinite both; }',
+    '.gy-damla.n2{ animation-delay:.3s; } .gy-damla.n3{ animation-delay:.6s; }',
+    '@keyframes gyDamla{ 0%,46%{ opacity:0; transform:translate(384px,118px); } 48%{ opacity:1; } 53%{ transform:translate(357px,139px); } 58%{ opacity:1; transform:translate(331px,146px); } 60%,100%{ opacity:0; transform:translate(331px,146px); } }',
+    '.gy-kare rect{ animation:gyKare 9s ease-in-out infinite; }',
+    '.gy-kare.k2 rect{ animation-delay:.5s; } .gy-kare.k3 rect{ animation-delay:1s; } .gy-kare.k4 rect{ animation-delay:1.5s; }',
+    '@keyframes gyKare{ 0%,30%{ fill:#E0F2FE; } 34%,40%{ fill:#BBF7D0; } 46%,100%{ fill:#E0F2FE; } }',
+    '.gy-sure-cubuk{ transform-box:fill-box; transform-origin:0 50%; animation:gySureC 9s linear infinite; }',
+    '@keyframes gySureC{ 0%{ transform:scaleX(.08); } 60%,100%{ transform:scaleX(1); } }',
+    '.gy-yildiz{ transform-box:fill-box; transform-origin:center; opacity:0; animation:gyYildiz 9s ease-out infinite; }',
+    '@keyframes gyYildiz{ 0%,40%{ opacity:0; transform:scale(.3) rotate(-30deg); } 44%{ opacity:1; transform:scale(1.25) rotate(0); } 48%,62%{ opacity:1; transform:scale(1); } 70%,100%{ opacity:0; } }',
+    /* «Hesabıyla bağlı öğrencinin [puanı | süresi | gelişimi] senin ekranında» */
+    '.gy-sabit-sol{ display:inline-flex; align-items:center; gap:7px; padding:6px 12px 6px 9px; border-radius:12px; background:#E8F6F2; color:#0E7C66; border:1.5px solid #A9DFCB; }',
+    '.gy-bag{ stroke-dasharray:8; animation:gyCizC 2.6s ease-in-out infinite; }',
+    '.gy-donen{ display:inline-grid; }',
+    '.gy-d{ grid-area:1/1; display:inline-flex; align-items:center; gap:7px; padding:6px 13px 6px 10px; border-radius:12px;',
+    '  background:#FFF1D6; color:#B45309; border:1.5px solid #F6C878; box-shadow:0 3px 10px rgba(180,83,9,.14); opacity:0; animation:gyD 9s ease-in-out infinite; }',
+    '.gy-d1{ animation-delay:0s; } .gy-d2{ animation-delay:3s; } .gy-d3{ animation-delay:6s; }',
+    '@keyframes gyD{ 0%{ opacity:0; transform:translateY(7px); } 4%,30%{ opacity:1; transform:none; } 34%,100%{ opacity:0; transform:translateY(-7px); } }',
+    /* hareketi azalt: son hâl durağan */
+    '@media (prefers-reduced-motion:reduce){',
+    '  .gy-svg *, .gy-adim, .gy-d, .gy-sabit-sol svg *{ animation:none !important; }',
+    '  .gy-ekran-a, .gy-ucak, .gy-geri, .gy-parla, .gy-arti, .gy-damla, .gy-yildiz{ opacity:0 !important; }',
+    '  .gy-ekran-b, .gy-rozet, .gy-satir, .gy-tik, .gy-st, .gy-sat, .gy-yuzde, .gy-sure{ opacity:1 !important; transform:none !important; }',
+    '  .gy-pb, .gy-sb, .gy-sure-cubuk{ transform:none !important; }',
+    '  .gy-yuzde.gy-eski{ opacity:0 !important; }',
+    '  .gy-donen{ display:inline-flex; flex-wrap:wrap; gap:6px; } .gy-d{ opacity:1 !important; transform:none !important; }',
+    '}'
+  ].join('\n');
+  try {
+    if (!document.getElementById('syGorevStil')) {
+      var s = document.createElement('style');
+      s.id = 'syGorevStil';
       s.textContent = STIL;
       (document.head || document.documentElement).appendChild(s);
     }

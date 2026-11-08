@@ -25,6 +25,31 @@
 
     /* EN YENİSİ EN ÜSTTE */
     var LISTE = [
+        /* SINIFTA YENİ 08.11.2026: ana sayfadaki dört sayfayla aynı (metin = giriş + maddeler art arda) */
+        {
+            id: 34,
+            tarih: '2026-11-08',
+            baslik: 'Ödevi dijital gönder, sonucu canlı izle',
+            metin: 'Öğrencin siteye kendi e-postasıyla kaydolup senin kodunla sınıfına bağlanınca ödevi kâğıtsız verirsin; kim yaptı, kaç aldı, hepsi önüne gelir. Sınıfında «Görev Gönder»e dokun, oyunu ya da etkinliği seç. Ödevi bütün sınıfa, bütün seviyeye ya da tek öğrenciye gönderirsin. Son tarihi sen koyarsın; istersen ödevi performans notu yaparsın. Öğrenci ödevi «Görevlerim»de görür, telefondan da yapar. Kim yaptı, kaç aldı, ne kadar sürdü: sonuçlar sana canlı gelir. Performans ödevinin sonuçları «Notlara işle» ile not listene geçer.'
+        },
+        {
+            id: 33,
+            tarih: '2026-11-08',
+            baslik: 'Öğrencinin puanını ve süresini gör',
+            metin: 'Hesabıyla sınıfına bağlı öğrencin sitede ne çalışırsa, ödev vermesen de senin ekranına düşer. Sınıfında «Etkinlikler»e dokun: hesabıyla bağlı bütün öğrencilerin bir arada. Her oyun ve etkinlikte öğrencinin en yüksek puanı (rekoru) görünür. Gelişim çizgisi, son çalıştığı gün ve 30 günlük ilerleme de orada. Hangi etkinlikte ne kadar süre çalıştığını görürsün. Henüz açmadığı etkinlikler de listede; kimin neyi atladığı belli. Öğrenci çalıştıkça tablo kendiliğinden güncellenir.'
+        },
+        {
+            id: 32,
+            tarih: '2026-11-08',
+            baslik: 'Öğrencin sınıfını kendisi seçsin, sen tek dokunuşla onayla',
+            metin: 'Öğretmen kodun profilinde yazar; öğrencilerine bu kodu vermen yeter. Öğrenci kendi e-postasıyla kaydolur, kodu girer, sınıflarından kendi şubesini seçer. İstek zile düşer; seçtiği sınıf hazır gelir, istersen başka sınıfına alırsın. Öğrenciyi başka sınıfa alınca ya da sınıfın adını değiştirince öğrencinin ekranı da güncellenir. Kayıtta e-posta yanlış yazılırsa (gmial.com gibi) site doğrusunu önerir. Giriş olmazsa e-posta önerisi ve @gmail.com gibi hazır uzantı tuşları çıkar.'
+        },
+        {
+            id: 31,
+            tarih: '2026-11-04',
+            baslik: '7. sınıfın yeni Devlet kitabı sitede, sesleriyle',
+            metin: '7. sınıfa MEB Devlet Kitapları 2026-2027 kitabı eklendi; sayfa sayfa ve sesleriyle. 7. sınıfta kitap seçiminde bu yılın Devlet kitabı hazır; Mektep kitabı «2025-2026» adıyla duruyor. Altı ünitenin 18 dersindeki kelime, cümle ve diyaloglar Muhâdese ve kelime çalışmalarında.'
+        },
         /* SINIFTA YENİ 02.11.2026: ana sayfadaki yedi sayfayla aynı (metin = maddeler art arda) */
         {
             id: 30,
