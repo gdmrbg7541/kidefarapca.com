@@ -5552,7 +5552,14 @@ function llOkulSinifSec(lId, cId) {
     try {
         if (window.KidefSinifBag && window.KidefSinifBag.icerde &&
             typeof window.KidefSinifBag.adres === 'function') {
-            window.open(window.KidefSinifBag.adres(lId, cId), '_blank', 'noopener');
+            /* SAFARİ SEKME (08.11.2026) — öğretmen: "flipbooklar ayrı sekme açılmıyor sanırım" (Safari,
+               sınıfın Materyaller'i). Üçüncü bağımsız değişken ('noopener') verilince Safari sınıfı sekmede
+               değil, araç çubuğu ve sekme şeridi olmayan AYRI PENCEREDE açıyordu; o pencereden açılan kitap
+               da yeni sekme gibi görünmüyordu. Sınıf artık özelliksiz açılır (her tarayıcıda sekme);
+               'noopener'ın etkisi açılan sekmenin opener'ı boşaltılarak korunur. */
+            var snW = null;
+            try { snW = window.open(window.KidefSinifBag.adres(lId, cId), '_blank'); } catch (e2) { snW = null; }
+            try { if (snW) snW.opener = null; } catch (e3) { }
             try { if (window.KidefSinifBag.kapiSifirla) window.KidefSinifBag.kapiSifirla(); } catch (e) { }
             return;
         }
