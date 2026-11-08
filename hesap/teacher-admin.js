@@ -1864,11 +1864,23 @@ function _ogrTarih(ts) {
    ve kişi başı tutar mufredat/_destek'e yazılır.
    =================================================================== */
 var _aogSuzgec = 'hepsi';
+/* OTURUM SÜZGECİ (08.11.2026) — yönetici: "yönetici panelindeki öğretmenler kısmında, filtrelere oturum
+   sayısına göre de filtre ekleyelim". Oturum = siteye giriş sayısı (sistem/kullanimsure.js → kullanim.oturum;
+   30 dakikadan uzun aradan sonraki her giriş yeni oturum). Durum süzgeci ve aramayla birlikte uygulanır
+   (hepsi uymalı); çipte o aralıktaki öğretmen sayısı. Sıralamada «En çok oturum», kartta «N oturum». */
+var _aogOturum = 'hepsi';
+var _AOG_OTURUM = [['o0', 'Hiç', 0, 0], ['o1', '1', 1, 1], ['o2', '2–5', 2, 5], ['o6', '6–20', 6, 20], ['o21', '21+', 21, Infinity]];
+function _aogOturumSayi(n) { return Math.max(0, parseInt(n, 10) || 0); }
+function _aogOturumDilim(n) {
+    n = _aogOturumSayi(n);
+    for (var i = 0; i < _AOG_OTURUM.length; i++) if (n >= _AOG_OTURUM[i][2] && n <= _AOG_OTURUM[i][3]) return _AOG_OTURUM[i][0];
+    return 'o0';
+}
 /* SIRALAMA (21.10.2026) — öğretmen: "öğretmenleri isimlerinin baş harfine, en
    çok siteyi kullanandan en az kullanana, en son kullanandan en eski kullanana
    göre sıralayabilelim". ad | sure | son; seçim hatırlanır. */
 /* + ogrenci (21.10.2026): "en çok öğrencisi bulunanlardan da" — kendi sınıf listesindeki öğrenci sayısı */
-var _aogSira = (function () { try { var v = localStorage.getItem('kidef_aog_sira'); return /^(ad|sure|son|ogrenci|kayit)$/.test(v || '') ? v : 'ad'; } catch (e) { return 'ad'; } })();
+var _aogSira = (function () { try { var v = localStorage.getItem('kidef_aog_sira'); return /^(ad|sure|son|ogrenci|kayit|oturum)$/.test(v || '') ? v : 'ad'; } catch (e) { return 'ad'; } })();
 /* ÖĞRETMENLER BİR ARADA (02.11.2026) — birleşik bölüm, iç liste, büyük sayılar, kayıt tarihi,
    en alttaki Beklenen Destek için biçim (yalnız yönetici panelinde). */
 function _ogtStil() {
@@ -1918,6 +1930,10 @@ function _ogtStil() {
         '#aosGrid .aog-alt small{color:#8A94A3; font-weight:700;}',
         '#aosGrid .aog-alt i{color:#A9B2BD;}',
         '#aosGrid .aos-ogt-baslik{color:#0E7C66;}',
+        /* OTURUM SÜZGECİ (08.11.2026): oturum çipleri ayrı satırda, sayı soluk, seçili çip mor */
+        '#admin-teacher-list .aog-oturum-grup{flex:1 1 100%; margin-inline-start:0;}',
+        '#admin-teacher-list .aog-suz.aog-otr small{font-size:.74rem; font-weight:700; opacity:.72; margin-inline-start:2px;}',
+        '#admin-teacher-list .aog-suz.aog-otr.sec{background:#6C3FB5; border-color:#6C3FB5; color:#fff;}',
         /* Beklenen Destek kendi akordiyonunda: içteki başlık tekrar etmesin */
         '#admin-destek-details #admin-destek-ayar .dst-a-ust > b:first-child{display:none;}'
     ].join('\n');
@@ -2303,6 +2319,7 @@ function renderAdminTeacherList(kaynak) {
                 ozet.push(say.ogrenci ? '<b>' + say.ogrenci + '</b> öğrenci' : 'öğrenci yok');
                 if (say.sinif) ozet.push(say.sinif + ' sınıf');
                 if (kul.toplamSn) ozet.push('<b>' + _sureBicim(kul.toplamSn) + '</b>');
+                if (_aogOturumSayi(kul.oturum)) ozet.push(_aogOturumSayi(kul.oturum) + ' oturum');      /* OTURUM SÜZGECİ (08.11.2026) */
                 if (kul.sonGoruldu) ozet.push('son ' + _ogrTarih(kul.sonGoruldu));
                 /* CANLI DERS KULLANIMI (06.11.2026): bu ayki ders, süre, veri (hesap/canlikullanim.js) */
                 try { var _ckl = (window.KidefCanliKullanim && KidefCanliKullanim.satir) ? KidefCanliKullanim.satir(o) : ''; if (_ckl) ozet.push(_ckl); } catch (e) { }
@@ -2318,7 +2335,7 @@ function renderAdminTeacherList(kaynak) {
                     '<button type="button" class="aog-kart" data-aog-ara="' + _fbEsc(ara) + '" data-aog-durum="' + durumAd + '"' +
                     ' data-aog-ad="' + _fbEsc(siraAd) + '" data-aog-sure="' + (kul.toplamSn || 0) + '" data-aog-son="' + sonMs + '"' +
                     ' data-aog-ogrenci="' + (say.ogrenci || 0) + '" data-aog-sinif="' + (say.sinif || 0) + '"' +
-                    ' data-aog-kayit="' + kayitMs + '"' +
+                    ' data-aog-kayit="' + kayitMs + '" data-aog-oturum="' + _aogOturumSayi(kul.oturum) + '"' +
                     ' onclick="adminOgretmenDetay(\'' + uid + '\')" title="Ayrıntılar, ücret durumu, takvim ve anket">' +
                       '<span class="aog-avatar" style="background:hsl(' + ton + ',70%,93%); color:hsl(' + ton + ',45%,32%);">' + _fbEsc(harf) + '</span>' +
                       '<span class="aog-govde">' +
@@ -2339,9 +2356,17 @@ function renderAdminTeacherList(kaynak) {
             var sira = function (id, yazi) {
                 var ip = id === 'sure' ? 'Sitede geçirilen toplam süreye göre, çoktan aza' : (id === 'son' ? 'Son görülme tarihine göre, yeniden eskiye'
                        : (id === 'ogrenci' ? 'Sınıf listesindeki öğrenci sayısına göre, çoktan aza'
-                       : (id === 'kayit' ? 'Kayıt tarihine göre, yeniden eskiye (ay başlıklarıyla)' : 'Ada göre, baş harf başlıklarıyla')));
+                       : (id === 'kayit' ? 'Kayıt tarihine göre, yeniden eskiye (ay başlıklarıyla)'
+                       : (id === 'oturum' ? 'Oturum (siteye giriş) sayısına göre, çoktan aza' : 'Ada göre, baş harf başlıklarıyla'))));
                 return '<button type="button" class="aog-suz aog-sir' + (_aogSira === id ? ' sec' : '') + '" data-aog-sira="' + id + '" title="' + ip + '"' +
                     ' onclick="adminOgretmenSirala(\'' + id + '\')">' + yazi + '</button>';
+            };
+            /* OTURUM SÜZGECİ (08.11.2026): aralık çipleri, yanında o aralıktaki öğretmen sayısı */
+            var oturumSay = { hepsi: liste.length };
+            liste.forEach(function (o) { var dl = _aogOturumDilim((o.kullanim || {}).oturum); oturumSay[dl] = (oturumSay[dl] || 0) + 1; });
+            var oturumCip = function (id, yazi) {
+                return '<button type="button" class="aog-suz aog-otr' + (_aogOturum === id ? ' sec' : '') + '" data-aog-otr="' + id + '"' +
+                    ' onclick="adminOgretmenOturum(\'' + id + '\')">' + yazi + ' <small>(' + (oturumSay[id] || 0) + ')</small></button>';
             };
             container.innerHTML =
                 /* Firebase Authentication'dan kullanıcı silmek bu listeyi
@@ -2367,9 +2392,12 @@ function renderAdminTeacherList(kaynak) {
                   '<input type="search" id="aogAra" placeholder="Ad, e-posta, kod ya da telefon ara…" oninput="adminOgretmenSuz()">' +
                   suz('hepsi', 'Hepsi') + suz('onayli', 'Onaylı') + suz('bekliyor', 'Onay bekleyen') + suz('reddedildi', 'Reddedilen') +
                   suz('destek', '💛 Destek bildirimi') +
+                  /* OTURUM SÜZGECİ (08.11.2026): ayrı satırda; durum süzgeciyle birlikte uygulanır */
+                  '<span class="aog-sira-grup aog-oturum-grup"><span class="aog-sira" title="Oturum: siteye giriş sayısı — 30 dakikadan uzun aradan sonraki her giriş yeni oturum sayılır">Oturum:</span>' +
+                  oturumCip('hepsi', 'Hepsi') + _AOG_OTURUM.map(function (d) { return oturumCip(d[0], d[1]); }).join('') + '</span>' +
                   '<span class="aog-sira-grup"><span class="aog-sira">Sırala:</span>' +
                   sira('ad', 'A → Z') + sira('sure', 'En çok kullanan') + sira('son', 'Son kullanan') + sira('ogrenci', 'En çok öğrencisi') +
-                  sira('kayit', 'Kayıt tarihi') + '</span>' +
+                  sira('kayit', 'Kayıt tarihi') + sira('oturum', 'En çok oturum') + '</span>' +
                 '</div>' +
                 '<div class="aog-grid" id="aogGrid">' + kartlar +
                   '<p class="aog-bos" id="aogBos" style="display:none;">Bu süzgece uyan öğretmen yok.</p></div>';
@@ -2441,6 +2469,8 @@ function adminOgretmenSuz(yeni) {
         else if (uy && _aogSuzgec === 'bekliyor') uy = k.getAttribute('data-aog-durum') === 'bekliyor';
         else if (uy && _aogSuzgec === 'reddedildi') uy = k.getAttribute('data-aog-durum') === 'reddedildi';
         else if (uy && _aogSuzgec === 'destek') uy = !!k.querySelector('[data-dst-rozet] .dst-cip.bekliyor');
+        /* OTURUM SÜZGECİ (08.11.2026): oturum aralığı da uymalı */
+        if (uy && _aogOturum !== 'hepsi') uy = _aogOturumDilim(k.getAttribute('data-aog-oturum')) === _aogOturum;
         k.style.display = uy ? '' : 'none';
         if (uy) gorunen++;
     });
@@ -2450,13 +2480,23 @@ function adminOgretmenSuz(yeni) {
         while (e && !e.classList.contains('aog-harf')) { if (e.classList.contains('aog-kart') && e.style.display !== 'none') { var_ = true; break; } e = e.nextElementSibling; }
         h.style.display = var_ ? '' : 'none';
     });
-    [].forEach.call(document.querySelectorAll('#admin-teacher-list .aog-suz:not(.aog-sir)'), function (b) {
+    [].forEach.call(document.querySelectorAll('#admin-teacher-list .aog-suz:not(.aog-sir):not(.aog-otr)'), function (b) {
         b.classList.toggle('sec', b.getAttribute('data-aog-suz') === _aogSuzgec);
+    });
+    [].forEach.call(document.querySelectorAll('#admin-teacher-list .aog-otr'), function (b) {     /* OTURUM SÜZGECİ (08.11.2026) */
+        b.classList.toggle('sec', b.getAttribute('data-aog-otr') === _aogOturum);
     });
     var bos = document.getElementById('aogBos');
     if (bos) bos.style.display = gorunen ? 'none' : '';
 }
 window.adminOgretmenSuz = adminOgretmenSuz;
+
+/* OTURUM SÜZGECİ (08.11.2026): oturum çipi — durum süzgecinden ayrı seçilir, ikisi birlikte uygulanır */
+function adminOgretmenOturum(yeni) {
+    if (yeni) _aogOturum = yeni;
+    adminOgretmenSuz();
+}
+window.adminOgretmenOturum = adminOgretmenOturum;
 
 /* Kartları yerinde sıralar: ad (A→Z, harf başlıklarıyla) · sure (toplam
    süre, çoktan aza) · son (son görülme, yeniden eskiye) · ogrenci (öğrenci
@@ -2475,6 +2515,7 @@ function adminOgretmenSirala(yeni) {
         else if (_aogSira === 'son') f = say(b, 'data-aog-son') - say(a, 'data-aog-son');
         else if (_aogSira === 'ogrenci') f = (say(b, 'data-aog-ogrenci') - say(a, 'data-aog-ogrenci')) || (say(b, 'data-aog-sinif') - say(a, 'data-aog-sinif'));
         else if (_aogSira === 'kayit') f = (say(b, 'data-aog-kayit') || -1) - (say(a, 'data-aog-kayit') || -1);
+        else if (_aogSira === 'oturum') f = say(b, 'data-aog-oturum') - say(a, 'data-aog-oturum');   /* OTURUM SÜZGECİ (08.11.2026) */
         return f || ad(a).localeCompare(ad(b), 'tr');
     });
     var bos = document.getElementById('aogBos'), sonHarf = null;
