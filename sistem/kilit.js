@@ -35,6 +35,44 @@
        «kararı üstteki sayfa verir» gibi). Site «Sadece Yönetici»deyken de öğrenci öğretmenin açtığını görür. */
     try { if (!GOZLE && window.parent !== window && window.parent.KidefTahta && window.parent.KidefTahta.canliOgr) GOZLE = true; } catch (e) { }
 
+    /* KİLİTLİ AÇILIŞ (09.11.2026) — yönetici: "siteyi command option r yapınca önce site içerikleri
+       görünüyor, sonra siteyi yönetici sadece girişliler için seçmişse giriş ve kayıt ekranı geliyor, bunu
+       her ihtimale karşı siteyi göstermeden yapalım". Perde sayfa okunup oturum denetlendikten SONRA
+       iniyordu; tarayıcı o arada içeriği çiziyordu. Bu betik <head>'de çalışır: karar çıkana kadar sayfanın
+       içi görünmez (html.kilit-bekle).
+         · son bilinen kilit girişli/yönetici ve bu tarayıcıda izinli bilet (kidefKapiBilet) yoksa gizli
+           başlar; arka plan perdenin turuncusu.
+         · kilit hiç bilinmiyorsa (ilk ziyaret) gizli başlar; buluttan kilit gelince karar (en çok 3 sn).
+         · son bilinen kilit açıksa ya da izinli bilet varsa sayfa eskisi gibi hemen görünür.
+       Görünür olur (acil): izin çıkınca, perde + giriş penceresi açılınca, «girişli» kilitte tarayıcıda
+       oturum bulununca. Emniyet: 7 sn sonra her durumda. */
+    var ACILIS_BAS = Date.now();
+    var ILK_ZIYARET = false;
+    function acil() {
+        try { document.documentElement.classList.remove('kilit-bekle'); } catch (e) { }
+    }
+    K.acil = acil;
+    (function acilisGizle() {
+        if (GOZLE) return;
+        var son = null, b = null;
+        try { son = localStorage.getItem('siteKilitSon'); } catch (e) { son = null; }
+        try { b = JSON.parse(localStorage.getItem('kidefKapiBilet') || 'null'); } catch (e) { b = null; }
+        var kilitli = (son === 'girisli' || son === 'yonetici');
+        if (son && !kilitli) return;                                                    /* açık site */
+        if (kilitli && b && b.uid && (son === 'yonetici' ? b.rol === 'admin' : b.izin)) return;   /* izinli giriş */
+        ILK_ZIYARET = !son;
+        try {
+            var st = document.createElement('style');
+            st.id = 'kilitAcilisStil';
+            st.textContent = 'html.kilit-bekle body,html.kilit-bekle body *{visibility:hidden !important}' +
+                'html.kilit-bekle{background:' + (kilitli ? 'linear-gradient(135deg,#FFC107 0%,#F39C12 45%,#EF5350 100%) fixed' : '#F7F9FC') +
+                ' !important}';
+            (document.head || document.documentElement).appendChild(st);
+            document.documentElement.classList.add('kilit-bekle');
+        } catch (e) { return; }
+        setTimeout(acil, 7000);
+    })();
+
     /* Bu betik tek basina da calisabilsin (SDK'siz sayfalar): gerekirse
        Firebase'i kendi yukler, uygulama yoksa kendi baslatir. auth.js'teki
        "if (!firebase.apps.length)" korumasi sayesinde cakisma olmaz. */
@@ -410,7 +448,9 @@
         if (!st) {
             st = document.createElement('style');
             st.id = 'kilitCarpiStil';
-            st.textContent = 'body.kilitCarpisiz #login-modal .modal-close{ display:none !important; }';
+            /* KİLİTLİ AÇILIŞ (09.11.2026) — yönetici: "kayıt ola basınca hala geri tuşu çıkmıyor kırmızı olan".
+               Aynı tuş kayıt ekranlarında ‹ geri (hesap/kayitanketi.js → ka-geri-tus); yalnız ✕ gizlenir. */
+            st.textContent = 'body.kilitCarpisiz #login-modal .modal-close:not(.ka-geri-tus){ display:none !important; }';
             (document.head || document.documentElement).appendChild(st);
         }
         try {
@@ -467,11 +507,16 @@
     };
     function uygula() {
         if (GOZLE) return;          /* gozlem kipi: perde hic cizilmez */
+        /* KİLİTLİ AÇILIŞ (09.11.2026): ilk ziyarette kilit buluttan gelene kadar (en çok 3 sn) karar yok */
+        if (ILK_ZIYARET && K.durum == null && Date.now() - ACILIS_BAS < 3000) return;
         var kilit = sonKilit();
         var k = K.karar(kilit, kayitliMi(), rolOku());
         if (k.izin && donusDene(kilit)) return;   /* 26.10: kapıdan gelen ziyaretçi sayfasına döner */
-        if (k.izin) { K._mola = 0; carpiKurali(false); uyariGuncelle('acik', false); perdeKaldir(); return; }
-        if (bekle(k)) return;       /* 18.10: oturum/rol netleşmeden perde ve giriş penceresi yok */
+        if (k.izin) { K._mola = 0; carpiKurali(false); uyariGuncelle('acik', false); perdeKaldir(); acil(); return; }
+        if (bekle(k)) {             /* 18.10: oturum/rol netleşmeden perde ve giriş penceresi yok */
+            if (kilit === 'girisli' && oturumOlasi === true) acil();      /* KİLİTLİ AÇILIŞ: tarayıcıda oturum var */
+            return;
+        }
         carpiKurali(true);   /* kilit aktif: pencerede carpi gorunmez */
         /* Giris molasi: Giris Yap'a basildi, giris penceresi acik —
            perde gizli bekler. Pencere KAPATILIRSA (carpi) mola derhal
@@ -484,6 +529,7 @@
             } else {
                 var p = document.getElementById(PERDE_ID);
                 if (p) p.style.display = 'none';
+                acil();
                 return;
             }
         }
@@ -494,6 +540,7 @@
            Uyari, pencere olusturulduktan SONRA yazilir. */
         girisEkraniAc();
         uyariGuncelle(kilit, girisliMi());
+        acil();                     /* KİLİTLİ AÇILIŞ: perde ve pencere hazır, sayfa artık görünebilir */
     }
     K.uygula = uygula;   /* test kancasi */
 
