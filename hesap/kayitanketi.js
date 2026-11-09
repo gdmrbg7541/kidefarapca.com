@@ -189,6 +189,32 @@
         return true;
     }
 
+    /* KAYIT KAPISI DÜZELTMESİ (09.11.2026) — yönetici: "kayıt kısmında öğretmene basınca hangi sınıfta
+       olduğunu soruyor, öğrenciye basınca nerde görev yapıyorsun diye sordu" · "kayıt ekranında geçince geri
+       tuşuyla giriş ekranına gidebilmemiz lazım". Rol iki yerde tutuluyor: kapının rolü (rol: sorular, şerit)
+       ve formun rolü (hesap/auth.js → selectedRole: alanlar ve AÇILAN HESAP). Yalnız rol düğmesi ikisini
+       eşitliyordu; tamamlanmış taslakla kapı atlanınca şerit «Öğretmen» derken form ve hesap öğrenci
+       kalıyordu. rolEsitle formu kapının rolüne getirir (form açılırken ve «Kayıt Ol»da). */
+    function rolEsitle() {
+        if (!rol || !kayitKipi()) return;
+        var simdiki = null;
+        try { simdiki = (typeof selectedRole !== 'undefined') ? selectedRole : null; } catch (e) { simdiki = null; }
+        if (simdiki === rol) return;
+        try { if (typeof window.setRole === 'function') window.setRole(rol); } catch (e) { }
+    }
+    /* eksik cevapta sorular ilk boş sorudan açılsın (adim eski kalabiliyordu) */
+    function ilkEksik() {
+        var L = SORULAR[rol] || [];
+        for (var i = 0; i < L.length; i++) if (!cevap[L[i].id]) return i + 1;
+        return 1;
+    }
+    /* kayıt formundaki ‹ geri: giriş ekranına */
+    function girisDon() {
+        if (kayitKipi()) modDegis();
+        asama = 'giris';
+        girisEkrani();
+    }
+
     /* ---------------- stil ---------------- */
     function stilKur() {
         if (document.getElementById('kaStil')) return;
@@ -422,7 +448,10 @@
         }
         if (a.baslik) a.baslik.innerText = kayitKipi() ? 'Sisteme Kayıt Ol' : 'Sisteme Giriş Yap';
         asama = kayitKipi() ? 'soru' : 'giris';
-        kapatTusu(null);
+        /* KAYIT KAPISI DÜZELTMESİ (09.11.2026): form kapının rolüyle açılır; kayıt formunda tuş ‹ geri
+           (giriş ekranına). Eskiden burada hep ✕ oluyordu. */
+        rolEsitle();
+        if (kayitKipi()) kapatTusu(girisDon); else kapatTusu(null);
         formEkrani();
     }
 
@@ -437,6 +466,7 @@
             x.classList.add('ka-geri-tus');
             x.classList.remove('ka-x-tus');
             x.setAttribute('title', 'Geri');
+            x.setAttribute('aria-label', 'Geri');
             x.onclick = geri;
         } else {
             /* Sitenin kendi "✖" karakteri emoji olarak çiziliyor ve rengi
@@ -446,6 +476,7 @@
             x.classList.remove('ka-geri-tus');
             x.classList.add('ka-x-tus');
             x.setAttribute('title', 'Kapat');
+            x.setAttribute('aria-label', 'Kapat');
             x.onclick = function () { if (typeof window.closeLoginModal === 'function') window.closeLoginModal(); };
         }
     }
@@ -871,7 +902,7 @@
                 var r = eskiMod.apply(this, arguments);
                 if (icGecis) return r;          /* çeviren biziz, kapıyı bozma */
                 try {
-                    if (kayitKipi()) { if (!tamam()) kapiAc('rol'); else formEkrani(); }
+                    if (kayitKipi()) { if (!tamam()) kapiAc('rol'); else kapiKapat(); }   /* KAYIT KAPISI DÜZELTMESİ (09.11.2026): şerit + eşitleme + ‹ geri */
                     else { asama = 'giris'; girisEkrani(); }
                 } catch (e) { }
                 return r;
@@ -882,7 +913,8 @@
         if (typeof window.authIslemi === 'function' && !window.authIslemi.__ka) {
             var eskiIs = window.authIslemi;
             var yeniIs = function () {
-                if (kayitKipi() && !tamam()) { kapiAc(rol ? 'soru' : 'rol'); return; }
+                if (kayitKipi() && !tamam()) { if (rol) adim = ilkEksik(); kapiAc(rol ? 'soru' : 'rol'); return; }
+                if (kayitKipi()) rolEsitle();     /* KAYIT KAPISI DÜZELTMESİ (09.11.2026): hesap şeritteki rolle açılır */
                 return eskiIs.apply(this, arguments);
             };
             yeniIs.__ka = 1;
