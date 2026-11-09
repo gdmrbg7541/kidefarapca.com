@@ -26,6 +26,7 @@
     if (window.KidefAnket) return;
 
     var TASLAK = 'ka_taslak';          /* yarım kalan cevaplar */
+    var TASLAK_OMUR = 12 * 3600 * 1000; /* ÖĞRETMEN KAYIT SORUSU (09.11.2026): taslak 12 saat geçerli */
 
     /* ---------------- çizgi simgeler (emoji yerine) ----------------
        Hepsi 24x24, yalnız kontur; rengi bulunduğu yerden alır. Emoji
@@ -156,13 +157,19 @@
     var kapi = null;
     var icGecis = false;    /* moduDegistir'i biz çağırdıysak sarmalayıcı karışmasın */
 
+    /* ÖĞRETMEN KAYIT SORUSU (09.11.2026) — bir öğretmen: "Üye olup öğretmen olmama rağmen profilimde öğrenci
+       olarak görünüyorum". Taslak süresizdi: aynı bilgisayarda sonraki kişi (ör. öğrencisini kaydeden
+       öğretmen) rol sorusunu hiç görmeden önceki kişinin rolüyle kaydoluyordu. Artık taslak zaman damgalı
+       (z) ve 12 saat geçerli; damgasız eski taslak yok sayılır ve silinir. Kayıt bitince de silinir
+       (hesap/auth.js → KidefAnket.temizle). */
     try {
         var t = JSON.parse(localStorage.getItem(TASLAK) || '{}');
-        if (t && t.rol) { rol = t.rol; cevap = t.cevap || {}; }
+        if (t && t.rol && t.z && (Date.now() - t.z) >= 0 && (Date.now() - t.z) < TASLAK_OMUR) { rol = t.rol; cevap = t.cevap || {}; }
+        else if (t && t.rol) localStorage.removeItem(TASLAK);
     } catch (e) { }
 
     function taslakYaz() {
-        try { localStorage.setItem(TASLAK, JSON.stringify({ rol: rol, cevap: cevap })); } catch (e) { }
+        try { localStorage.setItem(TASLAK, JSON.stringify({ rol: rol, cevap: cevap, z: Date.now() })); } catch (e) { }
     }
     function esc(t) {
         return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -945,6 +952,17 @@
         cevaplar: function () { return JSON.parse(JSON.stringify(cevap)); },
         sorular: SORULAR,
         ac: function (b) { kapiAc(b); },
+        /* ÖĞRETMEN KAYIT SORUSU (09.11.2026): kayıt formundaki «Öğretmen olarak kaydol» — rol değişir, o rolün
+           soruları açılır; sorular bitince form geri gelir (hesap/auth.js → KidefKayit.rolSor). */
+        sec: function (r) {
+            r = (r === 'teacher') ? 'teacher' : 'student';
+            if (rol && rol !== r) cevap = {};
+            rol = r;
+            taslakYaz();
+            try { if (typeof window.setRole === 'function') window.setRole(r); } catch (e) { }
+            adim = 1;
+            kapiAc('soru');
+        },
         temizle: function () { rol = ''; cevap = {}; try { localStorage.removeItem(TASLAK); } catch (e) { } },
         _yonetici: yoneticiBolum
     };

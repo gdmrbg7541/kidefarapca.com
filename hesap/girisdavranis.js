@@ -86,6 +86,7 @@
         } else {
           if (mes.value === 'Eğitmen') mes.value = '';
           mes.readOnly = false;
+          mes.placeholder = 'Örn: Öğrenci, Mühendis, Doktor…';   /* ÖĞRETMEN KAYIT SORUSU (09.11.2026): örnek «Öğretmen» değil */
           mes.style.background = ''; mes.style.color = ''; mes.style.fontWeight = '';
         }
       }
@@ -158,6 +159,16 @@
       cinsiyet: el('student-gender') ? el('student-gender').value : ''
     }, { rol: (D.rol === 'teacher') ? 'teacher' : 'student' });       /* AD + SOYAD ZORUNLU (06.11.2026): rol */
     if (!s.tamam) { hata(s.hata); return; }
+    /* ÖĞRETMEN KAYIT SORUSU (09.11.2026) — bir öğretmen: "Üye olup öğretmen olmama rağmen profilimde öğrenci
+       olarak görünüyorum". Bu pencerede rol sekmesi Öğrenci seçili açılır; meslek öğretmenlik gibiyse kayıttan
+       önce sorulur (hesap/kayitalani.js → KidefKayit.rolSor). */
+    if (D.rol !== 'teacher' && KidefKayit.ogretmenMeslegi && KidefKayit.rolSor && KidefKayit.ogretmenMeslegi(s.veri.meslek) &&
+        D.ogrenciOnay !== KidefKayit.meslekAnahtar(s.veri.meslek)) {
+      var he = el('hata-mesaji'), mk = s.veri.meslek;
+      if (he) he.style.display = 'block';
+      if (KidefKayit.rolSor(he, mk, function () { rolSec('teacher'); },
+          function () { D.ogrenciOnay = KidefKayit.meslekAnahtar(mk); gonder(); })) return;
+    }
 
     var rol = (D.rol === 'teacher') ? 'teacher' : 'student';
     mesgul(true);

@@ -263,6 +263,7 @@ function updateAuthUI() {
             } else {
                 if (profInput.value === 'Eğitmen') profInput.value = '';
                 profInput.readOnly = false;
+                profInput.placeholder = 'Örn: Öğrenci, Mühendis, Doktor…';   /* ÖĞRETMEN KAYIT SORUSU (09.11.2026): örnek «Öğretmen» değil */
                 profInput.style.background = '';
                 profInput.style.color = '';
                 profInput.style.fontWeight = '';
@@ -409,6 +410,20 @@ function authIslemi() {
         if (!sProf) { errorEl.innerText = "Lütfen mesleğinizi girin (zorunlu)."; return; }
         if (!/^5[0-9]{9}$/.test(phone)) { errorEl.innerText = "Geçerli bir telefon numarası girin: 5XX XXX XX XX (zorunlu)."; return; }
         if (!sGender) { errorEl.innerText = "Lütfen cinsiyetinizi seçin (zorunlu)."; return; }
+        /* ÖĞRETMEN KAYIT SORUSU (09.11.2026) — bir öğretmen: "Üye olup öğretmen olmama rağmen profilimde
+           öğrenci olarak görünüyorum". Öğrenci seçili ama meslek öğretmenlik gibiyse kayıttan önce sorulur
+           (hesap/kayitalani.js → KidefKayit.rolSor). «Öğretmen olarak kaydol»: rol öğretmen olur, öğretmen
+           soruları açılır (hesap/kayitanketi.js → KidefAnket.sec); «Öğrenciyim, devam et»: kayıt sürer. */
+        if (selectedRole === 'student' && window.KidefKayit && KidefKayit.ogretmenMeslegi && KidefKayit.rolSor &&
+            KidefKayit.ogretmenMeslegi(sProf) && KidefKayit._ogrenciOnay !== KidefKayit.meslekAnahtar(sProf)) {
+            KidefKayit.rolSor(errorEl, sProf, function () {
+                if (window.KidefAnket && KidefAnket.sec) KidefAnket.sec('teacher'); else setRole('teacher');
+            }, function () {
+                KidefKayit._ogrenciOnay = KidefKayit.meslekAnahtar(sProf);
+                authIslemi();
+            });
+            return;
+        }
 
         const regRole = (selectedRole === 'admin' ? 'student' : selectedRole);
         isRegistering = true;
@@ -513,6 +528,9 @@ function kayitBelgesiYazildi(user, _kayit) {
     showCustomAlert(regRole === 'teacher'
         ? "Kaydın alındı. Öğretmen hesapları yönetici onayından sonra açılıyor; onaylandığında siteyi kullanabileceksin."
         : "Kayıt başarılı!");
+    /* ÖĞRETMEN KAYIT SORUSU (09.11.2026): rol taslağı silinir; bu tarayıcıdaki sonraki kayıt rol sorusunu
+       yeniden görür (hesap/kayitanketi.js). Eskiden taslak süresizdi, sonraki kişi önceki rolle kaydoluyordu. */
+    try { if (window.KidefAnket && KidefAnket.temizle) KidefAnket.temizle(); } catch (e) { }
     /* ÖĞRETMEN ONAYI (18.10.2026): yeni öğretmen kaydında onay
        perdesi, giriş tamamlanmadan önce iner; önbellek de bu
        hesabın onay durumunu bilir. */

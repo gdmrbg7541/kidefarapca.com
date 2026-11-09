@@ -80,6 +80,44 @@
     };
     K.soyadGerekli = function (rol) { return !!K.SOYAD_ZORUNLU[rol === 'teacher' ? 'teacher' : 'student']; };
 
+    /* ÖĞRETMEN KAYIT SORUSU (09.11.2026) — bir öğretmen: "Üye olup öğretmen olmama rağmen profilimde
+       öğrenci olarak görünüyorum ve tüm sınıflara ulaşım sağlayamıyorum". Öğrenci seçiliyken mesleğe
+       öğretmenlik yazılırsa kayıttan ÖNCE sorulur: «Öğretmen olarak kaydol» / «Öğrenciyim, devam et».
+       Kullananlar: hesap/auth.js (ana sayfanın kayıt formu), hesap/kayittamamla.js («Kaydını tamamla»). */
+    K.OGRETMEN_MESLEK = /öğretmen|ogretmen|hoca|eğitimci|egitimci|eğitmen|egitmen|teacher|akademisyen|öğretim görevlisi|ogretim gorevlisi|öğretim üyesi|ogretim uyesi|muallim/;
+    K.meslekAnahtar = function (m) {
+        var s = String(m == null ? '' : m).replace(/\s+/g, ' ').trim();
+        try { return s.toLocaleLowerCase('tr'); } catch (e) { return s.toLowerCase(); }
+    };
+    K.ogretmenMeslegi = function (m) { return K.OGRETMEN_MESLEK.test(K.meslekAnahtar(m)); };
+    /* kap: kutunun yazılacağı öğe (hata satırı). Kutu çizildiyse true döner. */
+    K.rolSor = function (kap, meslek, ogretmen, ogrenci) {
+        if (!kap) return false;
+        var e = function (t) {
+            return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        };
+        kap.innerHTML =
+            '<span class="kk-rolsor" role="group" aria-label="Öğretmen misin?" style="display:block;text-align:left;margin:6px 0 2px;' +
+            'padding:11px 13px;border-radius:14px;background:#FFF8E6;border:1.5px solid #F3D9A4;color:#5B4A1F;font-size:13.5px;' +
+            'line-height:1.5;font-weight:600;">' +
+            '<b style="display:block;color:#2C3E50;font-size:14.5px;margin:0 0 3px;">Öğretmen misin?</b>' +
+            'Mesleğine «' + e(meslek) + '» yazdın ama <b>öğrenci</b> olarak kaydoluyorsun. Öğrenci hesabıyla sınıflarına ' +
+            've öğretmen araçlarına ulaşamazsın.' +
+            '<span style="display:flex;flex-wrap:wrap;gap:8px;margin-top:9px;">' +
+            '<button type="button" data-kk-rol="teacher" style="flex:1 1 170px;border:0;border-radius:11px;padding:10px 12px;' +
+            'background:#16A085;color:#fff;font:inherit;font-weight:800;cursor:pointer;">Öğretmen olarak kaydol</button>' +
+            '<button type="button" data-kk-rol="student" style="flex:1 1 140px;border:0;border-radius:11px;padding:10px 12px;' +
+            'background:#F2F5F8;color:#2C3E50;font:inherit;font-weight:700;cursor:pointer;">Öğrenciyim, devam et</button>' +
+            '</span></span>';
+        var b = kap.querySelectorAll('button[data-kk-rol]');
+        b[0].onclick = function (ev) { if (ev) ev.preventDefault(); kap.innerHTML = ''; if (ogretmen) ogretmen(); };
+        b[1].onclick = function (ev) { if (ev) ev.preventDefault(); kap.innerHTML = ''; if (ogrenci) ogrenci(); };
+        try { b[0].focus(); } catch (x) { }
+        return true;
+    };
+
     /* Formun doğrulaması. Dönen değer:
          { tamam:true, veri:{…} }            — her şey yolunda
          { tamam:false, hata:'…' }           — ilk hatalı alanın mesajı

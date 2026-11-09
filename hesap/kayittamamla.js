@@ -34,7 +34,8 @@
     if (window.KidefKayitTamamla) return;
 
     var ID = 'ktPencere', KAPANDI = 'ktKapandi:';
-    var S = { user: null, rol: 'student', mesgul: false };
+    /* ÖĞRETMEN KAYIT SORUSU (09.11.2026): rol hazır seçili gelmez (eskiden 'student'); seçilmeden kayıt yok */
+    var S = { user: null, rol: '', mesgul: false, ogrenciOnay: '' };
 
     function $(id) { return document.getElementById(id); }
     function kacis(s) {
@@ -90,6 +91,7 @@
 
     function kur(u) {
         var eski = $(ID); if (eski) eski.remove();
+        S.rol = ''; S.ogrenciOnay = '';                    /* ÖĞRETMEN KAYIT SORUSU (09.11.2026): her açılışta rol seçilir */
         stilKur();
         var p = document.createElement('div');
         p.id = ID;
@@ -103,10 +105,10 @@
             'Öğretmen kaydı yönetici onayından sonra açılır.</div>' +
             '<div class="kt-alan"><label>E-posta</label><input type="email" id="ktEposta" readonly value="' + kacis(u && u.email) + '"></div>' +
             '<div class="kt-rol" role="group" aria-label="Rol">' +
-            '<button type="button" data-rol="student" class="secili">Öğrenci</button>' +
+            '<button type="button" data-rol="student">Öğrenci</button>' +
             '<button type="button" data-rol="teacher">Öğretmen</button></div>' +
             '<div class="kt-alan"><label>Ad Soyad</label><input type="text" id="ktAd" placeholder="Örn: Ali Yılmaz" autocomplete="name"></div>' +
-            '<div class="kt-alan"><label>Meslek <span style="color:#EF5350;">*</span></label><input type="text" id="ktMeslek" placeholder="Örn: Öğretmen, Mühendis…"></div>' +
+            '<div class="kt-alan"><label>Meslek <span style="color:#EF5350;">*</span></label><input type="text" id="ktMeslek" placeholder="Örn: Öğrenci, Mühendis…"></div>' +
             '<div class="kt-alan"><label>Telefon Numarası <span style="color:#EF5350;">*</span></label>' +
             '<div class="kt-tel"><span>+90</span><input type="tel" id="ktTel" placeholder="5XX XXX XX XX" maxlength="10" inputmode="numeric" autocomplete="tel-national"></div></div>' +
             '<div class="kt-alan"><label>Cinsiyet <span style="color:#EF5350;">*</span></label>' +
@@ -139,7 +141,7 @@
     }
 
     function rolSec(rol) {
-        S.rol = (rol === 'teacher') ? 'teacher' : 'student';
+        S.rol = (rol === 'teacher' || rol === 'student') ? rol : '';
         var p = $(ID); if (!p) return;
         var rb = p.querySelectorAll('.kt-rol button');
         for (var i = 0; i < rb.length; i++) rb[i].classList.toggle('secili', rb[i].getAttribute('data-rol') === S.rol);
@@ -164,11 +166,20 @@
         var u = kullanici();
         if (!u || !u.email || (S.user && u.uid !== S.user.uid)) { hata('Oturum bulunamadı. Sayfayı yenileyip yeniden giriş yap.'); return; }
         if (!window.KidefKayit || !KidefKayit.dogrula || !KidefKayit.belge) { hata('Kayıt bileşeni yüklenemedi. Sayfayı yenile.'); return; }
+        /* ÖĞRETMEN KAYIT SORUSU (09.11.2026) — bir öğretmen: "Üye olup öğretmen olmama rağmen profilimde öğrenci
+           olarak görünüyorum". Pencere artık Öğrenci seçili açılmıyor; rol seçilmeden kayıt yok. */
+        if (!S.rol) { hata('Önce rolünü seç: öğretmen misin, öğrenci misin?'); return; }
         var s = KidefKayit.dogrula({
             email: u.email, ad: $('ktAd').value, meslek: $('ktMeslek').value,
             tel: $('ktTel').value, cinsiyet: $('ktCinsiyet').value
         }, { sifresiz: true, rol: S.rol });                       /* AD + SOYAD ZORUNLU (06.11.2026): rol */
         if (!s.tamam) { hata(s.hata); return; }
+        /* öğrenci seçili ama meslek öğretmenlik gibiyse sorulur (hesap/kayitalani.js → KidefKayit.rolSor) */
+        var mk = s.veri.meslek;
+        if (S.rol === 'student' && KidefKayit.ogretmenMeslegi && KidefKayit.rolSor && KidefKayit.ogretmenMeslegi(mk) &&
+            S.ogrenciOnay !== KidefKayit.meslekAnahtar(mk) &&
+            KidefKayit.rolSor($('ktHata'), mk, function () { rolSec('teacher'); gonder(); },
+                function () { S.ogrenciOnay = KidefKayit.meslekAnahtar(mk); gonder(); })) return;
         var rol = S.rol, ref;
         try { ref = firebase.firestore().collection('kullanicilar').doc(u.uid); }
         catch (e) { hata('Bağlantı kurulamadı. İnternetini denetleyip tekrar dene.'); return; }
