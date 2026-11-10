@@ -5898,17 +5898,24 @@ function renderTeacherProfile(deneme) {
     if (!sec) return;
 
     /* --- 1. KISISEL BILGILERIM (ogrenci kartiyla ayni desen) --- */
-    var ad = (window.appState && appState.currentUserName && appState.currentUserName !== 'Belirtilmedi' && appState.currentUserName !== 'Öğrenci') ? appState.currentUserName : '';
-    var eposta = (window.appState && appState.currentUser) || '';
+    /* PROFİL EKSİK BİLGİ (09.11.2026) — öğretmen: "profilimde kişisel bilgilerim kısmında eksik bilgi yazıyor ama
+       kayıt olurken zaten bilgiler veriliyor". Sebep: appState sayfada "let" ile tanımlı → window.appState YOK;
+       eskiden (window.appState && …) hep boş dönüyordu: telefon ve cinsiyet belgede dolu olsa da boş çiziliyor,
+       «eksik bilgi» çıkıyordu (ad da yalnız oturumun displayName'inden geliyordu). Çıplak adla okunur
+       (hesap/destek.js ve sistem/kilit.js de böyle). */
+    var aSt = null;
+    try { aSt = (typeof appState !== 'undefined') ? appState : null; } catch (e) { aSt = null; }
+    var ad = (aSt && aSt.currentUserName && aSt.currentUserName !== 'Belirtilmedi' && aSt.currentUserName !== 'Öğrenci') ? aSt.currentUserName : '';
+    var eposta = (aSt && aSt.currentUser) || '';
     /* appState heniz dolmadiysa isim/e-posta dogrudan oturumdan alinir */
     try {
         var tFu = (typeof firebase !== 'undefined' && firebase.auth) ? firebase.auth().currentUser : null;
         if (!ad && tFu && tFu.displayName) ad = tFu.displayName;
         if ((!eposta || eposta === 'Misafir Öğrenci' || eposta === 'anonim') && tFu && tFu.email) eposta = tFu.email;
     } catch (e) { }
-    var telTam = (window.appState && appState.currentUserPhone) || '';
+    var telTam = (aSt && aSt.currentUserPhone) || '';
     var tel = telTam.replace(/^\+90/, '').replace(/\s/g, '');
-    var cinsiyet = (window.appState && appState.currentUserGender) || '';
+    var cinsiyet = (aSt && aSt.currentUserGender) || '';
     var telGecerli = /^5[0-9]{9}$/.test(tel);
     var eksik = (!telGecerli || !cinsiyet);
     var fLbl = 'font-size:0.75rem; font-weight:700; color:#16A085; text-transform:uppercase; letter-spacing:0.3px; display:block; margin-bottom:5px;';

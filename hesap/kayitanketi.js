@@ -405,6 +405,7 @@
     function kapiAc(baslangic) {
         var m = document.getElementById('login-modal');
         if (!m) return;
+        basaDon();
         stilKur();
         m.classList.add('ka-tam');
         m.classList.add('ka-kapali');
@@ -427,6 +428,7 @@
     }
 
     function kapiKapat() {
+        basaDon();
         var m = document.getElementById('login-modal');
         if (m) { m.classList.remove('ka-kapali'); m.classList.remove('ka-form'); }
         clearTimeout(perdeZaman);
@@ -479,6 +481,64 @@
             x.setAttribute('aria-label', 'Kapat');
             x.onclick = function () { if (typeof window.closeLoginModal === 'function') window.closeLoginModal(); };
         }
+        /* GERİ TUŞU GÜVENCESİ (09.11.2026): anında yeniden yerleşim (Safari çizim gecikmesi); gözlemci + denetim */
+        try { void x.offsetWidth; } catch (e) { }
+        tusGozle();
+        if (geri) tusGuvenceKur();
+    }
+
+    /* GERİ TUŞU GÜVENCESİ (09.11.2026) — yönetici: "geri tuşuna basıp tekrar kayıt ol kısmına basınca yine
+       kayboluyor geri tuşu". Kayıt ekranlarında (rol sorusu, sorular, kayıt formu) sağ üstte HER ZAMAN ‹ geri
+       olmalı. Aynı tuşu başka kodlar da elliyor (hesap/girisgenislik.js gözlemcisi, hesap/qrgiris.js sıfırlaması,
+       sistem/kilit.js kuralı); biri ‹'yi ✕'e çevirir ya da silerse burası kısa sürede geri koyar. Giriş ekranında
+       (asama 'giris') ve karekod panelinde karışmaz. */
+    function pencereAcik() {
+        var m = document.getElementById('login-modal');
+        return !!(m && window.getComputedStyle(m).display !== 'none');
+    }
+    function karekodAcik() {
+        var q = document.getElementById('qr-modal-alan');
+        return !!(q && window.getComputedStyle(q).display !== 'none' && q.innerHTML.trim());
+    }
+    function geriYolu() {
+        if (asama === 'soru' && kapi && kapi.style.display !== 'none') {
+            return function () { if (adim > 1) { adim--; basaDon(); ciz(); } else { asama = 'rol'; basaDon(); ciz(); } };
+        }
+        return girisDon;
+    }
+    function tusGuvence() {
+        try {
+            if (asama === 'giris' || !pencereAcik() || !kayitKipi() || karekodAcik()) return;
+            var x = document.querySelector('#login-modal .modal-close');
+            if (!x) return;
+            if (!x.classList.contains('ka-geri-tus') || typeof x.onclick !== 'function') kapatTusu(geriYolu());
+        } catch (e) { }
+    }
+    var guvenceZaman = 0;
+    function tusGuvenceKur() {
+        clearTimeout(guvenceZaman);
+        var siralar = [0, 90, 300, 800, 1800], i = 0;
+        (function sira() {
+            tusGuvence();
+            if (++i < siralar.length) guvenceZaman = setTimeout(sira, siralar[i] - siralar[i - 1]);
+        })();
+    }
+    function tusGozle() {
+        var x = document.querySelector('#login-modal .modal-close');
+        if (!x || x.__kaGozlu) return;
+        x.__kaGozlu = 1;
+        try {
+            new MutationObserver(function () { setTimeout(tusGuvence, 0); })
+                .observe(x, { attributes: true, attributeFilter: ['class'] });
+        } catch (e) { }
+    }
+    /* Ekran değişince içerik en üste: aşağı kaydırılmış giriş ekranından «Kayıt ol»a basınca yeni ekran
+       ortadan açılmasın. */
+    function basaDon() {
+        try {
+            var c = document.querySelector('#login-modal .modal-content');
+            if (c) c.scrollTop = 0;
+        } catch (e) { }
     }
 
     /* GİRİŞ EKRANI — pencerenin ilk görünümü.
@@ -488,6 +548,7 @@
        yalnız o karta basılınca açılıyor. */
     var perdeZaman = 0;
     function girisEkrani() {
+        basaDon();
         var m = document.getElementById('login-modal');
         if (m) { m.classList.add('ka-tam'); m.classList.add('ka-kapali'); m.classList.add('ka-form'); }
         clearTimeout(perdeZaman);
@@ -692,11 +753,11 @@
             b.onclick = function () {
                 cevap[q.id] = b.getAttribute('data-k');
                 taslakYaz();
-                if (adim >= L.length) kapiKapat(); else { adim++; ciz(); }
+                if (adim >= L.length) kapiKapat(); else { adim++; basaDon(); ciz(); }
             };
         });
         kapatTusu(function () {
-            if (adim > 1) { adim--; ciz(); } else { asama = 'rol'; ciz(); }
+            if (adim > 1) { adim--; basaDon(); ciz(); } else { asama = 'rol'; basaDon(); ciz(); }
         });
     }
 
@@ -714,7 +775,7 @@
         rol = r;
         taslakYaz();
         try { if (typeof window.setRole === 'function') window.setRole(r); } catch (e) { }
-        asama = 'soru'; adim = 1; ciz();
+        asama = 'soru'; adim = 1; basaDon(); ciz();
     }
 
     /* ---------------- belge alanı (kayitalani.js buradan okur) -------- */

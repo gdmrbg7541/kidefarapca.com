@@ -63,6 +63,20 @@
      açıksa Sınıf Ekranı'na / kumandaya yalnız biri geçer (Web Locks kidef_tahta_gecis; işaretli
      cihazın kendiliğinden geçişi de). Kural değişmedi: hesap kendi
      belgesini rolünü değiştirmeden güncelleyebiliyor.
+   · BAĞLANTI ONAYI (10.11.2026) — öğretmen: "kumanda olarak seçilen bi cihazla yansıtılacak cihaz arasında şu olsun,
+     kumanda olan cihazdan yansıtılacak cihaz seçildiğinde yansıtılacak cihazda bildirim gelsin, onaylanınca bağlansın"
+     ve "zaten listeden seçmeyince bağlanma olmasın, listeden seçtikten sonra olmalı". «Sınıf Ekranı olacak cihaz»
+     listesinden bir cihaza dokunulunca o cihazda «… bağlanmak istiyor» penceresi (Onayla / Reddet) çıkar; yalnız
+     Onayla'da bağlanılır (hedef Sınıf Ekranı olur, istek yapan kumanda olur). Reddet'te, 60 sn cevapsızlıkta ya da
+     kumandada «İptal»de (pencereyi kapatmak da iptaldir) bağlanılmaz. Hedef ana sayfadaysa (bu dosya):
+       tahtaCagri.<hedef> = { n, rol:'izle', onay:1, k, ad, t }   hedefte onay penceresi (onayCagri)
+       tahtaCevap.<istek yapan> = { n, d, t }                      d: goruldu (pencere açıldı) | onay | red
+     Hedef Sınıf Ekranı sayfasındaysa (orada Firestore yok; ana sayfada da Realtime Database bağlantısı yok) aynı iş
+     Realtime Database'te: tahta/<uid>/istek/<hedef> = { n, k, ad, t (sunucu saati) } ve
+     tahta/<uid>/istekCevap/<istek yapan> = { n, d, t } (hedef tarafı: sistem/tahta.js → istekKur). Kural değişmedi.
+     Listeden seçmeden bağlantı OLMAZ: «Bu cihazı kumanda olarak kullan» artık bağlamaz, listeyi gösterir ve yeniden
+     arar; Sınıf Ekranı olarak işaretli cihaz da yansıtma başlayınca kendiliğinden geçmez (OTO_GECIS = false).
+     Değişmeyenler: Sınıf Ekranı'ndan kumanda seçmek (ters yön), karekod, kumandanın kaldığı yere dönüşü.
    Motor ve veritabanı kuralı: sistem/tahta.js.
    ===================================================================== */
 (function () {
@@ -234,7 +248,39 @@
     '#thgSoru small{display:block;opacity:.8;font-size:.82rem;margin-top:2px}',
     '#thgSoru button{border:0;border-radius:10px;padding:10px 14px;font:inherit;font-weight:800;cursor:pointer;white-space:nowrap}',
     '#thgSoru .evet{background:#22c55e;color:#06281b}',
-    '#thgSoru .hayir{background:rgba(255,255,255,.14);color:#fff}'
+    '#thgSoru .hayir{background:rgba(255,255,255,.14);color:#fff}',
+    /* bağlantı onayı (10.11.2026): kumanda tarafında bekleme kutusu, hedef tarafında onay penceresi */
+    '.thg-istek{margin:-2px 0 2px 16px;padding:10px 12px;border-radius:12px;background:#effaf6;border:1.5px solid #bfe3d8;color:#0f2a43;font-size:.86rem;line-height:1.4}',
+    '.thg-istek[hidden]{display:none}',
+    '.thg-ist-ust{display:flex;align-items:center;gap:10px}',
+    '.thg-ist-ust > span:not(.thg-radar){flex:1;min-width:0;font-weight:800;overflow-wrap:anywhere}',
+    '.thg-istek small{display:block;margin-top:6px;color:#5b6b7c;font-size:.78rem;font-weight:600;line-height:1.4}',
+    '.thg-iptal{flex:none;border:1.5px solid #cbd5e1;border-radius:10px;background:#fff;color:#334155;padding:7px 14px;font:inherit;font-weight:800;font-size:.84rem;cursor:pointer}',
+    '.thg-iptal:hover,.thg-iptal:focus-visible{background:#f1f5f9;outline:none}',
+    '.thg-istek.red{background:#fff5f5;border-color:#fecaca}',
+    '.thg-istek.onay{border-color:#16A085}',
+    '.thg-istek .thg-tik{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}',
+    '.thg-istek.red .thg-tik{color:#dc2626}',
+    '.thg-istek.onay .thg-tik{color:#0E7C66}',
+    '.thg-cip.bekle{border-color:#16A085;background:#e6f6f1}',
+    '.thg-vurgula{animation:thgVurgula 1.1s ease 2;border-radius:10px}',
+    '@keyframes thgVurgula{0%,100%{box-shadow:0 0 0 0 rgba(22,160,133,0)}50%{box-shadow:0 0 0 6px rgba(22,160,133,.3)}}',
+    '#thgOnay{position:fixed;inset:0;z-index:2000000000;background:rgba(15,42,67,.62);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(2px);animation:thgAc .18s ease}',
+    '#thgOnay .thg-onay-kutu{width:min(440px,100%);box-sizing:border-box;background:#fff;color:#0f2a43;border-radius:22px;box-shadow:0 24px 70px rgba(15,42,67,.4);padding:24px 22px 18px;text-align:center;font-family:inherit}',
+    '#thgOnay .thg-onay-sim{width:62px;height:62px;margin:0 auto 12px;border-radius:19px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#16A085,#0E7C66);box-shadow:0 6px 18px rgba(14,124,102,.3)}',
+    '#thgOnay .thg-onay-sim svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}',
+    '#thgOnay h2{margin:0 0 6px;font-size:1.3rem;line-height:1.25;overflow-wrap:anywhere}',
+    '#thgOnay p{margin:0 0 16px;color:#475569;font-size:.97rem;line-height:1.5}',
+    '#thgOnay .thg-onay-dugmeler{display:flex;gap:10px}',
+    '#thgOnay .thg-onay-dug{flex:1;border:0;border-radius:14px;padding:15px 12px;font:inherit;font-weight:800;font-size:1.05rem;line-height:1.1;cursor:pointer}',
+    '#thgOnay .thg-onay-dug.evet{color:#fff;background:linear-gradient(135deg,#16A085,#0E7C66);box-shadow:0 6px 16px rgba(14,124,102,.3)}',
+    '#thgOnay .thg-onay-dug.hayir{color:#334155;background:#f1f5f9}',
+    '#thgOnay .thg-onay-dug:focus-visible{outline:3px solid rgba(22,160,133,.5);outline-offset:2px}',
+    '#thgOnay .thg-onay-sure{margin-top:14px;height:4px;border-radius:2px;background:#e2e8f0;overflow:hidden}',
+    '#thgOnay .thg-onay-sure i{display:block;height:100%;background:#16A085;animation:thgOnaySure linear forwards}',
+    '@keyframes thgOnaySure{from{width:100%}to{width:0}}',
+    '#thgOnay small{display:block;margin-top:8px;color:#64748b;font-size:.8rem;line-height:1.4}',
+    '@media (prefers-reduced-motion:reduce){.thg-vurgula{animation:none}}'
   ].join('\n');
   function stilKur() {
     if ($('thgStil')) return;
@@ -336,7 +382,7 @@
     /* küçük seçim penceresi: iki seçenek (21.10.2026) — Sınıf Ekranı olarak
        işaretli cihazda da açılır (tahta görünümüne doğrudan gidilmez) */
     stilKur();
-    panelKapat();
+    panelKapat(true);                                 /* yeniden çizim: bekleyen bağlantı isteği korunur (10.11.2026) */
     var p = document.createElement('div');
     p.id = 'thgPerde';
     var tahta = tahtaCihazi();
@@ -350,6 +396,7 @@
       '<small>' + kac(kd('th.p_kumanda_alt', 'Burada açtığın sayfa, kaydırma, tıklama ve yazdıkların Sınıf Ekranı’nda görünür.')) + '</small>' +
       '<span class="thg-ara" id="thgAra" aria-live="polite"></span></span>' + SIM.ok + '</button>' +
       '<div class="thg-cihazlar" id="thgKCihaz" hidden></div>' +          /* açık cihazdan seç: Sınıf Ekranı olacak */
+      '<div class="thg-istek" id="thgIstek" role="status" aria-live="polite" hidden></div>' +      /* bağlantı isteği: onay bekleniyor (10.11.2026) */
       '<div class="thg-tahtalar" id="thgTahtalar" hidden></div>' +
       '<button type="button" class="thg-sec ikincil" data-thg="izle"><span class="thg-sim">' + SIM.tahta + '</span><span class="thg-yazi">' +
       '<b>' + kac(kd('th.p_ekran', 'Bu cihazı Sınıf Ekranı olarak kullan')) + '</b>' +
@@ -366,10 +413,11 @@
       if (!t) return;
       var is = t.getAttribute('data-thg');
       if (is === 'kapat') panelKapat();
-      else if (is === 'yansit') { cihazYaz(null); hedefYaz(null); git('yansit'); }
+      else if (is === 'yansit') listeVurgu();                         /* listeden seçmeden bağlanılmaz (10.11.2026) */
       else if (is === 'izle') { cihazYaz('tahta'); git('izle'); }
       else if (is === 'unut') { cihazYaz(null); hazirSil(); panelAc(); }
       else if (is === 'cagir') cagir(t.getAttribute('data-k'), t.getAttribute('data-rol'));
+      else if (is === 'istek-iptal') istekBit('iptal');
     });
     document.body.appendChild(p);
     durumYaz();
@@ -378,14 +426,16 @@
     tahtalarCiz();
     canliDinle();
     yoklaBaslat();                                    /* açık cihazdan seç: «kim açık?» (01.11.2026) */
+    istekCiz();                                       /* bekleyen / son bağlantı isteği (10.11.2026) */
     document.addEventListener('keydown', escKapat);
   }
   function escKapat(e) { if (e.key === 'Escape') panelKapat(); }
-  function panelKapat() {
+  function panelKapat(koru) {
     var p = $('thgPerde');
     if (p) p.parentNode.removeChild(p);
     document.removeEventListener('keydown', escKapat);
     yoklaBitir();
+    if (!koru) istekBit('iptal');                     /* pencere kapanınca bekleyen bağlantı isteğinden de vazgeçilir (10.11.2026) */
     if (!tahtaCihazi()) canliBirak();
   }
   function git(rol, hedef) {
@@ -464,7 +514,7 @@
     if (!a) return;
     if (dur === 'ara') a.innerHTML = '<span class="thg-radar" aria-hidden="true"></span><span>' + kac(kd('th.p_araniyor', 'Cihaz aranıyor…')) + '</span>';
     else if (dur === 'bulundu') a.innerHTML = '<svg class="thg-tik" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>' +
-      kac(kd('th.p_bulundu', 'Cihaz bulundu: {ad}', { ad: bul ? bul.ad : '' })) + '</span>';
+      kac(kd('th.p_bulundu2', 'Cihaz bulundu: {ad} — bağlanmak için aşağıdan seç', { ad: bul ? bul.ad : '' })) + '</span>';
     else if (dur === 'sec') a.innerHTML = '<svg class="thg-tik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v13M6.5 12.5 12 18l5.5-5.5"/></svg><span>' +
       kac(kd('th.p_ara_sec', 'Açık cihazın var: Sınıf Ekranı olacak olanı aşağıdan seç')) + '</span>';
     else a.innerHTML = '';
@@ -531,7 +581,7 @@
     if ((!e || e.ben) && !tc) {
       /* açık cihaz varsa ipucu yerine yukarıdaki düğmeler (01.11.2026) */
       el.hidden = !!acik.length;
-      el.innerHTML = acik.length ? '' : '<div class="thg-ipucu">' + kac(kd('th.p_ara_ipucu2', 'Tahtada siteyi bu hesapla aç: burada görünür, dokununca bağlanır.')) + '</div>';
+      el.innerHTML = acik.length ? '' : '<div class="thg-ipucu">' + kac(kd('th.p_ara_ipucu3', 'Tahtada siteyi bu hesapla aç: burada görünür; dokununca tahtada onay istenir.')) + '</div>';
       return;
     }
     el.hidden = !e || e.ben;
@@ -603,6 +653,7 @@
       cagriSil(v.tahtaCagri);
     } else {
       yoklaCevapla(v.tahtaYokla);
+      cevapBak(v.tahtaCevap, v.tahtaCagri);                /* bağlantı isteğimin cevabı (10.11.2026) */
       cagriBak(v.tahtaCagri);
     }
     if ($('thgPerde')) tahtalarCiz();
@@ -627,9 +678,11 @@
   /* çağrı: öbür cihaz bu cihazı Sınıf Ekranı (izle) ya da kumanda (yansit) yaptı */
   function cagriBak(c) {
     var ben = kimlik();
+    onayKalktiMi(c);                                    /* gösterilen bağlantı isteği geri alındı mı (10.11.2026) */
     if (!ben || !c || typeof c !== 'object' || !c[ben]) return;
     var x = c[ben];
     if (!x || typeof x !== 'object' || !x.n || (x.rol !== 'izle' && x.rol !== 'yansit') || x.k === ben) { cagriSil(c); return; }
+    if (x.onay && x.rol === 'izle') { onayCagri(x, c); return; }       /* onay istenen çağrı: pencere göster, cevaba göre geç (10.11.2026) */
     var son = '';
     try { son = localStorage.getItem('kidef_tahta_cagri') || ''; } catch (e) { }
     if (son === String(x.n)) { cagriSil(c); return; }                 /* başka sekme işledi */
@@ -682,6 +735,8 @@
     var o = { tahtaYokla: { y: YK.j, k: ben, t: Date.now() } };
     var Y = (FB.v && FB.v.tahtaYanit) || {};               /* bir günden eski cevaplar silinir */
     for (var k in Y) if (sahip(Y, k) && (!Y[k] || !(+Y[k].t > 0) || Date.now() - (+Y[k].t) > 864e5)) o['tahtaYanit.' + k] = silme();
+    var CV = (FB.v && FB.v.tahtaCevap) || {};              /* bağlantı isteği cevapları: bir günden eskisi silinir (10.11.2026) */
+    for (var c in CV) if (sahip(CV, c) && (!CV[c] || !(+CV[c].t > 0) || Date.now() - (+CV[c].t) > 864e5)) o['tahtaCevap.' + c] = silme();
     belgeYaz(o);
     if ($('thgPerde')) tahtalarCiz();
   }
@@ -737,13 +792,16 @@
       l.map(function (x) { return cipHtml(x, 'izle'); }).join('') + '</div>' : '';
     ec.innerHTML = e.length ? '<div class="thg-bas">' + kac(kd('th.p_sec_kumanda', 'Kumanda olacak cihaz')) + '</div><div class="thg-cipler">' +
       e.map(function (x) { return cipHtml(x, 'yansit'); }).join('') + '</div>' : '';
+    chipKilit();                                      /* bekleyen istek varken düğmeler kilitli (10.11.2026) */
   }
-  /* dokunulan cihaz: rol 'izle' → o cihaz Sınıf Ekranı, bu cihaz kumanda; 'yansit' → tersi */
+  /* dokunulan cihaz: rol 'izle' → o cihaz Sınıf Ekranı, bu cihaz kumanda (artık o cihazın ONAYI gerekir — 10.11.2026);
+     'yansit' → tersi: o cihaz kumanda, bu cihaz Sınıf Ekranı (değişmedi) */
   function cagir(k, rol) {
-    if (!k || (rol !== 'izle' && rol !== 'yansit') || gidiyor) return;
+    if (!k || (rol !== 'izle' && rol !== 'yansit') || gidiyor || ISTEK) return;
     var x = null;
     acikCihazlar().forEach(function (c) { if (c.kimlik === k) x = c; });
     if (!x || (rol === 'yansit' && x.izle)) return;
+    if (rol === 'izle') { istekBaslat(x); return; }       /* o cihaz «Onayla» deyince bağlanılır */
     gidiyor = true;
     [].forEach.call(document.querySelectorAll('#thgPerde .thg-cip'), function (b) {
       b.disabled = true;
@@ -762,6 +820,246 @@
     sureli(belgeYaz(o), 2500).then(basla);
   }
 
+  /* ------------------------------------------ BAĞLANTI ONAYI (10.11.2026)
+     Açıklama dosyanın başında. KUMANDA tarafı: ISTEK (şimdiki istek), ISTEK_SON (son sonuç iletisi).
+     HEDEF tarafı (ana sayfada): ONAY. Hedef Sınıf Ekranı sayfasındaysa sistem/tahta.js → istekKur karşılar. */
+  var ISTEK = null, ISTEK_SON = null, ISTEK_SON_Z = null, ONAY = null;
+  function istekSure() { var s = +window.__kidefOnaySure; return s > 0 ? s : 60000; }        /* deneme kancası */
+
+  /* KUMANDA: listeden seçilen cihaza bağlantı isteği gönder, cevabı bekle */
+  function istekBaslat(x) {
+    var u = kullanici(), ben = kimlik();
+    if (ISTEK || gidiyor || !u || !ben || !x) return;
+    clearTimeout(ISTEK_SON_Z); ISTEK_SON = null;
+    var n = jetonUret();
+    var I = ISTEK = { k: x.kimlik, ad: x.ad || tahtaAdi({ kimlik: x.kimlik }), n: n, kanal: x.izle ? 'vt' : 'fs',
+                      durum: 'gonder', belgede: false, bitti: false, z: null, gz: null, kok: null, cvRef: null, cvIs: null };
+    istekCiz(); chipKilit();
+    I.z = setTimeout(function () { istekBit('zaman'); }, istekSure());
+    I.gz = setTimeout(function () { if (ISTEK === I && !I.bitti && I.durum === 'gonder') istekBit('hata'); }, 10000);
+    if (I.kanal === 'fs') {                                   /* hedef ana sayfada: kapı zili belgesi */
+      var o = {}; o['tahtaCagri.' + I.k] = { n: n, rol: 'izle', onay: 1, k: ben, ad: hazirAd(), t: Date.now() };
+      if (FB.v && FB.v.tahtaCevap && FB.v.tahtaCevap[ben]) o['tahtaCevap.' + ben] = silme();      /* önceki cevabın kalıntısı */
+      sureli(belgeYaz(o), 6000).then(function (ok) {
+        if (ISTEK !== I || I.bitti) return;
+        if (!ok) { istekBit('hata'); return; }
+        if (I.durum === 'gonder') { I.durum = 'bekle'; istekCiz(); }
+      });
+    } else {                                                  /* hedef Sınıf Ekranı sayfasında: Realtime Database */
+      vtHazir(function (db) {
+        if (ISTEK !== I || I.bitti || !kullanici()) return;
+        var kok = db.ref('tahta/' + kullanici().uid);
+        I.kok = kok;
+        I.cvRef = kok.child('istekCevap/' + ben);
+        I.cvIs = function (s) { istekCevapGeldi(I, s.val()); };
+        try { I.cvRef.on('value', I.cvIs, function () { }); } catch (e) { }
+        var yaz = null, u = {};
+        u['istek/' + I.k] = { n: n, k: ben, ad: hazirAd(), t: firebase.database.ServerValue.TIMESTAMP };
+        u['istekCevap/' + ben] = null;                        /* önceki cevabın kalıntısı */
+        try { yaz = kok.update(u); } catch (e) { }
+        if (yaz && yaz.then) yaz.then(function () {
+          if (ISTEK === I && !I.bitti && I.durum === 'gonder') { I.durum = 'bekle'; istekCiz(); }
+        }, function () { if (ISTEK === I && !I.bitti) istekBit('hata'); });
+      });
+    }
+  }
+  function istekCevapGeldi(I, c) {
+    if (!I || ISTEK !== I || I.bitti || !c || typeof c !== 'object' || String(c.n) !== I.n) return;
+    if (c.d === 'onay') istekBit('onay');
+    else if (c.d === 'red') istekBit('red');
+    else if (c.d === 'goruldu' && I.durum !== 'goruldu') { I.durum = 'goruldu'; istekCiz(); }
+  }
+  /* Firestore kanalı: cevap belgede (tahtaCevap.<ben>). Gönderdiğim istek belgeden kalktıysa (hedef yeni bir sayfa açıp eskiyi
+     sildi, başka bir kumanda üstüne yazdı) istek kapanmıştır. */
+  function cevapBak(cv, cagri) {
+    var I = ISTEK, ben = kimlik();
+    if (!I || I.kanal !== 'fs' || I.bitti || !ben) return;
+    if (cv && typeof cv === 'object' && cv[ben]) istekCevapGeldi(I, cv[ben]);
+    if (ISTEK !== I || I.bitti) return;
+    var s = (cagri && typeof cagri === 'object') ? cagri[I.k] : null;
+    if (s && typeof s === 'object' && String(s.n) === I.n) I.belgede = true;
+    else if (I.belgede) istekBit('kapandi');
+  }
+  /* sonuç: onay | red | zaman | hata | kapandi | iptal */
+  function istekBit(durum) {
+    var I = ISTEK;
+    if (!I || I.bitti) return;
+    I.bitti = true;
+    clearTimeout(I.z); clearTimeout(I.gz);
+    var ben = kimlik();
+    if (I.cvRef) { try { I.cvRef.off('value', I.cvIs); } catch (e) { } }
+    /* istek: onayda ve ret'te hedef zaten sildi; iptal / zaman aşımı / hatada geri alınır (hedefteki pencere kapanır) */
+    var geriAl = durum === 'iptal' || durum === 'zaman' || durum === 'hata';
+    if (I.kanal === 'fs') {
+      var o = {}, F = (FB.v && FB.v.tahtaCagri && FB.v.tahtaCagri[I.k]) || null;
+      if (geriAl && !(F && typeof F === 'object' && String(F.n) !== I.n)) o['tahtaCagri.' + I.k] = silme();   /* başkasının isteğine dokunma */
+      if (FB.v && FB.v.tahtaCevap && FB.v.tahtaCevap[ben]) o['tahtaCevap.' + ben] = silme();
+      if (Object.keys(o).length) belgeYaz(o);
+    } else if (I.kok) {                                       /* Realtime Database: cevap (ve gerekirse istek) tek yazışta temizlenir */
+      var u = {}; u['istekCevap/' + ben] = null; if (geriAl) u['istek/' + I.k] = null;
+      try { I.kok.update(u); } catch (e) { }
+    }
+    if (durum === 'onay') {                                   /* hedef onayladı: şimdi bağlan */
+      I.durum = 'onay';
+      istekCiz();
+      gidiyor = true;
+      gecisYaz();
+      soruKapat();
+      cihazYaz(null); hedefYaz(null);
+      git('yansit');
+      return;
+    }
+    ISTEK = null;
+    clearTimeout(ISTEK_SON_Z);
+    ISTEK_SON = (durum === 'iptal') ? null : { durum: durum, ad: I.ad };
+    if (ISTEK_SON) ISTEK_SON_Z = setTimeout(function () { ISTEK_SON = null; istekCiz(); }, 9000);
+    cihazImza = '';                                           /* düğmeler yeniden çizilsin, kilit açılsın */
+    cihazlarCiz();
+    istekCiz();
+  }
+  /* pencerede bekleme / sonuç kutusu */
+  function istekCiz() {
+    var el = $('thgIstek');
+    if (!el) return;
+    var I = ISTEK, S = ISTEK_SON;
+    if (!I && !S) { el.hidden = true; el.className = 'thg-istek'; el.innerHTML = ''; return; }
+    var ad = I ? I.ad : S.ad, d = I ? I.durum : S.durum, sinif = '', ust = '', alt = '';
+    var tik = function (yol) { return '<svg class="thg-tik" viewBox="0 0 24 24" aria-hidden="true"><path d="' + yol + '"/></svg>'; };
+    var CARPI = 'M6 6l12 12M18 6L6 18';
+    if (I && d !== 'onay') {
+      ust = '<span class="thg-radar" aria-hidden="true"></span><span>' + kac(kd('th.p_istek_bekle', '{ad} cihazında onay bekleniyor…', { ad: ad })) + '</span>' +
+            '<button type="button" class="thg-iptal" data-thg="istek-iptal">' + kac(kd('th.p_istek_iptal', 'İptal')) + '</button>';
+      alt = d === 'gonder' ? kd('th.p_istek_gonder', 'İstek gönderiliyor…')
+          : d === 'goruldu' ? kd('th.p_istek_goruldu', 'İstek o cihazda göründü. Orada «Onayla»ya basılınca bağlanılır.')
+          : kd('th.p_istek_alt', 'O cihazda çıkan pencerede «Onayla»ya basılmalı. Cevap gelmezse istek bir dakika sonra kapanır.');
+    } else if (d === 'onay') {
+      sinif = ' onay'; ust = tik('M5 12.5l4.5 4.5L19 7.5') + '<span>' + kac(kd('th.p_istek_onay', 'Onaylandı — bağlanıyor…')) + '</span>';
+    } else if (d === 'red') {
+      sinif = ' red'; ust = tik(CARPI) + '<span>' + kac(kd('th.p_istek_red', '{ad} isteği reddetti.', { ad: ad })) + '</span>';
+    } else if (d === 'zaman') {
+      sinif = ' red'; ust = tik(CARPI) + '<span>' + kac(kd('th.p_istek_zaman', '{ad} cevap vermedi; istek kapandı.', { ad: ad })) + '</span>';
+      alt = kd('th.p_istek_zaman_alt', 'O cihazda siteyi açık tut, sonra yeniden seç. Tahtadaki sayfa eski sürümdeyse bir kez yenile.');
+    } else if (d === 'hata') {
+      sinif = ' red'; ust = tik(CARPI) + '<span>' + kac(kd('th.p_istek_hata', 'İstek gönderilemedi.')) + '</span>';
+      alt = kd('th.p_istek_hata_alt', 'İnternet bağlantını kontrol edip yeniden dene.');
+    } else {
+      sinif = ' red'; ust = tik(CARPI) + '<span>' + kac(kd('th.p_istek_kapandi', 'İstek kapandı.')) + '</span>';
+      alt = kd('th.p_istek_kapandi_alt', 'İstersen cihazı yeniden seçebilirsin.');
+    }
+    el.className = 'thg-istek' + sinif;
+    el.hidden = false;
+    el.innerHTML = '<div class="thg-ist-ust">' + ust + '</div>' + (alt ? '<small>' + kac(alt) + '</small>' : '');
+  }
+  /* istek sürerken çipler kilitli; istek yapılan cihazın çipinde «onay bekleniyor» */
+  function chipKilit() {
+    var I = ISTEK;
+    [].forEach.call(document.querySelectorAll('#thgPerde .thg-cip'), function (b) {
+      b.disabled = !!I;
+      var hedef = !!(I && b.getAttribute('data-rol') === 'izle' && b.getAttribute('data-k') === I.k);
+      b.classList.toggle('bekle', hedef);
+      var sm = b.querySelector('small');
+      if (hedef && sm && !sm.querySelector('.thg-radar')) sm.innerHTML = '<span class="thg-radar" aria-hidden="true"></span>' + kac(kd('th.p_cip_onay_bekle', 'onay bekleniyor…'));
+    });
+  }
+  /* «Bu cihazı kumanda olarak kullan»: artık bağlamaz — listeden seçilmeden bağlantı yok */
+  function listeVurgu() {
+    var l = acikCihazlar(), kc = $('thgKCihaz');
+    var el = ISTEK ? $('thgIstek') : ((l.length && kc && !kc.hidden) ? kc : $('thgTahtalar'));
+    if (!ISTEK) {
+      bildirGoster(l.length ? kd('th.p_liste_sec', 'Sınıf Ekranı olacak cihazı aşağıdaki listeden seç; o cihazda onay istenecek.')
+                            : kd('th.p_liste_yok', 'Açık cihaz yok. Tahtada siteyi bu hesapla aç, burada görünsün; sonra listeden seç.'));
+      if (!l.length) yoklaBaslat();                           /* yeniden ara */
+    }
+    if (el && !el.hidden) {
+      el.classList.remove('thg-vurgula'); void el.offsetWidth; el.classList.add('thg-vurgula');
+      try { el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { }
+    }
+  }
+  /* sayfa kapanırken (en azından deneyerek) bekleyen istek geri alınır; hedefteki pencere de süre bitince kapanır */
+  window.addEventListener('pagehide', function () { var I = ISTEK; if (I && !I.bitti) { try { istekBit('iptal'); } catch (e) { } } });
+
+  /* HEDEF (ana sayfada): bu cihaza gelen bağlantı isteği — pencere göster, cevabı yaz */
+  function onayCagri(x, c) {
+    var n = String(x.n);
+    if (!/^[a-z0-9]{8,24}$/.test(String(x.k || ''))) { cagriSil(c); return; }   /* cihaz kimliği biçimi (tahta.js KIMLIK) tutmuyorsa sorulmaz, silinir */
+    if (ONAY && ONAY.n === n) return;                         /* zaten gösteriliyor ya da cevaplandı */
+    var son = '';
+    try { son = localStorage.getItem('kidef_tahta_cagri') || ''; } catch (e) { }
+    if (son === n) { cagriSil(c); return; }                   /* aynı cihazın başka sekmesi cevapladı */
+    if (gidiyor) return;
+    if (ONAY && !ONAY.bitti) { ONAY.bitti = true; onayKaldir(); }      /* yeni istek eskisinin yerini alır */
+    var O = ONAY = { n: n, k: String(x.k || ''), ad: String(x.ad || '').slice(0, 40), z: null, bitti: false };
+    onayGoster();
+    O.z = setTimeout(function () { onayBitir('zaman'); }, istekSure());
+    if (O.k) { var o = {}; o['tahtaCevap.' + O.k] = { n: n, d: 'goruldu', t: Date.now() }; belgeYaz(o); }
+  }
+  /* gösterilen istek belgeden kalktı: kumanda iptal etti ya da başka bir sekme cevapladı */
+  function onayKalktiMi(c) {
+    var O = ONAY, ben = kimlik();
+    if (!O || O.bitti) return;
+    var x = (c && typeof c === 'object' && ben) ? c[ben] : null;
+    if (x && typeof x === 'object' && String(x.n) === O.n) return;
+    O.bitti = true;
+    onayKaldir();
+    var baska = ''; try { baska = localStorage.getItem('kidef_tahta_cagri') || ''; } catch (e) { }
+    if (baska !== O.n) bildirGoster(kd('th.p_onay_geri', 'Bağlantı isteği geri alındı.'));
+  }
+  function onayGoster() {
+    stilKur();
+    var O = ONAY;
+    if (!O) return;
+    onayKaldir();
+    var ad = O.ad || kd('th.p_onay_biri', 'Bir cihaz');
+    var p = document.createElement('div');
+    p.id = 'thgOnay';
+    p.setAttribute('role', 'alertdialog'); p.setAttribute('aria-modal', 'true');
+    p.setAttribute('aria-labelledby', 'thgOnayBaslik'); p.setAttribute('aria-describedby', 'thgOnayYazi');
+    p.innerHTML = '<div class="thg-onay-kutu"><span class="thg-onay-sim">' + SIM.kumanda + '</span>' +
+      '<h2 id="thgOnayBaslik">' + kac(kd('th.p_onay_baslik', '{ad} bağlanmak istiyor', { ad: ad })) + '</h2>' +
+      '<p id="thgOnayYazi">' + kac(kd('th.p_onay_yazi', 'Onaylarsan bu cihaz Sınıf Ekranı olur, kumanda olarak {ad} bağlanır.', { ad: ad })) + '</p>' +
+      '<div class="thg-onay-dugmeler">' +
+      '<button type="button" class="thg-onay-dug hayir" data-onay="red">' + kac(kd('th.p_onay_btn_red', 'Reddet')) + '</button>' +
+      '<button type="button" class="thg-onay-dug evet" data-onay="onay">' + kac(kd('th.p_onay_btn_evet', 'Onayla')) + '</button></div>' +
+      '<div class="thg-onay-sure"><i style="animation-duration:' + istekSure() + 'ms"></i></div>' +
+      '<small>' + kac(kd('th.p_onay_not', 'Cevap vermezsen istek kendiliğinden kapanır.')) + '</small></div>';
+    p.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('[data-onay]') : null;
+      if (b) onayBitir(b.getAttribute('data-onay'));
+    });
+    document.body.appendChild(p);
+    document.addEventListener('keydown', onayEsc);
+  }
+  function onayEsc(e) { if (e.key === 'Escape') onayBitir('red'); }
+  function onayKaldir() {                                     /* pencereyi kaldırır (ONAY kaydı kalır: aynı istek yeniden sorulmaz) */
+    var p = $('thgOnay');
+    if (p && p.parentNode) p.parentNode.removeChild(p);
+    document.removeEventListener('keydown', onayEsc);
+    if (ONAY) clearTimeout(ONAY.z);
+  }
+  /* d: onay | red | zaman */
+  function onayBitir(d) {
+    var O = ONAY;
+    if (!O || O.bitti) return;
+    O.bitti = true;
+    clearTimeout(O.z);
+    var ben = kimlik();
+    try { localStorage.setItem('kidef_tahta_cagri', O.n); } catch (e) { }       /* aynı cihazın öbür sekmeleri bu isteği yeniden sormasın */
+    var o = {}; o['tahtaCagri.' + ben] = silme();
+    if (d !== 'zaman' && O.k) o['tahtaCevap.' + O.k] = { n: O.n, d: d, t: Date.now() };
+    onayKaldir();
+    if (d === 'onay') {
+      gidiyor = true;
+      gecisYaz();
+      soruKapat(); panelKapat();
+      bildirGoster(kd('th.p_onay_aciliyor', 'Onaylandı — Sınıf Ekranı açılıyor…'));
+      sureli(belgeYaz(o), 1500).then(function () { cihazYaz('tahta'); git('izle'); });
+      return;
+    }
+    belgeYaz(o);
+    bildirGoster(d === 'red' ? kd('th.p_onay_reddedildi', 'Bağlantı isteği reddedildi.') : kd('th.p_onay_sure', 'Bağlantı isteğinin süresi doldu.'));
+  }
+  document.addEventListener('kidef:dil', function () { if ($('thgOnay') && ONAY && !ONAY.bitti) onayGoster(); });
+
   /* ------------------------------- tahta cihazı: yansıtma başlayınca geç
      Geri sayım ve soru YOK (18.10.2026): yansıtma başlar başlamaz tahta
      görünümü açılır. Tahta görünümünden "Çık" ile ayrılınmışsa
@@ -777,8 +1075,12 @@
     return Date.now() - (b.t || 0) < 10 * 60000;                       /* eski bilgisayar sürümü: 10 dk */
   }
   var soruIlk = 0, soruBekleZ = null, soruIstek = false;
+  /* LİSTEDEN SEÇMEDEN BAĞLANMA YOK (10.11.2026): işaretli Sınıf Ekranı, kumandadan yansıtma başlayınca eskiden kendiliğinden
+     tahta görünümüne geçerdi; artık geçmez — bağlantı yalnız kumandada listeden seçilip bu cihazda «Onayla»ya basılınca
+     kurulur (istekBaslat / onayCagri). Eski davranış için true yap. */
+  var OTO_GECIS = false;
   function soruKontrol() {
-    if (!tahtaCihazi() || gidiyor) return;
+    if (!OTO_GECIS || !tahtaCihazi() || gidiyor) return;
     var taze = yayinVar() && !yayin.durak;
     if (!taze || birakildiMi()) { soruIlk = 0; return; }
     /* TEK SINIF EKRANI (21.10.2026): hesabın Sınıf Ekranı başka bir cihazsa ve o açıksa bu
@@ -901,6 +1203,7 @@
     try { firebase.auth().onAuthStateChanged(function () { setTimeout(dugmeGuncelle, 300); }); } catch (e) { }
     document.addEventListener('kidef:dil', function () { if ($('thgPerde')) panelAc(); });
   }
-  window.KidefTahtaGir = { ac: panelAc, kapat: panelKapat, yokla: yokla, acikCihazlar: acikCihazlar, _fb: FB, _yk: YK };
+  window.KidefTahtaGir = { ac: panelAc, kapat: function () { panelKapat(); }, yokla: yokla, acikCihazlar: acikCihazlar, _fb: FB, _yk: YK,
+                           _istek: function () { return ISTEK; }, _onay: function () { return ONAY; } };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', basla); else basla();
 })();

@@ -543,6 +543,10 @@ function kayitBelgesiYazildi(user, _kayit) {
     } catch (e) { }
     selectedRole = regRole;
     isRegistering = false;
+    /* PROFİL EKSİK BİLGİ (09.11.2026): kayıtta verilen cinsiyet ve meslek bu oturumun profiline de yazılır. Eskiden
+       yalnız sonraki girişte belgeden okunuyordu → kayıttan hemen sonra (yeni öğrenci ya da onaylanan öğretmen,
+       aynı oturumda) profil «cinsiyet/meslek eksik» diyordu. */
+    try { appState.currentUserGender = _kayit.cinsiyet || ''; appState.currentUserMeslek = _kayit.meslek || _kayit.profession || ''; } catch (e) { }
     basariliGiris(user.email || _kayit.email || "", tel, sName || "");
 }
 window.kidefKayitBelgesiYazildi = kayitBelgesiYazildi;

@@ -450,7 +450,14 @@
             st.id = 'kilitCarpiStil';
             /* KİLİTLİ AÇILIŞ (09.11.2026) — yönetici: "kayıt ola basınca hala geri tuşu çıkmıyor kırmızı olan".
                Aynı tuş kayıt ekranlarında ‹ geri (hesap/kayitanketi.js → ka-geri-tus); yalnız ✕ gizlenir. */
-            st.textContent = 'body.kilitCarpisiz #login-modal .modal-close:not(.ka-geri-tus){ display:none !important; }';
+            /* GERİ TUŞU GÜVENCESİ (09.11.2026) — yönetici: "geri tuşuna basıp tekrar kayıt ol kısmına basınca yine
+               kayboluyor geri tuşu". ✕ ile ‹ aynı düğme; ✕ artık display:none ile değil visibility ile gizlenir
+               (display açılıp kapanınca Safari sabit tuşu yeniden çizmeyebiliyor). Tuş yerinde kalır, ‹ her durumda
+               görünür ve tıklanır. Tam sayfa değilken (ka-tam yok) ✕ yer kaplamasın diye display:none. */
+            st.textContent =
+                'body.kilitCarpisiz #login-modal:not(.ka-tam) .modal-close:not(.ka-geri-tus){ display:none !important; }' +
+                'body.kilitCarpisiz #login-modal.ka-tam .modal-close:not(.ka-geri-tus){ visibility:hidden !important; pointer-events:none !important; }' +
+                'body.kilitCarpisiz #login-modal .modal-close.ka-geri-tus{ visibility:visible !important; pointer-events:auto !important; opacity:1 !important; }';
             (document.head || document.documentElement).appendChild(st);
         }
         try {
