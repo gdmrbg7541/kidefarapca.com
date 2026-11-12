@@ -151,7 +151,7 @@ function renderAdminPanel() {
                  öğretmen listesi (açınca okunur, 10 dk önbellek; akordiyonun parçası). -->
             ${_aonYoneticiMi() ? `
             <details class="admin-details aon-ust" id="admin-onay-details" open ontoggle="if(this.open) _aonTik()">
-                <summary class="admin-summary">👨‍🏫 Öğretmenler <span id="admin-onay-badge"></span></summary>
+                <summary class="admin-summary">👨‍🏫 Öğretmenler ve Öğrenciler <span id="admin-onay-badge"></span></summary>
                 <div style="padding:10px 0 4px;">
                     <!-- AÇIKLAMALAR KALKTI (02.11.2026) — yönetici: "bu açıklamalar olmasın" -->
                     <div class="aon-alt-baslik" style="margin-bottom:10px;">🧑‍🏫 Öğretmen Onayları</div>
@@ -166,6 +166,9 @@ function renderAdminPanel() {
                      yazılmış adların baş harfini büyütür. TÜM KAYIT ANKETLERİ (19.10.2026): eski
                      «📋 Kayıt Anketi» akordiyonu burada bir tuş. ÖĞRETMEN TAKVİMİ her öğretmenin
                      penceresinde. 💛 BEKLENEN DESTEK panelin en altında (02.11.2026). -->
+                <!-- İKİ SÜTUN (12.11.2026) — yönetici: "masaüstünde iki sekme olarak açılsın, solda öğretmenler sağda öğrenciler".
+                     Geniş ekranda bu sarmalayıcı iki eşit sütunlu ızgara olur (_aonIkiKur); dar ekranda düz blok, eski görünüm. -->
+                <div class="aog-iki">
                 <details class="aog-bolum" id="admin-ogretmen-liste" name="admin-accordion" ontoggle="if(this.open) renderAdminTeacherList('onbellek')">
                     <summary>👥 Öğretmen listesi <small>arama · süzgeç · sıralama</small></summary>
                     <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
@@ -188,6 +191,7 @@ function renderAdminPanel() {
                     <summary>🎓 Öğrenci listesi <small>arama · süzgeç · sıralama</small></summary>
                     <div id="admin-student-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 560px; overflow-y: auto;">Bölümü açınca yüklenir…</div>
                 </details>
+                </div>
             </details>` : ''}
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                 <span></span>
@@ -325,6 +329,7 @@ function renderAdminPanel() {
     if (typeof loadPaymentOrders === 'function') loadPaymentOrders();
     _aonBaslat();                                    /* öğretmen onayları: ilk yükleme + 30 sn */
     _ogsKur();                                       /* sayaç kutusu: öğretmen + öğrenci (02.11 · 05.11.2026) */
+    _aonIkiKur();                                    /* öğretmen + öğrenci listesi yan yana (12.11.2026) */
 }
 
 /* ==========================================
@@ -1717,6 +1722,78 @@ function _aonBaslat() {
     if (_aon.canli && _aon.canli.liste && _aon.canli.red && !_aon.html) _aonCanliCiz();
 }
 
+/* ÖĞRETMENLER VE ÖĞRENCİLER YAN YANA (12.11.2026) — yönetici: "yönetici panelinde öğretmenler kısmına basınca öğretmen ve
+   öğrenci kısmı açılıyor ya, masaüstünde açıldığında iki sekme olarak açılsın, başlık öğretmenler olmasın, solda
+   öğretmenler sağda öğrenciler olsun, hem bir kerede karşılaştırma yapmış oluruz, hem ikisini aynı anda görmüş olurum".
+   · Bölüm başlığı «👨‍🏫 Öğretmenler ve Öğrenciler» (iki listeyi de kapsıyor).
+   · GENİŞ EKRAN (≥ 1024 px: masaüstü, yatay tablet): «👥 Öğretmen listesi» solda, «🎓 Öğrenci listesi» sağda; ikisi
+     aynı anda AÇIK, başlıkları katlanmaz, her liste kendi içinde kayar. İkisi akordiyondan çıkarılır (name kalkar):
+     «Ödeme Onayları» gibi öbür bölümleri açmak bunları kapatmaz. Arama · süzgeç · sıralama her listede ayrı çalışır
+     (kimlikler ve kapsamlar ayrı: aog* / aos*).
+   · DAR EKRAN (telefon, dik tablet): eskisi gibi — iki liste kapalı başlar, akordiyonun parçasıdır (name="admin-accordion").
+     Pencere eşiği geçerse düzen kendiliğinden döner (geniş → dar: ikisi kapanır ve akordiyona girer).
+   · OKUMA AZALT (27.10.2026) korunur: listeler panel çizilince değil, iki sütun EKRANDA GÖRÜNÜNCE açılır ve okunur
+     (IntersectionObserver): panel gizliyken, bölüm kapalıyken ya da sütunlar sayfada henüz aşağıdayken sorgu yok.
+     Okuma yine 'onbellek' (10 dk): taze önbellek varsa Firestore'a gidilmez. */
+var _aoi = { mq: null, io: null };
+function _aonIkiBolumler() {
+    return { d: document.getElementById('admin-onay-details'),
+             a: document.getElementById('admin-ogretmen-liste'),
+             b: document.getElementById('admin-ogrenci-liste') };
+}
+/* iki sütun kipindeyken ve bölüm açıkken iki listeyi de aç (açıksa dokunmaz; ontoggle listeleri çizer) */
+function _aonIkiAc() {
+    var p = _aonIkiBolumler();
+    if (!p.d || !p.a || !p.b || !p.d.open || !p.d.classList.contains('aog-iki-acik')) return;
+    if (!p.a.open) p.a.open = true;
+    if (!p.b.open) p.b.open = true;
+}
+/* iki sütun ekranda görününce _aonIkiAc çağrılır; her çağrıda gözcü yeniden kurulur (ilk bildirim bugünkü durumu verir) */
+function _aonIkiGoz() {
+    if (_aoi.io) { try { _aoi.io.disconnect(); } catch (e) { } _aoi.io = null; }
+    var w = document.querySelector('#admin-onay-details .aog-iki');
+    if (!w) return;
+    if (typeof IntersectionObserver === 'undefined') { _aonIkiAc(); return; }          /* çok eski tarayıcı: görünürlük ölçülemez */
+    _aoi.io = new IntersectionObserver(function (g) {
+        for (var i = 0; i < g.length; i++) { if (g[i].isIntersecting) { _aonIkiAc(); return; } }
+    }, { rootMargin: '0px 0px 240px 0px' });
+    _aoi.io.observe(w);
+}
+/* genişliğe göre kipi uygula: geniş → sınıf + name kalkar; dar → iki liste kapanır, name geri gelir */
+function _aonIkiUygula() {
+    var p = _aonIkiBolumler();
+    if (!p.d || !p.a || !p.b) return;
+    var iki = !!(_aoi.mq && _aoi.mq.matches);
+    if (iki === p.d.classList.contains('aog-iki-acik')) return;
+    p.d.classList.toggle('aog-iki-acik', iki);
+    if (iki) {
+        p.a.removeAttribute('name'); p.b.removeAttribute('name');
+    } else {
+        p.a.open = false; p.b.open = false;                                              /* eski düzen: ikisi kapalı başlar */
+        p.a.setAttribute('name', 'admin-accordion'); p.b.setAttribute('name', 'admin-accordion');
+    }
+}
+/* renderAdminPanel her çizişte çağırır (yönetici değilse bölüm yoktur: hiçbir şey yapmaz) */
+function _aonIkiKur() {
+    var p = _aonIkiBolumler();
+    if (!p.d || !p.a || !p.b) return;
+    if (!_aoi.mq && window.matchMedia) {
+        _aoi.mq = window.matchMedia('(min-width: 1024px)');
+        var degisti = function () { _aonIkiUygula(); _aonIkiGoz(); };
+        if (_aoi.mq.addEventListener) _aoi.mq.addEventListener('change', degisti);
+        else if (_aoi.mq.addListener) _aoi.mq.addListener(degisti);
+    }
+    [p.a, p.b].forEach(function (s) {
+        var ozet = s.querySelector(':scope > summary');
+        if (ozet) ozet.addEventListener('click', function (e) {
+            if (p.d.classList.contains('aog-iki-acik')) e.preventDefault();            /* iki sütunda başlıklar katlanmaz */
+        });
+    });
+    p.d.addEventListener('toggle', function () { if (p.d.open) _aonIkiGoz(); });         /* bölüm kapatılıp yeniden açılınca */
+    _aonIkiUygula();
+    _aonIkiGoz();
+}
+
 /* Onaydan hemen sonra, elle paylaşılacak kısa mesajı gösterir.
    Öğretmen kodu varsa mesaja girsin diye OH.koduTuret'ten okunuyor;
    modül ya da kod yoksa kart yine açılıyor, yalnız kod satırı olmuyor.
@@ -1934,6 +2011,16 @@ function _ogtStil() {
         '#admin-teacher-list .aog-oturum-grup{flex:1 1 100%; margin-inline-start:0;}',
         '#admin-teacher-list .aog-suz.aog-otr small{font-size:.74rem; font-weight:700; opacity:.72; margin-inline-start:2px;}',
         '#admin-teacher-list .aog-suz.aog-otr.sec{background:#6C3FB5; border-color:#6C3FB5; color:#fff;}',
+        /* ÖĞRETMENLER VE ÖĞRENCİLER YAN YANA (12.11.2026): geniş ekranda iki eşit sütun, solda öğretmenler sağda öğrenciler */
+        '#admin-onay-details.aog-iki-acik .aog-iki{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px;',
+        '  align-items:stretch; margin-top:14px; padding-top:14px; border-top:1px dashed #D5DEE8;}',
+        '#admin-onay-details.aog-iki-acik .aog-bolum{margin-top:0; padding:12px 14px 14px; border:1px solid #E3E9F1; border-top:4px solid #1f5f99;',
+        '  border-radius:14px; background:#FBFCFE; min-width:0;}',
+        '#admin-onay-details.aog-iki-acik #admin-ogrenci-liste{border-top-color:#0E7C66;}',
+        '#admin-onay-details.aog-iki-acik .aog-bolum > summary{cursor:default; font-size:1.15rem;}',
+        '#admin-onay-details.aog-iki-acik .aog-bolum > summary::before, #admin-onay-details.aog-iki-acik .aog-bolum > summary small{display:none;}',
+        '#admin-onay-details.aog-iki-acik #admin-teacher-list, #admin-onay-details.aog-iki-acik #admin-student-list{',
+        '  max-height:max(460px, calc(100vh - 230px)) !important; margin-top:12px !important; margin-bottom:0 !important;}',
         /* Beklenen Destek kendi akordiyonunda: içteki başlık tekrar etmesin */
         '#admin-destek-details #admin-destek-ayar .dst-a-ust > b:first-child{display:none;}'
     ].join('\n');

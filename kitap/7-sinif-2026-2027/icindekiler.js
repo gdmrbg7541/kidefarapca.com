@@ -3,7 +3,7 @@
 window.KITAP_ICINDEKILER = {
   "surum": 1,
   "kitap": "7-sinif-2026-2027",
-  "guncelleme": "2026-10-29",
+  "guncelleme": "2026-11-11",
   "konular": [
     { "ad": "Kitabın tanıtımı", "ar": "التَّوْضيحات", "s": 8 },
     { "ad": "1. Ders: Mesleğin ne?", "ar": "ما مِهْنَتُكَ؟", "s": 10 },
@@ -58,6 +58,11 @@ window.KITAP_ICINDEKILER = {
       { "x1": 10, "y1": 84.5, "x2": 90, "y2": 87.2, "s": 268, "ad": "Kaynakça" },
       { "x1": 10, "y1": 87.3, "x2": 90, "y2": 90.1, "s": 269, "ad": "Türkiye idari haritası" },
       { "x1": 10, "y1": 90.2, "x2": 90, "y2": 93, "s": 270, "ad": "Türk dünyası haritası" }
+    ]
+  },
+  "dokun": {
+    "10": [
+      { "t": "yazi", "x1": 80.1, "y1": 39.2, "x2": 92.5, "y2": 43.6, "ar": "مدير", "tr": "Müdür" }
     ]
   }
 };
