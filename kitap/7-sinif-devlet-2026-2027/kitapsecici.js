@@ -84,6 +84,9 @@
        kitabı. Sayfaları, sesleri ve videoları kidefarapca-materyal-10 deposunda. */
     { id: '10-sinif-2026-2027',   ad: 'Arapça 10',    alt: 'Anadolu İmam Hatip Lisesi · 2026-2027',
       renk: '#C0392B', im: '10', guncel: true },
+    /* KİDEF'LE! (14.11.2026): 5-10. sınıf ders kitaplarının uzun diyalog ve metinleri — kelime kelime Türkçesi, kök çalışması */
+    { id: 'metinlerle-arapca',    ad: 'Metinlerle Arapça', alt: 'Metin tahlilleri · 5-10. sınıf',
+      renk: '#17817E', im: 'M' },
     { id: 'kidef-arapca-2-baski', ad: 'Kidef Arapça', alt: '2. Baskı · flipbook',
       renk: '#E3A02A', im: 'K', asil: 'FLIPBOOK' }
   ];
@@ -290,6 +293,41 @@
       '.ks-git{flex:none;color:var(--ksr);font-size:1.25rem;font-weight:800;padding-right:4px;}' +
       '.ks-not{margin:14px 2px 0;font-size:.8rem;line-height:1.5;color:#8A5A00;background:#FFF6E5;' +
         'border:1px solid #F3DCB2;border-radius:10px;padding:9px 11px;}' +
+      /* --- KİDEF'LE! (14.11.2026): metni olan sayfada altta düğme --- */
+      '.kd-kutu{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);z-index:45;display:flex;' +
+        'flex-wrap:wrap;justify-content:center;gap:10px;max-width:calc(100vw - 32px);pointer-events:none;}' +
+      '.kd-tus{pointer-events:auto;position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:10px;' +
+        'min-height:50px;box-sizing:border-box;padding:7px 18px 7px 8px;border-radius:99px;text-decoration:none;' +
+        'color:#fff;background:var(--kdr,#17817E);background:linear-gradient(135deg,var(--kdr,#17817E),' +
+        'color-mix(in srgb,var(--kdr,#17817E) 72%,#0B3B3A));font-family:inherit;' +
+        'box-shadow:0 10px 24px rgba(8,40,40,.32),inset 0 1px 0 rgba(255,255,255,.28);' +
+        '-webkit-tap-highlight-color:transparent;touch-action:manipulation;' +
+        'animation:kdGel .42s cubic-bezier(.2,1.5,.4,1) both;transition:transform .15s,box-shadow .15s;}' +
+      '.kd-tus:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(8,40,40,.38),inset 0 1px 0 rgba(255,255,255,.28);}' +
+      '.kd-tus:active{transform:scale(.97);}' +
+      '.kd-tus:focus-visible{outline:3px solid #F5C04A;outline-offset:3px;}' +
+      '.kd-tus::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;pointer-events:none;' +
+        'background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);' +
+        'animation:kdParla 4.5s ease-in-out 1s infinite;}' +
+      '.kd-ik{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;' +
+        'background:#fff;color:var(--kdr,#17817E);box-shadow:0 2px 6px rgba(0,0,0,.18);}' +
+      '.kd-ik svg{width:20px;height:20px;}' +
+      '.kd-ik .kd-yildiz{color:#E3A02A;transform-origin:19.2px 13.9px;animation:kdYildiz 2.4s ease-in-out infinite;}' +
+      '.kd-yazi{display:flex;flex-direction:column;min-width:0;line-height:1.15;text-align:left;}' +
+      '.kd-yazi b{font-size:16px;font-weight:800;letter-spacing:.01em;white-space:nowrap;}' +
+      '.kd-yazi small{font-size:11.5px;font-weight:600;opacity:.92;white-space:nowrap;overflow:hidden;' +
+        'text-overflow:ellipsis;max-width:62vw;}' +
+      '.kd-tus.kd-ters{color:var(--kdr);background:#fff;border:2px solid var(--kdr);' +
+        'box-shadow:0 10px 24px rgba(16,26,46,.22);}' +
+      '.kd-tus.kd-ters .kd-ik{background:var(--kdr);color:#fff;}' +
+      '.kd-tus.kd-ters::after{background:linear-gradient(100deg,transparent,rgba(0,0,0,.06),transparent);}' +
+      '@keyframes kdGel{from{opacity:0;transform:translateY(14px) scale(.9);}to{opacity:1;transform:none;}}' +
+      '@keyframes kdParla{0%,70%{left:-60%;}100%{left:130%;}}' +
+      '@keyframes kdYildiz{0%,100%{transform:scale(1) rotate(0);}50%{transform:scale(1.35) rotate(45deg);}}' +
+      '@media (max-width:480px){.kd-tus{min-height:44px;padding:5px 14px 5px 6px;gap:8px;}' +
+        '.kd-ik{width:30px;height:30px;}.kd-yazi b{font-size:14px;}.kd-yazi small{font-size:10.5px;}}' +
+      '@media (prefers-reduced-motion:reduce){.kd-tus,.kd-tus::after,.kd-ik .kd-yildiz{animation:none;}}' +
+      '@media print{.kd-kutu{display:none;}}' +
       '@media (prefers-reduced-motion:reduce){' +
         '.ks-panel,.ks-perde{transition:none;}.ks-kitap:hover{transform:none;}}';
     (document.head || document.documentElement).appendChild(s);
@@ -393,9 +431,99 @@
     if (e.key === 'Escape' && panel) { e.stopPropagation(); kapat(); }
   }, true);
 
+  /* ---------- KİDEF'LE! (14.11.2026) ----------
+     Öğretmen: "7. sınıf 26. sayfa metin tahlili 7. sınıf flipbookunda sayfa 26'ya gelince bi tuş görünsün ...
+     buna Kidef'le! diye bi tuş olabilir". Sınıf kitabında metni olan basılı sayfa ekrandayken sayfanın altında
+     «Kidef'le!» düğmesi: Metinlerle Arapça o metnin sayfasında açılır. Metinlerle Arapça'da tersi: «Ders kitabında».
+     Ekrandaki sayfalar #sayfaEt'ten okunur (sınıf kitabında basılı numara, Metinlerle Arapça'da yaprak).
+     KIDEFLE: ders kitabı → [basılı sayfa, Metinlerle Arapça yaprağı, başlık] — _kaynak/uretici/kidefleKur.py yazdı. */
+  var KIDEFLE_KITAP = 'metinlerle-arapca';
+  var KIDEFLE = {
+    '5-sinif-2026-2027': [[147,4,"Oğlum ve Kızım"],[164,5,"Kardeşlerim"],[185,6,"Evim"],[212,7,"Güzel Evim"]],
+    '6-sinif-2026-2027': [[26,9,"Akrabalarım"],[44,10,"Ailem ve Meslekleri"],[68,11,"Okulum"],[82,12,"Okulum · Süleyman"],[111,13,"Vücudun Organları"],[116,14,"Duyularım"],[154,15,"Hava Nasıl?"],[181,16,"Hava ve Kıyafet"]],
+    '7-sinif-devlet-2026-2027': [[17,18,"Haydi Oynayalım"],[26,19,"Öğretmenlerimiz"],[36,20,"Hayallerimiz"],[43,21,"Bakkalda"],[52,22,"Kırtasiyede"],[60,23,"Semt Pazarında"],[74,24,"Bugün Hava Nasıl?"],[83,25,"Haydi Kardan Adam Yapalım"],[91,26,"Yaz Mevsimi"],[102,27,"İstanbul"],[112,28,"Çanakkale Destanı"],[120,29,"Selahaddin Eyyubi"],[123,30,"Örnek Şahsiyetler"],[135,31,"Sabah Namazı"],[142,32,"Teravih Namazı"],[143,33,"Oruç"],[150,34,"Dinî Bayramlarda Âdetlerimiz"],[158,35,"Cep Telefonu"],[166,36,"İnternet Kesintisi"],[170,37,"Mektup ve İnternet"]],
+    '8-sinif-2026-2027': [[10,39,"Kulüpler"],[18,40,"Tiyatro Oyunu"],[26,41,"Gezi"],[36,42,"Kitap Okuma"],[44,43,"Kitap Fuarında"],[48,44,"Durakta"],[52,45,"El Sanatları Fuarında"],[62,46,"Hasta Arkadaşımı Ziyaret"],[70,47,"Güzel Sınıfımız"],[78,48,"Bayram Gününde"],[88,49,"Çevre Temizliği"],[96,50,"Hayvanlar"],[106,51,"Afetler"],[112,52,"Afetlere Hazırlık"],[116,53,"Sporu Seviyorum"],[126,54,"Spor Yapıyorum"],[134,55,"Sporlar"],[138,56,"Engelli Sporları"],[144,57,"Mezuniyet Töreni"],[152,58,"Arkadaşlara Veda"],[160,59,"Tatil"]],
+    '9-sinif-2026-2027': [[54,61,"Nerelisin?"],[66,62,"Arkadaşım"],[84,63,"Sınıfım Güzel"],[86,64,"Sınıfta"],[130,65,"Anne ve Babanın Mesleği"],[138,66,"Aile ve Meslekler"],[150,67,"Evin Bölümleri"],[157,68,"Meryem'in Odası"],[174,69,"Asım ve Kız Kardeşi"],[177,70,"Öğretmen ve Öğrenciler"],[180,71,"Dün Ne Yaptın?"],[191,72,"Öğle Yemeğinde"],[195,73,"Lokantada"]],
+    '10-sinif-2026-2027': [[20,75,"Ailem"],[26,76,"İki Eski Arkadaş"],[40,77,"İslam'da Bayramlar"],[46,78,"Müslümanların Özellikleri"],[66,79,"Vücut Sağlığı"],[74,80,"Selman Hasta"],[89,81,"Çünkü Onu Seviyorum"],[96,82,"Hobin Ne?"],[114,83,"Vatanım Türkiye"],[120,84,"Suriye'nin Başkenti"],[136,85,"Marmara Oteli Nerede?"],[142,86,"Umre Yolculuğu"],[160,87,"Kıyafetler"],[166,88,"Tatil"],[180,89,"Alışveriş Merkezinde İndirimler"],[188,90,"Giyim Mağazasında"]]
+  };
+  var IK_KIDEFLE =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true"><path d="M6 3h7.5L18 7.5V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>' +
+    '<path d="M13.5 3v4.5H18"/><path d="M8.5 12h6M8.5 15.5h4"/>' +
+    '<path class="kd-yildiz" d="M19.2 11.6l.7 1.6 1.6.7-1.6.7-.7 1.6-.7-1.6-1.6-.7 1.6-.7z" fill="currentColor" stroke="none"/></svg>';
+  function kitapBul(id) { for (var i = 0; i < KITAPLAR.length; i++) if (KITAPLAR[i].id === id) return KITAPLAR[i]; return null; }
+  function kidefleTur() {
+    var k = simdiki(); if (!k) return null;
+    if (k.id === KIDEFLE_KITAP) return 'ters';
+    return KIDEFLE[k.id] ? k.id : null;
+  }
+  function kidefleHedefler(tur) {
+    var e = document.getElementById('sayfaEt'), h = [];
+    var g = ((e && e.textContent) || '').match(/\d+/g) || [];
+    g = g.map(Number);
+    if (tur === 'ters') {
+      Object.keys(KIDEFLE).forEach(function (id) {
+        var kt = kitapBul(id);
+        KIDEFLE[id].forEach(function (x) {
+          if (g.indexOf(x[1]) < 0) return;
+          h.push({ href: kitapKok() + id + '/index.html?s=' + x[0], b: 'Ders kitabında',
+            s: (kt ? kt.ad : '') + ' · s. ' + x[0], renk: kt ? kt.renk : '#17817E', ad: x[2], n: x[1] });
+        });
+      });
+    } else {
+      KIDEFLE[tur].forEach(function (x) {
+        if (g.indexOf(x[0]) < 0) return;
+        h.push({ href: kitapKok() + KIDEFLE_KITAP + '/index.html?s=' + x[1], b: "Kidef'le!",
+          s: x[2] + ' · metin tahlili', renk: '#17817E', ad: x[2], n: x[0] });
+      });
+    }
+    h.sort(function (a, b) { return b.n - a.n; });   /* sağdan sola kitap: sağdaki sayfanın düğmesi sağda */
+    return h;
+  }
+  var kdKutu = null, kdSon = null;
+  function kidefleYer() {
+    if (!kdKutu) return;
+    var f = document.querySelector('.alt'), alt = 16;
+    if (f) { var r = f.getBoundingClientRect(); if (r.height && r.top < window.innerHeight && getComputedStyle(f).display !== 'none') alt = Math.max(16, window.innerHeight - r.top + 12); }
+    kdKutu.style.bottom = alt + 'px';
+  }
+  function kidefleCiz() {
+    var tur = kidefleTur(); if (!tur) return;
+    var h = kidefleHedefler(tur), imza = JSON.stringify(h);
+    if (imza === kdSon) { kidefleYer(); return; }
+    kdSon = imza;
+    if (!kdKutu) {
+      kdKutu = document.createElement('div'); kdKutu.id = 'ksKidefle'; kdKutu.className = 'kd-kutu';
+      document.body.appendChild(kdKutu);
+    }
+    kdKutu.innerHTML = '';
+    h.forEach(function (x) {
+      var a = document.createElement('a');
+      a.className = 'kd-tus' + (tur === 'ters' ? ' kd-ters' : '');
+      a.href = x.href; a.target = '_blank'; a.rel = 'opener';
+      a.style.setProperty('--kdr', x.renk);
+      a.title = tur === 'ters' ? x.ad + ' — ders kitabının sayfasında aç' : x.ad + ' — Metinlerle Arapça\'da kelime kelime çalış';
+      a.innerHTML = '<span class="kd-ik">' + (tur === 'ters' ? IK_KITAPLAR : IK_KIDEFLE) + '</span>' +
+        '<span class="kd-yazi"><b></b><small></small></span>';
+      a.querySelector('b').textContent = x.b;
+      a.querySelector('small').textContent = x.s;
+      kdKutu.appendChild(a);
+    });
+    kdKutu.classList.toggle('gor', h.length > 0);
+    kidefleYer();
+  }
+  function kidefleKur() {
+    if (!kidefleTur() || document.getElementById('ksKidefle')) return;
+    var e = document.getElementById('sayfaEt'); if (!e) return;
+    try { new MutationObserver(kidefleCiz).observe(e, { childList: true, characterData: true, subtree: true }); } catch (x) { }
+    window.addEventListener('resize', kidefleYer);
+    kidefleCiz();
+  }
+
   /* ---------- markayı düğmeye çevir ---------- */
   function kur() {
     stilKur();
+    kidefleKur();                      /* KİDEF'LE! (14.11.2026) */
     var m = document.querySelector('.ust .marka');
     donusKur(m);                       /* siteye dön: kitap seçmenin üstünde */
     if (m && !m.getAttribute('data-ks')) {
