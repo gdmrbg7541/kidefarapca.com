@@ -29,6 +29,18 @@
    (öğretmen profilindeki "yenilik" şeridi).
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
+  /* SINIFTA YENİ 14.11.2026 — öğretmen: "sitede yeni kısmında metin tahlillerinden bahset, madde madde öz olsun teknik detay verme" */
+  { t: '2026-11-14', e: 'Metin tahlili', b: 'Kitaptaki metinleri kelime kelime işle: Metinlerle Arapça',
+    m: 'Ders kitaplarındaki uzun diyalog ve metinler artık ayrı bir kitapta; tahtada açıp kelime kelime, cümle cümle işlersin.',
+    L: [
+      '5-10. sınıf ders kitaplarındaki 82 uzun diyalog ve metin, Metinlerle Arapça kitabında bir arada.',
+      'Kelimeye dokun: Türkçesi üstünde belirir, kökü ve kelime ailesi de açılır.',
+      'Tek dokunuşla bütün cümlenin Türkçesi altında çıkar.',
+      'Ders kitabında metnin sayfasına gelince «Kidef\'le!» düğmesi çıkar; metin hemen açılır.',
+      'Derste açtığın çeviriler sayfada kalır; ders bitince silgiyle temizlersin.',
+      'Sınıfının Materyaller kısmındaki «Metin Tahlilleri» kartından da açılır.'
+    ] },
+
   /* SINIFTA YENİ 08.11.2026 — öğretmen: "sitede öğrenciyi kendi hesabıyla eşleştiren öğretmenlerin tüm
      öğrencilerinin sitede aldığı puanları ve geçirdikleri süreyi, öğrencilere dijital ödev olarak görev
      gönderebileceklerini vurgulayalım duyurular kısmında, ayrıca eklememiz gereken yeni yaptıklarımızdan

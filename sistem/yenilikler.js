@@ -25,6 +25,13 @@
 
     /* EN YENİSİ EN ÜSTTE */
     var LISTE = [
+        /* SINIFTA YENİ 14.11.2026: ana sayfadaki sayfayla aynı */
+        {
+            id: 35,
+            tarih: '2026-11-14',
+            baslik: 'Kitaptaki metinleri kelime kelime işle: Metinlerle Arapça',
+            metin: 'Ders kitaplarındaki uzun diyalog ve metinler artık ayrı bir kitapta; tahtada açıp kelime kelime, cümle cümle işlersin. 5-10. sınıf ders kitaplarındaki 82 uzun diyalog ve metin, Metinlerle Arapça kitabında bir arada. Kelimeye dokun: Türkçesi üstünde belirir, kökü ve kelime ailesi de açılır. Tek dokunuşla bütün cümlenin Türkçesi altında çıkar. Ders kitabında metnin sayfasına gelince «Kidef\'le!» düğmesi çıkar; metin hemen açılır. Derste açtığın çeviriler sayfada kalır; ders bitince silgiyle temizlersin. Sınıfının Materyaller kısmındaki «Metin Tahlilleri» kartından da açılır.'
+        },
         /* SINIFTA YENİ 08.11.2026: ana sayfadaki dört sayfayla aynı (metin = giriş + maddeler art arda) */
         {
             id: 34,
