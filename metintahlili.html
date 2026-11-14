@@ -2,86 +2,21 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<script src="sistem/kapi.js?v=4e089b35"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Metin Tahlili</title>
-<!-- Öğretim yılı öneki (5-7. sınıfta ders dosyası yıla göre değişiyor):
-     yükleyiciden ÖNCE gelmeli. -->
-<script src="sistem/sinifveri.js?v=fbb7ddf4"></script>
+<title>Metin Tahlilleri</title>
+<!-- METİNLERLE ARAPÇA SİTEYE (14.11.2026) — öğretmen: "sitede var olan metin tahlilleri sistemini tamamen bu şekilde
+     ayarlıcaz, onların yerine bunları ekleyelim". Eski liste/okuma sayfası artık Metinlerle Arapça kitabına yönlendirir:
+     ?sinif=N  ya da  ?ders=N_…  → kitabın N. sınıf bölümü. Eski sayfa: _kaynak/yedekler/2026-11-14-metinlerle-arapca-siteye/ -->
 <script>
-/* =====================================================================
-   METİN TAHLİLİ — TEK KAPI                                 (14.10.2026)
-   Öğretmen: "5-10 arası kitap ismine ve konulara göre diyalogları ve
-   cümleleri metin tahlili olarak ... arapça kelimelerin üstüne tıklayınca
-   türkçesi yukarısında belirecek ... tüm kelimelere tıklayınca veya bi
-   tercüme tuşuna tıklayınca tüm cümlenin türkçesi arapça cümlenin altında
-   çıkacak ... muhadese.html'deki gibi kelimelerin kaliplartablosu.html'ye
-   bağlanması."
-
-     metintahlili.html            -> LİSTE (sınıf / ünite / ders)
-     metintahlili.html?ders=7_1   -> OKUMA (o dersin metni)
-
-   Metin verisi muhâdese ile ORTAK: muhadese/veri/<ders>.js. Yeni ders
-   eklemek için oraya dosya düşmesi yetiyor; liste
-   _kaynak/uretici/metinTahliliListe.py ile yeniden üretiliyor.
-   ===================================================================== */
 (function () {
-  var KOK = 'metintahlili/', MK = 'muhadese/';
-  /* ÖNBELLEK (15.10.2026) — damga artık ELLE tutulmuyor. Sabit yollar
-     kendi "?v=1" damgasıyla yazılıyor; _kaynak/uretici/surumle.py
-     gönderimden önce her birini dosyanın İÇERİĞİNDEN hesaplıyor.
-     Ders verisinin yolu hesaplanarak kurulduğu için (önek + ders
-     kimliği) onun damgası dersler.js'inkinden alınıyor: ders verisi
-     değişince dersler.js de yeniden üretildiğinden damga kendiliğinden
-     tazeleniyor. */
-  var DERSLER = 'metintahlili/dersler.js?v=260e93f9';
-  var S = '?v=' + (DERSLER.split('?v=')[1] || '1');
-  var p = new URLSearchParams(location.search);
-  var d = p.get('ders') || '';
-  if (!/^[0-9]+(_[0-9]+)+$/.test(d)) d = '';
-  /* Aynı sınıfın birden çok kitabı var (6 ve 7. sınıfın ikinci kitabı,
-     10. sınıf Seçmeli): dersin HANGİ kitaptan olduğu k parametresiyle
-     geliyor — k=y2627 / k=sec10 / k= (varsayılan kitap). Bağlantıda k
-     yoksa eskisi gibi seçili kitaba göre bulunur. */
-  var onek = (p.get('k') || '').replace(/[^a-z0-9]/gi, '');
-  window.KIDEF_MT_DERS = d;
-  window.KIDEF_MT_ONEK = p.has('k') ? onek : null;
-  /* Sınıf kartından gelindiyse (metintahlili.html?sinif=6&k=y2627) liste
-     yalnız o sınıfın O KİTABINI gösterir. */
-  var sf = (p.get('sinif') || '').replace(/[^0-9]/g, '');
-  window.KIDEF_MT_SINIF = sf || null;
-  document.documentElement.className += (d ? ' mt-okuma' : ' mt-liste');
-
-  var y = [];
-  y.push('<link rel="preconnect" href="https://fonts.googleapis.com">');
-  y.push('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
-  y.push('<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&display=swap" rel="stylesheet">');
-  y.push('<link rel="stylesheet" href="arakom.css?v=896e5892">');
-  y.push('<link rel="stylesheet" href="metintahlili/metintahlili.css?v=94699cf7">');
-  y.push('<scr' + 'ipt src="' + DERSLER + '"><\/scr' + 'ipt>');
-  if (d) {
-    var veri = p.has('k')
-      ? MK + 'veri/' + (onek ? onek + '/' : '') + d + '.js'
-      : ((window.KidefSinifVeri && KidefSinifVeri.dersYolu)
-          ? KidefSinifVeri.dersYolu(d, MK + 'veri/')
-          : MK + 'veri/' + d + '.js');
-    y.push('<scr' + 'ipt src="' + veri + S + '"><\/scr' + 'ipt>');
-    /* SARF KÖPRÜSÜ — muhâdesedeki ile aynı: kelime→[kök, tür] haritası ve
-       sol alttaki tür şeridi. Tıklanan kelimenin türü yanar, şeritteki
-       simgeye basınca kalıplar tablosu sekmesi o kökle açılır. */
-    y.push('<scr' + 'ipt src="muhadese/veri/kok_haritasi.js?v=80fa5f03"><\/scr' + 'ipt>');
-    y.push('<scr' + 'ipt src="muhadese/lehce.js?v=821182e2"><\/scr' + 'ipt>');
-    y.push('<scr' + 'ipt src="muhadese/sarfkopru.js?v=ffddd811"><\/scr' + 'ipt>');
-  }
-  y.push('<scr' + 'ipt src="metintahlili/metintahlili.js?v=7991c1f0"><\/scr' + 'ipt>');
-  document.write(y.join(''));
+  var B = {5: 3, 6: 8, 7: 17, 8: 38, 9: 60, 10: 74};
+  var p = new URLSearchParams(location.search), s = parseInt(p.get('sinif'), 10);
+  if (!B[s]) { var d = /^([0-9]+)_/.exec(p.get('ders') || ''); if (d) s = +d[1]; }
+  location.replace('kitap/metinlerle-arapca/index.html' + (B[s] ? '?s=' + B[s] : ''));
 })();
 </script>
 </head>
-<body>
-<div id="mtKok"></div>
-    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
-         sekmede dil değişirse anında döner (sistem/dil.js). -->
-    <script src="sistem/dil.js?v=a9253d84"></script>
+<body style="font-family:sans-serif;padding:24px">
+<a href="kitap/metinlerle-arapca/index.html">Metinlerle Arapça — Metin Tahlilleri</a>
 </body>
 </html>

@@ -635,40 +635,25 @@
      seçicisi değişince kartlar yeniden basıldığı için (index.html →
      kidef:veriyili → mhKur → modulKartlari) kart kendiliğinden
      güncelleniyor; metni olmayan kitapta hiç görünmüyor. */
-  function mtOzet(s) {
-    try {
-      var O = window.METIN_TAHLILI_OZET;
-      if (!O) return null;
-      var g = O[String(sayi(s))];
-      if (!g) return null;
-      var onek = '';
-      var V = window.KidefSinifVeri;
-      if (V && V.seciliVeriYili) {
-        var y = V.seciliVeriYili(s);
-        if (y && y.onek) onek = String(y.onek).replace(/\//g, '');
-      }
-      return g[onek] ? { onek: onek, k: g[onek] } : null;
-    } catch (e) { return null; }
-  }
-
+  /* METİNLERLE ARAPÇA SİTEYE (14.11.2026) — öğretmen: "sitede var olan metin tahlilleri sistemini tamamen bu şekilde
+     ayarlıcaz, onların yerine bunları ekleyelim". Kart artık Metinlerle Arapça kitabını (kitap/metinlerle-arapca/)
+     o sınıfın bölümünde açar; kitap 5-10 bütün sınıfları içerdiği için kart seçili kitaptan bağımsız, her sınıfta var.
+     Eski kart (seçili kitaba göre metintahlili.html): _kaynak/yedekler/2026-11-14-metinlerle-arapca-siteye/. */
+  var MT_BOLUM = {5: [3, 4], 6: [8, 8], 7: [17, 20], 8: [38, 21], 9: [60, 13], 10: [74, 16]};   // sınıf: [bölüm sayfası, metin sayısı]
   ekle({
     id: 'metintahlili',
     ad: 'Metin Tahlilleri',
     sira: 55,
     renk: '#17817E',
-    aciklama: function (s) {
-      var o = mtOzet(s);
-      return o ? o.k.ad + ' · kelime kelime Türkçesi' : s + '. Sınıf metinleri';
-    },
+    aciklama: function (s) { return 'Metinlerle Arapça · ' + sayi(s) + '. sınıf diyalog ve metinleri, kelime kelime Türkçesi'; },
     svg: function () { return "<svg viewBox=\"0 0 64 64\" class=\"kg\" aria-hidden=\"true\"><rect x=\"9\" y=\"6\" width=\"38\" height=\"50\" rx=\"5\" fill=\"#fff\" stroke=\"#17817E\" stroke-width=\"2.6\"/><path d=\"M39 6 h2 a6 6 0 0 1 6 6 v2 h-8z\" fill=\"#CFEFE6\"/><rect x=\"15\" y=\"16\" width=\"20\" height=\"2.8\" rx=\"1.4\" fill=\"#BFD3E2\"/><rect x=\"15\" y=\"23\" width=\"26\" height=\"2.8\" rx=\"1.4\" fill=\"#BFD3E2\"/><rect x=\"15\" y=\"30\" width=\"16\" height=\"2.8\" rx=\"1.4\" fill=\"#BFD3E2\"/><rect x=\"15\" y=\"37\" width=\"23\" height=\"2.8\" rx=\"1.4\" fill=\"#BFD3E2\"/><g transform=\"translate(30 30)\"><circle cx=\"14\" cy=\"14\" r=\"13\" fill=\"#16A085\"/><path d=\"M7.6 19.2 11 10.4l3.4 8.8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M8.9 16.3h4.2\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.9\" stroke-linecap=\"round\"/><text x=\"19.4\" y=\"19.2\" font-family=\"arakom,serif\" font-size=\"12\" fill=\"#fff\" stroke=\"none\" text-anchor=\"middle\">ع</text></g></svg>"; },
     veriVar: function (s) {
-      var o = mtOzet(s);
-      return o ? { rozet: o.k.ders + ' Ders Hazır' } : null;
+      var b = MT_BOLUM[sayi(s)];
+      return b ? { rozet: b[1] + ' Metin' } : null;
     },
     url: function (s) {
-      var o = mtOzet(s);
-      return 'metintahlili.html?sinif=' + encodeURIComponent(sayi(s))
-           + '&k=' + encodeURIComponent(o ? o.onek : '');
+      var b = MT_BOLUM[sayi(s)];
+      return 'kitap/metinlerle-arapca/index.html' + (b ? '?s=' + b[0] : '');
     }
   });
 
