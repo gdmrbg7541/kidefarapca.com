@@ -1956,3 +1956,8 @@ html.ds-ders .ds-ebd > .ds-yon.aktif { background: rgba(250, 204, 21, .14); box-
 #tocListe.tk-akordiyon .tkonu.simdi .sy { background: var(--tk); color: #fff; }
 @media (max-width: 600px) { #tocListe.tk-akordiyon .tkonular { margin-left: 18px; padding-left: 10px; } #tocListe.tk-akordiyon .tunite.tk-sus .nu { width: 40px; height: 40px; font-size: 18px; } }
 @media (prefers-reduced-motion: reduce) { #tocListe.tk-akordiyon .tunite.tk-sus { transition: none; } }
+
+/* AÇILAN ÇEVİRİLER KALIR (14.11.2026): silgi düğmesi yalnız açık çeviri varken */
+.hs-calisma .mc-aksil[hidden] { display: none !important; }
+.hs-calisma .mc-aksil { color: #B45309; }
+.hs-calisma .mc-aksil svg { width: 1.15em; height: 1.15em; }

@@ -575,9 +575,17 @@
                     var v = (doc.exists && doc.data()) || {};
                     K.durum = (v.kilit === 'girisli' || v.kilit === 'yonetici') ? v.kilit : VARSAYILAN;
                     try { localStorage.setItem('siteKilitSon', K.durum); localStorage.setItem('siteKilitZaman', String(Date.now())); } catch (e) { }
+                    K._kilitCanli = true;            /* OKUMA AZALT 2 (14.11.2026) */
                     uygula();
                     kilitPanelTazele();
-                }, function (e) { console.warn('kilit ayari okunamadi:', e && (e.code || e.message)); });
+                }, function (e) { K._kilitCanli = false; console.warn('kilit ayari okunamadi:', e && (e.code || e.message)); });
+            /* OKUMA AZALT 2 (14.11.2026): kilit canlı dinlenirken tarayıcıdaki bilgi tazedir — sistem/kapi.js öbür sayfalarda
+               (kitap, oyun, defter…) ayarlar/site'yi yeniden okumasın. Damga 30 sn'de bir, en çok 90 sn ileriye yazılır
+               (arka plandaki sekmede zamanlayıcı dakikada bire düşse de taze kalsın); ana sayfa kapanınca en geç 2,5 dk'da eskir. */
+            if (!K._kilitTazeZ) K._kilitTazeZ = setInterval(function () {
+                if (!K._kilitCanli || navigator.onLine === false) return;
+                try { localStorage.setItem('siteKilitZaman', String(Date.now() + 90000)); } catch (e) { }
+            }, 30000);
             var belgeDinleyici = null, ilkAuth = true;
             if (firebase.auth) firebase.auth().onAuthStateChanged(function (u) {
                 /* bu sayfada az önce açılan oturum mu (kayıt/giriş), yoksa geri yüklenen mi */

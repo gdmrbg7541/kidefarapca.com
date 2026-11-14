@@ -5059,13 +5059,40 @@
     }, true);
     function mcBos(ev) { var t = ev && ev.target; return !(t && t.closest && t.closest('.mc-w, .mc-ts, button, .mc-panel, .mc-pdfm, .mc-cb')); }   /* KİTAP BOŞLUK (14.11.2026): boşluğa dokunuş kitabın motoruna geçer */
     function mcPanelKim(b) { return [b.bas, b.sn, b.sy, b.x, b.y, (b.c || []).length].join('|'); }   /* KİTAP TEK PANEL (14.11.2026) */
+    /* AÇILAN ÇEVİRİLER KALIR (14.11.2026): öğretmen "derste açılan cümleler kaydedilsin". Açık cümle tercümeleri (.mc-c.acik)
+       ve kelime anlamları (.mc-w.acik) tarayıcıda saklanır (Firebase'e yazılmaz); metin yeniden çizilince açık gelir. */
+    var MC_AK = 'kitapCalismaAcik|';
+    function mcAkOku() { try { var v = JSON.parse(localStorage.getItem(MC_AK + KK_KITAP) || '{}'); return v && typeof v === 'object' ? v : {}; } catch (x) { return {}; } }
+    function mcAkSay(e) { return !!e.querySelector('.mc-c.acik, .mc-w.acik'); }
+    function mcAkKaydet(e, b) {
+      if (!e.isConnected) return;
+      var c = [], w = [];
+      [].forEach.call(e.querySelectorAll('.mc-c.acik'), function (x) { c.push(+x.getAttribute('data-c')); });
+      [].forEach.call(e.querySelectorAll('.mc-w.acik'), function (x) { w.push(x.getAttribute('data-c') + '_' + x.getAttribute('data-w')); });
+      var D = mcAkOku(), k = mcPanelKim(b), eski = JSON.stringify(D[k] ? [D[k].c, D[k].w] : null);
+      if (c.length || w.length) { if (eski === JSON.stringify([c, w])) return mcAkSil(e); D[k] = { c: c, w: w, t: Date.now() }; } else { if (!D[k]) return mcAkSil(e); delete D[k]; }
+      try { localStorage.setItem(MC_AK + KK_KITAP, JSON.stringify(D)); } catch (x) { }
+      mcAkSil(e);
+    }
+    function mcAkSil(e) { var s = e.querySelector('.mc-aksil'); if (s) s.hidden = !mcAkSay(e); }
+    function mcAkIzle(e, b) {
+      var s = mcAkOku()[mcPanelKim(b)];
+      if (s) {
+        (s.c || []).forEach(function (ci) { var x = e.querySelector('.mc-c[data-c="' + (+ci) + '"]'); if (x) x.classList.add('acik'); });
+        (s.w || []).forEach(function (k) { var p = String(k).split('_'), x = e.querySelector('.mc-w[data-c="' + (+p[0]) + '"][data-w="' + (+p[1]) + '"]'); if (x) x.classList.add('acik'); });
+      }
+      mcAkSil(e);
+      var z = null;
+      try { new MutationObserver(function () { clearTimeout(z); z = setTimeout(function () { mcAkKaydet(e, b); }, 300); }).observe(e, { attributes: true, attributeFilter: ['class'], subtree: true }); } catch (x) { }
+    }
     function mcBlok(b) {
       if (!b || !(b.w > 0) || !(b.h > 0) || !Array.isArray(b.c)) return null;
       var e = document.createElement('div'); e.className = 'hs-b hs-calisma';
       e.style.left = (+b.x || 0) + '%'; e.style.top = (+b.y || 0) + '%'; e.style.width = +b.w + '%'; e.style.height = +b.h + '%'; e.style.fontSize = (+b.fs > 0 ? +b.fs : 2.6) + 'cqw';
       var bas = b.bas ? String(b.bas) : (b.sn ? b.sn + '. Sınıf' + (b.sy ? ' · s. ' + b.sy : '') : '');   /* KİTAP SESİ: başlık boşsa sınıf · sayfa */
       var h = '<div class="mc-ust">' + (bas ? '<b class="mc-bas" dir="auto">' + kkEsc(bas) + '</b>' : '<b class="mc-bas"></b>') + '<span class="mc-sws"><button type="button" class="mc-tumses" hidden title="Bütün cümleleri sırayla dinle">' + MC_IK.oynat + ' Dinle</button>' +
-        mcPdfDugme() + mcAyarDugme() + '</span></div><div class="mc-govde">';
+        '<button type="button" class="mc-ib mc-aksil" hidden title="Açılan çevirileri kapat (kayıt silinir)" aria-label="Açılan çevirileri kapat">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 19.5 3.8 15.8a1.6 1.6 0 0 1 0-2.3L13.5 3.8a1.6 1.6 0 0 1 2.3 0l4.4 4.4a1.6 1.6 0 0 1 0 2.3L11 19.5"/><path d="M7.5 19.5H20"/><path d="m9 10.3 4.7 4.7"/></svg></button>' + mcPdfDugme() + mcAyarDugme() + '</span></div><div class="mc-govde">';   /* AÇILAN ÇEVİRİLER KALIR: silgi */
       var otoOn = mcSesOn(b);                                         /* KİTAP GÖRÜNÜMÜ (14.11.2026) */
       b.c.forEach(function (c, ci) {
         if (!c || !Array.isArray(c.w)) return;
@@ -5087,6 +5114,7 @@
         if (e.mcSur && Date.now() - e.mcSur < 400) return;
         if (MC.panelYut) { var yut = Date.now() - MC.panelYut < 700; MC.panelYut = 0; if (yut) return; }       /* KİTAP YAZDIR: pencereyi kapatan dokunuş başka iş yapmaz */              /* KİTAP ANAHTARLARI: sürükleme dokunuş sayılmaz */
         var sw = ev.target.closest('.mc-sw'), A = mcAyar();
+        if (ev.target.closest('.mc-aksil')) { [].forEach.call(e.querySelectorAll('.mc-c.acik, .mc-w.acik'), function (x) { x.classList.remove('acik'); }); return; }   /* AÇILAN ÇEVİRİLER KALIR (14.11.2026) */
         if (ev.target.closest('.mc-hzb')) { A.hz = ((+A.hz || 0) + 1) % 3; try { localStorage.setItem('kitapCalisma|' + KK_KITAP, JSON.stringify(A)); } catch (x) { } mcUygula(); return; }   /* KİTAP SİMGE SATIRI: dizilim */
         var ybb = ev.target.closest('.mc-yb');                          /* KİTAP SİMETRİ: yazı boyu */
         if (ybb) { A.yb = Math.round(Math.max(0.7, Math.min(2, (+A.yb || 1) + 0.1 * (+ybb.getAttribute('data-d')))) * 10) / 10; try { localStorage.setItem('kitapCalisma|' + KK_KITAP, JSON.stringify(A)); } catch (x) { } mcUygula(); return; }
@@ -5125,6 +5153,7 @@
         [].forEach.call(c2.querySelectorAll('.mc-es'), function (x) { x.classList.remove('mc-es'); });
         if (!vardi2) { w.classList.add('mc-es'); var e2 = c2.querySelector('.mc-ts[data-w="' + w.getAttribute('data-w') + '"]'); if (e2) e2.classList.add('mc-es'); }
       });
+      mcAkIzle(e, b);                                                 /* AÇILAN ÇEVİRİLER KALIR (14.11.2026) */
       var A0 = mcAyar(); MC_AD.forEach(function (a) { if (A0[a[0]]) e.classList.add('mc-' + a[0]); });
       setTimeout(mcUygula, 0);
       return e;

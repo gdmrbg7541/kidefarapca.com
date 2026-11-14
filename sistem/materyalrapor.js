@@ -57,7 +57,7 @@
     var ANAHTAR = 'kidefMateryalKayit';
     var EN_COK = 500;          /* tarayıcıda ve bulutta tutulan kayıt sayısı */
     var ESIK_SN = 4;           /* bundan kısa açılışlar yanlışlıkla sayılmasın */
-    var YAZ_ARALIK_SN = 90;    /* buluta en sık bu kadarda bir */
+    var YAZ_ARALIK_SN = 300;   /* buluta en sık bu kadarda bir — OKUMA AZALT 2 (14.11.2026): 90 → 300; kapanınca yine hemen */
     var YOKLA_MS = 4000;       /* açık sekme kapandı mı diye bakma sıklığı */
     var SAYFA_MS = 1500;       /* açık kitabın sayfasını okuma sıklığı */
     var EN_COK_TEK_SN = 6 * 3600;   /* tek açılışta en çok 6 saat sayılsın */
