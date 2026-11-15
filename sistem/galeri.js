@@ -21,8 +21,9 @@
        _kaynak/uretici/galeriYenile.py üretir; hızlı gönder her gönderimde
        çalıştırır. Fotoğrafı Galeri/ içine atmak yeterli.
 
-   GEZİNME (ikisinde de aynı): başlıktaki ‹ › okları, altındaki noktalar,
-   parmakla kaydırma, kutu odaktayken ← → tuşları. Sona gelince başa döner.
+   GEZİNME: başlıktaki ‹ › okları, altındaki noktalar, kutu odaktayken ← → tuşları;
+   fotoğraflarda ayrıca parmakla kaydırma. Sona gelince başa döner.
+   SINIFTA YENİ'DE (duyurular) PARMAKLA KAYDIRMA YOK (15.11.2026) — yalnız oklar, noktalar, klavye.
 
    BÜYÜTEÇ: fotoğrafa basınca tam ekran; orada da sağ/sol oklarla gezilir,
    Esc ya da boşluk kapatır. Büyük kopya (Galeri/web/) yalnız büyütülünce
@@ -119,16 +120,22 @@
       else if (e.key === 'ArrowLeft' || (dikey && e.key === 'ArrowUp')) { e.preventDefault(); git(-1); }
     });
 
-    var x0 = null;
-    ayar.kap.addEventListener('touchstart', function (e) {
-      x0 = e.touches.length === 1 ? e.touches[0].clientX : null;
-    }, { passive: true });
-    ayar.kap.addEventListener('touchend', function (e) {
-      if (x0 == null) return;
-      var dx = (e.changedTouches[0] || {}).clientX - x0;
-      x0 = null;
-      if (Math.abs(dx) > 45) git(dx < 0 ? 1 : -1);
-    }, { passive: true });
+    /* PARMAKLA KAYDIRMA (15.11.2026) — öğretmen: "sınıfta yeni kısmında dokunmatik olarak bi duyuruyu
+       kaydırınca diğer bildirime geçiyor, sadece oklarla duyurular arasında geçiş yapılabilsin".
+       ayar.kaydirma === false ise (duyurular) dokunarak geçiş KURULMAZ: yalnız ok düğmeleri, noktalar ve
+       klavye okları. Fotoğraf galerisi kaydirma vermez → eskisi gibi parmakla kaydırılır. */
+    if (ayar.kaydirma !== false) {
+      var x0 = null;
+      ayar.kap.addEventListener('touchstart', function (e) {
+        x0 = e.touches.length === 1 ? e.touches[0].clientX : null;
+      }, { passive: true });
+      ayar.kap.addEventListener('touchend', function (e) {
+        if (x0 == null) return;
+        var dx = (e.changedTouches[0] || {}).clientX - x0;
+        x0 = null;
+        if (Math.abs(dx) > 45) git(dx < 0 ? 1 : -1);
+      }, { passive: true });
+    }
 
     git(ayar.basla || 0, true);
     return { git: git, sira: function () { return i; } };
@@ -212,6 +219,7 @@
     gezgin({
       adet: liste.length, kap: sol, okKap: sol.querySelector('.gd-govde'), alt: alt,
       dikey: true,
+      kaydirma: false,          /* 15.11.2026: duyurularda parmakla geçiş yok, yalnız oklar */
       geriEtiket: 'Önceki yenilik', ileriEtiket: 'Sonraki yenilik',
       ciz: function (i) {
         var f = liste[i] || {};
