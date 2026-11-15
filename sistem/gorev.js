@@ -1,3 +1,4 @@
+/* SINAV GÖNDER + SINIF BAŞKANI (14.11.2026): Sınav ve Sınıf Başkanı sekmeleri → sistem/sinavgonder.js, sistem/sinifbaskan.js */
 /* ==========================================================================
    GOREV SISTEMI  —  gorev.js  (index.html)
    --------------------------------------------------------------------------
@@ -145,6 +146,7 @@
     }
     function ikon(n, c) { return (typeof llIcon === 'function') ? llIcon(n, c) : ''; }
     function oyunAdi(d) {
+        if (d === 'sinavcoz.html') return 'Sınav';      /* SINAV GÖNDER (14.11.2026) */
         for (var i = 0; i < GV.OYUNLAR.length; i++) if (GV.OYUNLAR[i].d === d) return GV.OYUNLAR[i].ad;
         return d;
     }
@@ -214,12 +216,23 @@
                 ' height:22px; padding:0 9px; border-radius:11px; background:#D84315; color:#fff;' +
                 ' font-size:.76rem;">' + GV.OYUNLAR.length + ' oyun</span>',
                 '<div id="gvYeniKutu"></div>', !!GV._gvYeniAcik) +
+            /* SINAV GÖNDER + SINIF BAŞKANI (14.11.2026): sınıf görünümünde iki akordiyon */
+            akordiyon('gvAkorSinav', '#C0392B', '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#C0392B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 12h6M10 16h4"/></svg>' +
+                '<span>Sınav Gönder</span><span style="display:inline-flex; align-items:center; height:22px; padding:0 9px; border-radius:11px; background:#C0392B; color:#fff; font-size:.76rem;">100 puan</span>',
+                '<div id="gvSinavKutu"></div>', !!GV._gvSinavAcik) +
+            akordiyon('gvAkorBaskan', '#8E44AD', '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#8E44AD" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg>' +
+                '<span>Sınıf Başkanı</span>', '<div id="gvBaskanKutu"></div>', !!GV._gvBaskanAcik) +
             akordiyon('gvAkorListe', '#7B1FA2', gIkon('grafik') + '<span>Gönderilen Görevler &amp; Sonuçlar</span>' +
                 '<span id="gvListeSayac" style="display:inline-flex; align-items:center; justify-content:center;' +
                 ' min-width:22px; height:22px; padding:0 7px; border-radius:11px; background:#7B1FA2; color:#fff;' +
                 ' font-size:.76rem;">0</span>',
                 '<div id="gvFiltreNot"></div><div id="gvGorevListe"></div>', !!GV._gvListeAcik);
         GV.yeniCiz('gvYeniKutu');
+        try {                                                     /* SINAV GÖNDER + SINIF BAŞKANI (14.11.2026) */
+            var on_ = { lId: (typeof curLId !== 'undefined' && curLId) || '', cId: (typeof curCId !== 'undefined' && curCId) || '' };
+            if (window.KidefSinav) KidefSinav.ciz('gvSinavKutu', on_);
+            if (window.KidefBaskan) KidefBaskan.ciz('gvBaskanKutu', on_);
+        } catch (e) { }
         /* Sinif baglami hazir gelsin: acik seviye/sinif onceden secili */
         try {
             if (typeof curLId !== 'undefined' && curLId && document.getElementById('gvSeviye')) {
@@ -239,6 +252,10 @@
             if (ya) ya.addEventListener('toggle', function () { GV._gvYeniAcik = ya.open; });
             var la = document.getElementById('gvAkorListe');
             if (la) la.addEventListener('toggle', function () { GV._gvListeAcik = la.open; });
+            var sa = document.getElementById('gvAkorSinav');
+            if (sa) sa.addEventListener('toggle', function () { GV._gvSinavAcik = sa.open; if (!sa.open && window.KidefKlavyeAlt) KidefKlavyeAlt.kapat(); });
+            var ba = document.getElementById('gvAkorBaskan');
+            if (ba) ba.addEventListener('toggle', function () { GV._gvBaskanAcik = ba.open; });
         } catch (e) { }
         GV.gorevleriDinle();
         GV.gorevListesiCiz();
@@ -496,16 +513,24 @@
             '<div style="display:flex; gap:0; border-bottom:1px solid #F3E2D3; background:#FFF3E9;">' +
             '<button type="button" id="gvSekmeYeni" class="gv-sekme" style="flex:1; padding:11px; border:none;' +
             'cursor:pointer; font-family:inherit; font-weight:700; font-size:.9rem; background:#fff; color:#D84315;">Yeni Görev</button>' +
+            /* SINAV GÖNDER + SINIF BAŞKANI (14.11.2026): iki yeni sekme */
+            '<button type="button" id="gvSekmeSinav" class="gv-sekme" style="flex:1; padding:11px; border:none;' +
+            'cursor:pointer; font-family:inherit; font-weight:700; font-size:.9rem; background:transparent; color:#8B6A57;">Sınav</button>' +
             '<button type="button" id="gvSekmeSonuc" class="gv-sekme" style="flex:1; padding:11px; border:none;' +
             'cursor:pointer; font-family:inherit; font-weight:700; font-size:.9rem; background:transparent; color:#8B6A57;">Sonuçlar</button>' +
             '<button type="button" id="gvSekmeIlerleme" class="gv-sekme" style="flex:1; padding:11px; border:none;' +
-            'cursor:pointer; font-family:inherit; font-weight:700; font-size:.9rem; background:transparent; color:#8B6A57;">İlerleme</button></div>' +
+            'cursor:pointer; font-family:inherit; font-weight:700; font-size:.9rem; background:transparent; color:#8B6A57;">İlerleme</button>' +
+            '<button type="button" id="gvSekmeBaskan" class="gv-sekme" style="flex:1; padding:11px; border:none;' +
+            'cursor:pointer; font-family:inherit; font-weight:700; font-size:.9rem; background:transparent; color:#8B6A57;">Sınıf Başkanı</button></div>' +
             '<div id="gvGovde" style="flex:1; overflow-y:auto; padding:16px; background:#FFF8F2;"></div></div>';
         document.body.appendChild(k);
         k.querySelector('#gvKapat').onclick = function () { k.style.display = 'none'; };
         k.querySelector('#gvSekmeYeni').onclick = function () { GV.sekme('yeni'); };
         k.querySelector('#gvSekmeSonuc').onclick = function () { GV.sekme('sonuc'); };
         k.querySelector('#gvSekmeIlerleme').onclick = function () { GV.sekme('ilerleme'); };
+        k.querySelector('#gvSekmeSinav').onclick = function () { GV.sekme('sinav'); };      /* SINAV GÖNDER (14.11.2026) */
+        k.querySelector('#gvSekmeBaskan').onclick = function () { GV.sekme('baskan'); };
+        k.querySelector('#gvKapat').addEventListener('click', function () { if (window.KidefKlavyeAlt) KidefKlavyeAlt.kapat(); });
         return k;
     }
 
@@ -516,7 +541,8 @@
         GV.gorevleriDinle();
     };
     GV.sekme = function (ad) {
-        var tuslar = { yeni: 'gvSekmeYeni', sonuc: 'gvSekmeSonuc', ilerleme: 'gvSekmeIlerleme' };
+        var tuslar = { yeni: 'gvSekmeYeni', sinav: 'gvSekmeSinav', sonuc: 'gvSekmeSonuc', ilerleme: 'gvSekmeIlerleme', baskan: 'gvSekmeBaskan' };
+        if (window.KidefKlavyeAlt) KidefKlavyeAlt.kapat();                  /* SINAV GÖNDER (14.11.2026) */
         Object.keys(tuslar).forEach(function (k) {
             var el = document.getElementById(tuslar[k]);
             if (!el) return;
@@ -524,6 +550,8 @@
             el.style.color = (ad === k) ? '#D84315' : '#8B6A57';
         });
         if (ad === 'yeni') GV.yeniCiz();
+        else if (ad === 'sinav' && window.KidefSinav) KidefSinav.ciz('gvGovde');
+        else if (ad === 'baskan' && window.KidefBaskan) KidefBaskan.ciz('gvGovde');
         else if (ad === 'ilerleme') GV.ilerlemeCiz();
         else GV.sonucCiz();
     };
@@ -1096,6 +1124,7 @@
         var harita = {};
         liste.forEach(function (r) { harita[r.ogrenciUid] = r; });
         var ogrenciler = hedefOgrencileri(v);
+        if (v.tur === 'sinav' && window.KidefSinav) { KidefSinav.sonucCiz(el, v, liste, ogrenciler, gorevId); return; }   /* SINAV GÖNDER (14.11.2026) */
         var yapan = 0;
 
         var satirlar = ogrenciler.map(function (s) {
@@ -1218,7 +1247,7 @@
             var vadesi = [];
             snap.forEach(function (doc) {
                 var v = doc.data() || {}; v._id = doc.id;
-                if (v.performans && v.performans.agirlik && v.sonTarih && simdi > v.sonTarih
+                if (v.performans && v.performans.agirlik && v.sonTarih && simdi > v.sonTarih && v.tur !== 'sinav'
                     && !v.notlandi && v.aktif !== false) vadesi.push(v);
             });
             var sirayla = Promise.resolve();
@@ -1659,6 +1688,8 @@
 
         kart.innerHTML = bildirimSeridi + mesajSeridi +
             akordiyon('prfGorevler', '#D84315', gorevBaslik, ogrListeHTML(6), bekleyen > 0) +
+            (window.KidefBaskan ? KidefBaskan.ogrHtml(akordiyon) : '') +      /* SINIF BAŞKANI (14.11.2026): Sınıfım */
+            (window.KidefMeydan ? KidefMeydan.ogrHtml(akordiyon) : '') +      /* MEYDAN OKUMA (15.11.2026) */
             akordiyon('prfSonuclar', '#7B1FA2', '<span>🏆 Genel Sonuçlarım</span>',
                 notOzetiHTML() +
                 '<div style="font-weight:800; color:#7B1FA2; margin:0 0 8px; font-size:.95rem;">🎮 Etkinlik Sonuçlarım</div>' +
@@ -1769,6 +1800,8 @@
             GV.ogrSonuclar = {};
             snap.forEach(function (doc) { var r = doc.data() || {}; GV.ogrSonuclar[r.gorevId] = r; });
             GV.profilKartiGuncelle();
+            try { if (window.KidefSinav) KidefSinav.ogrNotYukle(); if (window.KidefBaskan) KidefBaskan.ogrYukle(); } catch (e) { }   /* SINAV GÖNDER + SINIF BAŞKANI (14.11.2026) */
+            try { if (window.KidefMeydan) KidefMeydan.yukle(); } catch (e) { }   /* MEYDAN OKUMA (15.11.2026) */
             var p = document.getElementById('gvOgrGovde');
             if (p && document.getElementById('gvOgrModal') &&
                 document.getElementById('gvOgrModal').style.display !== 'none') GV.ogrListeCiz();
@@ -1820,6 +1853,7 @@
             : '';
         return liste.map(function (v) {
             var r = GV.ogrSonuclar[v._id];
+            if (v.tur === 'sinav' && window.KidefSinav) return KidefSinav.ogrKart(v, r);   /* SINAV GÖNDER (14.11.2026) */
             var doldu = !!(v.sonTarih && simdi > v.sonTarih);
             var durum = r
                 ? '<span style="font-weight:800; color:#1E8449;">✓ %' + (r.yuzde || 0) + '</span>'
@@ -1933,6 +1967,7 @@
             }
             GV.vadesiGelenleriIsle();
             setTimeout(function () { try { GV.ogretmenBildirimYukle(); } catch (e) { } }, 1800);
+            setTimeout(function () { try { if (window.KidefBaskan) KidefBaskan.ogtDinle(); } catch (e) { } }, 4000);   /* SINIF BAŞKANI (14.11.2026) */
         } else if (window.OH && OH.bagliMi && OH.bagliMi()) {
             GV.ogrYukle();
         } else if (denemeSayisi < 20) {

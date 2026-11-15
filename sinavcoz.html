@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<script src="sistem/kapi.js?v=4e089b35"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#D84315">
+<title>Sınav — Kidef Arapça</title>
+<!-- SINAV ÇÖZ (14.11.2026) — öğretmenin Görev Gönder › Sınav'dan gönderdiği sınavı öğrenci burada çözer.
+     Görevlerim'deki «Sınava başla» bu sayfayı açar: sinavcoz.html?gorev=<id>. Cevaplar gorevSonuc'a yazılır;
+     puanı öğretmenin tarayıcısı cevap anahtarıyla hesaplar (sinavNot) — anahtar öğrenciye inmez. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+<link rel="stylesheet" href="arakom.css?v=896e5892">
+<style>
+  :root { --tur: #D84315; --tur2: #F39C12; --yesil: #16A085; --koyu: #5A3D2E; --gri: #8B6A57; --cizgi: #F3D5BF; --zemin: #FFF8F2; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--zemin); color: var(--koyu); font-family: 'Arakom', 'Segoe UI', Roboto, sans-serif; }
+  svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .sc-ust { position: sticky; top: 0; z-index: 20; background: linear-gradient(135deg, var(--tur2), var(--tur)); color: #fff; box-shadow: 0 4px 16px rgba(216,67,21,.25); }
+  .sc-ust-ic { max-width: 860px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
+  .sc-ust b { flex: 1; min-width: 0; font-size: 1.02rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sc-saat { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.18); border-radius: 99px; padding: 6px 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .sc-saat.az { background: #fff; color: #C0392B; }
+  .sc-saat[hidden], .sc-alt[hidden], .sc-ust[hidden] { display: none; }
+  .sc-ilerle { height: 4px; background: rgba(255,255,255,.3); } .sc-ilerle i { display: block; height: 100%; width: 0; background: #fff; transition: width .3s; }
+  main { max-width: 860px; margin: 0 auto; padding: 16px 16px 120px; }
+  .sc-kart { background: #fff; border: 1.5px solid var(--cizgi); border-radius: 18px; padding: 18px; box-shadow: 0 4px 16px rgba(216,67,21,.07); }
+  .sc-bas h1 { margin: 0 0 6px; font-size: 1.35rem; color: #9C3B0C; }
+  .sc-bas .sc-satir { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .9rem; color: var(--gri); margin: 4px 0; }
+  .sc-bas .sc-satir b { color: var(--koyu); }
+  .sc-yon { margin: 14px 0 0; padding: 12px 14px; background: #FFF1E4; border-radius: 12px; font-size: .9rem; line-height: 1.6; }
+  .sc-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 14px; padding: 14px 22px; font: 800 1.02rem/1 inherit; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--tur2), var(--tur)); text-decoration: none; }
+  .sc-btn.yesil { background: linear-gradient(135deg, #20C997, var(--yesil)); }
+  .sc-btn.ikinci { background: #F1F5F9; color: #2C3E50; }
+  .sc-btn:disabled { opacity: .55; cursor: not-allowed; }
+  .sc-soru { margin-top: 14px; }
+  .sc-sb { display: flex; align-items: flex-start; gap: 10px; }
+  .sc-no { width: 32px; height: 32px; border-radius: 50%; background: var(--tur); color: #fff; display: grid; place-items: center; font-weight: 800; flex: none; }
+  .sc-st { flex: 1; font-size: 1.02rem; line-height: 1.55; padding-top: 4px; white-space: pre-wrap; }
+  .sc-puan { flex: none; font-size: .78rem; font-weight: 800; color: var(--gri); background: #FFF1E4; border-radius: 99px; padding: 4px 9px; }
+  .sc-ar { margin: 10px 0 0; padding: 12px 14px; border: 1.5px solid #E3E9F0; border-radius: 12px; background: #FAFCFE; font-family: 'Arakom', serif; font-size: 1.55rem; line-height: 1.9; direction: rtl; text-align: right; white-space: pre-wrap; }
+  .sc-siklar { display: grid; gap: 8px; margin-top: 12px; }
+  .sc-sik { display: flex; align-items: center; gap: 10px; width: 100%; text-align: start; padding: 12px; border-radius: 12px; border: 1.5px solid #E8D5C6; background: #fff; font: 600 1rem/1.45 inherit; color: var(--koyu); cursor: pointer; }
+  .sc-sik .h { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #E8A87C; display: grid; place-items: center; font-weight: 800; color: #B34700; flex: none; }
+  .sc-sik.on { border-color: var(--yesil); background: #E9F7F3; } .sc-sik.on .h { background: var(--yesil); border-color: var(--yesil); color: #fff; }
+  .sc-sik .m { flex: 1; } .sc-sik .m[dir=rtl] { font-family: 'Arakom', serif; font-size: 1.3rem; }
+  .sc-dy { display: flex; gap: 10px; margin-top: 12px; }
+  .sc-dy .sc-sik { justify-content: center; font-weight: 800; }
+  .sc-acik { display: flex; gap: 8px; margin-top: 12px; align-items: flex-start; }
+  .sc-acik textarea { flex: 1; min-height: 70px; padding: 12px; border: 1.5px solid #E8D5C6; border-radius: 12px; font: 1.05rem/1.6 inherit; color: var(--koyu); resize: vertical; }
+  .sc-kl { flex: none; width: 46px; height: 46px; border-radius: 12px; border: 1px solid #BFE5DB; background: #E9F7F3; color: #0E7C66; display: grid; place-items: center; cursor: pointer; }
+  .sc-alt { position: fixed; left: 0; right: 0; bottom: 0; z-index: 15; background: rgba(255,248,242,.96); border-top: 1px solid var(--cizgi); backdrop-filter: blur(6px); }
+  .sc-alt-ic { max-width: 860px; margin: 0 auto; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 12px; }
+  .sc-alt-ic span { flex: 1; font-size: .9rem; color: var(--gri); font-weight: 700; }
+  body.ka-klavye-acik .sc-alt { display: none; }
+  .sc-durum { text-align: center; padding: 34px 20px; }
+  .sc-durum h1 { margin: 10px 0 8px; font-size: 1.4rem; color: #9C3B0C; }
+  .sc-durum p { color: var(--gri); line-height: 1.6; margin: 0 0 18px; }
+  .sc-buyuk { font-size: 3.4rem; font-weight: 800; color: var(--yesil); line-height: 1; }
+  .sc-buyuk small { font-size: 1.1rem; color: var(--gri); }
+  .sc-isaret { display: inline-flex; align-items: center; gap: 5px; font-size: .82rem; font-weight: 800; padding: 4px 10px; border-radius: 99px; margin-top: 10px; }
+  .sc-isaret.d { background: #E3F6EE; color: #1E8449; } .sc-isaret.y { background: #FDE8E6; color: #C0392B; } .sc-isaret.b { background: #FFF1D6; color: #9A6400; }
+  .sc-cev { margin-top: 8px; font-size: .92rem; color: var(--gri); }
+  .sc-cev b { color: var(--koyu); }
+  @media (max-width: 600px) { .sc-ar { font-size: 1.35rem; } .sc-bas h1 { font-size: 1.15rem; } .sc-kart { padding: 14px; } }
+</style>
+</head>
+<body>
+<header class="sc-ust" id="scUst" hidden><div class="sc-ust-ic">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 12h6M10 16h6"/></svg>
+  <b id="scBaslik">Sınav</b><span class="sc-saat" id="scSaat" hidden></span></div>
+  <div class="sc-ilerle"><i id="scIlerle"></i></div></header>
+<main id="scGovde"><div class="sc-kart sc-durum"><h1>Sınav açılıyor…</h1><p>Hesabın denetleniyor.</p></div></main>
+<div class="sc-alt" id="scAlt" hidden><div class="sc-alt-ic"><span id="scSay">0 / 0 cevaplandı</span>
+  <button type="button" class="sc-btn yesil" id="scTeslim">Sınavı bitir</button></div></div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="sistem/klavyealt.js?v=e956e00c"></script>
+<script src="sistem/sinavcoz.js?v=b6136481"></script>
+</body>
+</html>

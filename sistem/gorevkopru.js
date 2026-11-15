@@ -464,6 +464,37 @@
         });
     }
 
+    /* MEYDAN OKUMA (15.11.2026) — oyun «?meydan=<id>» ile açıldıysa İLK oyunun puanı meydan
+       belgesine (meydan/{id}.puanlar.<uid>) yazılır; ikinci oyun puanı değiştirmez.
+       Belge kabul edilmiş, bu oyunun ve öğrenci tarafı olmalı. (sistem/meydan.js) */
+    var meydanId = '';
+    try { meydanId = (new URLSearchParams(location.search)).get('meydan') || ''; } catch (e) { }
+    meydanId = String(meydanId).replace(/[^A-Za-z0-9_-]/g, '');
+    function meydanYaz(yuzde) {
+        if (!meydanId || !db || !user) return Promise.resolve(null);
+        var ref = db.collection('meydan').doc(meydanId);
+        return ref.get().then(function (doc) {
+            if (!doc.exists) return null;
+            var m = doc.data() || {};
+            if (m.durum !== 'kabul' || [m.kimden, m.kime].indexOf(user.uid) < 0 || (m.puanlar && m.puanlar[user.uid])) return null;
+            if (String(m.oyun || '').toLowerCase() !== oyunDosya) return null;
+            var g = {}; g['puanlar.' + user.uid] = { y: yuzde, t: Date.now() };
+            return ref.update(g).then(function () { return yuzde; });
+        });
+    }
+    if (meydanId) {
+        var _gonderAsil = gonder;
+        gonder = function (s) {
+            return _gonderAsil(s).then(function (ok) {
+                if (!ok) return ok;
+                return meydanYaz(yuzdeHesapla(s)).then(function (y) {
+                    if (y != null) { rozet(function () { return 'Meydan okuma puanın kaydedildi: %' + y; }, 'rekor'); rozetGizle(7000); }
+                    return ok;
+                }, function (e) { console.warn('meydan:', e && (e.code || e.message)); return ok; });
+            });
+        };
+    }
+
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
     else kur();
 })();
