@@ -600,7 +600,7 @@
     SB._aboneUid = u.uid;
     SB._abone = Db.collection(C_ODA).where('ogretmenUid', '==', u.uid).onSnapshot(function (snap) {
       ODA = {}; snap.forEach(function (doc) { ODA[doc.id] = doc.data() || {}; ODA[doc.id]._id = doc.id; });
-      onaylariIsle(); SB.ogtEsitle();
+      onaylariIsle(); SB.ogtEsitle(); SB.listeSusle();
       var ic = document.getElementById('sbIc');
       if (ic && !(document.activeElement && ic.contains(document.activeElement) && /TEXTAREA|INPUT/.test(document.activeElement.tagName))) icCiz(false);
     }, function (e) { console.warn('sınıf odası dinleyici:', e && (e.code || e.message)); SB._abone = null; });
@@ -647,6 +647,115 @@
     });
   };
   setInterval(function () { try { if (ogretmenMi() && Object.keys(ODA).length) { onaylariIsle(); SB.ogtEsitle(); } } catch (e) { } }, 45000);
+
+  /* ---------------------------------------------------------- SINIF LİSTESİNDE TAÇ (15.11.2026)
+     Öğretmen: "başkan ve başkan yardımcısını sınıf listesinde belirleyebilelim".
+     Öğrenci listesinde (hesap/listelerim.js renderStudents) e-postayla kaydolmuş ve
+     öğretmene bağlı her öğrencinin adının yanında taç düğmesi: dokununca «Sınıf başkanı
+     yap / Başkan yardımcısı yap / Unvanı kaldır / Yetkileri düzenle». İlk atamada
+     sınıf odası açılır; yetkiler önerilen başlangıçla gelir (öğretmen değiştirebilir). */
+  var ILK_YETKI = { baskan: { hatirlatma: true, songun: true, durum: true, kura: true }, yardimci: { hatirlatma: true, kura: true } };
+  SB.odaAl = function (lId, cId) { var u = oturum(); return u ? (ODA[SB.odaId(u.uid, lId, cId)] || null) : null; };
+  function tacStil() {
+    if (document.getElementById('sbTacStil')) return;
+    var s = document.createElement('style'); s.id = 'sbTacStil';
+    s.textContent =
+      '.sb-tacb{flex:none;display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 8px;border-radius:999px;border:1.5px dashed #E8A87C;background:#fff;color:#C9A58C;cursor:pointer;font:700 .68rem/1 inherit;white-space:nowrap;}' +
+      '.sb-tacb svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}' +
+      '.sb-tacb:hover{border-color:#D84315;color:#D84315;}' +
+      '.sb-tacb.baskan{border-style:solid;border-color:#D84315;background:#D84315;color:#fff;}' +
+      '.sb-tacb.yardimci{border-style:solid;border-color:#F0B27A;background:#FDEBD0;color:#B9770E;}' +
+      '.sb-tacm{position:fixed;z-index:10120;min-width:220px;background:#fff;border-radius:14px;box-shadow:0 14px 40px rgba(16,26,46,.28);padding:6px;font-family:inherit;}' +
+      '.sb-tacm b{display:block;padding:8px 10px 6px;font-size:.8rem;color:#9C3B0C;}' +
+      '.sb-tacm button{display:flex;align-items:center;gap:8px;width:100%;padding:10px;border:0;border-radius:10px;background:none;text-align:left;font:600 .88rem/1.2 inherit;color:#5A4034;cursor:pointer;}' +
+      '.sb-tacm button:hover{background:#FFF1E4;}' +
+      '.sb-tacm button.on{color:#D84315;font-weight:800;}' +
+      '.sb-tacm svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none;}' +
+      '.sb-tacm small{display:block;padding:4px 10px 8px;color:#A6836E;font-size:.74rem;line-height:1.4;}';
+    (document.head || document.documentElement).appendChild(s);
+  }
+  function tacMenuKapat() { var m = document.getElementById('sbTacMenu'); if (m) m.remove(); }
+  SB.listeSusle = function () {
+    if (!ogretmenMi()) return;
+    var tb = document.getElementById('stuTableBody'); if (!tb) return;
+    var lId = (typeof curLId !== 'undefined') ? curLId : '', cId = (typeof curCId !== 'undefined') ? curCId : '';
+    var c = sinifAl(lId, cId); if (!c) return;
+    tacStil(); SB.ogtDinle();
+    var o = SB.odaAl(lId, cId) || {};
+    (c.students || []).forEach(function (st, i) {
+      var row = tb.rows[i]; if (!row || !row.cells[2]) return;
+      var kap = row.cells[2].querySelector('div') || row.cells[2];
+      var eski = kap.querySelector('.sb-tacb'); if (eski) eski.remove();
+      if (!st || !st.hesapUid || !st.hesapEmail) return;          /* yalnız e-postayla kayıtlı + bağlı */
+      var r = o.baskanUid === st.hesapUid ? 'baskan' : (o.yardimciUid === st.hesapUid ? 'yardimci' : '');
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'sb-tacb' + (r ? ' ' + r : '');
+      b.title = r === 'baskan' ? 'Sınıf başkanı — değiştirmek için dokun' : (r === 'yardimci' ? 'Başkan yardımcısı — değiştirmek için dokun' : 'Sınıf başkanı ya da yardımcısı yap');
+      b.setAttribute('aria-label', b.title);
+      b.innerHTML = IK.tac + (r === 'baskan' ? 'Başkan' : (r === 'yardimci' ? 'Yardımcı' : ''));
+      b.onclick = function (e) { e.stopPropagation(); tacMenu(b, lId, cId, st); };
+      var roz = kap.lastElementChild; kap.insertBefore(b, roz && roz.tagName === 'SPAN' ? roz : null);
+    });
+  };
+  function tacMenu(btn, lId, cId, st) {
+    tacMenuKapat();
+    var o = SB.odaAl(lId, cId) || {}, uid = st.hesapUid, r = o.baskanUid === uid ? 'baskan' : (o.yardimciUid === uid ? 'yardimci' : '');
+    var m = document.createElement('div'); m.id = 'sbTacMenu'; m.className = 'sb-tacm'; m.setAttribute('role', 'menu');
+    var digerB = o.baskan && o.baskanUid !== uid ? o.baskan.ad : '', digerY = o.yardimci && o.yardimciUid !== uid ? o.yardimci.ad : '';
+    m.innerHTML = '<b>' + esc(st.name || 'Öğrenci') + '</b>' +
+      '<button type="button" data-r="baskan" class="' + (r === 'baskan' ? 'on' : '') + '">' + IK.tac + 'Sınıf başkanı yap' + (digerB ? '<span style="margin-left:auto;font-size:.72rem;color:#A6836E">yerine</span>' : '') + '</button>' +
+      '<button type="button" data-r="yardimci" class="' + (r === 'yardimci' ? 'on' : '') + '">' + IK.tac + 'Başkan yardımcısı yap' + (digerY ? '<span style="margin-left:auto;font-size:.72rem;color:#A6836E">yerine</span>' : '') + '</button>' +
+      (r ? '<button type="button" data-r="">' + IK.sil + 'Unvanı kaldır</button>' : '') +
+      '<button type="button" data-r="yetki">' + IK.liste + 'Yetkileri düzenle</button>' +
+      ((digerB || digerY) ? '<small>' + (digerB ? 'Başkan: ' + esc(digerB) : '') + (digerB && digerY ? ' · ' : '') + (digerY ? 'Yardımcı: ' + esc(digerY) : '') + '</small>' : '');
+    document.body.appendChild(m);
+    var rc = btn.getBoundingClientRect(), mw = m.offsetWidth, mh = m.offsetHeight;
+    m.style.left = Math.max(8, Math.min(innerWidth - mw - 8, rc.left)) + 'px';
+    m.style.top = (rc.bottom + 6 + mh > innerHeight ? Math.max(8, rc.top - mh - 6) : rc.bottom + 6) + 'px';
+    m.onclick = function (e) {
+      var b = e.target.closest('button[data-r]'); if (!b) return;
+      var yeni = b.getAttribute('data-r'); tacMenuKapat();
+      if (yeni === 'yetki') { if (window.GV && GV.panelAc) { GV.panelAc(); GV.sekme('baskan'); setTimeout(function () { var ss = document.getElementById('sbSeviye'), sc = document.getElementById('sbSinif'); if (ss && sc) { ss.value = lId; ss.onchange && ss.onchange(); sc.value = cId; sc.onchange && sc.onchange(); } }, 60); } return; }
+      SB.unvanVer(lId, cId, uid, yeni).catch(function (er) { alert('Kaydedilemedi: ' + ((er && (er.code || er.message)) || '') + (/permission/i.test(String(er && (er.code || er.message))) ? ' — Firebase kurallarına sinifOda bölümü eklenmemiş olabilir.' : '')); });
+    };
+    setTimeout(function () {
+      var dis = function (e) { if (!m.contains(e.target)) { tacMenuKapat(); document.removeEventListener('pointerdown', dis, true); document.removeEventListener('keydown', esk, true); } };
+      var esk = function (e) { if (e.key === 'Escape') { tacMenuKapat(); document.removeEventListener('pointerdown', dis, true); document.removeEventListener('keydown', esk, true); } };
+      document.addEventListener('pointerdown', dis, true); document.addEventListener('keydown', esk, true);
+    }, 0);
+  }
+  /* rol: 'baskan' | 'yardimci' | '' (kaldır). Aynı öğrenci öbür unvandaysa oradan düşer. */
+  SB.unvanVer = function (lId, cId, uid, rol) {
+    var u = oturum(), Db = veri(); if (!u || !Db || !ogretmenMi()) return Promise.reject(new Error('bağlantı yok'));
+    var id = SB.odaId(u.uid, lId, cId), o = ODA[id] || null, U = SB.uyeler(lId, cId), c = sinifAl(lId, cId) || {}, d = veriAl();
+    var b = o ? (o.baskanUid || '') : '', y = o ? (o.yardimciUid || '') : '';
+    if (rol === 'baskan') { if (y === uid) y = ''; b = uid; }
+    else if (rol === 'yardimci') { if (b === uid) b = ''; y = uid; }
+    else { if (b === uid) b = ''; if (y === uid) y = ''; }
+    var g = {
+      ogretmenUid: u.uid, lId: lId, cId: cId, seviyeAd: (d && d.levels[lId] && d.levels[lId].name) || '', sinifAd: c.name || cId,
+      uyeler: U.uyeler, uyeAdlar: U.uyeAdlar, liste: U.liste,
+      baskanUid: b, yardimciUid: y, baskan: b ? { uid: b, ad: U.uyeAdlar[b] || '' } : null, yardimci: y ? { uid: y, ad: U.uyeAdlar[y] || '' } : null,
+      guncelleme: Date.now()
+    };
+    var kod = ogretmenKodu(); if (kod) g.ogretmenKodu = kod;
+    if (!o || !o.yetki || !(o.yetki.baskan || o.yetki.yardimci)) g.yetki = JSON.parse(JSON.stringify(ILK_YETKI));
+    return Db.collection(C_ODA).doc(id).set(g, { merge: true }).then(function () {
+      ODA[id] = Object.assign(o || {}, g); ODA[id]._id = id; SB.listeSusle();
+      var ic = document.getElementById('sbIc'); if (ic && ic.getAttribute('data-oda') === id) icCiz(true);
+    });
+  };
+  /* listelerim.js renderStudents her çizimde satırları baştan kurar: ardından taçlar yeniden konur */
+  (function sar(n) {
+    if (typeof window.renderStudents === 'function') {
+      if (window.renderStudents._sb) return;
+      var asil = window.renderStudents;
+      var yeni = function () { var r = asil.apply(this, arguments); try { SB.listeSusle(); } catch (e) { } return r; };
+      yeni._sb = true; window.renderStudents = yeni;
+      setTimeout(function () { try { SB.listeSusle(); } catch (e) { } }, 0);
+      return;
+    }
+    if (n < 40) setTimeout(function () { sar(n + 1); }, 500);
+  })(0);
 
   /* ---------------------------------------------------------- ÖĞRENCİ */
   SB._oda = null;
