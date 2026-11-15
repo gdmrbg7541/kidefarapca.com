@@ -25,6 +25,25 @@
 
     /* EN YENİSİ EN ÜSTTE */
     var LISTE = [
+        /* SINIFTA YENİ 15.11.2026: ana sayfadaki sayfalarla aynı (sınav, sınıf başkanı, meydan okuma) */
+        {
+            id: 38,
+            tarih: '2026-11-15',
+            baslik: 'Sınavını hazırla, öğrencin telefondan çözsün',
+            metin: 'Kendi sınavını sitede hazırlayıp sınıfına görev olarak gönderirsin; not 100 üzerinden kendiliğinden hesaplanır. Sınıfında «Görev Gönder»e dokun, «Sınav»ı seç. Çoktan seçmeli, doğru-yanlış ve açık uçlu soru yazarsın; Arapça klavye hazır. Puanları sen girersin; boş bıraktıklarını site 100\'e tamamlar. Öğrenci sınavı «Görevlerim»den açar, telefonda çözer. Çoktan seçmeli ve doğru-yanlışlar kendiliğinden okunur; açık uçluları sen puanlarsın. Kim kaç aldı, sonuç ekranında bir arada görürsün.'
+        },
+        {
+            id: 37,
+            tarih: '2026-11-15',
+            baslik: 'Sınıf başkanın işini kolaylaştırsın',
+            metin: 'Hesabıyla sınıfına bağlı öğrencilerden başkan ve yardımcı seçer, onlara istediğin görevleri verirsin. Sınıf listesinde öğrencinin yanındaki taca dokun: başkan ya da yardımcı yap. Başkana ve yardımcıya ayrı ayrı yetki verirsin; bir görevi ikisine de verebilirsin. Oturma planını sürükleyip bırakarak hazırlarlar. Hatırlatma, son gün uyarısı ve ödev durumu takibini üstlenirler. Kura çeker, takım kurar, yarışmada puan tablosunu tutarlar. Kâğıt sınav teslim listesi ve hesabı olmayanların takibi de onlara bırakılabilir.'
+        },
+        {
+            id: 36,
+            tarih: '2026-11-15',
+            baslik: 'Öğrencilerin oyunda birbirine meydan okusun',
+            metin: 'Senin sınıflarına bağlı öğrenciler, sitedeki oyunlarda arkadaşlarına meydan okuyabilir. Öğrenci oyunu ve arkadaşını seçer, meydan okur. Arkadaşı kabul edince ikisi de aynı oyunu oynar. İlk denemedeki puanlar karşılaştırılır; kazanan belli olur. Meydan okumayı dilediğin zaman açar ya da kapatırsın.'
+        },
         /* SINIFTA YENİ 14.11.2026: ana sayfadaki sayfayla aynı */
         {
             id: 35,

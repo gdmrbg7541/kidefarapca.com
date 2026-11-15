@@ -29,6 +29,40 @@
    (öğretmen profilindeki "yenilik" şeridi).
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
+  /* SINIFTA YENİ 15.11.2026 — öğretmen: "sınıfta yeni kısmına ekle, güzel animasyonlu svg ekle"
+     (sınav gönder, sınıf başkanı ve yardımcısı, meydan okuma). Görseller dosyanın sonunda: g 'sinav',
+     g 'baskan', g 'meydan'. */
+  { t: '2026-11-15', e: 'Sınav', g: 'sinav', b: 'Sınavını hazırla, öğrencin telefondan çözsün',
+    m: 'Kendi sınavını sitede hazırlayıp sınıfına görev olarak gönderirsin; not 100 üzerinden kendiliğinden hesaplanır.',
+    L: [
+      'Sınıfında «Görev Gönder»e dokun, «Sınav»ı seç.',
+      'Çoktan seçmeli, doğru-yanlış ve açık uçlu soru yazarsın; Arapça klavye hazır.',
+      'Puanları sen girersin; boş bıraktıklarını site 100\'e tamamlar.',
+      'Öğrenci sınavı «Görevlerim»den açar, telefonda çözer.',
+      'Çoktan seçmeli ve doğru-yanlışlar kendiliğinden okunur; açık uçluları sen puanlarsın.',
+      'Kim kaç aldı, sonuç ekranında bir arada görürsün.'
+    ] },
+
+  { t: '2026-11-15', e: 'Sınıf yönetimi', g: 'baskan', b: 'Sınıf başkanın işini kolaylaştırsın',
+    m: 'Hesabıyla sınıfına bağlı öğrencilerden başkan ve yardımcı seçer, onlara istediğin görevleri verirsin.',
+    L: [
+      'Sınıf listesinde öğrencinin yanındaki taca dokun: başkan ya da yardımcı yap.',
+      'Başkana ve yardımcıya ayrı ayrı yetki verirsin; bir görevi ikisine de verebilirsin.',
+      'Oturma planını sürükleyip bırakarak hazırlarlar.',
+      'Hatırlatma, son gün uyarısı ve ödev durumu takibini üstlenirler.',
+      'Kura çeker, takım kurar, yarışmada puan tablosunu tutarlar.',
+      'Kâğıt sınav teslim listesi ve hesabı olmayanların takibi de onlara bırakılabilir.'
+    ] },
+
+  { t: '2026-11-15', e: 'Oyun', g: 'meydan', b: 'Öğrencilerin oyunda birbirine meydan okusun',
+    m: 'Senin sınıflarına bağlı öğrenciler, sitedeki oyunlarda arkadaşlarına meydan okuyabilir.',
+    L: [
+      'Öğrenci oyunu ve arkadaşını seçer, meydan okur.',
+      'Arkadaşı kabul edince ikisi de aynı oyunu oynar.',
+      'İlk denemedeki puanlar karşılaştırılır; kazanan belli olur.',
+      'Meydan okumayı dilediğin zaman açar ya da kapatırsın.'
+    ] },
+
   /* SINIFTA YENİ 14.11.2026 — öğretmen: "sitede yeni kısmında metin tahlillerinden bahset, madde madde öz olsun teknik detay verme" */
   { t: '2026-11-14', e: 'Metin tahlili', b: 'Kitaptaki metinleri kelime kelime işle: Metinlerle Arapça',
     m: 'Ders kitaplarındaki uzun diyalog ve metinler artık ayrı bir kitapta; tahtada açıp kelime kelime, cümle cümle işlersin.',
@@ -950,6 +984,375 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
     if (!document.getElementById('syGorevStil')) {
       var s = document.createElement('style');
       s.id = 'syGorevStil';
+      s.textContent = STIL;
+      (document.head || document.documentElement).appendChild(s);
+    }
+  } catch (e) { }
+})();
+
+/* ---------------------------------------------------------------------------
+   SINAV, SINIF BAŞKANI VE MEYDAN OKUMA GÖRSELLERİ (15.11.2026) — öğretmen:
+   "sınıfta yeni kısmına ekle, güzel animasyonlu svg ekle".
+     g: 'sinav'  — öğretmen soruları yazar, puanlar 100'e tamamlanır, sınav öğrencinin
+                   telefonuna uçar, çözülür; otomatik okunur, açık uçlu kalemle puanlanır,
+                   not halkası dolar (10 sn döngü)
+     g: 'baskan' — sınıf listesinde taç başkana, gümüş taç yardımcıya iner; yetki
+                   anahtarları tek tek açılır; başkan oturma planına öğrencileri
+                   sürükleyip bırakır (10 sn döngü)
+     g: 'meydan' — öğrenci meydan okur, şimşek arkadaşının telefonuna uçar, kabul edilir,
+                   ikisi de oynar, puanlar çıkar, kupa kazanana (9 sn döngü)
+   Biçim öteki görsellerle ortak (.ty-kutu, .ty-svg, .ty-cipler, .ty-cip, .ty-vurgu,
+   .gy-kutu, .gy-yan); bunlara özgü olanlar sv- önekli. «Hareketi azalt»ta son hâl durağan.
+   --------------------------------------------------------------------------- */
+(function () {
+  var G = window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
+  var SIM = function (ic) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ic + '</svg>'; };
+  var CIP = function (ic, yazi) { return '<span class="ty-cip">' + SIM(ic) + yazi + '</span>'; };
+  var ADIM = function (s, n, ic, yazi) { return '<span class="sv-adim sv-' + s + n + '">' + SIM(ic) + yazi + '</span>'; };
+  var OK = '<span class="gy-ok" aria-hidden="true">' + SIM('<path d="M3 12h15"/><path d="M14 7l5 5-5 5"/>') + '</span>';
+  var VURGU = function (gizli, a, b, c) {
+    return '<div class="ty-vurgu gy-vurgu gy-yan"><span class="ty-gizli">' + gizli + '</span>' + a + OK + b + OK + c + '</div>';
+  };
+  /* öğrenci (baş, saç, gövde) — ortası cx, başın merkezi cy */
+  var OGR = function (cx, cy, renk) {
+    return '<circle cx="' + cx + '" cy="' + cy + '" r="11" fill="#F2C9A0"/>' +
+      '<path d="M' + (cx - 11) + ' ' + (cy - 3) + 'C' + (cx - 12) + ' ' + (cy - 17) + ' ' + (cx + 12) + ' ' + (cy - 17) + ' ' + (cx + 11) + ' ' + (cy - 3) +
+        'C' + (cx + 6) + ' ' + (cy - 9) + ' ' + (cx - 5) + ' ' + (cy - 10) + ' ' + (cx - 11) + ' ' + (cy - 3) + 'Z" fill="#3B2F2F"/>' +
+      '<path d="M' + (cx - 20) + ' ' + (cy + 40) + 'C' + (cx - 20) + ' ' + (cy + 22) + ' ' + (cx - 11) + ' ' + (cy + 14) + ' ' + cx + ' ' + (cy + 14) +
+        'C' + (cx + 11) + ' ' + (cy + 14) + ' ' + (cx + 20) + ' ' + (cy + 22) + ' ' + (cx + 20) + ' ' + (cy + 40) + 'Z" fill="' + renk + '"/>';
+  };
+  var TIK = function (cx, cy, r, renk) {
+    return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + renk + '"/>' +
+      '<path d="M' + (cx - r * .45) + ' ' + cy + 'l' + (r * .32) + ' ' + (r * .32) + ' ' + (r * .62) + ' -' + (r * .64) + '" fill="none" stroke="#fff" stroke-width="' + (r * .3) + '" stroke-linecap="round" stroke-linejoin="round"/>';
+  };
+
+  /* ------------------------------------------------------- 1) SINAV (10 sn) */
+  var SORU = function (y, n, tur, puan) {
+    var ic = tur === 'cs'
+      ? '<circle cx="51" cy="' + (y + 9) + '" r="2.6" fill="none" stroke="#94A3B8" stroke-width="1.3"/><circle cx="58.5" cy="' + (y + 9) + '" r="2.6" fill="#4F46E5"/><circle cx="66" cy="' + (y + 9) + '" r="2.6" fill="none" stroke="#94A3B8" stroke-width="1.3"/>'
+      : tur === 'dy'
+        ? '<path d="M48.6 ' + (y + 9) + 'l2.2 2.2 3.8-4.2" fill="none" stroke="#16A085" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M60 ' + (y + 6) + 'l5.4 5.6M65.4 ' + (y + 6) + 'L60 ' + (y + 11.6) + '" stroke="#E74C3C" stroke-width="1.8" stroke-linecap="round"/>'
+        : '<path d="M48 ' + (y + 6.4) + 'h18M48 ' + (y + 10.4) + 'h14" stroke="#94A3B8" stroke-width="1.6" stroke-linecap="round"/><path d="M62 ' + (y + 14.6) + 'l6-6 1.6 1.6-6 6h-1.6z" fill="#F39C12"/>';
+    return '<rect x="43" y="' + y + '" width="138" height="18" rx="5" fill="#F8FAFC" stroke="#E2E8F0"/>' + ic +
+      '<rect x="75" y="' + (y + 6.5) + '" width="' + (tur === 'ac' ? 40 : 50) + '" height="5" rx="2.5" fill="#CBD5E1"/>' +
+      '<g class="sv-oto n' + n + '">' + (tur === 'ac'
+        ? '<circle cx="137" cy="' + (y + 9) + '" r="6" fill="#FFF1D6"/><path d="M134 ' + (y + 12.4) + 'l4.6-4.6 1.6 1.6-4.6 4.6h-1.6z" fill="#D97706"/>'
+        : TIK(137, y + 9, 6, '#16A085')) + '</g>' +
+      '<g class="sv-puan n' + n + '"><rect x="148" y="' + (y + 3) + '" width="28" height="12" rx="6" fill="#EEF2FF"/>' +
+        '<text x="162" y="' + (y + 12.6) + '" text-anchor="middle" class="sv-k" fill="#4338CA">' + puan + '</text></g>';
+  };
+  var SINAV_SAHNE =
+    '<div class="ty-kutu gy-kutu"><svg class="ty-svg sv-svg" viewBox="0 0 480 214" role="img" aria-label="Öğretmen soruları yazıyor, puanlar 100\'e tamamlanıyor; sınav öğrencinin telefonuna gidiyor, öğrenci çözüyor; sınav kendiliğinden okunuyor ve not 100 üzerinden çıkıyor">' +
+    '<rect x="0" y="0" width="480" height="214" rx="16" fill="#F3F4FB"/>' +
+    '<path d="M0 178H480V198a16 16 0 0 1-16 16H16a16 16 0 0 1-16-16Z" fill="#E7E9F6"/>' +
+    '<path d="M0 178H480" stroke="#D9DCF0" stroke-width="2"/>' +
+    /* öğretmenin bilgisayarı: soru listesi */
+    '<path d="M10 180H214L204 169H20Z" fill="#475569"/>' +
+    '<rect x="30" y="38" width="164" height="131" rx="8" fill="#1F2937"/>' +
+    '<rect x="37" y="45" width="150" height="117" rx="4" fill="#fff"/>' +
+    '<path d="M37 49a4 4 0 0 1 4-4H183a4 4 0 0 1 4 4V64H37Z" fill="#4F46E5"/>' +
+    '<g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="45" y="48.6" width="9" height="11.6" rx="1.4"/><path d="M47.4 52.4h4.2M47.4 55.4h4.2"/></g>' +
+    '<rect x="60" y="51.6" width="56" height="6" rx="3" fill="#fff" opacity=".9"/>' +
+    SORU(70, 1, 'cs', 25) + SORU(92, 2, 'dy', 25) + SORU(114, 3, 'ac', 50) +
+    '<rect x="43" y="141" width="34" height="5" rx="2.5" fill="#CBD5E1"/>' +
+    '<g class="sv-top"><rect x="82" y="136.5" width="36" height="15" rx="7.5" fill="#16A085"/><text x="100" y="147.6" text-anchor="middle" class="sv-k" fill="#fff">100</text></g>' +
+    '<g class="sv-gonder"><rect x="125" y="136.5" width="56" height="15" rx="7.5" fill="#D84315"/>' +
+      '<path d="M146 140l11 4-11 4 2-4z" fill="#fff"/></g>' +
+    /* uçuş yolu ve kâğıt (sınav) */
+    '<path d="M182 140C214 70 240 46 282 52" fill="none" stroke="#4F46E5" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round" opacity=".45"/>' +
+    '<g class="sv-kagit"><rect x="-8" y="-10" width="16" height="20" rx="2" fill="#fff" stroke="#4F46E5" stroke-width="1.6"/><path d="M-4 -5h8M-4 -1h8M-4 3h5" stroke="#A5B4FC" stroke-width="1.4" stroke-linecap="round"/></g>' +
+    /* öğrencinin telefonu */
+    '<rect x="262" y="30" width="56" height="102" rx="8" fill="#1F2937"/>' +
+    '<rect x="266" y="38" width="48" height="86" rx="3" fill="#fff"/>' +
+    '<rect x="284" y="33.4" width="12" height="1.6" rx=".8" fill="#64748B"/>' +
+    '<g class="sv-tel">' +
+      '<rect x="270" y="42" width="40" height="8" rx="4" fill="#E0E7FF"/>' +
+      '<rect x="270" y="56" width="40" height="11" rx="3" fill="#F8FAFC" stroke="#E2E8F0"/>' +
+      '<rect class="sv-sec" x="270" y="71" width="40" height="11" rx="3" fill="#F8FAFC" stroke="#E2E8F0"/>' +
+      '<rect x="270" y="86" width="40" height="11" rx="3" fill="#F8FAFC" stroke="#E2E8F0"/>' +
+      '<circle cx="276" cy="61.5" r="2.4" fill="none" stroke="#94A3B8" stroke-width="1.2"/>' +
+      '<circle cx="276" cy="76.5" r="2.4" fill="none" stroke="#94A3B8" stroke-width="1.2"/><circle class="sv-isaret" cx="276" cy="76.5" r="2.4" fill="#4F46E5"/>' +
+      '<circle cx="276" cy="91.5" r="2.4" fill="none" stroke="#94A3B8" stroke-width="1.2"/>' +
+      '<path d="M282 61.5h20M282 76.5h16M282 91.5h22" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round"/>' +
+      '<g class="sv-bitir"><rect x="276" y="104" width="28" height="12" rx="6" fill="#16A085"/><path d="M285.6 110l2.4 2.4 4.4-4.6" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>' +
+    '</g>' +
+    OGR(290, 148, '#4F46E5') +
+    /* cevaplar not kartına */
+    '<circle class="sv-uc n1" r="4.5" fill="#16A085"/><circle class="sv-uc n2" r="4.5" fill="#16A085"/><circle class="sv-uc n3" r="4.5" fill="#F39C12"/>' +
+    /* not kartı */
+    '<rect x="346" y="34" width="120" height="132" rx="12" fill="#fff" stroke="#E2E8F0" stroke-width="1.5"/>' +
+    '<rect x="358" y="44" width="58" height="7" rx="3.5" fill="#CBD5E1"/>' +
+    '<circle cx="406" cy="98" r="30" fill="none" stroke="#EEF2F7" stroke-width="9"/>' +
+    '<circle class="sv-halka" cx="406" cy="98" r="30" fill="none" stroke="#16A085" stroke-width="9" stroke-linecap="round" pathLength="100" stroke-dasharray="100 100" transform="rotate(-90 406 98)"/>' +
+    '<text x="406" y="105" text-anchor="middle" class="sv-not">85</text>' +
+    '<text x="406" y="117" text-anchor="middle" class="sv-k sv-not" fill="#94A3B8" style="font-size:8px">/ 100</text>' +
+    '<g class="sv-kart-alt">' + TIK(384, 148, 7, '#16A085') + TIK(406, 148, 7, '#16A085') +
+      '<circle cx="428" cy="148" r="7" fill="#FFF1D6"/><path d="M424.6 151.8l5.2-5.2 1.8 1.8-5.2 5.2h-1.8z" fill="#D97706"/></g>' +
+    '</svg>';
+  var SINAV_VURGU = VURGU('Sınavı hazırla, öğrencin çözsün, not hazır',
+    ADIM('s', 1, '<path d="M14.5 3.5l6 6L9 21H3v-6z"/><path d="M12.5 5.5l6 6"/>', 'Hazırla'),
+    ADIM('s', 2, '<rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M9.8 12.4l1.6 1.6 3-3.2"/>', 'Öğrenci çözer'),
+    ADIM('s', 3, '<circle cx="12" cy="12" r="8.6"/><path d="M8.4 12.2l2.6 2.6 4.8-5"/>', 'Not hazır'));
+  var SINAV_CIPLER = '<div class="ty-cipler gy-cipler">' +
+    CIP('<circle cx="6" cy="7" r="2"/><circle class="sv-c-sec" cx="6" cy="12" r="2"/><circle cx="6" cy="17" r="2"/><path d="M11 7h9M11 12h9M11 17h9"/>', 'Çoktan seçmeli') +
+    CIP('<path d="M3.5 12.5l3 3 5.5-6"/><path class="sv-c-yan" d="M14.5 8.5l6 6M20.5 8.5l-6 6"/>', 'Doğru-yanlış') +
+    CIP('<path d="M4 7h11M4 12h7"/><path class="sv-c-kalem" d="M13 19l7-7 2 2-7 7h-2z"/>', 'Açık uçlu') +
+    CIP('<rect x="3" y="6" width="18" height="12" rx="2.4"/><path class="sv-c-tus" d="M7 10h1M11 10h1M15 10h1M8 14h8"/>', 'Arapça klavye') +
+    CIP('<circle cx="12" cy="12" r="8.6"/><path class="sv-c-dol" d="M12 3.4a8.6 8.6 0 0 1 8.6 8.6H12z"/>', '100 puana tamamlar') +
+    CIP('<rect x="6.5" y="2.5" width="11" height="19" rx="2.4"/><path d="M10.6 18.6h2.8"/><circle class="gy-c-rozet" cx="17.4" cy="5.6" r="2.6"/>', '«Görevlerim»de') +
+    '</div>';
+  G.sinav = SINAV_SAHNE + SINAV_VURGU + SINAV_CIPLER + '</div>';
+
+  /* ------------------------------------------------ 2) SINIF BAŞKANI (10 sn) */
+  var TAC = 'M-9 4L-9.6 -5L-4.4 -.4L0 -7L4.4 -.4L9.6 -5L9 4Z';
+  var SATIR = function (y, n, renk, hesapsiz, anahtar) {
+    var s = '<rect x="24" y="' + y + '" width="180" height="26" rx="7" fill="#F8FAFC"/>' +
+      '<circle cx="40" cy="' + (y + 13) + '" r="9" fill="' + (hesapsiz ? '#fff' : renk) + '"' + (hesapsiz ? ' stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3 2.4"' : '') + '/>' +
+      '<rect x="56" y="' + (y + 7) + '" width="' + (hesapsiz ? 44 : 56) + '" height="6" rx="3" fill="#CBD5E1"/>' +
+      '<rect x="56" y="' + (y + 16) + '" width="34" height="4" rx="2" fill="' + (hesapsiz ? '#FDE2E2' : '#D1FAE5') + '"/>';
+    (anahtar || []).forEach(function (a, i) {
+      var x = 126 + i * 26;
+      s += '<g class="sv-ah ' + a + '"><rect class="sv-zemin" x="' + x + '" y="' + (y + 7) + '" width="21" height="12" rx="6" fill="#CBD5E1"/>' +
+        '<circle class="sv-dugme" cx="' + (x + 6) + '" cy="' + (y + 13) + '" r="4.2" fill="#fff"/></g>';
+    });
+    return s;
+  };
+  var MASA = function (x, y) {
+    return '<rect x="' + x + '" y="' + y + '" width="56" height="22" rx="4" fill="#E9CFA6" stroke="#C9A06E" stroke-width="1.5"/>' +
+      '<circle cx="' + (x + 28) + '" cy="' + (y + 11) + '" r="9" fill="none" stroke="#D6B385" stroke-width="1.4" stroke-dasharray="3 2.6"/>';
+  };
+  var BASKAN_SAHNE =
+    '<div class="ty-kutu gy-kutu"><svg class="ty-svg sv-svg" viewBox="0 0 480 214" role="img" aria-label="Sınıf listesinde bir öğrenciye taç, ötekine gümüş taç takılıyor; yetkileri açılıyor; başkan oturma planında arkadaşlarını sıralara sürükleyip bırakıyor">' +
+    '<rect x="0" y="0" width="480" height="214" rx="16" fill="#FBF7EE"/>' +
+    /* sınıf listesi */
+    '<rect x="16" y="22" width="196" height="172" rx="12" fill="#fff" stroke="#EADFC8" stroke-width="1.5"/>' +
+    '<path d="M16 34a12 12 0 0 1 12-12H200a12 12 0 0 1 12 12V46H16Z" fill="#B45309"/>' +
+    '<text x="30" y="40" class="sv-k" fill="#fff" style="font-size:12px">7-A</text>' +
+    '<g fill="none" stroke="#FDE7C4" stroke-width="1.6" stroke-linecap="round"><path d="M150 30.4h46M150 34.4h34M150 38.4h40"/></g>' +
+    SATIR(54, 1, '#16A085', false, ['a1', 'a2', 'a3']) +
+    SATIR(88, 2, '#2563EB', false, ['b1', 'b2', 'b3']) +
+    SATIR(122, 3, '#DB2777', false) +
+    SATIR(156, 4, '#94A3B8', true) +
+    /* taçlar */
+    '<g transform="translate(40 55)"><g class="sv-tac"><path d="' + TAC + '" fill="#F5B301" stroke="#B7791F" stroke-width="1.2" stroke-linejoin="round"/><circle cx="0" cy="-7" r="1.6" fill="#FDE68A"/></g></g>' +
+    '<g transform="translate(40 89)"><g class="sv-tac y"><path d="' + TAC + '" fill="#E2E8F0" stroke="#64748B" stroke-width="1.2" stroke-linejoin="round"/><circle cx="0" cy="-7" r="1.6" fill="#fff"/></g></g>' +
+    /* oturma planı */
+    '<rect x="240" y="22" width="226" height="172" rx="12" fill="#fff" stroke="#EADFC8" stroke-width="1.5"/>' +
+    '<rect x="303" y="30" width="100" height="13" rx="3" fill="#1F4E3D"/><path d="M312 36.5h30" stroke="#E8F6F2" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>' +
+    MASA(252, 58) + MASA(325, 58) + MASA(398, 58) + MASA(252, 106) + MASA(325, 106) + MASA(398, 106) +
+    '<rect x="258" y="156" width="196" height="28" rx="14" fill="#FFF7ED" stroke="#F6C878" stroke-width="1.4" stroke-dasharray="4 3"/>' +
+    '<circle class="sv-ot n1" r="9" fill="#16A085" stroke="#fff" stroke-width="2"/>' +
+    '<circle class="sv-ot n2" r="9" fill="#2563EB" stroke="#fff" stroke-width="2"/>' +
+    '<circle class="sv-ot n3" r="9" fill="#DB2777" stroke="#fff" stroke-width="2"/>' +
+    '<circle class="sv-ot n4" r="9" fill="#F39C12" stroke="#fff" stroke-width="2"/>' +
+    '<g class="sv-imlec"><path d="M0 0V15l4-3.6 3 6.6 2.8-1.2-3-6.4H12Z" fill="#fff" stroke="#1F2937" stroke-width="1.5" stroke-linejoin="round"/></g>' +
+    '</svg>';
+  var BASKAN_VURGU = VURGU('Taç tak, yetki ver, başkan sınıfı düzenlesin',
+    ADIM('b', 1, '<path d="M3 18l-1-11 5.5 4.6L12 4l4.5 7.6L22 7l-1 11z"/><path d="M3 21h18"/>', 'Taç tak'),
+    ADIM('b', 2, '<rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16.6" cy="12" r="2.8"/>', 'Yetki ver'),
+    ADIM('b', 3, '<rect x="3" y="4" width="7" height="6" rx="1.4"/><rect x="14" y="4" width="7" height="6" rx="1.4"/><rect x="3" y="14" width="7" height="6" rx="1.4"/><rect x="14" y="14" width="7" height="6" rx="1.4"/>', 'Başkan düzenler'));
+  var BASKAN_CIPLER = '<div class="ty-cipler gy-cipler">' +
+    CIP('<rect x="3" y="4" width="7" height="6" rx="1.4"/><rect x="14" y="4" width="7" height="6" rx="1.4"/><rect x="3" y="14" width="7" height="6" rx="1.4"/><rect class="sv-c-otur" x="14" y="14" width="7" height="6" rx="1.4"/>', 'Oturma planı') +
+    CIP('<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/><path class="sv-c-zil" d="M2.6 7.4A9.6 9.6 0 0 1 5 3.6M21.4 7.4A9.6 9.6 0 0 0 19 3.6"/>', 'Hatırlatma') +
+    CIP('<rect x="3" y="3" width="18" height="18" rx="4"/><circle class="sv-c-zar" cx="8.5" cy="8.5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle class="sv-c-zar" cx="15.5" cy="15.5" r="1.4"/>', 'Kura ve takım') +
+    CIP('<path d="M4 20V11M10 20V5M16 20v-6M21 20H3"/><path class="sv-c-skor" d="M14 6l2-2 2 2"/>', 'Yarışma tablosu') +
+    CIP('<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path class="sv-c-teslim" d="M9.6 14.2l2 2 3.8-4"/>', 'Kâğıt teslim listesi') +
+    CIP('<circle cx="9" cy="8" r="3.6"/><path d="M2.6 20a6.4 6.4 0 0 1 12.8 0"/><path class="sv-c-soru" d="M17 8.6a2.4 2.4 0 1 1 3.2 2.2c-.8.3-1.2.9-1.2 1.6M19 15.4v.2"/>', 'Hesap ve giriş yardımı') +
+    '</div>';
+  G.baskan = BASKAN_SAHNE + BASKAN_VURGU + BASKAN_CIPLER + '</div>';
+
+  /* ------------------------------------------------- 3) MEYDAN OKUMA (9 sn) */
+  var MTEL = function (x, n, renk, puan) {
+    return '<rect x="' + x + '" y="24" width="76" height="100" rx="10" fill="#1F2937"/>' +
+      '<rect x="' + (x + 4) + '" y="31" width="68" height="86" rx="4" fill="#fff"/>' +
+      '<rect x="' + (x + 9) + '" y="36" width="58" height="18" rx="5" fill="#EDE9FE"/>' +
+      '<rect x="' + (x + 13) + '" y="39.5" width="11" height="11" rx="3" fill="#7C3AED"/>' +
+      '<path d="M' + (x + 18.5) + ' 41.6l1 2 2.2.3-1.6 1.5.4 2.2-2-1-2 1 .4-2.2-1.6-1.5 2.2-.3z" fill="#FDE68A"/>' +
+      '<rect x="' + (x + 28) + '" y="42" width="32" height="5.4" rx="2.7" fill="#C4B5FD"/>' +
+      '<rect x="' + (x + 9) + '" y="62" width="58" height="7" rx="3.5" fill="#EEF2F7"/>' +
+      '<rect class="sv-mp n' + n + '" x="' + (x + 9) + '" y="62" width="58" height="7" rx="3.5" fill="' + renk + '"/>' +
+      '<circle class="sv-kazan n' + n + '" cx="' + (x + 38) + '" cy="85" r="13" fill="#FEF3C7"/>' +
+      '<text x="' + (x + 38) + '" y="92.6" text-anchor="middle" class="sv-ms n' + n + '" fill="' + renk + '">' + puan + '</text>' +
+      OGR(x + 38, 148, renk);
+  };
+  var SIMSEK = 'M2 -11L-7 2H-1L-3 11L7 -2H1Z';
+  var MEYDAN_SAHNE =
+    '<div class="ty-kutu gy-kutu"><svg class="ty-svg sv-svg" viewBox="0 0 480 214" role="img" aria-label="Bir öğrenci arkadaşına meydan okuyor; arkadaşı kabul ediyor, ikisi de aynı oyunu oynuyor; puanlar çıkıyor ve kupa kazanana gidiyor">' +
+    '<rect x="0" y="0" width="480" height="214" rx="16" fill="#F5F3FF"/>' +
+    '<path d="M0 188H480V198a16 16 0 0 1-16 16H16a16 16 0 0 1-16-16Z" fill="#EDE9FE"/>' +
+    '<path d="M0 188H480" stroke="#DDD6FE" stroke-width="2"/>' +
+    MTEL(60, 1, '#16A085', 90) +
+    '<g class="sv-mo"><rect x="78" y="100" width="40" height="12" rx="6" fill="#D84315"/><path d="M' + 98 + ' 102.4l-3 4h2.4l-1 3.2 3.4-4.4H97.4z" fill="#fff"/></g>' +
+    MTEL(344, 2, '#2563EB', 75) +
+    /* davet: arkadaşın telefonunda */
+    '<g class="sv-davet"><rect x="348" y="31" width="68" height="86" rx="4" fill="#FFF7ED"/>' +
+      '<circle cx="382" cy="52" r="11" fill="#FDEBD0"/><g transform="translate(382 52) scale(.7)"><path d="' + SIMSEK + '" fill="#F39C12"/></g>' +
+      '<rect x="360" y="68" width="44" height="5" rx="2.5" fill="#F6C878"/>' +
+      '<g class="sv-kabul">' + TIK(368, 92, 8, '#16A085') + '</g>' +
+      '<circle cx="396" cy="92" r="8" fill="#E74C3C"/><path d="M393 89l6 6M399 89l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>' +
+    /* şimşek uçuşu */
+    '<path d="M140 56C186 0 298 0 342 56" fill="none" stroke="#F39C12" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round" opacity=".5"/>' +
+    '<g class="sv-simsek"><path d="' + SIMSEK + '" fill="#F39C12" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/></g>' +
+    /* VS ve kupa */
+    '<g class="sv-vs"><circle cx="240" cy="96" r="24" fill="#7C3AED"/><text x="240" y="102" text-anchor="middle" class="sv-k" fill="#fff" style="font-size:17px">VS</text></g>' +
+    '<g class="sv-kupa">' +
+      '<path d="M226 76h28v10a14 14 0 0 1-28 0z" fill="#F5B301"/>' +
+      '<path d="M226 80h-5a6 6 0 0 0 6 8M254 80h5a6 6 0 0 1-6 8" fill="none" stroke="#F5B301" stroke-width="3"/>' +
+      '<path d="M236 99h8l2 9h-12z" fill="#D69E2E"/><rect x="229" y="107" width="22" height="6" rx="2" fill="#B7791F"/>' +
+      '<path d="M236 82l2.6 2.6 5-5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>' +
+    '<g class="sv-konfeti"><rect x="206" y="70" width="5" height="5" rx="1" fill="#16A085"/><rect x="270" y="66" width="5" height="5" rx="1" fill="#E74C3C"/>' +
+      '<circle cx="216" cy="118" r="3" fill="#7C3AED"/><circle cx="266" cy="120" r="3" fill="#2563EB"/><rect x="240" y="58" width="5" height="5" rx="1" fill="#F39C12"/></g>' +
+    '</svg>';
+  var MEYDAN_VURGU = VURGU('Meydan oku, arkadaşın kabul etsin, kazanan belli olsun',
+    ADIM('m', 1, '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>', 'Meydan oku'),
+    ADIM('m', 2, '<circle cx="12" cy="12" r="8.6"/><path d="M8.4 12.2l2.6 2.6 4.8-5"/>', 'Kabul'),
+    ADIM('m', 3, '<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3M10 15h4l1 4H9zM8 21h8"/>', 'Kazanan belli'));
+  var MEYDAN_CIPLER = '<div class="ty-cipler gy-cipler">' +
+    CIP('<circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 20a5.5 5.5 0 0 1 11 0M10.5 20a5.5 5.5 0 0 1 11 0"/>', 'Aynı öğretmenin öğrencileri') +
+    CIP('<rect x="3" y="3" width="18" height="18" rx="4"/><path class="sv-c-yildiz" d="M12 7l1.5 3 3.3.5-2.4 2.3.6 3.3L12 14.6 9 16.1l.6-3.3-2.4-2.3 3.3-.5z"/>', 'Sitedeki oyunlar') +
+    CIP('<path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="5"/><circle class="sv-c-hedef" cx="12" cy="12" r="1.6"/>', 'İlk deneme sayılır') +
+    CIP('<rect x="2" y="7" width="20" height="10" rx="5"/><circle class="sv-c-anahtar" cx="16.6" cy="12" r="2.8"/>', 'Açar ya da kapatırsın') +
+    '</div>';
+  G.meydan = MEYDAN_SAHNE + MEYDAN_VURGU + MEYDAN_CIPLER + '</div>';
+
+  /* ---------------------------------------------------------------- biçim */
+  var px = function (x, y) { return 'translate(' + x + 'px,' + y + 'px)'; };
+  /* üç adımın sırayla parlaması: s1, s2 = adımların bittiği yüzde */
+  var RENK = [['#FFF1D6', '#B45309', '#F6C878'], ['#E8F6F2', '#0E7C66', '#A9DFCB'], ['#F3E8FF', '#7B1FA2', '#D8B4FE']];
+  var SONUK = 'background:#F1F5F9; color:#64748B; border-color:#E2E8F0; transform:none;';
+  var PARLAK = function (i) { return 'background:' + RENK[i][0] + '; color:' + RENK[i][1] + '; border-color:' + RENK[i][2] + '; transform:translateY(-2px);'; };
+  var ADIMLAR = function (on, sure, s1, s2) {
+    return [
+      '.sv-' + on + '1, .sv-' + on + '2, .sv-' + on + '3{ animation-duration:' + sure + 's; }',
+      '.sv-' + on + '1{ animation-name:sv' + on + 'A1; } .sv-' + on + '2{ animation-name:sv' + on + 'A2; } .sv-' + on + '3{ animation-name:sv' + on + 'A3; }',
+      '@keyframes sv' + on + 'A1{ 0%,' + (s1 - 3) + '%{ ' + PARLAK(0) + ' } ' + s1 + '%,96%{ ' + SONUK + ' } 100%{ ' + PARLAK(0) + ' } }',
+      '@keyframes sv' + on + 'A2{ 0%,' + (s1 - 3) + '%{ ' + SONUK + ' } ' + s1 + '%,' + (s2 - 3) + '%{ ' + PARLAK(1) + ' } ' + s2 + '%,100%{ ' + SONUK + ' } }',
+      '@keyframes sv' + on + 'A3{ 0%,' + (s2 - 3) + '%{ ' + SONUK + ' } ' + s2 + '%,93%{ ' + PARLAK(2) + ' } 97%,100%{ ' + SONUK + ' } }'
+    ].join('\n');
+  };
+  /* oturma planı: tepsiden sıraya; [başla, bit] yüzde */
+  var OT = [[282, 170, 280, 69, 42, 50], [322, 170, 353, 69, 53, 61], [362, 170, 426, 117, 64, 72], [402, 170, 280, 117, 75, 83]];
+  var otKF = OT.map(function (o, i) {
+    return '.sv-ot.n' + (i + 1) + '{ animation:svOt' + (i + 1) + ' 10s ease-in-out infinite; }\n' +
+      '@keyframes svOt' + (i + 1) + '{ 0%,' + o[4] + '%{ transform:' + px(o[0], o[1]) + '; opacity:1; } ' + o[5] + '%,91%{ transform:' + px(o[2], o[3]) + '; opacity:1; } ' +
+      '94%{ transform:' + px(o[2], o[3]) + '; opacity:0; } 95%{ transform:' + px(o[0], o[1]) + '; opacity:0; } 100%{ transform:' + px(o[0], o[1]) + '; opacity:1; } }';
+  }).join('\n');
+  var im = function (x, y) { return px(x + 2, y + 3); };
+  var imlecKF = '@keyframes svImlec{ 0%,36%{ opacity:0; transform:' + im(330, 150) + '; } 40%,42%{ opacity:1; transform:' + im(282, 170) + '; } 50%{ transform:' + im(280, 69) + '; }' +
+    ' 53%{ transform:' + im(322, 170) + '; } 61%{ transform:' + im(353, 69) + '; } 64%{ transform:' + im(362, 170) + '; } 72%{ transform:' + im(426, 117) + '; }' +
+    ' 75%{ transform:' + im(402, 170) + '; } 83%{ opacity:1; transform:' + im(280, 117) + '; } 87%,100%{ opacity:0; transform:' + im(300, 140) + '; } }';
+  var AH = { a1: 26, a2: 30, a3: 34, b1: 37 };   /* hangi anahtar ne zaman açılır (b2, b3 kapalı: yetkiler ayrı ayrı) */
+  var ahKF = Object.keys(AH).map(function (k) {
+    var t = AH[k];
+    return '.sv-ah.' + k + ' .sv-zemin{ animation:svZ' + k + ' 10s ease-in-out infinite; } .sv-ah.' + k + ' .sv-dugme{ animation:svD' + k + ' 10s ease-in-out infinite; }\n' +
+      '@keyframes svZ' + k + '{ 0%,' + t + '%{ fill:#CBD5E1; } ' + (t + 2) + '%,92%{ fill:#16A085; } 96%,100%{ fill:#CBD5E1; } }\n' +
+      '@keyframes svD' + k + '{ 0%,' + t + '%{ transform:none; } ' + (t + 2) + '%,92%{ transform:translateX(9px); } 96%,100%{ transform:none; } }';
+  }).join('\n');
+
+  var STIL = [
+    '.sv-svg text{ font-family:inherit; font-weight:900; }',
+    '.sv-k{ font-size:9px; }',
+    '.sv-adim{ display:inline-flex; align-items:center; gap:7px; padding:6px 12px 6px 9px; border-radius:12px; background:#F1F5F9; color:#64748B;',
+    '  border:1.5px solid #E2E8F0; animation-timing-function:ease-in-out; animation-iteration-count:infinite; }',
+    ADIMLAR('s', 10, 34, 62), ADIMLAR('b', 10, 24, 41), ADIMLAR('m', 9, 33, 70),
+    /* 1) SINAV */
+    '.sv-puan{ transform-box:fill-box; transform-origin:center; animation:svPuan 10s ease-out infinite both; }',
+    '.sv-puan.n2{ animation-delay:.5s; } .sv-puan.n3{ animation-delay:1s; }',
+    '@keyframes svPuan{ 0%,6%{ opacity:0; transform:scale(.3); } 9%{ opacity:1; transform:scale(1.2); } 11%,94%{ opacity:1; transform:scale(1); } 98%,100%{ opacity:0; } }',
+    '.sv-top{ transform-box:fill-box; transform-origin:center; animation:svTop 10s ease-out infinite both; }',
+    '@keyframes svTop{ 0%,20%{ opacity:0; transform:scale(.3); } 23%{ opacity:1; transform:scale(1.25); } 26%,94%{ opacity:1; transform:scale(1); } 98%,100%{ opacity:0; } }',
+    '.sv-gonder{ transform-box:fill-box; transform-origin:center; animation:svBas 10s ease-in-out infinite; }',
+    '@keyframes svBas{ 0%,26%{ transform:scale(1); } 28%{ transform:scale(1.1); } 30%{ transform:scale(.92); } 32%,100%{ transform:scale(1); } }',
+    '.sv-kagit{ opacity:0; animation:svKagit 10s linear infinite; }',
+    '@keyframes svKagit{ 0%,30%{ opacity:0; transform:translate(182px,140px) rotate(-20deg) scale(.5); } 32%{ opacity:1; transform:translate(192px,118px) rotate(-14deg) scale(1); }',
+    '  35%{ transform:translate(214px,82px) rotate(-6deg); } 38%{ transform:translate(246px,58px) rotate(4deg); } 41%{ opacity:1; transform:translate(282px,52px) rotate(10deg) scale(1); }',
+    '  43%,100%{ opacity:0; transform:translate(290px,60px) rotate(12deg) scale(.4); } }',
+    '.sv-tel{ animation:svTel 10s ease-out infinite both; }',
+    '@keyframes svTel{ 0%,41%{ opacity:0; } 44%,94%{ opacity:1; } 98%,100%{ opacity:0; } }',
+    '.sv-isaret{ transform-box:fill-box; transform-origin:center; animation:svIsaret 10s ease-out infinite both; }',
+    '@keyframes svIsaret{ 0%,48%{ opacity:0; transform:scale(0); } 51%,94%{ opacity:1; transform:scale(1); } 98%,100%{ opacity:0; } }',
+    '.sv-sec{ animation:svSec 10s ease-out infinite; }',
+    '@keyframes svSec{ 0%,48%{ fill:#F8FAFC; stroke:#E2E8F0; } 51%,94%{ fill:#EEF2FF; stroke:#A5B4FC; } 98%,100%{ fill:#F8FAFC; stroke:#E2E8F0; } }',
+    '.sv-bitir{ transform-box:fill-box; transform-origin:center; animation:svBitir 10s ease-in-out infinite; }',
+    '@keyframes svBitir{ 0%,54%{ transform:scale(1); } 56%{ transform:scale(1.15); } 58%{ transform:scale(.9); } 60%,100%{ transform:scale(1); } }',
+    '.sv-uc{ opacity:0; animation:svUc 10s ease-in-out infinite both; }',
+    '.sv-uc.n2{ animation-delay:.25s; } .sv-uc.n3{ animation-delay:.5s; }',
+    '@keyframes svUc{ 0%,59%{ opacity:0; transform:translate(304px,110px); } 60%{ opacity:1; } 64%{ transform:translate(340px,80px); } 67%{ opacity:1; transform:translate(392px,128px); } 68%,100%{ opacity:0; transform:translate(392px,128px); } }',
+    '.sv-oto{ transform-box:fill-box; transform-origin:center; animation:svOto 10s ease-out infinite both; }',
+    '.sv-oto.n2{ animation-delay:.3s; } .sv-oto.n3{ animation-delay:1.1s; }',
+    '@keyframes svOto{ 0%,66%{ opacity:0; transform:scale(.2); } 69%{ opacity:1; transform:scale(1.3); } 72%,94%{ opacity:1; transform:scale(1); } 98%,100%{ opacity:0; } }',
+    '.sv-kart-alt{ animation:svAlt 10s ease-out infinite both; }',
+    '@keyframes svAlt{ 0%,66%{ opacity:0; } 70%,94%{ opacity:1; } 98%,100%{ opacity:0; } }',
+    '.sv-halka{ stroke-dashoffset:15; animation:svHalka 10s ease-in-out infinite both; }',
+    '@keyframes svHalka{ 0%,70%{ stroke-dashoffset:100; } 86%,94%{ stroke-dashoffset:15; } 98%,100%{ stroke-dashoffset:100; } }',
+    '.sv-not{ font-size:22px; fill:#0F2A43; animation:svNot 10s ease-out infinite both; }',
+    '@keyframes svNot{ 0%,82%{ opacity:0; } 86%,94%{ opacity:1; } 98%,100%{ opacity:0; } }',
+    '.sv-c-sec{ fill:currentColor; animation:gyYanSon 1.8s ease-in-out infinite; }',
+    '.sv-c-yan{ animation:gyYanSon 2.2s ease-in-out infinite; }',
+    '.sv-c-kalem{ transform-box:fill-box; transform-origin:0 100%; animation:svSalla 2s ease-in-out infinite; }',
+    '.sv-c-tus{ stroke-dasharray:2 2; animation:tyAkis 1.2s linear infinite; }',
+    '.sv-c-dol{ fill:currentColor; transform-box:view-box; transform-origin:12px 12px; animation:gyDon 4s linear infinite; }',
+    '@keyframes svSalla{ 0%,100%{ transform:rotate(0); } 50%{ transform:rotate(-14deg); } }',
+    /* 2) SINIF BAŞKANI */
+    '.sv-tac{ animation:svTac 10s cubic-bezier(.3,1.4,.6,1) infinite both; }',
+    '.sv-tac.y{ animation-name:svTacY; }',
+    '@keyframes svTac{ 0%,8%{ opacity:0; transform:translateY(-26px) rotate(-12deg); } 14%,92%{ opacity:1; transform:none; } 96%,100%{ opacity:0; transform:none; } }',
+    '@keyframes svTacY{ 0%,15%{ opacity:0; transform:translateY(-26px) rotate(12deg); } 21%,92%{ opacity:1; transform:none; } 96%,100%{ opacity:0; transform:none; } }',
+    ahKF, otKF,
+    '.sv-imlec{ opacity:0; animation:svImlec 10s ease-in-out infinite; }', imlecKF,
+    '.sv-c-otur{ animation:gyYanSon 1.6s ease-in-out infinite; }',
+    '.sv-c-zil{ animation:gyYanSon 1s ease-in-out infinite; }',
+    '.sv-c-zar{ animation:gyYanSon 1.4s ease-in-out infinite; }',
+    '.sv-c-skor{ animation:svZipla 1.6s ease-in-out infinite; }',
+    '.sv-c-teslim{ stroke-dasharray:10; animation:gyCizC 2.4s ease-in-out infinite; }',
+    '.sv-c-soru{ animation:gyYanSon 2s ease-in-out infinite; }',
+    '@keyframes svZipla{ 0%,100%{ transform:none; } 50%{ transform:translateY(-2px); } }',
+    /* 3) MEYDAN OKUMA */
+    '.sv-mo{ transform-box:fill-box; transform-origin:center; animation:svMo 9s ease-in-out infinite; }',
+    '@keyframes svMo{ 0%,5%{ transform:scale(1); } 8%{ transform:scale(1.15); } 10%{ transform:scale(.9); } 12%,100%{ transform:scale(1); } }',
+    '.sv-simsek{ opacity:0; animation:svSimsek 9s linear infinite; }',
+    '@keyframes svSimsek{ 0%,11%{ opacity:0; transform:translate(140px,56px) scale(.5); } 13%{ opacity:1; transform:translate(156px,36px) scale(1) rotate(-10deg); }',
+    '  17%{ transform:translate(200px,18px) rotate(0); } 21%{ transform:translate(270px,16px) rotate(10deg); } 25%{ opacity:1; transform:translate(328px,40px) rotate(18deg) scale(1); }',
+    '  28%,100%{ opacity:0; transform:translate(344px,58px) scale(.4); } }',
+    '.sv-davet{ animation:svDavet 9s ease-out infinite both; }',
+    '@keyframes svDavet{ 0%,25%{ opacity:0; } 28%,36%{ opacity:1; } 40%,100%{ opacity:0; } }',
+    '.sv-kabul{ transform-box:fill-box; transform-origin:center; animation:svKabul 9s ease-in-out infinite; }',
+    '@keyframes svKabul{ 0%,31%{ transform:scale(1); } 33%{ transform:scale(1.3); } 35%{ transform:scale(.9); } 37%,100%{ transform:scale(1); } }',
+    '.sv-vs{ transform-box:fill-box; transform-origin:center; animation:svVs 9s cubic-bezier(.3,1.5,.6,1) infinite both; }',
+    '@keyframes svVs{ 0%,37%{ opacity:0; transform:scale(.2); } 41%,70%{ opacity:1; transform:scale(1); } 73%,100%{ opacity:0; transform:scale(.6); } }',
+    '.sv-mp{ transform-box:fill-box; transform-origin:0 50%; animation:svMp1 9s ease-in-out infinite both; }',
+    '.sv-mp.n2{ animation-name:svMp2; }',
+    '@keyframes svMp1{ 0%,41%{ transform:scaleX(0); } 62%,94%{ transform:scaleX(1); } 98%,100%{ transform:scaleX(0); } }',
+    '@keyframes svMp2{ 0%,41%{ transform:scaleX(0); } 52%{ transform:scaleX(.55); } 66%,94%{ transform:scaleX(.82); } 98%,100%{ transform:scaleX(0); } }',
+    '.sv-ms{ font-size:19px; transform-box:fill-box; transform-origin:center; animation:svMs 9s ease-out infinite both; }',
+    '.sv-ms.n2{ animation-delay:.3s; }',
+    '@keyframes svMs{ 0%,64%{ opacity:0; transform:translateY(6px); } 68%,94%{ opacity:1; transform:none; } 98%,100%{ opacity:0; } }',
+    '.sv-kazan{ opacity:0; }',
+    '.sv-kazan.n1{ transform-box:fill-box; transform-origin:center; animation:svKazan 9s ease-out infinite both; }',
+    '@keyframes svKazan{ 0%,74%{ opacity:0; transform:scale(.4); } 78%,94%{ opacity:1; transform:scale(1); } 98%,100%{ opacity:0; } }',
+    '.sv-kupa{ transform-box:fill-box; transform-origin:50% 100%; animation:svKupa 9s cubic-bezier(.3,1.5,.6,1) infinite both; }',
+    '@keyframes svKupa{ 0%,71%{ opacity:0; transform:scale(.2) translateY(10px); } 76%,93%{ opacity:1; transform:none; } 97%,100%{ opacity:0; } }',
+    '.sv-konfeti{ animation:svKonfeti 9s ease-out infinite both; }',
+    '@keyframes svKonfeti{ 0%,73%{ opacity:0; transform:translateY(8px); } 77%{ opacity:1; } 92%{ opacity:1; transform:translateY(-6px); } 96%,100%{ opacity:0; } }',
+    '.sv-c-yildiz{ fill:currentColor; animation:gyYanSon 2s ease-in-out infinite; }',
+    '.sv-c-hedef{ fill:currentColor; animation:gyNabiz 1.4s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }',
+    '.sv-c-anahtar{ fill:currentColor; animation:svAnahtar 2.4s ease-in-out infinite; }',
+    '@keyframes svAnahtar{ 0%,100%{ transform:none; } 50%{ transform:translateX(-9px); } }',
+    /* hareketi azalt: son hâl durağan */
+    '@media (prefers-reduced-motion:reduce){',
+    '  .sv-svg *, .sv-adim, .ty-cip svg *{ animation:none !important; }',
+    '  .sv-kagit, .sv-uc, .sv-imlec, .sv-simsek, .sv-davet, .sv-vs{ opacity:0 !important; }',
+    '  .sv-puan, .sv-top, .sv-tel, .sv-isaret, .sv-oto, .sv-kart-alt, .sv-not, .sv-tac, .sv-ms, .sv-kazan.n1, .sv-kupa, .sv-konfeti{ opacity:1 !important; transform:none !important; }',
+    '  .sv-halka{ stroke-dashoffset:15 !important; } .sv-mp{ transform:none !important; } .sv-mp.n2{ transform:scaleX(.82) !important; }',
+    '  ' + Object.keys(AH).map(function (k) { return '.sv-ah.' + k + ' .sv-zemin'; }).join(', ') + '{ fill:#16A085 !important; }',
+    '  ' + Object.keys(AH).map(function (k) { return '.sv-ah.' + k + ' .sv-dugme'; }).join(', ') + '{ transform:translateX(9px) !important; }',
+    OT.map(function (o, i) { return '  .sv-ot.n' + (i + 1) + '{ transform:' + px(o[2], o[3]) + ' !important; }'; }).join('\n'),
+    '}'
+  ].join('\n');
+  try {
+    if (!document.getElementById('svSinavStil')) {
+      var s = document.createElement('style');
+      s.id = 'svSinavStil';
       s.textContent = STIL;
       (document.head || document.documentElement).appendChild(s);
     }
