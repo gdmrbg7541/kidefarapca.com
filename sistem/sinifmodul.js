@@ -623,39 +623,12 @@
   });
 
 
-  /* Metin Tahlilleri — SEÇİLİ KİTABA BAĞLI
-     (15.10.2026, Geylani: "kidefarapça 2. baskıdaki metin tahlillerini bir
-     kart olarak her sınıfın ilgili kitabına eşle; 6. sınıfta mevcut kitap
-     seçilince o kitabın cümlelerinden metin tahlili yapılmışsa kart
-     görünsün — materyallerde de, giriş yapılmamışken İmam Hatip'te de.")
-
-     Kart yalnız O SINIFIN O ANKİ KİTABINDA metin varsa çıkar: sınıfın
-     seçili kitabı sistem/sinifveri.js'ten (seciliVeriYili → önek), hangi
-     kitapta kaç ders olduğu metintahlili/ozet.js'ten okunuyor. Kitap
-     seçicisi değişince kartlar yeniden basıldığı için (index.html →
-     kidef:veriyili → mhKur → modulKartlari) kart kendiliğinden
-     güncelleniyor; metni olmayan kitapta hiç görünmüyor. */
-  /* METİNLERLE ARAPÇA SİTEYE (14.11.2026) — öğretmen: "sitede var olan metin tahlilleri sistemini tamamen bu şekilde
-     ayarlıcaz, onların yerine bunları ekleyelim". Kart artık Metinlerle Arapça kitabını (kitap/metinlerle-arapca/)
-     o sınıfın bölümünde açar; kitap 5-10 bütün sınıfları içerdiği için kart seçili kitaptan bağımsız, her sınıfta var.
-     Eski kart (seçili kitaba göre metintahlili.html): _kaynak/yedekler/2026-11-14-metinlerle-arapca-siteye/. */
-  var MT_BOLUM = {5: [3, 4], 6: [8, 8], 7: [17, 20], 8: [38, 21], 9: [60, 13], 10: [74, 16]};   // sınıf: [bölüm sayfası, metin sayısı]
-  ekle({
-    id: 'metintahlili',
-    ad: 'Metin Tahlilleri',
-    sira: 55,
-    renk: '#17817E',
-    aciklama: function (s) { return 'Metinlerle Arapça · ' + sayi(s) + '. sınıf diyalog ve metinleri, kelime kelime Türkçesi'; },
-    svg: function () { return "<svg viewBox=\"0 0 64 64\" class=\"kg\" aria-hidden=\"true\"><rect x=\"9\" y=\"6\" width=\"38\" height=\"50\" rx=\"5\" fill=\"#fff\" stroke=\"#17817E\" stroke-width=\"2.6\"/><path d=\"M39 6 h2 a6 6 0 0 1 6 6 v2 h-8z\" fill=\"#CFEFE6\"/><rect x=\"15\" y=\"16\" width=\"20\" height=\"2.8\" rx=\"1.4\" fill=\"#BFD3E2\"/><rect x=\"15\" y=\"23\" width=\"26\" height=\"2.8\" rx=\"1.4\" fill=\"#BFD3E2\"/><rect x=\"15\" y=\"30\" width=\"16\" height=\"2.8\" rx=\"1.4\" fill=\"#BFD3E2\"/><rect x=\"15\" y=\"37\" width=\"23\" height=\"2.8\" rx=\"1.4\" fill=\"#BFD3E2\"/><g transform=\"translate(30 30)\"><circle cx=\"14\" cy=\"14\" r=\"13\" fill=\"#16A085\"/><path d=\"M7.6 19.2 11 10.4l3.4 8.8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M8.9 16.3h4.2\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.9\" stroke-linecap=\"round\"/><text x=\"19.4\" y=\"19.2\" font-family=\"arakom,serif\" font-size=\"12\" fill=\"#fff\" stroke=\"none\" text-anchor=\"middle\">ع</text></g></svg>"; },
-    veriVar: function (s) {
-      var b = MT_BOLUM[sayi(s)];
-      return b ? { rozet: b[1] + ' Metin' } : null;
-    },
-    url: function (s) {
-      var b = MT_BOLUM[sayi(s)];
-      return 'kitap/metinlerle-arapca/index.html' + (b ? '?s=' + b[0] : '');
-    }
-  });
+  /* Metin Tahlilleri — ARTIK KART DEĞİL (18.11.2026). Öğretmen: «bi sınıfa basınca çıkan materyaller kısmında metin
+     tahlilleri bi kart olarak değil flipbook olarak okul kitabı ve kidef arapça flipbook kitabının yanına ekle».
+     Metinlerle Arapça kitabı sınıf belgelerinde Ders Kitabı ve Kidef Arapça'nın yanında, onlar gibi A4 kitap
+     olarak duruyor (index.html → metinKarti · ihdocKur · ihKitapKur; her sınıfın bölüm sayfası orada). Kayıt
+     kaldırıldı ki iki kez görünmesin; eski kart: _kaynak/yedekler/2026-11-18-metin-kitap-sik/sistem__sinifmodul.js.
+     Raporda adı eskisi gibi «Metin Tahlilleri» kalır (sistem/materyalrapor.js). */
 
   /* Kidef Arapça 2. Baskı — ARTIK KART DEĞİL (26.10.2026). Öğretmen: "kidef
      arapça flipbooku kart şeklinde olmasın hiç bir zaman". 19.10'dan beri

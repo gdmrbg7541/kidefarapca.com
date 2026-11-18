@@ -10,6 +10,12 @@
    öğretmen puanlar) · puanı öğretmen de girebilir, girmezse kalan puan soru
    sayısına göre kendiliğinden dağılır · Görev Gönder penceresinde «Sınav» sekmesi.
 
+   ŞIK SAYISI (18.11.2026) — öğretmen: «görev gönder kısmında test hazırlanınca ortaokulda 4 şık, lisede 5 şık
+   çıksın». Hedefin (seviye / sınıf) numarası 5-8 ise 4 şık (A-D), 9-12 ise 5 şık (A-E); numara tanınmazsa
+   kurum adındaki «Ortaokul» / «Lise»ye bakılır; o da yoksa eskisi gibi 4 şık, istenirse «Şık ekle» ile beş.
+   Her test sorusu 5 şık yuvası taşır; görünmeyen yuvadaki yazı silinmez (hedef değişince geri gelir),
+   gönderirken yalnız görünen şıklar gider.
+
    VERİ
      gorevler/{id}         görev (tur:'sinav', oyun:'sinavcoz.html') + sinav:{ad, kurum,
                            ogretmenAd, seviyeAd, sureDk, sorular:[{t, soru, ar, sik, puan}]}
@@ -25,7 +31,8 @@
   if (window.KidefSinav) return;
   var SV = window.KidefSinav = {};
   var C_GRV = 'gorevler', C_ANH = 'sinavAnahtar', C_NOT = 'sinavNot';
-  var HARF = ['A', 'B', 'C', 'Ç', 'D'];
+  var HARF = ['A', 'B', 'C', 'D', 'E'];     /* ortaokulda A–D, lisede A–E (18.11.2026; eskiden A B C Ç D) */
+  var SIK_EN = 5;                            /* bir sorunun tutabileceği en çok şık yuvası */
   var TUR_AD = { test: 'Çoktan seçmeli', dy: 'Doğru / Yanlış', acik: 'Açık uçlu' };
 
   /* ---------------------------------------------------------- yardımcılar */
@@ -192,14 +199,57 @@
   /* ---------------------------------------------------------- TASLAK (tarayıcıda) */
   function taslakAnahtar() { var u = oturum(); return 'kidefSinavTaslak|' + (u ? u.uid : ''); }
   var T = null;    /* {ad, sureDk, sorular:[{t, soru, ar, sik:[], dogru, cevap, puanElle}]} */
+  /* test sorusu hep SIK_EN yuvalıdır; kaç tanesinin görüneceğini hedef belirler (gorunenSik) */
+  function sikDuzelt(q) {
+    if (!q || q.t !== 'test') return q;
+    if (!Array.isArray(q.sik)) q.sik = [];
+    if (q.n == null) q.n = q.sik.length >= 5 ? 5 : 4;      /* eski taslak: beşinci şık eklenmişse beş kalsın */
+    while (q.sik.length < SIK_EN) q.sik.push('');
+    if (q.sik.length > SIK_EN) q.sik.length = SIK_EN;
+    return q;
+  }
   function taslakOku() {
-    try { var v = JSON.parse(localStorage.getItem(taslakAnahtar()) || 'null'); if (v && Array.isArray(v.sorular)) return v; } catch (e) { }
+    try {
+      var v = JSON.parse(localStorage.getItem(taslakAnahtar()) || 'null');
+      if (v && Array.isArray(v.sorular)) { v.sorular.forEach(sikDuzelt); return v; }
+    } catch (e) { }
     return { ad: '', sureDk: '', sorular: [] };
   }
   var tz = null;
   function taslakYaz() { clearTimeout(tz); tz = setTimeout(function () { try { localStorage.setItem(taslakAnahtar(), JSON.stringify(T)); } catch (e) { } }, 250); }
-  function yeniSoru(t) { return t === 'test' ? { t: 'test', soru: '', ar: '', sik: ['', '', '', ''], dogru: null, puanElle: '' }
+  function yeniSoru(t) { return t === 'test' ? { t: 'test', soru: '', ar: '', sik: ['', '', '', '', ''], n: 4, dogru: null, puanElle: '' }
     : t === 'dy' ? { t: 'dy', soru: '', ar: '', dogru: null, puanElle: '' } : { t: 'acik', soru: '', ar: '', cevap: '', puanElle: '' }; }
+
+  /* ŞIK SAYISI HEDEFE GÖRE (18.11.2026) — seviye/sınıf numarası 5-8 → 4 şık, 9-12 → 5 şık; numara tanınmazsa
+     kurum adı («Ortaokul» / «Lise»); o da yoksa 0 döner: eskisi gibi 4 şık, istenirse «Şık ekle» ile beş. */
+  function sinifNo(ad) {                       /* hesap/listelerim.js yoksa kendi okuyucumuz: ilk sayı (yıl değil) */
+    var re = /\d+/g, x, s = String(ad == null ? '' : ad);
+    while ((x = re.exec(s))) { if (x[0].length < 4) { var n = parseInt(x[0], 10); return (n >= 1 && n <= 12) ? n : 0; } }
+    return 0;
+  }
+  SV.sikSayisi = function () {
+    var d = veriAl(); if (!d || !d.levels) return 0;
+    var lId = (document.getElementById('svSeviye') || {}).value || '', L = d.levels[lId]; if (!L) return 0;
+    var tur = (document.getElementById('svHedefTur') || {}).value || 'sinif', cId = (document.getElementById('svSinif') || {}).value || '', C = null;
+    if (tur !== 'seviye') { try { C = (L.classes && L.classes[cId]) || null; } catch (e) { C = null; } }
+    var no = 0;
+    try { no = (typeof window.llSinifSeviyeNo === 'function') ? window.llSinifSeviyeNo(L, C) : (sinifNo(L.name) || sinifNo(C && C.name)); } catch (e) { no = 0; }
+    if (no >= 9) return 5;
+    if (no >= 1) return 4;
+    var k = String(kurumAdi(lId) || '').toLocaleLowerCase('tr'), lise = k.indexOf('lise') > -1, orta = k.indexOf('ortaokul') > -1;
+    return (lise && !orta) ? 5 : ((orta && !lise) ? 4 : 0);
+  };
+  function gorunenSik(q) {                     /* bu soruda kaç şık görünür / gider */
+    var N = SV.sikSayisi();
+    return N || Math.max(2, Math.min(SIK_EN, +q.n || 4));
+  }
+  var sonSik = null;                           /* son çizimdeki şık sayısı: hedef değişip sayı değişirse sorular yeniden çizilir */
+  function sikTazele() {
+    if (!T || !document.getElementById('svSorular')) return;
+    if (SV.sikSayisi() === sonSik) return;
+    if (window.KidefKlavyeAlt) { try { KidefKlavyeAlt.kapat(); } catch (e) { } }
+    sorulariCiz();
+  }
 
   /* ---------------------------------------------------------- hedef seçimi (Görev Gönder ile aynı) */
   function seviyeSecenek() {
@@ -234,15 +284,17 @@
     var tur = (document.getElementById('svHedefTur') || {}).value || 'sinif';
     var sev = (d && d.levels[lId] && d.levels[lId].name) || '', sn = '';
     try { if (tur !== 'seviye') sn = d.levels[lId].classes[cId].name || ''; } catch (e) { }
-    var k = kurumAdi(lId), o = ogretmenAdi();
-    el.innerHTML = 'Sınav kâğıdının başında: <b>' + esc(k || 'kurum adı yok') + '</b> · ' + esc(sev) + (sn ? ' / ' + esc(sn) : '') + ' · Öğretmen: <b>' + esc(o || '—') + '</b>';
+    var k = kurumAdi(lId), o = ogretmenAdi(), N = SV.sikSayisi();
+    el.innerHTML = 'Sınav kâğıdının başında: <b>' + esc(k || 'kurum adı yok') + '</b> · ' + esc(sev) + (sn ? ' / ' + esc(sn) : '') + ' · Öğretmen: <b>' + esc(o || '—') + '</b>' +
+      '<br>Çoktan seçmeli sorular: <b>' + (N ? N + ' şık (A–' + HARF[N - 1] + ')' : '4 şık (A–D); istersen beşinci şık eklenir') + '</b>';
+    sikTazele();
   }
 
   /* ---------------------------------------------------------- SINAV SEKMESİ (Görev Gönder penceresi) */
   SV.ciz = function (hedefId, on) {                 /* on: {lId, cId} — sınıf görünümünden açılınca o sınıf seçili gelir */
     var g = document.getElementById(hedefId || 'gvGovde'); if (!g) return;
     stil(); if (window.KidefKlavyeAlt) KidefKlavyeAlt.kur();
-    T = taslakOku();
+    T = taslakOku(); sonSik = null;
     if (!T.sorular.length) T.sorular.push(yeniSoru('test'));
     g.innerHTML = '<div class="sv-k">' +
       '<div class="sv-bas">' + IK.kagit + '<span>Soruları yaz, puanları istersen sen gir; boş bıraktıkların 100\'e kendiliğinden tamamlanır. Taslak bu tarayıcıda saklanır.</span></div>' +
@@ -289,7 +341,7 @@
   }
   function sorulariCiz() {
     var kap = document.getElementById('svSorular'); if (!kap) return;
-    var D = SV.dagit(T.sorular);
+    var D = SV.dagit(T.sorular); sonSik = SV.sikSayisi();
     kap.innerHTML = T.sorular.map(function (q, i) {
       var tur = '<span class="sv-tur">' + ['test', 'dy', 'acik'].map(function (t) { return '<button type="button" data-sv-tur="' + t + '" data-i="' + i + '" class="' + (q.t === t ? 'on' : '') + '">' + TUR_AD[t] + '</button>'; }).join('') + '</span>';
       var oto = (q.puanElle === '' || q.puanElle == null);
@@ -301,10 +353,10 @@
         '<div class="sv-alan"><small>Soru</small>' + alanHtml('svQ' + i, q.soru, (i + 1) + '. soru', false, 'ör. Aşağıdaki cümlenin Türkçesi hangisidir?', 1) + '</div>' +
         '<div class="sv-alan"><small>Arapça metin (isteğe bağlı)</small>' + alanHtml('svA' + i, q.ar, (i + 1) + '. sorunun Arapça metni', true, 'اُكْتُبْ هُنا…', 1) + '</div>';
       if (q.t === 'test') {
-        h += '<div class="sv-alan"><small>Şıklar — doğru şıkkın harfine dokun</small>' + q.sik.map(function (s, j) {
+        h += '<div class="sv-alan"><small>Şıklar — doğru şıkkın harfine dokun</small>' + q.sik.slice(0, gorunenSik(q)).map(function (s, j) {
           return '<div class="sv-sik"><button type="button" class="sv-h' + (q.dogru === j ? ' on' : '') + '" data-sv-dogru="' + j + '" data-i="' + i + '" title="Doğru şık" aria-label="' + HARF[j] + ' doğru şık">' + HARF[j] + '</button>' +
             '<div style="flex:1">' + alanHtml('svS' + i + '_' + j, s, (i + 1) + '. soru ' + HARF[j] + ' şıkkı', false, HARF[j] + ' şıkkı', 1) + '</div></div>';
-        }).join('') + (q.sik.length < 5 ? '<button type="button" class="sv-ib" style="width:auto;padding:0 10px;margin-top:6px;font:700 .78rem/1 inherit;gap:4px;display:inline-flex" data-sv-is="sikEkle" data-i="' + i + '">' + IK.arti + 'Şık ekle</button>' : '') + '</div>';
+        }).join('') + (!SV.sikSayisi() && gorunenSik(q) < SIK_EN ? '<button type="button" class="sv-ib" style="width:auto;padding:0 10px;margin-top:6px;font:700 .78rem/1 inherit;gap:4px;display:inline-flex" data-sv-is="sikEkle" data-i="' + i + '">' + IK.arti + 'Şık ekle</button>' : '') + '</div>';
       } else if (q.t === 'dy') {
         h += '<div class="sv-dy"><button type="button" data-sv-dy="1" data-i="' + i + '" class="' + (q.dogru === true ? 'on' : '') + '">Doğru</button><button type="button" data-sv-dy="0" data-i="' + i + '" class="' + (q.dogru === false ? 'on' : '') + '">Yanlış</button></div>';
       } else {
@@ -354,7 +406,7 @@
     if (is === 'sil') { if ((q.soru || q.ar) && !confirm((i + 1) + '. soru silinsin mi?')) return; T.sorular.splice(i, 1); }
     else if (is === 'yukari' && i > 0) { T.sorular.splice(i - 1, 0, T.sorular.splice(i, 1)[0]); }
     else if (is === 'asagi' && i < T.sorular.length - 1) { T.sorular.splice(i + 1, 0, T.sorular.splice(i, 1)[0]); }
-    else if (is === 'sikEkle' && q.sik.length < 5) { q.sik.push(''); }
+    else if (is === 'sikEkle' && !SV.sikSayisi() && gorunenSik(q) < SIK_EN) { q.n = SIK_EN; }
     sorulariCiz(); taslakYaz();
   }
 
@@ -366,9 +418,10 @@
       var q = T.sorular[i], no = (i + 1) + '. soru: ';
       if (!String(q.soru || '').trim() && !String(q.ar || '').trim()) return { hata: no + 'soru metni boş.', i: i };
       if (q.t === 'test') {
-        var dolu = q.sik.filter(function (s) { return String(s || '').trim(); }).length;
+        var Ns = gorunenSik(q);
+        var dolu = q.sik.slice(0, Ns).filter(function (s) { return String(s || '').trim(); }).length;
         if (dolu < 2) return { hata: no + 'en az iki şık yazmalısın.', i: i };
-        if (q.dogru == null || !String(q.sik[q.dogru] || '').trim()) return { hata: no + 'doğru şıkkı işaretlemedin.', i: i };
+        if (q.dogru == null || q.dogru >= Ns || !String(q.sik[q.dogru] || '').trim()) return { hata: no + 'doğru şıkkı işaretlemedin.', i: i };
       }
       if (q.t === 'dy' && q.dogru !== true && q.dogru !== false) return { hata: no + 'doğru mu yanlış mı, seçmedin.', i: i };
     }
@@ -404,7 +457,7 @@
     var sorular = T.sorular.map(function (q, i) {
       var o = { t: q.t, soru: String(q.soru || '').trim(), ar: String(q.ar || '').trim(), puan: dn.D.puan[i] };
       if (q.t === 'test') {           /* boş şıklar atılır; doğru şıkkın yeni yeri anahtara yazılır */
-        o.sik = []; q.sik.forEach(function (s, j) { if (String(s || '').trim()) { if (j === q.dogru) o._d = o.sik.length; o.sik.push(String(s).trim()); } });
+        o.sik = []; q.sik.slice(0, gorunenSik(q)).forEach(function (s, j) { if (String(s || '').trim()) { if (j === q.dogru) o._d = o.sik.length; o.sik.push(String(s).trim()); } });
       }
       return o;
     });

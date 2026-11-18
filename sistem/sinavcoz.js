@@ -17,7 +17,7 @@
     messagingSenderId: '503317118211',
     appId: '1:503317118211:web:a9c8cf15b854597e0b3d36'
   };
-  var HARF = ['A', 'B', 'C', 'Ç', 'D'];
+  var HARF = ['A', 'B', 'C', 'D', 'E'];     /* ortaokulda A–D, lisede A–E (18.11.2026; eskiden A B C Ç D) */
   var IK = {
     ev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>',
     kl: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6 10h1M9.5 10h1M13 10h1M16.5 10h1M7 14h10"/></svg>',

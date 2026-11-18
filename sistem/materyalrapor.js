@@ -147,6 +147,8 @@
         /* Kidef Arapça kitabı belge ızgarasında duruyor ama eskisi gibi
            etkinlik sayılır, süresi ölçülür (26.10.2026) */
         if (/(?:^|\/)kitap\/kidef-arapca-2-baski\//.test(yol)) return 'etkinlik';
+        /* Metinlerle Arapça kitabı da öyle (18.11.2026): eskiden «Metin Tahlilleri» etkinlik kartıydı */
+        if (/(?:^|\/)kitap\/metinlerle-arapca\//.test(yol)) return 'etkinlik';
         if (a.closest && a.closest('.ihdoc-acc')) return 'belge';       /* sınıf belgeleri bloğu */
         if (BELGE_UZANTI.test(yol) || /(?:^|\/)dosyalar\//.test(yol)) return 'belge';
         return 'etkinlik';
@@ -167,6 +169,9 @@
             /* Kidef Arapça kitabı: eski kartın adıyla (rapor satırları birleşsin) */
             if (a.classList.contains('a4-kart') && /kidef-arapca-2-baski/.test(a.getAttribute('href') || ''))
                 return 'Kidef Arapça 📒 2. Baskı';
+            /* Metinlerle Arapça kitabı: eski kartın adıyla (rapor satırları birleşsin) — 18.11.2026 */
+            if (a.classList.contains('a4-kart') && /kitap\/metinlerle-arapca\//.test(a.getAttribute('href') || ''))
+                return 'Metin Tahlilleri';
             if (a.classList.contains('game-card')) {
                 var h = yazi(a.querySelector('h3'));
                 if (h) return kisalt(h);

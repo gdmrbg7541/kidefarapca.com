@@ -25,10 +25,29 @@
         boş kalabilir. sistem/galeri.js maddeleri liste olarak çizer. Aynı sayfayı
         sistem/yenilikler.js'e de (metin = maddeler art arda) yaz.
 
+   EN FAZLA 20 KAYIT (15.11.2026) — öğretmen: "sınıfta yeni kısmında 20 duyurudan sonrakileri silelim".
+     Dizi en yeni 20 kaydı tutar. Yeni kayıt başa eklenince 21. sıraya düşen en eski kayıt SİLİNİR; sistem/
+     yenilikler.js'teki profil şeridi ayrı bir listedir, kısaltılmaz. 15.11.2026'da 49 kayıttan 30'u silindi
+     (eski hâli: _kaynak/yedekler/2026-11-15-siniftayeni-20/siniftayeni.js). Betik: _kaynak/uretici/siniftaYeni20.py
+
    Site içi teknik duyuru şeridi ayrı yerde: sistem/yenilikler.js
    (öğretmen profilindeki "yenilik" şeridi).
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
+  /* SINIFTA YENİ 15.11.2026 — öğretmen: "sınıfta yeni kısmına başkan ve başkan yardımcısı ile ilgili bilgileri ekle,
+     ayrıca sınıfta yeni kısmında 20 duyurudan sonrakileri silelim". Başkan ve yardımcı kendi profilinde ne görür;
+     görseli dosyanın sonunda: g 'baskanprofil'. Liste artık en fazla 20 kayıt tutar. */
+  { t: '2026-11-15', e: 'Sınıf yönetimi', g: 'baskanprofil', b: 'Başkan ve yardımcı profilinde ne görür',
+    m: 'Seçtiğin başkan ve yardımcı, görevlerini kendi profillerindeki «Sınıfım» kartından yönetir.',
+    L: [
+      'Başkan ya da yardımcı yapabileceğin öğrenci, e-postayla kayıtlı ve sana bağlı olandır.',
+      'Sınıfta bir başkan, bir yardımcı bulunur; yeni birini seçersen eskisinin unvanı kalkar.',
+      'İlk seçimde başkana hatırlatma, son gün, ödev durumu ve kura; yardımcıya hatırlatma ve kura açılır, sonra değiştirebilirsin.',
+      'Kartın başlığında «başkan» ya da «yardımcı» yazar; yalnız yetki verdiğin araçlar açılır.',
+      'Ödev durumunu görür ama puanları göremez; «Hatırlatma dürtüsü» yetkisi verirsen bitirmeyen arkadaşını dürter.',
+      'Oturma planı yetkisiyle planı A4 çıktı alıp sınıfa asabilir; başkan altın, yardımcı gümüş taçla görünür.'
+    ] },
+
   /* SINIFTA YENİ 15.11.2026 — öğretmen: "sınıfta yeni kısmına ekle, güzel animasyonlu svg ekle"
      (sınav gönder, sınıf başkanı ve yardımcısı, meydan okuma). Görseller dosyanın sonunda: g 'sinav',
      g 'baskan', g 'meydan'. */
@@ -72,7 +91,7 @@ window.KIDEF_SINIFTA_YENI = [
       'Tek dokunuşla bütün cümlenin Türkçesi altında çıkar.',
       'Ders kitabında metnin sayfasına gelince «Kidef\'le!» düğmesi çıkar; metin hemen açılır.',
       'Derste açtığın çeviriler sayfada kalır; ders bitince silgiyle temizlersin.',
-      'Sınıfının Materyaller kısmındaki «Metin Tahlilleri» kartından da açılır.'
+      'Sınıfının Materyaller kısmında, ders kitabının yanındaki «Metinlerle Arapça» kitabından da açılır.'
     ] },
 
   /* SINIFTA YENİ 08.11.2026 — öğretmen: "sitede öğrenciyi kendi hesabıyla eşleştiren öğretmenlerin tüm
@@ -231,209 +250,10 @@ window.KIDEF_SINIFTA_YENI = [
       'Telefonda Kelime Listeleri ekrana sığar; Word, Excel ve PDF indirilir.',
       'Videolarda ve etkinliklerde «Tam ekran» ve «Yeni sekmede» düğmeleri var.',
       'Giriş hataları artık Türkçe; «Şifremi unuttum» ile yeni şifre alırsın.'
-    ] },
-
-  { t: '2026-10-25', e: 'Okuma', b: 'Okuma hızını ölç, yarışmaya hazırlan',
-    L: [
-      'Okuma Hızlandırma: her sınıfa 18 okuma; Alfabe\'de ve sınıf materyallerinde.',
-      'Süre tut, sesle birlikte hızlan ya da mikrofonla ölç; hız yıldızla değerlendirilir.',
-      'Muhâdesede her cümlenin anlamını çağrıştıran animasyonlu bir resim var.',
-      'Aylık Türkiye Arapça Yarışması: tarih açıklanınca ana sayfada geri sayım çıkar.',
-      'Öğrenciler kendi hesabıyla katılır; sen katılmazsın, bağlantıyı paylaşırsın.'
-    ] },
-
-
-  /* 22.10.2026 — öğretmen: "sınıfta yeni kısmındaki ekranı yansıt kısmını güncelle, ilk
-     duyuru olsun, kumanda özellikleri vs ekledik". 17.10'daki tahta kaydı bugünkü akışla
-     yeniden yazıldı ve başa alındı (görsel aynı: g 'tahta'). */
-  { t: '2026-10-22', e: 'Akıllı tahta', g: 'tahta', b: 'Tahtanın kumandası artık cebinde',
-    m: 'Telefonla en kısası: «Karekodu tara» ile tahtadaki giriş karekodunu okut ve onayla, '
-     + '«Bu telefon tahtanın kumandası olsun mu?» sorusuna «Evet» de; tahtada oturumun açılır, '
-     + 'telefonun kumanda olur. Bilgisayardan yansıtacaksan tahtayı bir kez başlıktaki kumanda '
-     + 'simgesinden «Sınıf Ekranı» olarak işaretle, bilgisayarda yeşil «Bu cihazı kumanda olarak '
-     + 'kullan»a dokun. Açtığın sayfa, kaydırdığın yer, yazdığın kelime kablosuz olarak tahtada '
-     + 'aynı anda görünür; şifre alanları tahtaya gitmez. Kumanda tuşundan «Perde» ile tahtayı '
-     + 'karartır, «Duraklat» ile bekletirsin. «Lazer» açıkken parmağını gezdirdiğin kelimenin üstünde '
-     + 'tahtada kırmızı nokta belirir ve bıraktığın yerde kalır, «Büyüteç» gezdirdiğin yeri tahtada '
-     + 'yuvarlak bir mercekle büyütür; «Tahtadan da '
-     + 'kullan»ı açarsan öğrenci tahtaya dokunarak çalışır. Ders sürerken telefonunun ekranı '
-     + 'kararmaz; kilitlense de tahta sürer, '
-     + 'açınca kaldığın yerden devam edersin. Kumanda tektir: başka bir cihazı kumanda yaparsan '
-     + 'eskisi kendiliğinden bırakır. Dizinden, ayağından rahatsızsan ders boyunca masanda oturarak '
-     + 'anlatırsın.' },
-
-  { t: '2026-10-20', e: 'Destek', b: 'Kidef\'i birlikte ayakta tutuyoruz',
-    /* 22.10.2026: dönemlik sabit pay (günlük tutar kalktı) · 23.10.2026: yapay zekâ yerine yayın, geliştirme ve emek */
-    m: 'Sitenin yayın ve geliştirme giderleri ile materyallerin, oyunların, sınavların hazırlanmasından '
-     + 'yayımlanmasına kadar süren öğretmen emeği, siteyi kullanan öğretmenler arasında paylaşılıyor. '
-     + 'Profilindeki «Beklenen Destek» '
-     + 'kartında bu dönemin desteğini görürsün: tutar dönem başında (Eylül ve Şubat) bir kez belirlenir, '
-     + 'dönem boyunca değişmez; siteye katılan öğretmen arttıkça gelecek dönemin payı küçülür, yani '
-     + 'meslektaşını davet etmek en iyi destek. Yeni katılanın ilk ayı bizden. Kartta herkesin birlikte '
-     + 'doldurduğu «ortak hedef» çubuğu da var. Ödemen onaylanınca sana teşekkür mesajı gelir; profilinde destekçi rozeti belirir. '
-     + 'Ana sayfadaki destekçiler şeridinde ve kartın altındaki köşede ad ve tutar yazılmaz; '
-     + 'istersen meslektaşlarına bırakacağın tek cümle orada görünür.' },
-
-  { t: '2026-10-18', e: 'Dijital kitap', b: '5-10. sınıfın ders kitapları sitede, sayfa sayfa',
-    m: '5, 6, 7, 8, 9 ve 10. sınıfın ders kitabı artık sitede sayfa çevirmeli olarak açılıyor: '
-     + 'İmam Hatip bölümünde sınıfının ilk kartı «Ders Kitabı». Kitaptaki karekodların sesleri, '
-     + 'videoları ve etkinlikleri sayfanın üstünde düğme olarak duruyor; telefonla karekod '
-     + 'okutmadan tahtada dinletir, izletirsin. Yazı küçük kalırsa sayfanın bir bölgesine dokun, '
-     + 'o bölge tahtayı doldurur. 8. sınıf kitabının etkinlikleri de EBA\'ya gitmeden kitabın '
-     + 'içinde açılıyor: sınıf tahtada çözüyor, «Kontrol et» hemen gösteriyor, cevap anahtarı '
-     + 'tek dokunuşta.' },
-
-  { t: '2026-10-14', e: 'Metin Tahlili', b: '5-10. sınıfın metinleri Kidef Arapça kitabının içinde',
-    m: 'Kitabın içindekiler sayfasının hemen ardına her sınıf için bir sayfa geldi: '
-     + 'sınıfın üniteleri ve dersleri sırayla duruyor, kaç metin olduğu yanında '
-     + 'yazıyor. Bir derse dokununca o dersin cümleleri ve diyalogları tam ekran '
-     + 'açılıyor — ayrı bir dosya açmana, bağlantı aramana gerek yok. Hangi sınıfa '
-     + 'girersen gir, o sınıfın metni iki dokunuş uzakta.' },
-
-  { t: '2026-10-14', e: 'Metin Tahlili', b: 'Cümleyi çocuk kendi kuruyor, tercümeyi sen açtırıyorsun',
-    m: 'Arapça kelimeye dokununca yalnız o kelimenin Türkçesi tam üstünde beliriyor; '
-     + 'cümlenin düzgün Türkçesi, bütün kelimeler açılana kadar aşağıda gizli '
-     + 'duruyor. Böylece sınıf kelimeleri toplayıp cümleyi önce zihninden kuruyor, '
-     + 'sonra kendi kurduğuyla karşılaştırıyor. Üstteki anahtarlardan "Hepsi '
-     + 'açılınca tercüme"yi kapatırsan cümle hiç açılmıyor; sen Tercüme düğmesine '
-     + 'basana kadar sınıf uğraşıyor. "Harekesiz oku" anahtarı harekeleri gizliyor, '
-     + 'aynı metni ileri seviyede bir daha okutabilirsin. Kökü bilinen kelimeden '
-     + 'kalıplar tablosuna geçmek de muhâdesedeki gibi duruyor.' },
-
-  { t: '2026-10-11', e: 'Harf Tanıtımı', b: 'Harfler tahtada tek kalemle yazılıyor',
-    m: 'Bir harfe dokununca dört yazılışı birlikte yazılıyor ve kalem harfin '
-     + 'gerçek yazım sırasını izliyor; ekranın başka bir yerinde ikinci bir '
-     + 'kalem başlamıyor, çocuk gözüyle takip edebiliyor. Yazma hızı beş '
-     + 'kademe: sınıf yeni başlıyorsa yavaşlatıp deftere birlikte yazdırırsın, '
-     + 'tekrar turunda hızlandırırsın. İstersen dört yazılışı sırayla da '
-     + 'yazdırabilirsin — seçimin bir sonraki harfte de geçerli kalıyor.' },
-
-  { t: '2026-10-11', e: 'Harf Tanıtımı', b: 'Bir yazılışa dokun, kelimedeki hâlini göster',
-    m: 'Dört yazılıştan birine dokununca o biçim tek başına büyüyor, diğer üçü '
-     + 'yanda küçülüyor; altında o biçimin geçtiği üç kelime çıkıyor ve harf '
-     + 'kelimenin içinde kırmızı duruyor. "Bu harf kelimenin başında nasıl '
-     + 'yazılıyor?" sorusunun cevabı tek harfin üstünde değil, gerçek kelimede '
-     + 'görünüyor. Seçili yazılışa yeniden dokunmak dört yazılışa döndürüyor.' },
-
-  { t: '2026-10-11', e: 'Harf Tanıtımı', b: 'Sonrakiyle birleşmeyen altı harf tek ekranda',
-    m: 'Sağdaki köşeye dokununca altı harf ekranın ortasında büyüyor: her harfin '
-     + 'iki yazılışı ve dört örneği aynı satırda — kelimenin başında, ortasında, '
-     + 'sonunda ve yalın hâliyle, harf kırmızı. "Bunlar niçin kendinden sonrakine '
-     + 'bitişmiyor?" sorusunu altı harfin örnekleri üzerinden tek seferde '
-     + 'anlatıyorsun; arka sıra da rahat okuyor.' },
-
-  { t: '2026-10-09', e: 'Harf Tanıtımı', b: 'İstenen harfi yaz: önce düşünsünler, sonra göster',
-    m: 'Tahtaya "cim harfinin baştaki yazılışını yazın" gibi bir istek düşüyor; '
-     + 'çocuklar deftere yazarken ekranda yalnız istek duruyor. Sen hazır olunca '
-     + '"Yazılışı göster" ile harf satırın üstüne kalemle yazılıyor, istersen '
-     + 'dört yazılışın tamamını da açıyorsun. Ölçmek istersen aynı satırdaki '
-     + 'Dene düğmesi şıklı hâlini veriyor; doğru şık kırmızı çerçeveyle '
-     + 'belirlenip yazılışı açılıyor.' },
-
-  { t: '2026-10-04', e: 'Sınıf defteri', b: 'Her haftanın öğrenme çıktısı kitabına göre hazır',
-    m: 'Şubenin defterini açtığında o haftanın ünitesi ve öğrenme çıktıları kazanım '
-     + 'kodlarıyla karşında duruyor; hangi kitabı kullanıyorsan ona ait olanlar '
-     + 'geliyor, kitabı değiştirince çıktılar da değişiyor. Tek dokunuşla deftere '
-     + 'düşürüyorsun, dersin günü kendiliğinden yazılıyor. Zümre ya da denetim '
-     + 'istediğinde dolu haftaları imza satırıyla birlikte yazdırabilirsin.' },
-
-  { t: '2026-10-04', e: 'Sınıf defteri', b: 'Plan ve defter artık tek yerde',
-    m: 'Haftalık plan ile defter ayrı ayrı doldurulmuyor: aynı hafta kartında '
-     + 'üstte kitaptan gelen çıktı, ortada senin planın, altta sınıfta gerçekten '
-     + 'işlenen yazıyor. "İşlendi" kutusu ve kaldığın yer de orada. Plan '
-     + 'şubelerin ortak kalıyor, defter her şubenin kendine özel.' },
-
-  { t: '2026-10-04', e: 'Ders başı', b: 'Günün sözünü kendi dersine göre seçiyorsun',
-    m: 'Merak Çarkı açılınca gelen söz artık tek çeşit değil: âyet, hadis, yalnız '
-     + 'dinî sözler, atasözü ya da deyim — hangisini seçersen o tür geliyor ve '
-     + 'seçimin hatırlanıyor. Âyet ve hadiste Arapçası, Türkçesi ve kaynağı bir '
-     + 'arada çıkıyor; Arapça metni tahtaya yansıtıp okutabilirsin. Söz her gün '
-     + 'değişir ve aynı gün bütün sınıflarda aynıdır, "bugünün sözü" diyebilirsin.' },
-
-  { t: '2026-10-03', e: 'Sarf', b: 'Kelime Fabrikası sıradaki adımı kendi gösteriyor',
-    m: 'Kök, ustanın rafına inince yanıp sönüyor. Öğrenci nereye basacağını sormadan '
-     + 'buluyor, vezinler o anda çıkıyor. Tahtada çalışırken sen yönerge vermekle '
-     + 'uğraşmıyorsun, ders akışı kesilmiyor.' },
-
-  { t: '2026-10-03', e: 'Planlar', b: 'Günlük planlar bir sayfada iki ders günü',
-    m: 'Yıl boyunca her ders gününün planı hazır; bir sayfada iki gün olduğu için '
-     + 'çıktı neredeyse yarıya indi. Zümreye ya da denetime tek dosyayla gidersin. '
-     + 'Okulunun çizelgesi farklıysa sayfaları birleştirip ayırabilirsin.' },
-
-  { t: '2026-10-03', e: 'Dijital kitap', b: 'İçindekiler artık elinin altında',
-    m: 'Kitabı tahtaya yansıtınca içindekiler en üstte duruyor: üniteye tek dokunuşla '
-     + 'geçersin, ders başında sayfa aramazsın. İçindekiler ve kaynaklar ekranın '
-     + 'solundan açılıyor, kitap ortada görünmeye devam ediyor.' },
-
-  { t: '2026-10-03', e: 'Katalog', b: 'Hangi derde hangi araç, tek listede',
-    m: 'Araç kataloğuna dijital ders kitapları, kitap etkinlikleri, okul temelli '
-     + 'planlama ve seçmeli Arapça belgeleri eklendi. Sınıfta bir sıkıntıya '
-     + 'düştüğünde hangi aracın işini göreceğini tek sayfada bulursun.' },
-
-  { t: '2026-10-02', e: 'Açık öğretim', b: 'AÖİHL kurları için hazır dönem planı',
-    m: 'Arapça-1\'den Arapça-4\'e dört kurun 18 haftalık planı hazır; haftalık ders '
-     + 'saatine göre bölünmüş. İndirip okul adını yazman yeterli, baştan plan '
-     + 'yazmana gerek kalmıyor.' },
-
-  { t: '2026-10-02', e: 'Planlar', b: 'Hangi hafta hangi sayfa işlenecek belli',
-    m: '5 ve 6. sınıfın yıllık ve günlük planlarında her haftanın karşısında o hafta '
-     + 'işlenecek kitap sayfaları yazıyor. Haftalık hazırlığı plan ile kitap arasında '
-     + 'gidip gelmeden yaparsın; hangi üniteye ne kadar kaldığını da görürsün.' },
-
-  { t: '2026-10-02', e: 'Kelime çalışması', b: 'Kelime listesini çıktı olarak verebilirsin',
-    m: 'Kelime dağarcığında liste görünümündeyken indirme düğmesi çıkıyor: üniteyi seç, '
-     + 'listeyi indir, çoğalt. Hafıza kartı ya da test çalışırken düğme ortada '
-     + 'durmuyor, öğrencinin dikkatini dağıtmıyor.' },
-
-  { t: '2026-10-02', e: 'Oyun', b: 'Hafıza kartları beklemeden açılıyor',
-    m: 'Zilden sonra oyun neredeyse anında geliyor; ısınma için yükleme beklemiyorsun. '
-     + 'Kartların görünümü de sadeleşti, arka sıradan okunuyor — tahtada bütün sınıfla '
-     + 'birlikte oynatabilirsin.' },
-
-  { t: '2026-10-01', e: 'Planlar', b: 'Okul temelli planlama belgesi hazır',
-    m: 'Programın okula bırakılan %10\'luk payını belgelemek için doldurulmuş form. '
-     + 'Sınıfının eksiğine göre düzenleyip zümre dosyana koyarsın; o payın hangi '
-     + 'haftaya denk geldiği yıllık planda da işaretli.' },
-
-  { t: '2026-08-24', e: 'Sınıf verisi', b: 'Hangi programa göre çalıştığın görünüyor',
-    m: 'Sınıf kartlarında, muhâdese ünite listesinde ve yarışma konularında öğretim '
-     + 'yılı rozeti var. İki yıla ait verisi olan sınıfta rozetten hangi kitapla '
-     + 'çalışacağını seçersin; yanlış ünite açma derdi bitiyor.' },
-
-  { t: '2026-08-24', e: 'Haftalık takip', b: 'Haftalık kazanım önerisi',
-    m: 'Haftalık Kazanım Takibi\'nde 36 haftalık kazanım önerisi ve yıl sonu hedefi '
-     + 'çıkıyor. Beğendiğin haftaları işaretleyip kendi planına aktarırsın; senin '
-     + 'yazdıklarının üstüne yazmıyor, yalnız boş bıraktığın yerleri dolduruyor.' },
-
-  { t: '2026-08-24', e: 'Planlar', b: '6. sınıf tavsiyesi yeni programa geçti',
-    m: '6. sınıf haftalık planı 2025 programının dört ünitesine göre yeniden dizildi: '
-     + '36 hafta, depodaki yıllık planla aynı sırada. Tavsiyeyle planın birbirini '
-     + 'tutuyor, iki ayrı sıra takip etmiyorsun.' },
-
-  { t: '2026-08-24', e: 'Bilgi yarışması', b: 'Zorluğu gruba göre ayarlıyorsun',
-    m: 'Zorluk seçimi ana ekranda; kapattığın seviyedeki sorular tura hiç girmiyor. '
-     + 'Zayıf gruba kolay, hazır gruba zor turu bir dokunuşla kurarsın — aynı sınıfta '
-     + 'iki farklı tur açmak da mümkün.' },
-
-  { t: '2026-08-22', e: 'Bilgi yarışması', b: 'Kalıplar Tablosu tahtada canlı',
-    m: 'Yarışmaya Kalıplar Tablosu konusu geldi. Soru gelince tablonun kendisi tahtada '
-     + 'açılıyor: kök yükleniyor, hedef hücre yanıyor, cevap açılınca kelime türüyor. '
-     + 'Öğrenci kalıbı kuralı dinleyerek değil, oluşurken görerek öğreniyor.' },
-
-  { t: '2026-08-22', e: 'Bilgi yarışması', b: 'Öğrenciler karekodla katılıyor',
-    m: 'Hesap açmaya gerek yok: karekodu okutup adını yazması yeterli. Bir sınıfı iki '
-     + 'dakikada yarışmaya sokarsın, ders başında kayıt işiyle vakit kaybetmezsin.' },
-
-  { t: '2026-08-15', e: 'Bilgi yarışması', b: '6. sınıfa 173 soruluk yarışma',
-    m: 'Sorular muhâdese ders verisinden üretildi; kelimeler işlediğin derslerle '
-     + 'birebir aynı. Ünite sonunda ayrıca hazırlık yapmadan tur açıp ölçme '
-     + 'yapabilirsin.' },
-
-  { t: '2026-08-15', e: 'Sınıf etkinlikleri', b: 'Etkinlikler kolaydan zora sıralandı',
-    m: 'Sınıf kartlarındaki etkinlikler kolaydan zora dizildi; 5 ve 9. sınıfa Alfabe '
-     + 'etkinliği eklendi. Sınıfın seviyesine göre yukarıdan aşağı ilerler, hangi '
-     + 'etkinliğin erken geldiğini denemeden görürsün.' }
+    ] }
 ];
+/* NOT (15.11.2026): g 'tahta' kaydı listeden silindi ama aşağıdaki «tahta» görsel bloğu SİLİNMEMELİ — öteki
+   görsellerin ortak biçimleri (.ty-kutu, .ty-svg, .ty-cip, .ty-vurgu, tyAkis …) o blokta tanımlıdır. */
 
 /* ---------------------------------------------------------------------------
    KAYIT GÖRSELLERİ (17.10.2026) — kayıtta g: '<ad>' varsa sistem/galeri.js
@@ -1358,3 +1178,206 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
     }
   } catch (e) { }
 })();
+
+/* >>> baskanprofil-gorsel (15.11.2026) >>> */
+/* ---------------------------------------------------------------------------
+   BAŞKAN VE YARDIMCI — KENDİ PROFİLİNDE (15.11.2026) — öğretmen: "sınıfta yeni kısmına başkan ve başkan
+   yardımcısı ile ilgili bilgileri ekle".
+     g: 'baskanprofil' — öğretmenin ekranında yetki anahtarları açılır; altın taç başkanın, gümüş taç
+                         yardımcının telefonuna uçar; ikisi de profilindeki «Sınıfım» kartını açar; yetki verilen
+                         araçlar tek tek yanar (başkanda dört, yardımcıda iki; ötekiler kapalı) (10 sn döngü)
+   Biçim öteki görsellerle ortak (.ty-kutu, .ty-svg, .ty-cipler, .ty-cip, .ty-vurgu, .gy-kutu, .gy-yan);
+   bu görsele özgü olanlar sp- önekli. Görsel küçük gösterildiğinden içinde yazı yok: anlatım maddelerde.
+   «Hareketi azalt»ta son hâl durağan. _kaynak/uretici/baskanProfilGorsel.js — siniftaYeni20.py gömer.
+   --------------------------------------------------------------------------- */
+(function () {
+  var G = window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
+  var SIM = function (ic) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ic + '</svg>'; };
+  var CIP = function (ic, yazi) { return '<span class="ty-cip">' + SIM(ic) + yazi + '</span>'; };
+  var OK = '<span class="gy-ok" aria-hidden="true">' + SIM('<path d="M3 12h15"/><path d="M14 7l5 5-5 5"/>') + '</span>';
+  var ADIM = function (n, ic, yazi) { return '<span class="sp-adim sp-adm' + n + '">' + SIM(ic) + yazi + '</span>'; };
+
+  /* taç: altın (başkan) ve gümüş (yardımcı); k = ölçek */
+  var TAC = 'M-9 4L-9.6 -5L-4.4 -.4L0 -7L4.4 -.4L9.6 -5L9 4Z';
+  var TACR = { b: ['#F5B301', '#B7791F', '#FDE68A'], y: ['#E2E8F0', '#64748B', '#FFFFFF'] };
+  var tac = function (r, k) {
+    return '<g transform="scale(' + k + ')"><path d="' + TAC + '" fill="' + TACR[r][0] + '" stroke="' + TACR[r][1] + '" stroke-width="1.2" stroke-linejoin="round"/>' +
+      '<circle cx="0" cy="-7" r="1.6" fill="' + TACR[r][2] + '"/></g>';
+  };
+  var TIK = function (cx, cy, r, renk) {
+    return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + renk + '"/>' +
+      '<path d="M' + (cx - r * .45) + ' ' + cy + 'l' + (r * .32) + ' ' + (r * .32) + ' ' + (r * .62) + ' -' + (r * .64) + '" fill="none" stroke="#fff" stroke-width="' + (r * .3) + '" stroke-linecap="round" stroke-linejoin="round"/>';
+  };
+
+  /* ------------------------------------------------ zaman çizelgesi (10 sn döngü, % olarak) */
+  var KF = [], VAR = {};
+  var tek = function (ad, kural) { if (!VAR[ad]) { VAR[ad] = 1; KF.push(kural); } };
+  /* belirme: aşağıdan hafifçe yükselir */
+  var BEL = function (t) {
+    tek('b' + t, '.sp-b' + t + '{ opacity:0; animation:spB' + t + ' 10s ease-out infinite both; }\n' +
+      '@keyframes spB' + t + '{ 0%,' + t + '%{ opacity:0; transform:translateY(5px); } ' + (t + 3) + '%,94%{ opacity:1; transform:none; } 98%,100%{ opacity:0; transform:none; } }');
+    return 'sp-a sp-b' + t;
+  };
+  /* sıçrayarak belirme (rozet, onay işareti) */
+  var POP = function (t) {
+    tek('o' + t, '.sp-o' + t + '{ opacity:0; transform-box:fill-box; transform-origin:center; animation:spO' + t + ' 10s ease-out infinite both; }\n' +
+      '@keyframes spO' + t + '{ 0%,' + t + '%{ opacity:0; transform:scale(.2); } ' + (t + 2.5) + '%{ opacity:1; transform:scale(1.3); } ' + (t + 4.5) + '%,94%{ opacity:1; transform:scale(1); } 98%,100%{ opacity:0; transform:scale(1); } }');
+    return 'sp-a sp-o' + t;
+  };
+  /* ok işareti: kapalıyken sağa bakar, açılınca aşağı döner */
+  var CHEV = function (t) {
+    tek('c' + t, '.sp-c' + t + '{ transform-box:fill-box; transform-origin:center; animation:spC' + t + ' 10s ease-in-out infinite both; }\n' +
+      '@keyframes spC' + t + '{ 0%,' + t + '%{ transform:rotate(-90deg); } ' + (t + 3) + '%,94%{ transform:none; } 97%,100%{ transform:rotate(-90deg); } }');
+    return 'sp-a sp-c' + t;
+  };
+  /* yetki anahtarı: gri → yeşil, düğme sağa kayar */
+  var ANA = function (x, y, t) {
+    var z = '<rect x="' + x + '" y="' + y + '" width="14" height="7" rx="3.5" ';
+    if (t == null) return z + 'fill="#CBD5E1"/><circle cx="' + (x + 3.8) + '" cy="' + (y + 3.5) + '" r="2.5" fill="#fff"/>';
+    tek('z' + t, '.sp-z' + t + '{ animation:spZ' + t + ' 10s ease-in-out infinite both; } .sp-d' + t + '{ animation:spD' + t + ' 10s ease-in-out infinite both; }\n' +
+      '@keyframes spZ' + t + '{ 0%,' + t + '%{ fill:#CBD5E1; } ' + (t + 2) + '%,94%{ fill:#16A085; } 97%,100%{ fill:#CBD5E1; } }\n' +
+      '@keyframes spD' + t + '{ 0%,' + t + '%{ transform:none; } ' + (t + 2) + '%,94%{ transform:translateX(7px); } 97%,100%{ transform:none; } }');
+    return z + 'class="sp-z sp-z' + t + '" fill="#CBD5E1"/><circle class="sp-d sp-d' + t + '" cx="' + (x + 3.8) + '" cy="' + (y + 3.5) + '" r="2.5" fill="#fff"/>';
+  };
+
+  /* ------------------------------------------------------------------ telefon */
+  var IC = {
+    zil: ['#F39C12', '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>'],
+    takvim: ['#E74C3C', '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'],
+    liste: ['#2563EB', '<path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/>'],
+    zar: ['#7C3AED', '<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="#7C3AED"/><circle cx="15" cy="15" r="1.2" fill="#7C3AED"/><circle cx="15" cy="9" r="1.2" fill="#7C3AED"/><circle cx="9" cy="15" r="1.2" fill="#7C3AED"/>']
+  };
+  /* araç satırı: simge + yazı çizgisi; kısa süre sonra yeşil onay */
+  var SATIR = function (y, ad, t, w) {
+    var ik = IC[ad];
+    return '<g class="' + BEL(t) + '">' +
+      '<rect x="8" y="' + y + '" width="128" height="17" rx="6" fill="#FFF7ED" stroke="#F3D5BF"/>' +
+      '<g transform="translate(13 ' + (y + 2.5) + ') scale(.5)" fill="none" stroke="' + ik[0] + '" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">' + ik[1] + '</g>' +
+      '<rect x="30" y="' + (y + 6) + '" width="' + w + '" height="5" rx="2.5" fill="#E5CDBB"/></g>' +
+      '<g class="' + POP(t + 3) + '">' + TIK(124, y + 8.5, 5.6, '#16A085') + '</g>';
+  };
+  /* kapalı araçlar: kesik çizgili kutu ve asma kilit */
+  var KAPALI = function (t) {
+    return '<g class="' + BEL(t) + '">' +
+      '<rect x="8" y="140" width="128" height="38" rx="9" fill="none" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="4 3.2"/>' +
+      '<g transform="translate(72 153)" fill="none" stroke="#94A3B8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' +
+        '<rect x="-6" y="-2" width="12" height="9" rx="2"/><path d="M-3.4 -2v-3a3.4 3.4 0 0 1 6.8 0v3"/></g>' +
+      '<rect x="46" y="165" width="52" height="4" rx="2" fill="#E2E8F0"/></g>';
+  };
+  /* ox: ekranın sol kenarı; r: 'b' başkan, 'y' yardımcı; tR rozet, tC ok, tB başlık zamanı */
+  var TEL = function (ox, r, renk, tR, tC, tB, satirlar, kapali) {
+    var s = '<rect x="' + (ox - 6) + '" y="8" width="156" height="198" rx="18" fill="#1F2937"/>' +
+      '<rect x="' + ox + '" y="14" width="144" height="186" rx="13" fill="#fff"/>' +
+      '<g transform="translate(' + ox + ' 14)">' +
+      '<rect x="52" y="5" width="40" height="4" rx="2" fill="#E2E8F0"/>' +
+      /* profil başı: avatar + ad çizgileri (taç avatarın üstüne iner) */
+      '<circle cx="26" cy="34" r="12" fill="' + renk + '"/><circle cx="26" cy="29" r="4.4" fill="#fff"/><path d="M17.2 43.4a8.8 8.8 0 0 1 17.6 0z" fill="#fff"/>' +
+      '<rect x="46" y="26" width="64" height="7" rx="3.5" fill="#CBD5E1"/><rect x="46" y="38" width="42" height="5" rx="2.5" fill="#E2E8F0"/>' +
+      /* «Sınıfım» kartının başlığı: kırmızı şerit, rozet (taçlı), ok */
+      '<rect x="8" y="54" width="128" height="24" rx="8" fill="#fff" stroke="#F3D5BF" stroke-width="1.5"/>' +
+      '<rect x="12" y="58" width="4" height="16" rx="2" fill="#C0392B"/>' +
+      '<rect x="21" y="63" width="42" height="6" rx="3" fill="#F1C9C4"/>' +
+      '<g class="' + POP(tR) + '"><rect x="68" y="60" width="46" height="13" rx="6.5" fill="#FDEBD0"/>' +
+        '<g transform="translate(78 67)">' + tac(r, .52) + '</g><rect x="85" y="64.6" width="22" height="4.4" rx="2.2" fill="#E0B27A"/></g>' +
+      '<path class="' + CHEV(tC) + '" d="M121.5 63l4.5 4.8 4.5-4.8" fill="none" stroke="#C49A7E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      /* kart açılınca: taçlı başlık çizgisi ve yetkili araçlar */
+      '<g class="' + BEL(tB) + '"><g transform="translate(15 91)">' + tac(r, .55) + '</g><rect x="23" y="88.5" width="66" height="5.5" rx="2.75" fill="#F0C9A8"/></g>';
+    satirlar.forEach(function (a, i) { s += SATIR(98 + i * 21, a[0], a[1], a[2]); });
+    if (kapali) s += KAPALI(kapali);
+    return s + '</g>';
+  };
+
+  /* ------------------------------------------------ öğretmenin ekranı (ortada) */
+  var MERKEZ =
+    '<rect x="206" y="76" width="68" height="46" rx="7" fill="#1F2937"/>' +
+    '<rect x="211" y="81" width="58" height="36" rx="3.5" fill="#fff"/>' +
+    '<path d="M211 84.5a3.5 3.5 0 0 1 3.5-3.5h51a3.5 3.5 0 0 1 3.5 3.5V91h-58z" fill="#B45309"/>' +
+    '<g transform="translate(230 86)">' + tac('b', .6) + '</g><g transform="translate(252 86)">' + tac('y', .6) + '</g>' +
+    ANA(223, 96, 6) + ANA(245, 96, 8) + ANA(223, 106, 10) + ANA(245, 106, null) +
+    '<rect x="236" y="122" width="8" height="7" fill="#475569"/><rect x="224" y="129" width="32" height="5" rx="2.5" fill="#475569"/>' +
+    /* yetkinin telefonlara aktığı kesik çizgiler */
+    '<g class="sp-ak" fill="none" stroke="#B45309" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path class="sp-akis" d="M203 99H187"/><path d="M191 93.6l-5.4 5.4 5.4 5.4"/>' +
+      '<path class="sp-akis" d="M277 99H293"/><path d="M289 93.6l5.4 5.4-5.4 5.4"/></g>';
+  /* uçan taçlar: yerleşecekleri yere göre kaydırılmış başlar (son hâl: transform yok) */
+  var TACLAR =
+    '<g transform="translate(56 31)"><g class="sp-a sp-tacb">' + tac('b', 1.3) + '</g></g>' +
+    '<g transform="translate(332 31)"><g class="sp-a sp-tacy">' + tac('y', 1.3) + '</g></g>';
+
+  var SAHNE =
+    '<div class="ty-kutu gy-kutu"><svg class="ty-svg sp-svg" viewBox="0 0 480 214" role="img" aria-label="Öğretmen yetki anahtarlarını açıyor; başkana altın, yardımcıya gümüş taç uçuyor; ikisi de kendi telefonunda profilindeki Sınıfım kartını açıyor; başkanda dört, yardımcıda iki yetkili araç yanıyor, ötekiler kapalı">' +
+    '<rect x="0" y="0" width="480" height="214" rx="16" fill="#FFF6EC"/>' +
+    TEL(30, 'b', '#16A085', 22, 23, 24, [['zil', 28, 52], ['takvim', 33, 40], ['liste', 38, 58], ['zar', 43, 46]], 0) +
+    TEL(306, 'y', '#2563EB', 28, 29, 30, [['zil', 31, 52], ['zar', 37, 46]], 44) +
+    MERKEZ + TACLAR + '</svg>';
+
+  var VURGU = '<div class="ty-vurgu gy-vurgu gy-yan"><span class="ty-gizli">Yetkiyi ver; başkan ve yardımcı profilindeki Sınıfım kartını açıp görevini yapsın</span>' +
+    ADIM(1, '<rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="16.6" cy="12" r="2.8"/>', 'Yetki ver') + OK +
+    ADIM(2, '<rect x="6.5" y="2.5" width="11" height="19" rx="2.4"/><path d="M10.6 18.6h2.8"/>', 'Profilini açar') + OK +
+    ADIM(3, '<path d="m5 12.5 4.5 4.5L19 7.5"/>', 'Görevini yapar') + '</div>';
+
+  var CIPLER = '<div class="ty-cipler gy-cipler">' +
+    CIP('<g class="sp-c-tac"><path d="M3 18l-1-11 5.5 4.6L12 4l4.5 7.6L22 7l-1 11z"/></g><path d="M3 21h18"/>', 'Başkan ve yardımcı') +
+    CIP('<rect x="2" y="7" width="20" height="10" rx="5"/><circle class="sp-c-dugme" cx="8" cy="12" r="2.8"/>', 'Ayrı ayrı yetki') +
+    CIP('<path d="M9 6h11M9 12h11M9 18h11"/><path class="sp-c-onay" d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/>', 'Ödev durumu') +
+    CIP('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/><path class="sp-c-gozle" d="M4 4l16 16"/>', 'Puanları göremez') +
+    CIP('<g class="sp-c-el"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11.5V4a1.5 1.5 0 0 1 3 0v8M14 11.5V5.5a1.5 1.5 0 0 1 3 0V14"/><path d="M17 9.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-4.6-2.2L4.5 15a1.5 1.5 0 0 1 2.3-2L8 14.3"/></g>', 'Dürtme') +
+    CIP('<path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><g class="sp-c-kagit"><path d="M7 14h10v7H7z"/></g>', 'A4 oturma planı') +
+    '</div>';
+  G.baskanprofil = SAHNE + VURGU + CIPLER + '</div>';
+
+  /* ------------------------------------------------------------------ biçim */
+  var RENK = [['#FFF1D6', '#B45309', '#F6C878'], ['#E8F6F2', '#0E7C66', '#A9DFCB'], ['#F3E8FF', '#7B1FA2', '#D8B4FE']];
+  var SONUK = 'background:#F1F5F9; color:#64748B; border-color:#E2E8F0; transform:none;';
+  var PARLAK = function (i) { return 'background:' + RENK[i][0] + '; color:' + RENK[i][1] + '; border-color:' + RENK[i][2] + '; transform:translateY(-2px);'; };
+  var S1 = 24, S2 = 32;        /* adımların bittiği yüzde: yetki ver → «Sınıfım»ı açar → görevini yapar */
+  var STIL = [
+    '.sp-adim{ display:inline-flex; align-items:center; gap:7px; padding:6px 12px 6px 9px; border-radius:12px; background:#F1F5F9; color:#64748B;',
+    '  border:1.5px solid #E2E8F0; animation-duration:10s; animation-timing-function:ease-in-out; animation-iteration-count:infinite; }',
+    '.sp-adm1{ animation-name:spA1; } .sp-adm2{ animation-name:spA2; } .sp-adm3{ animation-name:spA3; }',
+    '@keyframes spA1{ 0%,' + (S1 - 3) + '%{ ' + PARLAK(0) + ' } ' + S1 + '%,96%{ ' + SONUK + ' } 100%{ ' + PARLAK(0) + ' } }',
+    '@keyframes spA2{ 0%,' + (S1 - 3) + '%{ ' + SONUK + ' } ' + S1 + '%,' + (S2 - 3) + '%{ ' + PARLAK(1) + ' } ' + S2 + '%,100%{ ' + SONUK + ' } }',
+    '@keyframes spA3{ 0%,' + (S2 - 3) + '%{ ' + SONUK + ' } ' + S2 + '%,93%{ ' + PARLAK(2) + ' } 97%,100%{ ' + SONUK + ' } }',
+    /* taçlar yerlerine uçar: başkana altın (≈%12-22), yardımcıya gümüş (≈%17-28) */
+    '.sp-tacb{ opacity:0; animation:spTacB 10s ease-in-out infinite both; }',
+    '.sp-tacy{ opacity:0; animation:spTacY 10s ease-in-out infinite both; }',
+    '@keyframes spTacB{ 0%,11%{ opacity:0; transform:translate(184px,65px) scale(.3); } 12.5%{ opacity:1; transform:translate(176px,50px) scale(.7); }',
+    '  16%{ opacity:1; transform:translate(116px,-30px) scale(1.15) rotate(-14deg); } 19.5%{ opacity:1; transform:translate(30px,-16px) scale(1.2) rotate(-6deg); }',
+    '  22%,94%{ opacity:1; transform:none; } 98%,100%{ opacity:0; transform:none; } }',
+    '@keyframes spTacY{ 0%,16%{ opacity:0; transform:translate(-92px,65px) scale(.3); } 17.5%{ opacity:1; transform:translate(-84px,50px) scale(.7); }',
+    '  21%{ opacity:1; transform:translate(-56px,-30px) scale(1.15) rotate(14deg); } 24.5%{ opacity:1; transform:translate(-18px,-16px) scale(1.2) rotate(6deg); }',
+    '  28%,94%{ opacity:1; transform:none; } 98%,100%{ opacity:0; transform:none; } }',
+    /* yetkinin aktığı çizgiler: araçlar yanarken görünür */
+    '.sp-ak{ opacity:0; animation:spAk 10s linear infinite both; }',
+    '@keyframes spAk{ 0%,25%{ opacity:0; } 28%,46%{ opacity:1; } 50%,100%{ opacity:0; } }',
+    '.sp-akis{ stroke-dasharray:3 6; animation:tyAkis .9s linear infinite; }',
+    KF.join('\n'),
+    /* seçim çipleri (küçük, sürekli) */
+    '.sp-c-tac{ transform-box:fill-box; transform-origin:50% 100%; animation:spSalla 2.4s ease-in-out infinite; }',
+    '@keyframes spSalla{ 0%,100%{ transform:rotate(-8deg); } 50%{ transform:rotate(8deg); } }',
+    '.sp-c-dugme{ fill:currentColor; animation:spKay 2.4s ease-in-out infinite; }',
+    '@keyframes spKay{ 0%,100%{ transform:none; } 50%{ transform:translateX(8px); } }',
+    '.sp-c-onay{ stroke-dasharray:10; animation:gyCizC 2.4s ease-in-out infinite; }',
+    '.sp-c-gozle{ stroke-dasharray:28; animation:gyCizC 2.8s ease-in-out infinite; }',
+    '.sp-c-el{ transform-box:fill-box; transform-origin:50% 100%; animation:spDurt 1.6s ease-in-out infinite; }',
+    '@keyframes spDurt{ 0%,100%{ transform:none; } 50%{ transform:translateY(-2px) rotate(-7deg); } }',
+    '.sp-c-kagit{ animation:spKagit 2.4s ease-in-out infinite; }',
+    '@keyframes spKagit{ 0%,100%{ transform:translateY(2px); } 50%{ transform:translateY(-1px); } }',
+    /* hareketi azalt: son hâl durağan */
+    '@media (prefers-reduced-motion:reduce){',
+    '  .sp-svg *, .sp-adim, .ty-cip svg *{ animation:none !important; }',
+    '  .sp-svg .sp-a{ opacity:1 !important; transform:none !important; }',
+    '  .sp-svg .sp-ak{ opacity:0 !important; }',
+    '  .sp-svg .sp-z{ fill:#16A085 !important; } .sp-svg .sp-d{ transform:translateX(7px) !important; }',
+    '}'
+  ].join('\n');
+  try {
+    if (!document.getElementById('spProfilStil')) {
+      var s = document.createElement('style');
+      s.id = 'spProfilStil';
+      s.textContent = STIL;
+      (document.head || document.documentElement).appendChild(s);
+    }
+  } catch (e) { }
+})();
+/* <<< baskanprofil-gorsel <<< */

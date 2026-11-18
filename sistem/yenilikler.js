@@ -25,6 +25,13 @@
 
     /* EN YENİSİ EN ÜSTTE */
     var LISTE = [
+        /* SINIFTA YENİ 15.11.2026 (başkan ve yardımcı, kendi profilinde): ana sayfadaki g 'baskanprofil' sayfasıyla aynı */
+        {
+            id: 39,
+            tarih: '2026-11-15',
+            baslik: 'Başkan ve yardımcı profilinde ne görür',
+            metin: 'Seçtiğin başkan ve yardımcı, görevlerini kendi profillerindeki «Sınıfım» kartından yönetir. Başkan ya da yardımcı yapabileceğin öğrenci, e-postayla kayıtlı ve sana bağlı olandır. Sınıfta bir başkan, bir yardımcı bulunur; yeni birini seçersen eskisinin unvanı kalkar. İlk seçimde başkana hatırlatma, son gün, ödev durumu ve kura; yardımcıya hatırlatma ve kura açılır, sonra değiştirebilirsin. Kartın başlığında «başkan» ya da «yardımcı» yazar; yalnız yetki verdiğin araçlar açılır. Ödev durumunu görür ama puanları göremez; «Hatırlatma dürtüsü» yetkisi verirsen bitirmeyen arkadaşını dürter. Oturma planı yetkisiyle planı A4 çıktı alıp sınıfa asabilir; başkan altın, yardımcı gümüş taçla görünür.'
+        },
         /* SINIFTA YENİ 15.11.2026: ana sayfadaki sayfalarla aynı (sınav, sınıf başkanı, meydan okuma) */
         {
             id: 38,
@@ -49,7 +56,7 @@
             id: 35,
             tarih: '2026-11-14',
             baslik: 'Kitaptaki metinleri kelime kelime işle: Metinlerle Arapça',
-            metin: 'Ders kitaplarındaki uzun diyalog ve metinler artık ayrı bir kitapta; tahtada açıp kelime kelime, cümle cümle işlersin. 5-10. sınıf ders kitaplarındaki 82 uzun diyalog ve metin, Metinlerle Arapça kitabında bir arada. Kelimeye dokun: Türkçesi üstünde belirir, kökü ve kelime ailesi de açılır. Tek dokunuşla bütün cümlenin Türkçesi altında çıkar. Ders kitabında metnin sayfasına gelince «Kidef\'le!» düğmesi çıkar; metin hemen açılır. Derste açtığın çeviriler sayfada kalır; ders bitince silgiyle temizlersin. Sınıfının Materyaller kısmındaki «Metin Tahlilleri» kartından da açılır.'
+            metin: 'Ders kitaplarındaki uzun diyalog ve metinler artık ayrı bir kitapta; tahtada açıp kelime kelime, cümle cümle işlersin. 5-10. sınıf ders kitaplarındaki 82 uzun diyalog ve metin, Metinlerle Arapça kitabında bir arada. Kelimeye dokun: Türkçesi üstünde belirir, kökü ve kelime ailesi de açılır. Tek dokunuşla bütün cümlenin Türkçesi altında çıkar. Ders kitabında metnin sayfasına gelince «Kidef\'le!» düğmesi çıkar; metin hemen açılır. Derste açtığın çeviriler sayfada kalır; ders bitince silgiyle temizlersin. Sınıfının Materyaller kısmında, ders kitabının yanındaki «Metinlerle Arapça» kitabından da açılır.'
         },
         /* SINIFTA YENİ 08.11.2026: ana sayfadaki dört sayfayla aynı (metin = giriş + maddeler art arda) */
         {

@@ -158,7 +158,8 @@
           if (rz) s.etkinlik = String(rz.textContent).trim();
         } else if (/dok|dök/.test(t)) {
           s.dokKategori = sec.querySelectorAll('.a4-kart').length;
-          [].forEach.call(sec.querySelectorAll('.a4-sayac'), function (x) {
+          /* kitap bağlantısı kartlarının etiketi dosya sayısı değil («2. BASKI», «20 METİN»): toplama girmesin */
+          [].forEach.call(sec.querySelectorAll('.a4-kart:not(.a4-bag) .a4-sayac'), function (x) {
             var m = String(x.textContent).match(/\d+/);
             if (m) s.dokDosya += +m[0];
           });
