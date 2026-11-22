@@ -3868,20 +3868,20 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          + o sınıfın kartını İmam Hatip akordiyonuna basan kayıtçı.
          muhadese.js'TEN ÖNCE: educationData ağacı artık seçili öğretim
          yılına göre değişiyor, yılı bu dosya söylüyor. -->
-    <script src="sistem/sinifveri.js?v=fbb7ddf4"></script>
+    <script src="sistem/sinifveri.js?v=29d1ccd0"></script>
     <!-- Test Kapışması 5-8. sınıf ders ağacı: sınıf kartlarının ders sayısı (sistem/sinifmodul.js) -->
-    <script src="oyunlar/tk_ortaokul.js?v=358c33a2"></script>
+    <script src="oyunlar/tk_ortaokul.js?v=202d3643"></script>
     <!-- Muhâdese ders listesi (educationData) — sınıf panellerinde yerinde açılır liste için -->
-    <script src="muhadese/muhadese.js?v=762e3067"></script>
+    <script src="muhadese/muhadese.js?v=b3c8c98a"></script>
     <!-- Metin Tahlilleri artık kart değil, Metinlerle Arapça kitabı (18.11.2026). Bu özet dosyasını şimdilik
          okuyan yok; kalması zarar vermez (kaldırılacaksa: bu iki satır + metintahlili/ozet.js) -->
     <script src="metintahlili/ozet.js?v=804748b1"></script>
-    <script src="sistem/sinifmodul.js?v=1ecf07a3"></script>
+    <script src="sistem/sinifmodul.js?v=75e76642"></script>
     <!-- YAZI SAYFASI (19.10.2026): kart yok — Sınıflarım'da bir sınıf açılınca %98'lik
          pencere kendiliğinden açılır, sınıf kapanınca kaydedip kapanır (yalnız öğretmen).
          5 renk, kalem, silgi, Arapça büyük/küçük harf çizgileri, sayfalar; geçmiş bu
          tarayıcıda tarihiyle, seviye notları hesapta (sistem/yazisayfasi.js) -->
-    <script src="sistem/yazisayfasi.js?v=28a57add"></script>
+    <script src="sistem/yazisayfasi.js?v=c6a9720c"></script>
     <!-- KİTAP TAKİBİ (15.10.2026) — öğretmen: "giriş yapan öğretmenlerin
          hangi sınıfta hangi kitabı kullandığı iyi takip edilsin".
          Öğretmen panelinde "sınıf → kullandığı kitap" kartını kurar. -->
@@ -3893,7 +3893,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 <script src="sistem/kitaptakip.js?v=cc385c08"></script>
     <!-- SINIF DEFTERİ PENCERESİ (15.10.2026) — kart ayrı sekme açmadan
          bu haftanın öğrenme çıktısını pencerede gösterir. -->
-    <script src="sistem/defterpop.js?v=969997b5"></script>
+    <script src="sistem/defterpop.js?v=b6f3c4f1"></script>
     <!-- «YILLIK ÇIKTILAR» KARTI KALDIRILDI (06.10.2026) — öğretmen:
          "yıllık çıktılar kartını kaldır sınıflardan, zaten sınıf defterleri
          var o işi görüyor, tamamen kaldırabilirsin."
@@ -3902,7 +3902,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          Çıktıların kendisi kaybolmadı: sınıf defterinin hafta satırlarında
          duruyor, cikti.html de doğrudan açılabiliyor. Geri istenirse bu iki
          satırı yeniden açmak yeterli:
-         <script src="sistem/ciktivar.js?v=e6b97106"></script>
+         <script src="sistem/ciktivar.js?v=725b695f"></script>
          <script src="sistem/ciktikart.js?v=7c91e0f0"></script> -->
     <!-- EK SINIF KARTLARI (05.10.2026) — öğretmen: "5 ve 6. sınıflara
          harf-i ta'rîf sunusunu, tüm sınıflara kelime çarkını ve sözlüğü,
@@ -6004,6 +6004,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           '2025-2026': { url: 'kitap/7-sinif-2026-2027/index.html', etiket: 'DİJİTAL KİTAP',
             ipucu: '7. sınıf Arapça ders kitabı (Mektep Yayınları, 2025-2026) — sayfa çevirmeli ' +
                    'kitap; sesler içinde; yeni sekmede açılır' },
+          /* 22.11.2026: aynı Mektep kitabının 2024-2025 baskısı (kitap/7-sinif-mektep-2024-2025/): ön/arka kapak,
+             ünite testleri, ünite sunuları, cevap anahtarı; sesler 2025-2026 kitabının klasöründen çalar. */
+          '2024-2025': { url: 'kitap/7-sinif-mektep-2024-2025/index.html', etiket: 'DİJİTAL KİTAP',
+            ipucu: '7. sınıf Arapça ders kitabı (Mektep Yayınları, 2024-2025) — sayfa çevirmeli ' +
+                   'kitap; sesler, ünite testleri, sunular ve cevap anahtarı içinde; yeni sekmede açılır' },
           /* 2027-2028 gizli: seçilemez; yine de kayıt dursun (sinifveri gizliyi düşürür). */
           '2027-2028': { url: 'kitap/7-sinif-devlet-2026-2027/index.html', etiket: 'DİJİTAL KİTAP',
             ipucu: '7. sınıf Arapça ders kitabı — bu yıl okutulan MEB Devlet Kitapları kitabı ' +
@@ -8372,7 +8377,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/oturumguvenlik.js?v=030fbcc3"></script>
     <!-- Sınıf Defteri: şubenin 36 haftalık ders defteri.
          listelerim.js ve oturumguvenlik.js'ten SONRA: switchTab'ı sarıyor. -->
-    <script src="hesap/sinifdefteri.js?v=7d1479ae"></script>
+    <script src="hesap/sinifdefteri.js?v=ce80dc4d"></script>
     <script src="hesap/ogrencihesap.js?v=72c5d597"></script>
     <script src="sistem/ihoneri.js?v=ce9c6951"></script>
     <!-- ÖĞRENCİ · SINIFIM (26.10.2026): giriş yapmış öğrenciye kendi sınıfının

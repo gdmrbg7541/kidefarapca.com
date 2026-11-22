@@ -192,6 +192,12 @@
        Maarif etiketi görünmez. */
     7:  [{ yil: '2026-2027', ad: 'Devlet Kitapları 2026-2027', program: 'MEB Devlet Kitapları ders kitabı (6 ünite) · 2026-2027 öğretim yılı', onek: 'd2627/', maarif: false, desen: /^7_\d+_\d+$/ },
          { yil: '2025-2026', ad: 'Mektep Yayınları 2025-2026', program: 'Mektep Yayınları ders kitabı (6 ünite) · 2025-2026 öğretim yılı', onek: 'y2627/', maarif: false, desen: /^7_\d+_\d+$/ },
+         /* 22.11.2026: Mektep Yayınları'nın 2024-2025 baskısı — AYNI kitap (metin 270/270 sayfa aynı); ders verisi
+            y2627/ ortak. `esdeger`: bu yılın verisi o yılınkiyle aynıdır (listelerde çift görünmesin diye
+            metinTahliliListe.py bu kaydı atlar). Flipbook: kitap/7-sinif-mektep-2024-2025/ (index.html → DERS_KITABI).
+            Yıla bağlı öteki tablolar (muhadese.js, ihkelime.js, tk_ortaokul.js, tk_fiil.js, sinifmodul.js, ciktiveri/ciktivar)
+            yama7m24.py ile aynalandı: yeni yıl eklenince bu tabloların hepsine anahtar eklenmeli. */
+         { yil: '2024-2025', ad: 'Mektep Yayınları 2024-2025', program: 'Mektep Yayınları ders kitabı (6 ünite) · 2024-2025 öğretim yılı', onek: 'y2627/', maarif: false, esdeger: '2025-2026', desen: /^7_\d+_\d+$/ },
          { yil: '2027-2028', ad: '2027-2028', program: '2025 TYMM Maarif Arapça Programı · MEB ders kitabı (4 ünite) · 2027-2028 öğretim yılı', onek: '', maarif: true, desen: /^7_\d+$/, gizli: true }],
     /* 8. sınıfın ders verisi 6 ünite × 3 ders (8_1_1 … 8_6_3) olarak
        yeni kitaptan çıkarıldı. MAARİF DEĞİL: 2026-2027'de Türkiye Yüzyılı

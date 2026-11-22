@@ -533,6 +533,56 @@ const educationDataYil = {
                     { name: "3. Ders: Mektup | الرِّسالة", simultaneUrl: "muhadese.html?ders=7_6_3", aktif: true },
                 ]
             },
+        ],
+        "2024-2025": [
+            {
+                unitName: "1. Ünite: Meslekler | المِهَن",
+                lessons: [
+                    { name: "1. Ders: Mesleğin Ne? | ما مِهْنَتُك؟", simultaneUrl: "muhadese.html?ders=7_1_1", aktif: true },
+                    { name: "2. Ders: Öğretmenim | مُدَرِّسي", simultaneUrl: "muhadese.html?ders=7_1_2", aktif: true },
+                    { name: "3. Ders: Hayalim | خَيالي", simultaneUrl: "muhadese.html?ders=7_1_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "2. Ünite: Alışveriş | التَّسَوُّق",
+                lessons: [
+                    { name: "1. Ders: Bakkalda | في البَقّالة", simultaneUrl: "muhadese.html?ders=7_2_1", aktif: true },
+                    { name: "2. Ders: Kırtasiyede | في القِرْطاسِيّة", simultaneUrl: "muhadese.html?ders=7_2_2", aktif: true },
+                    { name: "3. Ders: Semt Pazarında | في السّوق الشَّعْبي", simultaneUrl: "muhadese.html?ders=7_2_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "3. Ünite: Hava Durumu | الطَّقْس",
+                lessons: [
+                    { name: "1. Ders: Hava Yağmurlu | الجَوّ مُمْطِر", simultaneUrl: "muhadese.html?ders=7_3_1", aktif: true },
+                    { name: "2. Ders: Hava Karlı | الجَوّ مُثْلِج", simultaneUrl: "muhadese.html?ders=7_3_2", aktif: true },
+                    { name: "3. Ders: Hava Güneşli | الجَوّ مُشْمِس", simultaneUrl: "muhadese.html?ders=7_3_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "4. Ünite: Vatanım | وَطَني",
+                lessons: [
+                    { name: "1. Ders: Tarihî Yerler | الأَماكِن التّاريخِيّة", simultaneUrl: "muhadese.html?ders=7_4_1", aktif: true },
+                    { name: "2. Ders: Vatanımı Seviyorum | أُحِبُّ وَطَني", simultaneUrl: "muhadese.html?ders=7_4_2", aktif: true },
+                    { name: "3. Ders: Örnek Şahsiyetler | الشَّخْصِيّات المِثالِيّة", simultaneUrl: "muhadese.html?ders=7_4_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "5. Ünite: İbadetler | العِبادات",
+                lessons: [
+                    { name: "1. Ders: Beş Vakit Namaz | الصَّلوات الخَمْس", simultaneUrl: "muhadese.html?ders=7_5_1", aktif: true },
+                    { name: "2. Ders: Oruç | الصَّوْم", simultaneUrl: "muhadese.html?ders=7_5_2", aktif: true },
+                    { name: "3. Ders: Dinî Bayramlar | الأَعْياد الدّينِيّة", simultaneUrl: "muhadese.html?ders=7_5_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "6. Ünite: İletişim | الاِتِّصالات",
+                lessons: [
+                    { name: "1. Ders: Cep Telefonu | الهاتِف الجَوّال", simultaneUrl: "muhadese.html?ders=7_6_1", aktif: true },
+                    { name: "2. Ders: Bilgisayar | الحاسوب", simultaneUrl: "muhadese.html?ders=7_6_2", aktif: true },
+                    { name: "3. Ders: Mektup | الرِّسالة", simultaneUrl: "muhadese.html?ders=7_6_3", aktif: true },
+                ]
+            },
         ]
     },
     /* <<< 7. SINIF İKİ KİTAP */

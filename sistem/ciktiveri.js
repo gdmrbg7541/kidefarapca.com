@@ -2357,3 +2357,6 @@ window.KIDEF_CIKTI = {
   "ad": "10. Sınıf · Seçmeli Arapça"
  }
 };
+/* 22.11.2026 — 7. sınıf Mektep Yayınları 2024-2025 = 2025-2026 kitabının AYNISI → aynı yıllık plan.
+   (ciktiHavuzu.py da bu satırı yazar; yalnız takma ad, veri kopyalanmaz.) */
+if (window.KIDEF_CIKTI && window.KIDEF_CIKTI["7@2025-2026"]) window.KIDEF_CIKTI["7@2024-2025"] = window.KIDEF_CIKTI["7@2025-2026"];

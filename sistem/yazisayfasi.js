@@ -3729,8 +3729,8 @@
        · Geçmiş, seviye notları, önizlemeler, PDF ve tahtaya yansıtma silik
          yazıyı taşır.
        ------------------------------------------------------------------ */
-    var IHK_YOL = 'sarf/ihkelime.js?v=d7de3e1f';          /* sürüm damgası: _kaynak/uretici/surumle.py */
-    var SVERI_YOL = 'sistem/sinifveri.js?v=fbb7ddf4';
+    var IHK_YOL = 'sarf/ihkelime.js?v=0e67e3b1';          /* sürüm damgası: _kaynak/uretici/surumle.py */
+    var SVERI_YOL = 'sistem/sinifveri.js?v=29d1ccd0';
     var SK_SINIFLAR = ['5', '6', '7', '8', '9', '10'];
     var SILIK_FONT = '"Arakom", "arakom", "Traditional Arabic", "Geeza Pro", serif';
     var SILIK_RENK = { g: '#AEB7C2', m: '#4E5A68', e: '#97A3B1' };
