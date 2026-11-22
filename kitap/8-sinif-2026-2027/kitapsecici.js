@@ -68,6 +68,11 @@
        kidefarapca-materyal-7 deposunda. */
     { id: '7-sinif-2026-2027',    ad: 'Arapça 7',     alt: 'Mektep Yayınları · 2025-2026',
       renk: '#2471A3', im: '7' },
+    /* 7. sınıf Mektep Yayınları'nın 2024-2025 kitabı (22.11.2026): aynı kitabın ön/arka kapaklı paketi +
+       ünite testleri, sunular, cevap anahtarı. Sayfaları kidefarapca-materyal-7 deposunda
+       (7-sinif-mektep-2024-2025); sesleri 2025-2026 kitabının klasöründen çalar. */
+    { id: '7-sinif-mektep-2024-2025', ad: 'Arapça 7', alt: 'Mektep Yayınları · 2024-2025',
+      renk: '#1F618D', im: '7' },
     /* GİZLİ (02.10.2026): 7. sınıf Maarif kitabı resmî olarak yayınlanamıyor.
        Listede yalnız o kitabın içindeyken görünür; başka kitaptan bağlantı
        verilmez, site kartı da portala gider. */

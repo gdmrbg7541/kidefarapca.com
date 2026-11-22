@@ -727,3 +727,667 @@
   });
   tazele();
 })();
+
+
+/* ============================================================
+   SAYFADAKİ HATAYI BİLDİR                                   20.11.2026
+   Öğretmen: "flipbooklarda bi hata olan sayfada öğretmen geri bildirim
+   gönderebilmeli, bunlara yönetici ulaşıp bakabilmeli, flipbook
+   sidebarına ekleyelim bu özelliği."
+
+   NE VAR
+   · Yan çubuğun en altında «Hata bildir» düğmesi (telefonda üst şerit dolu
+     olduğundan 520 px altında alt şeritte, kaydırıcının yanında yalnız
+     simge). Basınca soldan bir panel açılır: kitap, sayfa
+     ve ünite kendiliğinden doldurulur; öğretmen hata türünü seçer, birkaç
+     satır yazar, «Yöneticiye gönder»e basar. İki sayfa açıkken hatanın
+     hangi sayfada olduğu seçilir (ikisi de olabilir).
+   · Yalnız giriş yapmış ÖĞRETMEN (onaylı) ya da yönetici gönderebilir.
+     Girişsiz ziyaretçiye giriş yolu, öğrenciye kısa bir açıklama gösterilir.
+   · Bildirim sitenin MEVCUT mesaj kanalına (Firestore «mesajlar») yazılır.
+     Kurallar zaten «kullanıcı kendi mesajını yazar; yönetici hepsini okur
+     ve cevaplar» diyor, yani Firebase kuralı DEĞİŞMEZ. Yönetici Mesajlar
+     noktasını görür; ayrıca Yönetici Paneli › «Kitap hata bildirimleri»nde
+     kitaba, sayfaya ve duruma göre listeler (hesap/teacher-admin.js).
+     Yönetici cevap yazarsa öğretmenin Mesajlar kutusuna düşer.
+     Kayıt alanları: from:'user', tur:'kitapHata', hataTuru, aciklama, kitap, kitapAd,
+     sayfa, sayfaNo, unite, ders, adres, durum:'yeni' (+ mesajın olağan
+     alanları: uid, email, ad, kategori, text, createdAt, readByAdmin…).
+   · Firebase bu sayfada yüklü DEĞİL (kitap Firebase'siz açılıyor): SDK,
+     düğmeye ilk basışta (ya da üstüne gelince) gstatic'ten, siteyle aynı
+     sürümle (8.10.1) yüklenir; oturum sitenin tarayıcı deposundan gelir.
+     Girişsiz ziyaretçide hiçbir şey yüklenmez. Bilgisayara indirilmiş
+     kopyada (file://) düğme hiç eklenmez.
+   · Tahtaya yansıtılan kopyadaki yinelenen tıklar (isTrusted:false)
+     gönderim yapmaz: bildirim iki kez kaydedilmez.
+   · Aynı tarayıcıdan saatte en çok 12 bildirim (yanlışlıkla art arda
+     basışa karşı); yeniden denemede AYNI belge kimliği kullanılır, bağlantı
+     kopup gelince çift kayıt oluşmaz.
+   ============================================================ */
+(function () {
+  'use strict';
+  if (location.protocol === 'file:' || window.__kitapHataBildir) return;
+  var YOL = location.pathname, KI = YOL.indexOf('/kitap/');
+  if (KI < 0) return;
+  window.__kitapHataBildir = true;
+  var KOK = YOL.slice(0, KI + 1);                       /* sitenin kökü */
+
+  /* sitenin Firebase ayarı (hesap/auth.js ile aynı; web anahtarı gizli değil) */
+  var AYAR = {
+    apiKey: 'AIzaSyBGIQPJ_Bjm5I3-QmrrGpLR5MqmG3S5F8w',
+    authDomain: 'kidefarapca-98f9c.firebaseapp.com',
+    projectId: 'kidefarapca-98f9c',
+    storageBucket: 'kidefarapca-98f9c.firebasestorage.app',
+    messagingSenderId: '503317118211',
+    appId: '1:503317118211:web:a9c8cf15b854597e0b3d36'
+  };
+  var SDK = 'https://www.gstatic.com/firebasejs/8.10.1/';
+  var TURLER = [
+    ['yazim', 'Yazım ya da hareke hatası'],
+    ['anlam', 'Çeviri ya da anlam hatası'],
+    ['cevap', 'Cevap anahtarı yanlış'],
+    ['medya', 'Ses, video ya da etkinlik çalışmıyor'],
+    ['gorunum', 'Sayfa görünümü bozuk ya da eksik'],
+    ['diger', 'Diğer']
+  ];
+  var EN_AZ = 8, EN_COK = 1000, SAATLIK = 12, GECMIS = 'kitap_hata_gecmis';
+
+  var IK_BILDIR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.2 4v-4h-.3A2.5 2.5 0 0 1 4 13.5z"/><path d="M12 7v4"/><path d="M12 13.4v.1"/></svg>';
+  var IK_TAMAM = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.6l2.7 2.7L16.5 9.6"/></svg>';
+  var IK_KILIT = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+  var IK_BILGI = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.9v.1"/></svg>';
+
+  function $(s, k) { return (k || document).querySelector(s); }
+  function kac(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function duz(e) { return e ? String(e.textContent || '').replace(/\s+/g, ' ').trim() : ''; }
+
+  /* ---------- oturum: siteyle aynı tarayıcı deposundan (Firebase yüklenmeden) ---------- */
+  function depodanUid(depo) {
+    try {
+      for (var j = 0; j < depo.length; j++) {
+        var k = depo.key(j);
+        if (k && k.indexOf('firebase:authUser:') === 0) {
+          var v = JSON.parse(depo.getItem(k) || 'null');
+          if (v && v.uid && !v.isAnonymous) return v.uid;
+        }
+      }
+    } catch (e) { }
+    return '';
+  }
+  function oturumUid() {
+    return new Promise(function (bitir) {
+      var oldu = false;
+      function son(v) { if (!oldu) { oldu = true; bitir(v || ''); } }
+      var y = '';
+      try { y = depodanUid(window.localStorage) || depodanUid(window.sessionStorage); } catch (e) { }
+      if (y) return son(y);
+      if (!window.indexedDB) return son('');
+      setTimeout(function () { son(''); }, 3000);
+      var r;
+      try { r = indexedDB.open('firebaseLocalStorageDb'); } catch (e) { return son(''); }
+      /* depo yoksa açmak onu oluşturur — oluşturmadan vazgeç */
+      r.onupgradeneeded = function () { try { r.transaction.abort(); } catch (e) { } };
+      r.onerror = function (e) { try { e.preventDefault(); } catch (x) { } son(''); };
+      r.onblocked = function () { son(''); };
+      r.onsuccess = function () {
+        var db = r.result;
+        try {
+          if (!db.objectStoreNames.contains('firebaseLocalStorage')) { db.close(); return son(''); }
+          var c = db.transaction('firebaseLocalStorage', 'readonly').objectStore('firebaseLocalStorage').openCursor();
+          c.onsuccess = function () {
+            var k = c.result;
+            if (!k) { db.close(); return son(''); }
+            var x = k.value || {}, v = x.value;
+            if (String(x.fbase_key || k.key || '').indexOf('firebase:authUser:') === 0 && v && v.uid && !v.isAnonymous) {
+              db.close(); return son(v.uid);
+            }
+            k.continue();
+          };
+          c.onerror = function () { db.close(); son(''); };
+        } catch (e) { try { db.close(); } catch (x) { } son(''); }
+      };
+    });
+  }
+
+  /* ---------- Firebase SDK: gerektiğinde, yalnız eksik parçalar ---------- */
+  var sdkSoz = null;
+  function var_(ad) {
+    var f = window.firebase;
+    if (!f) return false;
+    if (ad === 'app') return typeof f.initializeApp === 'function';
+    return typeof f[ad] === 'function';
+  }
+  function sdkYukle() {
+    if (sdkSoz) return sdkSoz;
+    sdkSoz = new Promise(function (coz, red) {
+      function bitir() {
+        try {
+          if (!firebase.apps || !firebase.apps.length) firebase.initializeApp(AYAR);
+        } catch (e) {
+          /* başka bir kod aynı anda başlattıysa sorun yok */
+          if (!(firebase.apps && firebase.apps.length)) { red(e); return; }
+        }
+        coz(window.firebase);
+      }
+      var liste = [['app', 'firebase-app.js'], ['auth', 'firebase-auth.js'], ['firestore', 'firebase-firestore.js']];
+      (function sonraki(i) {
+        while (i < liste.length && var_(liste[i][0])) i++;
+        if (i >= liste.length) { bitir(); return; }
+        var s = document.createElement('script');
+        s.src = SDK + liste[i][1];
+        s.onload = function () { sonraki(i + 1); };
+        s.onerror = function () { red({ code: 'sdk-yuklenemedi' }); };
+        (document.head || document.documentElement).appendChild(s);
+      })(0);
+    });
+    sdkSoz.then(null, function () { sdkSoz = null; });      /* hata olursa bir sonraki denemede yeniden */
+    return sdkSoz;
+  }
+  function zamanla(p, ms, kod) {
+    return new Promise(function (coz, red) {
+      var t = setTimeout(function () { red({ code: kod || 'zaman-asimi' }); }, ms);
+      p.then(function (v) { clearTimeout(t); coz(v); }, function (e) { clearTimeout(t); red(e); });
+    });
+  }
+
+  /* ---------- hesap: giriş var mı, öğretmen mi ---------- */
+  function tamam(u, v, rol) {
+    /* ad: sitenin ortak çözücüsüyle aynı sıra (sistem/rol.js › isimCoz) — «Belirtilmedi» ad sayılmaz */
+    var ad = (v.name && v.name !== 'Belirtilmedi') ? v.name : (u.displayName || v.email || u.email || '');
+    return { durum: 'tamam', uid: u.uid, email: v.email || u.email || '', ad: ad, rol: rol };
+  }
+  function hesapKontrol() {
+    return zamanla(sdkYukle().then(function (fb) {
+      return new Promise(function (coz, red) {
+        var bitti = false, iptal = null;
+        /* oturum kayıtlı ama Firebase 9 sn'de yanıt vermediyse "girişsiz" değil, bağlantı sorunu say */
+        var z = setTimeout(function () { if (!bitti) { bitti = true; try { if (iptal) iptal(); } catch (e) { } red({ code: 'zaman-asimi' }); } }, 9000);
+        iptal = fb.auth().onAuthStateChanged(function (u) {
+          if (bitti) return;
+          bitti = true; clearTimeout(z);
+          try { if (iptal) iptal(); } catch (e) { }
+          coz(u || null);
+        }, function (e) {
+          if (bitti) return;
+          bitti = true; clearTimeout(z);
+          red(e || { code: 'auth-hatasi' });
+        });
+      });
+    }), 25000, 'sdk-zaman-asimi').then(function (u) {
+      if (!u || u.isAnonymous) return { durum: 'girissiz' };
+      return zamanla(firebase.firestore().collection('kullanicilar').doc(u.uid).get(), 12000, 'zaman-asimi').then(function (d) {
+        var v = d && d.exists ? d.data() : null;
+        if (!v) return { durum: 'kayitYok', uid: u.uid };
+        var rol = String(v.role || '');
+        /* «role» alanı eksik eski hesaplar: sitenin ortak çözücüsüyle (sistem/rol.js › rolCoz) AYNI —
+           öğretmen izi (teacherStaticCode ya da userData sınıf listesi) varsa öğretmen sayılır */
+        if (!rol) rol = (v.teacherStaticCode || v.userData) ? 'teacher' : 'student';
+        if (rol === 'admin') return tamam(u, v, rol);
+        if (rol === 'teacher') {
+          if (v.ogretmenOnay === 'bekliyor' || v.ogretmenOnay === 'reddedildi') return { durum: 'onayBekliyor' };
+          return tamam(u, v, rol);
+        }
+        return { durum: 'ogrenci' };
+      });
+    });
+  }
+
+  /* ---------- açık sayfanın bilgisi ---------- */
+  function sayfaBilgisi() {
+    var m = /\/kitap\/([^\/]+)\//.exec(YOL), kod = '';
+    try { kod = m ? decodeURIComponent(m[1]) : ''; } catch (e) { kod = m ? m[1] : ''; }
+    var et = duz(document.getElementById('sayfaEt')).replace(/\s*\/\s*\d+\s*$/, '');   /* "44–45 / 231" → "44–45" */
+    var say = [], bul = et.match(/\d+/g) || [];
+    for (var i = 0; i < bul.length; i++) { if (say.indexOf(bul[i]) < 0) say.push(bul[i]); }
+    var marka = $('.ust .marka'), ad = '', yil = '';
+    if (marka) {
+      ad = duz($('b', marka));
+      var sp = marka.querySelectorAll('span');
+      for (var j = 0; j < sp.length; j++) {
+        if (/\bks-(kik|sag|yazi|ok)\b/.test(sp[j].className || '')) continue;
+        if (sp[j].closest && sp[j].closest('.ks-sag')) continue;
+        var t = duz(sp[j]); if (t) yil = t;
+      }
+    }
+    var kitapAd = ad ? (ad + (yil ? ' · ' + yil : '')) : (duz($('title')) || kod);
+    var unite = duz(document.getElementById('uniteEt')), ders = duz(document.getElementById('dersEt'));
+    if (/^Ünite\s*[—-]\s*$/.test(unite)) unite = '';
+    if (/^[—-]+$/.test(ders)) ders = '';
+    return { kod: kod, kitapAd: kitapAd, etiket: et || '—', sayfalar: say, unite: unite, ders: ders };
+  }
+
+  /* ---------- durum ---------- */
+  var D = { ac: false, sayac: 0, hesap: null, bilgi: null, tur: '', secili: [], metin: '', gonderiliyor: false, ref: null, goruntu: '' };
+  var dugme = null, perde = null, panel = null, govde = null;
+
+  function turAdi(k) { for (var i = 0; i < TURLER.length; i++) if (TURLER[i][0] === k) return TURLER[i][1]; return ''; }
+  function sirala(a, b) { return parseInt(a, 10) - parseInt(b, 10); }
+
+  /* ---------- görünümler ---------- */
+  function satir(et, ic) { return '<div class="hb-ctx-s"><b>' + et + '</b><span class="hb-ctx-d">' + ic + '</span></div>'; }
+  function sayfaHtml(b) {
+    if (b.sayfalar.length > 1) {
+      var s = '<span class="hb-chips hb-sayfalar" role="group" aria-label="Hata hangi sayfada?">';
+      for (var i = 0; i < b.sayfalar.length; i++) {
+        var on = D.secili.indexOf(b.sayfalar[i]) >= 0;
+        s += '<button type="button" class="hb-chip hb-sayfa" data-hb-sayfa="' + kac(b.sayfalar[i]) + '" aria-pressed="' + (on ? 'true' : 'false') + '">' + kac(b.sayfalar[i]) + '</button>';
+      }
+      return s + '</span>';
+    }
+    return '<span class="hb-sabit">' + kac(b.sayfalar.length ? b.sayfalar[0] : b.etiket) + '</span>';
+  }
+  function formHtml() {
+    var b = D.bilgi, h = D.hesap, s = '';
+    s += '<div class="hb-ctx">' + satir('Kitap', '<span class="hb-ad">' + kac(b.kitapAd) + '</span>') +
+         satir('Sayfa', sayfaHtml(b)) +
+         ((b.unite || b.ders) ? satir('Ünite', kac([b.unite, b.ders].filter(Boolean).join(' · '))) : '') + '</div>';
+    s += '<div class="hb-blok"><div class="hb-et" id="hbTurEt">Ne tür bir hata?</div>' +
+         '<div class="hb-chips" role="radiogroup" aria-labelledby="hbTurEt">';
+    for (var i = 0; i < TURLER.length; i++) {
+      var on = D.tur === TURLER[i][0];
+      s += '<button type="button" class="hb-chip hb-tur" role="radio" data-hb-tur="' + TURLER[i][0] + '" aria-checked="' + (on ? 'true' : 'false') + '">' + kac(TURLER[i][1]) + '</button>';
+    }
+    s += '</div></div>';
+    s += '<div class="hb-blok"><label class="hb-et" for="hbMetin">Açıklama</label>' +
+         '<textarea id="hbMetin" class="hb-metin" rows="5" maxlength="' + EN_COK + '" placeholder="Neresi yanlış, doğrusu ne olmalı? Örnek: 3. satırdaki kelimenin harekesi eksik.">' + kac(D.metin) + '</textarea>' +
+         '<div class="hb-say"><span id="hbSay">' + D.metin.length + '</span> / ' + EN_COK + '</div></div>';
+    s += '<div class="hb-uyari" id="hbUyari" role="alert" hidden></div>';
+    s += '<button type="button" class="hb-gonder" data-hb-gonder>Yöneticiye gönder</button>';
+    s += '<p class="hb-not">Gönderen: ' + kac(h.ad || h.email || 'öğretmen') + (h.ad && h.email ? ' · ' + kac(h.email) : '') +
+         '. Yanıt gelirse sitedeki <b>Mesajlar</b> bölümünde görürsün.</p>';
+    return s;
+  }
+  function durumHtml(ik, baslik, yazi, alt, sinif) {
+    return '<div class="hb-durum' + (sinif ? ' ' + sinif : '') + '">' + ik + '<h3>' + baslik + '</h3><p>' + yazi + '</p>' + (alt || '') + '</div>';
+  }
+  var GORUNUM = {
+    kontrol: function () { return '<div class="hb-durum"><div class="hb-don" aria-hidden="true"></div><p>Hesabın kontrol ediliyor…</p></div>'; },
+    girissiz: function () {
+      return durumHtml(IK_KILIT, 'Önce giriş yapmalısın',
+        'Hata bildirimi öğretmen hesabıyla yapılır; böylece yönetici sana dönüş yapabilir.',
+        '<div class="hb-dugmeler"><a class="hb-gonder hb-bag" href="' + kac(KOK + 'index.html') + '" target="_blank" rel="noopener">Siteye giriş yap</a></div>' +
+        '<small>Giriş yaptıktan sonra bu sekmeye dön; panel kendiliğinden yenilenir.</small>');
+    },
+    ogrenci: function () {
+      return durumHtml(IK_BILGI, 'Hata bildirimi öğretmenlere açık',
+        'Sayfada bir hata görürsen öğretmenine söyleyebilirsin; o da buradan yöneticiye iletir.');
+    },
+    onayBekliyor: function () {
+      return durumHtml(IK_BILGI, 'Hesabın onay bekliyor', 'Öğretmen hesabın onaylanınca hata bildirebilirsin.');
+    },
+    kayitYok: function () {
+      return durumHtml(IK_BILGI, 'Hesap kaydın eksik görünüyor',
+        'Ana sayfadan giriş yapıp kaydını tamamla, sonra tekrar dene.',
+        '<div class="hb-dugmeler"><a class="hb-gonder hb-bag" href="' + kac(KOK + 'index.html') + '" target="_blank" rel="noopener">Ana sayfaya git</a></div>');
+    },
+    ag: function () {
+      return durumHtml(IK_BILGI, 'Bağlantı kurulamadı',
+        'Hesabın kontrol edilemedi. İnternet bağlantını kontrol edip tekrar dene.',
+        '<div class="hb-dugmeler"><button type="button" class="hb-gonder" data-hb-tekrar>Tekrar dene</button></div>', 'hb-uyar');
+    },
+    tamam: function () {
+      return durumHtml(IK_TAMAM, 'Teşekkürler!',
+        'Bildirimin yöneticiye iletildi. Yanıt gelirse sitedeki <b>Mesajlar</b> bölümünde görürsün.',
+        '<div class="hb-dugmeler"><button type="button" class="hb-ikinci" data-hb-yeni>Bir bildirim daha</button>' +
+        '<button type="button" class="hb-gonder" data-hb-kapat>Kitaba dön</button></div>', 'hb-iyi');
+    },
+    form: formHtml
+  };
+  function goster(ad) {
+    D.goruntu = ad;
+    govde.innerHTML = (GORUNUM[ad] || GORUNUM.ag)();
+    panel.setAttribute('data-hb', ad);
+    var ilk = $('.hb-metin, .hb-bag, [data-hb-tekrar], [data-hb-yeni], [data-hb-kapat]', govde);
+    if (D.ac && ad !== 'kontrol') {
+      var odak = ad === 'form' ? ($('.hb-tur', govde) || ilk) : ilk;
+      if (odak) try { odak.focus({ preventScroll: true }); } catch (e) { }
+    }
+  }
+  function uyar(m) {
+    var u = $('#hbUyari', govde);
+    if (!u) return;
+    u.textContent = m || '';
+    u.hidden = !m;
+  }
+
+  /* ---------- hesap sorgusu (panel her açılışta yenilenir) ---------- */
+  function hesapIste() {
+    var n = ++D.sayac;
+    goster('kontrol');
+    oturumUid().then(function (uid) {
+      if (n !== D.sayac || !D.ac) return;
+      if (!uid) { D.hesap = null; goster('girissiz'); return; }
+      hesapKontrol().then(function (h) {
+        if (n !== D.sayac || !D.ac) return;
+        D.hesap = h;
+        if (h.durum === 'tamam') {
+          D.bilgi = sayfaBilgisi();
+          D.secili = D.bilgi.sayfalar.slice();
+          goster('form');
+        } else goster(h.durum);
+      }, function () {
+        if (n !== D.sayac || !D.ac) return;
+        goster('ag');
+      });
+    });
+  }
+
+  /* ---------- gönderim ---------- */
+  function gecmis() {
+    try {
+      var a = JSON.parse(localStorage.getItem(GECMIS) || '[]'), s = Date.now() - 3600000;
+      return a.filter(function (t) { return typeof t === 'number' && t > s; });
+    } catch (e) { return []; }
+  }
+  function gecmisEkle() {
+    var a = gecmis(); a.push(Date.now());
+    try { localStorage.setItem(GECMIS, JSON.stringify(a.slice(-40))); } catch (e) { }
+  }
+  function hataMetni(e) {
+    var k = (e && e.code) || '';
+    if (k === 'permission-denied') return 'Bildirim gönderilemedi: bu hesabın yazma izni yok. Sayfayı yenileyip yeniden giriş yapmayı dene.';
+    if (k === 'unavailable' || k === 'zaman-asimi' || k === 'deadline-exceeded' || k === 'sdk-yuklenemedi') return 'İnternet bağlantısı kurulamadı. Bağlantını kontrol edip tekrar dene.';
+    return 'Bildirim gönderilemedi' + (k ? ' (' + k + ')' : '') + '. Birazdan tekrar dene.';
+  }
+  function gonder(olay) {
+    if (olay && olay.isTrusted === false) return;          /* tahtaya yansıyan tık: ikinci kayıt olmasın */
+    if (D.gonderiliyor || D.goruntu !== 'form') return;
+    var b = D.bilgi, h = D.hesap;
+    var ta = $('#hbMetin', govde);
+    var ileti = String((ta && ta.value) || '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+    if (!D.tur) { uyar('Önce hata türünü seç.'); return; }
+    if (b.sayfalar.length > 1 && !D.secili.length) { uyar('Hatanın hangi sayfada olduğunu seç.'); return; }
+    if (ileti.length < EN_AZ) { uyar('Hatayı birkaç sözcükle anlat (en az ' + EN_AZ + ' harf).'); if (ta) ta.focus(); return; }
+    if (gecmis().length >= SAATLIK) { uyar('Kısa sürede çok bildirim gönderdin. Biraz sonra tekrar dene.'); return; }
+    uyar('');
+    D.gonderiliyor = true;
+    var dg = $('[data-hb-gonder]', govde);
+    if (dg) { dg.disabled = true; dg.textContent = 'Gönderiliyor…'; }
+
+    var sec = D.secili.slice().sort(sirala);
+    var sayfaYazi = sec.length ? sec.join(' – ') : b.etiket;
+    var konum = sec.length ? ('sayfa ' + sayfaYazi) : b.etiket;
+    var s = sec.length ? sec[0] : '';
+    var metin = 'Kitap hatası: ' + b.kitapAd + ', ' + konum +
+      ((b.unite || b.ders) ? ' (' + [b.unite, b.ders].filter(Boolean).join(' · ') + ')' : '') +
+      '\nTür: ' + turAdi(D.tur) + '\n\n' + ileti;
+    var kayit = {
+      uid: h.uid, email: h.email || '', ad: h.ad || 'Öğretmen',
+      from: 'user', kategori: 'Kitap hatası', text: metin,
+      tur: 'kitapHata', hataTuru: D.tur, aciklama: ileti,
+      kitap: b.kod, kitapAd: b.kitapAd, sayfa: sayfaYazi, sayfaNo: s ? parseInt(s, 10) : null,
+      unite: b.unite || '', ders: b.ders || '',
+      adres: YOL + (s ? '?s=' + encodeURIComponent(s) : ''),
+      durum: 'yeni',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      readByAdmin: false, readByUser: true
+    };
+    var ref;
+    try {
+      /* aynı form oturumunda yeniden denemede AYNI belge: çift kayıt olmaz */
+      ref = D.ref || (D.ref = firebase.firestore().collection('mesajlar').doc());
+    } catch (e) { D.gonderiliyor = false; goster('ag'); return; }
+    zamanla(ref.set(kayit), 15000, 'zaman-asimi').then(function () {
+      D.gonderiliyor = false; D.ref = null; D.tur = ''; D.metin = '';
+      gecmisEkle();
+      if (D.ac) goster('tamam');
+    }, function (e) {
+      D.gonderiliyor = false;
+      if (!D.ac || D.goruntu !== 'form') return;
+      var d2 = $('[data-hb-gonder]', govde);
+      if (d2) { d2.disabled = false; d2.textContent = 'Yöneticiye gönder'; }
+      uyar(hataMetni(e));
+    });
+  }
+
+  /* ---------- aç / kapat ---------- */
+  function digerleriniKapat() {                          /* İçindekiler, Kaynaklar… açıksa kendi × düğmesiyle kapanır */
+    var l = document.querySelectorAll('.panel.acik');
+    for (var i = 0; i < l.length; i++) {
+      if (l[i] === panel) continue;
+      var k = l[i].querySelector('.kapat');
+      if (k) { try { k.click(); } catch (e) { } }
+    }
+  }
+  function ac() {
+    if (D.ac) return;
+    kur();
+    digerleriniKapat();
+    D.ac = true;
+    panel.classList.add('acik'); panel.setAttribute('aria-hidden', 'false');
+    perde.classList.add('acik');
+    if (dugme) { dugme.classList.add('aktif'); dugme.setAttribute('aria-expanded', 'true'); }
+    D.bilgi = sayfaBilgisi();
+    D.secili = D.bilgi.sayfalar.slice();
+    try { panel.focus({ preventScroll: true }); } catch (e) { }      /* kısayollar panele girsin, kitaba gitmesin */
+    hesapIste();
+  }
+  function kapat(sessiz) {
+    if (!D.ac) return;
+    D.ac = false; D.sayac++;
+    panel.classList.remove('acik'); panel.setAttribute('aria-hidden', 'true');
+    perde.classList.remove('acik');
+    if (dugme) {
+      dugme.classList.remove('aktif'); dugme.setAttribute('aria-expanded', 'false');
+      if (!sessiz) { try { dugme.focus({ preventScroll: true }); } catch (e) { } }
+    }
+  }
+
+  /* ---------- panelin kurulumu (ilk açışta) ---------- */
+  function durdur(e) { e.stopPropagation(); }
+  function kur() {
+    if (panel) return;
+    stilEkle();
+    perde = document.createElement('div');
+    perde.className = 'hb-perde';
+    perde.setAttribute('aria-hidden', 'true');
+    panel = document.createElement('aside');
+    panel.className = 'panel yan hb-panel';
+    panel.id = 'pHataBildir';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true');
+    panel.setAttribute('aria-hidden', 'true');
+    panel.setAttribute('tabindex', '-1');
+    panel.setAttribute('aria-labelledby', 'hbBaslik');
+    panel.innerHTML = '<div class="pbas"><h2 id="hbBaslik">Sayfadaki hatayı bildir</h2>' +
+      '<button type="button" class="kapat" data-hb-kapat aria-label="Kapat">&times;</button></div>' +
+      '<div class="pgovde" id="hbIc"></div>';
+    document.body.appendChild(perde);
+    document.body.appendChild(panel);
+    govde = $('#hbIc', panel);
+
+    perde.addEventListener('click', function () { kapat(); });
+    /* Tab panelin içinde döner (arkadaki düğmelere ve kitabın kısayollarına çıkmasın) */
+    panel.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var o = [].filter.call(panel.querySelectorAll('button:not([disabled]), textarea, a[href]'), function (x) { return x.offsetParent !== null; });
+      if (!o.length) { e.preventDefault(); return; }
+      var ilk = o[0], son = o[o.length - 1], a = document.activeElement;
+      if (e.shiftKey && (a === ilk || a === panel || !panel.contains(a))) { e.preventDefault(); son.focus(); }
+      else if (!e.shiftKey && (a === son || !panel.contains(a))) { e.preventDefault(); ilk.focus(); }
+    });
+    document.addEventListener('focusin', function (e) {
+      if (!D.ac || !panel || panel.contains(e.target)) return;
+      try { panel.focus({ preventScroll: true }); } catch (x) { }
+    });
+    /* kitabın kısayolları (ok tuşları, K, I, P…) ve kaydırma/zoom hareketleri panelin içinden kitaba geçmesin */
+    ['keydown', 'keyup', 'keypress', 'pointerdown', 'mousedown', 'touchstart', 'dblclick'].forEach(function (ad) {
+      panel.addEventListener(ad, durdur);
+    });
+    panel.addEventListener('click', function (e) {
+      var t = e.target && e.target.closest ? e.target : null;
+      if (!t) return;
+      var o = t.closest('[data-hb-kapat]');
+      if (o) { kapat(); return; }
+      o = t.closest('[data-hb-tur]');
+      if (o) {
+        D.tur = o.getAttribute('data-hb-tur');
+        var hep = govde.querySelectorAll('.hb-tur');
+        for (var i = 0; i < hep.length; i++) hep[i].setAttribute('aria-checked', hep[i] === o ? 'true' : 'false');
+        uyar('');
+        return;
+      }
+      o = t.closest('[data-hb-sayfa]');
+      if (o) {
+        var n = o.getAttribute('data-hb-sayfa'), i2 = D.secili.indexOf(n);
+        if (i2 >= 0) {
+          if (D.secili.length === 1) return;               /* en az biri seçili kalsın */
+          D.secili.splice(i2, 1);
+        } else D.secili.push(n);
+        o.setAttribute('aria-pressed', i2 >= 0 ? 'false' : 'true');
+        uyar('');
+        return;
+      }
+      if (t.closest('[data-hb-gonder]')) { gonder(e); return; }
+      if (t.closest('[data-hb-tekrar]')) { hesapIste(); return; }
+      if (t.closest('[data-hb-yeni]')) {
+        D.tur = ''; D.metin = ''; D.ref = null;
+        D.bilgi = sayfaBilgisi(); D.secili = D.bilgi.sayfalar.slice();
+        goster('form');
+        return;
+      }
+    });
+    panel.addEventListener('input', function (e) {
+      if (!e.target || e.target.id !== 'hbMetin') return;
+      D.metin = e.target.value;
+      var c = $('#hbSay', govde); if (c) c.textContent = String(D.metin.length);
+      uyar('');
+    });
+    /* başka bir kod paneli kapatırsa (kitabın kapatHepsi'si gibi) perde de insin */
+    if (window.MutationObserver) {
+      new MutationObserver(function () {
+        if (D.ac && !panel.classList.contains('acik')) kapat(true);
+      }).observe(panel, { attributes: true, attributeFilter: ['class'] });
+    }
+  }
+
+  /* Esc: önce bu paneli kapat, kitabın kendi Esc işine (yakınlaştırmayı sıfırla) karışmasın */
+  window.addEventListener('keydown', function (e) {
+    if (!D.ac || (e.key !== 'Escape' && e.key !== 'Esc')) return;
+    e.preventDefault(); e.stopPropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    kapat();
+  }, true);
+  /* giriş yapıp bu sekmeye dönünce panel kendiliğinden yenilenir */
+  function dondu() {
+    if (D.ac && (D.goruntu === 'girissiz' || D.goruntu === 'kayitYok' || D.goruntu === 'ag')) hesapIste();
+  }
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) dondu(); });
+  window.addEventListener('focus', dondu);
+  window.addEventListener('pageshow', dondu);
+
+  /* ---------- biçim ---------- */
+  function stilEkle() {
+    if (document.getElementById('hbStil')) return;
+    var st = document.createElement('style');
+    st.id = 'hbStil';
+    st.textContent = [
+      /* düğme rengi: kitaptema.css'teki --tr/--trz düzeni (yan çubukta yazı + simge bu renkte,
+         etkinken dolu; dar ekranda öbür .tus'lar gibi yalnız simge) */
+      '.ust .araclar #tHataBildir{--tr:#DB2777;--trz:rgba(219,39,119,.11)}',
+      /* telefonda (<520 px) üst şerit dolu: düğme alt şeritte, kaydırıcının sağında durur */
+      '.alt #tHataBildir{--tr:#DB2777;--trz:rgba(219,39,119,.11);order:9;flex:0 0 38px;color:#DB2777}',
+      '.alt #tHataBildir:hover{background:rgba(219,39,119,.11);color:#DB2777}',
+      '.alt #tHataBildir.aktif{background:#DB2777;color:#fff}',
+      /* perde ve panel */
+      '.hb-perde{position:fixed;top:0;right:0;bottom:0;left:0;z-index:70;background:rgba(31,36,48,.42);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .22s}',
+      '.hb-perde.acik{opacity:1;pointer-events:auto}',
+      '.hb-panel{width:min(460px,94vw)}',
+      '.hb-panel .pgovde{display:flex;flex-direction:column;gap:16px;padding:18px}',
+      '.hb-panel h2,.hb-panel h3{margin:0}',
+      /* bağlam kartı */
+      '.hb-ctx{display:grid;gap:9px;padding:13px 15px;border:1.5px solid var(--cizgi,#E3E8EF);border-radius:14px;background:#F8FAFC}',
+      '.hb-ctx-s{display:flex;align-items:center;gap:10px;min-width:0;font-size:13.5px;color:var(--mur,#1F2430)}',
+      '.hb-ctx-s>b{flex:0 0 52px;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gri,#5B6471)}',
+      '.hb-ctx-d{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}',
+      '.hb-ad{font-weight:800}',
+      '.hb-sabit{display:inline-block;min-width:34px;padding:4px 12px;border-radius:99px;background:rgba(22,160,133,.12);color:var(--yesilK,#0E7C66);font-weight:800;text-align:center}',
+      /* seçenekler */
+      '.hb-blok{display:grid;gap:8px}',
+      '.hb-et{font-size:12px;font-weight:800;letter-spacing:.02em;color:var(--gri,#5B6471)}',
+      '.hb-chips{display:flex;flex-wrap:wrap;gap:8px}',
+      '.hb-chip{min-height:44px;padding:8px 15px;border:1.5px solid var(--cizgi,#E3E8EF);border-radius:99px;background:#fff;color:var(--ink2,#2A3C63);font:inherit;font-size:13px;font-weight:700;line-height:1.25;text-align:left;cursor:pointer;transition:border-color .15s,background .15s,color .15s}',
+      '.hb-sayfa{min-width:52px;text-align:center}',
+      '.hb-chip:hover{border-color:var(--yesil,#16A085)}',
+      '.hb-chip[aria-checked="true"],.hb-chip[aria-pressed="true"]{border-color:var(--yesil,#16A085);background:rgba(22,160,133,.12);color:var(--yesilK,#0E7C66)}',
+      '.hb-metin{width:100%;min-height:118px;resize:vertical;padding:12px 14px;border:1.5px solid var(--cizgi,#E3E8EF);border-radius:12px;background:#fff;color:var(--mur,#1F2430);font:inherit;font-size:14.5px;line-height:1.5;outline:none}',
+      '.hb-metin:focus{border-color:var(--yesil,#16A085)}',
+      '.hb-say{text-align:right;font-size:11.5px;color:var(--soluk,#8A93A0);font-variant-numeric:tabular-nums}',
+      '.hb-uyari{padding:10px 13px;border-radius:12px;background:#FDECEC;color:#9B1C1C;font-size:13px;font-weight:700;line-height:1.4}',
+      '.hb-uyari[hidden]{display:none}',
+      '.hb-gonder,.hb-ikinci{min-height:50px;padding:0 20px;border-radius:14px;font:inherit;font-size:15px;font-weight:800;cursor:pointer;transition:filter .15s,background .15s}',
+      '.hb-gonder{border:0;background:var(--yesil,#16A085);color:#fff}',
+      '.hb-gonder:hover{filter:brightness(.94)}',
+      '.hb-gonder:disabled{opacity:.6;cursor:default}',
+      '.hb-ikinci{border:1.5px solid var(--cizgi,#E3E8EF);background:#fff;color:var(--ink2,#2A3C63)}',
+      '.hb-ikinci:hover{border-color:var(--yesil,#16A085)}',
+      '.hb-not{margin:0;font-size:12px;line-height:1.5;color:var(--gri,#5B6471);overflow-wrap:anywhere}',
+      '.hb-chip:focus-visible,.hb-gonder:focus-visible,.hb-ikinci:focus-visible{outline:2px solid var(--yesil,#16A085);outline-offset:2px}',
+      /* durum ekranları */
+      '.hb-durum{display:flex;flex-direction:column;align-items:center;gap:10px;padding:26px 8px;text-align:center;color:var(--mur,#1F2430)}',
+      '.hb-durum svg{width:46px;height:46px;fill:none;stroke:var(--yesil,#16A085);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}',
+      '.hb-uyar svg{stroke:#D97706}',
+      '.hb-durum h3{font-size:17px;font-weight:800}',
+      '.hb-durum p{margin:0;font-size:14px;line-height:1.55;color:var(--gri,#5B6471)}',
+      '.hb-durum small{font-size:12px;line-height:1.5;color:var(--soluk,#8A93A0)}',
+      '.hb-dugmeler{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;width:100%;margin-top:6px}',
+      '.hb-dugmeler>button,.hb-dugmeler>a{flex:1 1 150px}',
+      '.hb-bag{display:flex;align-items:center;justify-content:center;text-decoration:none;color:#fff;text-align:center}',
+      '.hb-bag:hover{color:#fff}',
+      '.hb-don{width:34px;height:34px;border-radius:50%;border:3px solid rgba(22,160,133,.2);border-top-color:var(--yesil,#16A085);animation:hbDon .8s linear infinite}',
+      '@keyframes hbDon{to{transform:rotate(360deg)}}',
+      '@media (prefers-reduced-motion:reduce){.hb-don{animation-duration:2.4s}.hb-perde{transition:none}}',
+      '@media (max-width:420px){.hb-panel .pgovde{padding:14px}.hb-ctx-s>b{flex-basis:46px}}'
+    ].join('\n');
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  /* ---------- yan çubuk düğmesi ---------- */
+  function dugmeKur() {
+    var ar = $('.ust .araclar');
+    if (!ar || document.getElementById('tHataBildir')) return;
+    stilEkle();
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tus';
+    b.id = 'tHataBildir';
+    b.title = 'Bu sayfadaki hatayı yöneticiye bildir';
+    b.setAttribute('aria-label', 'Hata bildir');
+    b.setAttribute('aria-haspopup', 'dialog');
+    b.setAttribute('aria-expanded', 'false');
+    b.innerHTML = IK_BILDIR + '<span class="yan-et">Hata bildir</span>';
+    ar.appendChild(b);
+    dugme = b;
+    /* telefonda üst şeritte yer yok (Kidef'te en sağdaki düğme ekran dışına düşüyordu):
+       500 px altında düğme alt şeride, kaydırıcının yanına geçer; geniş ekranda yan çubukta */
+    var kucuk = window.matchMedia ? window.matchMedia('(max-width: 519px)') : null;
+    function yerles() {
+      var alt = $('.alt');
+      if (kucuk && kucuk.matches && alt) {
+        if (b.parentNode !== alt) alt.appendChild(b);
+      } else if (b.parentNode !== ar) ar.appendChild(b);
+    }
+    yerles();
+    if (kucuk) { if (kucuk.addEventListener) kucuk.addEventListener('change', yerles); else if (kucuk.addListener) kucuk.addListener(yerles); }
+    /* sonradan eklenen düğmeler (Ders, Yardım…) altına binmesin: yan çubukta bu en altta kalır */
+    if (window.MutationObserver) {
+      new MutationObserver(function () { if (b.parentNode === ar && ar.lastElementChild !== b) ar.appendChild(b); })
+        .observe(ar, { childList: true });
+    }
+    b.addEventListener('click', function () { if (D.ac) kapat(); else ac(); });
+    /* üstüne gelince / dokununca girişliyse SDK'yı önceden indir (ilk açılış hızlı olsun) */
+    var onYuk = function () {
+      oturumUid().then(function (u) { if (u) sdkYukle().then(null, function () { }); });
+    };
+    ['pointerenter', 'focus', 'touchstart'].forEach(function (ad) { b.addEventListener(ad, onYuk, { once: true, passive: true }); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', dugmeKur);
+  else dugmeKur();
+  window.addEventListener('load', dugmeKur);              /* çubuk geç kurulduysa bir kez daha dene */
+
+  window.KitapHataBildir = { ac: ac, kapat: kapat };
+})();

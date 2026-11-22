@@ -228,6 +228,14 @@ function renderAdminPanel() {
                 </div>
             </details>
 
+            <!-- KİTAP HATA BİLDİRİMLERİ (20.11.2026): flipbook «Hata bildir» kayıtları; yalnız yönetici, açınca okunur (hesap/teacher-admin.js › kitapHataYukle) -->
+            ${_aonYoneticiMi() ? `
+            <details class="admin-details" name="admin-accordion" id="admin-kitaphata-details" ontoggle="if(this.open) kitapHataYukle()">
+                <summary class="admin-summary"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px; margin-right:6px;"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.2 4v-4h-.3A2.5 2.5 0 0 1 4 13.5z"/><path d="M12 7v4"/><path d="M12 13.4v.1"/></svg>Kitap hata bildirimleri <span id="admin-kitaphata-badge"></span></summary>
+                <div id="admin-kitaphata" style="padding:10px 0;">Bölümü açınca yüklenir…</div>
+            </details>` : ''}
+            <!-- /KİTAP HATA BİLDİRİMLERİ -->
+
 
 
             <details class="admin-details" name="admin-accordion" id="admin-baglama-details" ontoggle="if(this.open) adminBaglamaYukle()">
@@ -4033,3 +4041,375 @@ function adminSupheliOgrenci(uid) {
               function (e) { _abUyar('Kaydedilemedi: ' + ((e && (e.code || e.message)) || e)); });
 }
 window.adminSupheliYukle = adminSupheliYukle;
+
+/* ==== KİTAP HATA BİLDİRİMLERİ — BAŞLANGIÇ (20.11.2026) ==== */
+/* ==========================================
+   KİTAP HATA BİLDİRİMLERİ                                   20.11.2026
+   Yönetici: "flipbooklarda bi hata olan sayfada öğretmen geri bildirim
+   gönderebilmeli, bunlara yönetici ulaşıp bakabilmeli."
+   Öğretmen flipbook'ta «Hata bildir»e basınca kayıt «mesajlar» koleksiyonuna
+   gider (tur:'kitapHata', durum:'yeni'; kitap/sayfa/ünite/tür/açıklama/adres).
+   Burada: kitaba, duruma ve metne göre süzülür, «Sayfayı aç» kitabı o sayfada
+   açar, durum Yeni → İnceleniyor → Çözüldü ilerletilir, öğretmene cevap
+   yazılır (cevap öğretmenin Mesajlar kutusuna düşer; ✉ noktası yanar).
+   OKUMA AZALT: bölüm açılınca bir kez okunur (en çok 500 kayıt, tek eşitlik
+   süzgeci — dizin gerekmez, sıralama istemcide), 10 dk önbellek; «Yenile» tazeler.
+   Yenileme sorgusu yok; durum/cevap değişikliği yalnız o belgeye yazar.
+   Okunmamış bildirimler açılışta «okundu» işaretlenir (✉ noktası söner) —
+   eski «Gelen Öneriler / Mesajlar» listesiyle aynı davranış; iş akışı
+   «durum» alanında ayrı tutulur, yani okunmuş sayılması «Yeni»yi silmez.
+   ========================================== */
+var _kht = { yuk: false, yukleniyor: false, liste: [], zaman: 0, sinir: false,
+             suz: { durum: 'yeni', kitap: '', ara: '', sira: 'yeni' }, ac: {}, zk: 0 };
+var _KHT_DURUM = { yeni: 'Yeni', inceleniyor: 'İnceleniyor', cozuldu: 'Çözüldü' };
+var _KHT_TUR = { yazim: 'Yazım / hareke', anlam: 'Çeviri / anlam', cevap: 'Cevap anahtarı',
+                 medya: 'Ses / video / etkinlik', gorunum: 'Sayfa görünümü', diger: 'Diğer' };
+var _KHT_SINIR = 500, _KHT_SURE = 600000;
+
+function _khtEsc(t) {
+    return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function _khtMs(t) {
+    try {
+        if (!t) return 0;
+        if (typeof t.toMillis === 'function') return t.toMillis() || 0;
+        if (typeof t.toDate === 'function') return t.toDate().getTime() || 0;
+        if (typeof t.seconds === 'number') return t.seconds * 1000;
+        if (typeof t === 'number') return t;
+    } catch (e) { }
+    return 0;
+}
+function _khtSira(m) { return _khtMs(m.createdAt) || Date.now(); }   /* sunucu saati henüz gelmemiş kayıt = en yeni */
+function _khtTarih(ms) {
+    if (!ms) return 'şimdi';
+    try { return new Date(ms).toLocaleString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+    catch (e) { return ''; }
+}
+function _khtUyar(m) {
+    if (typeof showCustomAlert === 'function') showCustomAlert(m);
+    else if (window.console) console.warn(m);
+}
+function _khtHata(e) { return (e && (e.code || e.message)) || e || 'bilinmeyen hata'; }
+function _khtBul(id) {
+    for (var i = 0; i < _kht.liste.length; i++) if (_kht.liste[i]._id === id) return _kht.liste[i];
+    return null;
+}
+function _khtKartBul(id) {
+    var l = document.querySelectorAll('#admin-kitaphata .kht-kart');
+    for (var i = 0; i < l.length; i++) if (l[i].getAttribute('data-id') === id) return l[i];
+    return null;
+}
+function _khtAciklama(m) {
+    if (m.aciklama != null && m.aciklama !== '') return String(m.aciklama);
+    var p = String(m.text || '').split('\n\n');
+    return p.length > 1 ? p.slice(1).join('\n\n') : String(m.text || '');
+}
+
+function _khtStil() {
+    if (document.getElementById('kht-stil')) return;
+    var st = document.createElement('style');
+    st.id = 'kht-stil';
+    st.textContent = [
+        '#admin-kitaphata .kht-bar{display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; margin-bottom:10px;}',
+        '#admin-kitaphata .kht-chip{display:inline-flex; align-items:center; gap:6px; min-height:38px; padding:0 14px; border:1.5px solid #E1E8F0; border-radius:99px; background:#fff; color:#34495e; font:inherit; font-size:.9rem; font-weight:700; cursor:pointer;}',
+        '#admin-kitaphata .kht-chip i{font-style:normal; min-width:20px; padding:1px 6px; border-radius:10px; background:#EEF2F7; color:#5B6471; font-size:.78rem; text-align:center;}',
+        '#admin-kitaphata .kht-chip.on{border-color:#16A085; background:rgba(22,160,133,.12); color:#0E7C66;}',
+        '#admin-kitaphata .kht-chip.on i{background:#16A085; color:#fff;}',
+        '#admin-kitaphata .kht-sec, #admin-kitaphata .kht-ara{min-height:38px; padding:0 12px; border:1.5px solid #E1E8F0; border-radius:10px; background:#fff; color:#2c3e50; font:inherit; font-size:.9rem; max-width:100%;}',
+        '#admin-kitaphata .kht-ara{flex:1 1 180px; min-width:150px;}',
+        '#admin-kitaphata .kht-not{margin:2px 0 10px; font-size:.8rem; color:#8A93A0;}',
+        '#admin-kitaphata .kht-grup{margin:16px 0 8px; font-size:.95rem; font-weight:800; color:#1f5f99;}',
+        '#admin-kitaphata .kht-grup span{font-weight:700; color:#8A93A0; font-size:.8rem;}',
+        '#admin-kitaphata .kht-kart{position:relative; margin-bottom:12px; padding:12px 14px 12px 18px; border:1px solid #E9EEF5; border-radius:12px; background:#fff; overflow:hidden;}',
+        '#admin-kitaphata .kht-kart::before{content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:#E11D48;}',
+        '#admin-kitaphata .kht-kart.kht-d-inceleniyor::before{background:#D97706;}',
+        '#admin-kitaphata .kht-kart.kht-d-cozuldu::before{background:#16A085;}',
+        '#admin-kitaphata .kht-kart.kht-d-cozuldu{background:#FAFCFB;}',
+        '#admin-kitaphata .kht-ust{display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; margin-bottom:4px;}',
+        '#admin-kitaphata .kht-kitap{font-size:1rem; color:#1f2d3d;}',
+        '#admin-kitaphata .kht-sayfa{padding:1px 10px; border-radius:99px; background:rgba(22,160,133,.12); color:#0E7C66; font-weight:800; font-size:.85rem;}',
+        '#admin-kitaphata .kht-tarih{margin-left:auto; font-size:.8rem; color:#8A93A0;}',
+        '#admin-kitaphata .kht-alt{font-size:.84rem; color:#6C7794; margin-bottom:6px;}',
+        '#admin-kitaphata .kht-metin{white-space:pre-wrap; overflow-wrap:anywhere; padding:9px 11px; border-radius:9px; background:#F7F9FC; color:#2c3e50; font-size:.92rem; line-height:1.5;}',
+        '#admin-kitaphata .kht-kim{margin-top:7px; font-size:.82rem; color:#6C7794; overflow-wrap:anywhere;}',
+        '#admin-kitaphata .kht-kim em{font-style:normal; margin-left:6px; padding:1px 8px; border-radius:99px; background:#E8F6F1; color:#0E7C66; font-weight:700; font-size:.76rem;}',
+        '#admin-kitaphata .kht-islem{display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; margin-top:10px;}',
+        '#admin-kitaphata .kht-link{display:inline-flex; align-items:center; min-height:38px; padding:0 14px; border-radius:10px; background:#1f5f99; color:#fff; font-weight:700; font-size:.88rem; text-decoration:none;}',
+        '#admin-kitaphata .kht-link:hover{filter:brightness(1.08);}',
+        '#admin-kitaphata .kht-segs{display:inline-flex; border:1.5px solid #E1E8F0; border-radius:10px; overflow:hidden;}',
+        '#admin-kitaphata .kht-seg{min-height:36px; padding:0 12px; border:0; border-right:1px solid #E1E8F0; background:#fff; color:#5B6471; font:inherit; font-size:.84rem; font-weight:700; cursor:pointer;}',
+        '#admin-kitaphata .kht-seg:last-child{border-right:0;}',
+        '#admin-kitaphata .kht-seg.on.kht-yeni{background:#E11D48; color:#fff;}',
+        '#admin-kitaphata .kht-seg.on.kht-inceleniyor{background:#D97706; color:#fff;}',
+        '#admin-kitaphata .kht-seg.on.kht-cozuldu{background:#16A085; color:#fff;}',
+        '#admin-kitaphata .kht-btn{min-height:38px; padding:0 14px; border:1.5px solid #E1E8F0; border-radius:10px; background:#fff; color:#2c3e50; font:inherit; font-size:.88rem; font-weight:700; cursor:pointer;}',
+        '#admin-kitaphata .kht-btn:hover{border-color:#16A085;}',
+        '#admin-kitaphata .kht-btn:disabled{opacity:.6; cursor:default;}',
+        '#admin-kitaphata .kht-yanit{margin-top:10px;}',
+        '#admin-kitaphata .kht-yanit[hidden]{display:none;}',
+        '#admin-kitaphata .kht-ta{display:block; width:100%; min-height:74px; margin-bottom:8px; padding:9px 11px; border:1.5px solid #E1E8F0; border-radius:10px; font:inherit; font-size:.92rem; resize:vertical; box-sizing:border-box;}',
+        '#admin-kitaphata .kht-bos{padding:22px 10px; text-align:center; color:#8A93A0;}',
+        '#admin-kitaphata .kht-hata{color:#EF5350;}',
+        '.kht-sayi{display:inline-block; margin-left:6px; min-width:20px; padding:1px 7px; border-radius:11px; background:#E11D48; color:#fff; font-size:.78rem; font-weight:800; text-align:center; vertical-align:middle;}',
+        '@media (max-width:560px){#admin-kitaphata .kht-tarih{margin-left:0; flex-basis:100%;} #admin-kitaphata .kht-segs{width:100%;} #admin-kitaphata .kht-seg{flex:1;}}'
+    ].join('\n');
+    (document.head || document.documentElement).appendChild(st);
+}
+
+/* ---------- yükleme ---------- */
+function kitapHataYukle(zorla) {
+    var kap = document.getElementById('admin-kitaphata');
+    if (!kap) return;
+    if (!_aonYoneticiMi()) { kap.innerHTML = '<p class="kht-bos">Bu bölüm yalnız yönetici içindir.</p>'; return; }
+    _khtStil();
+    if (!kap.getAttribute('data-kht-bagli')) {                 /* tek sefer: olay yönlendirme */
+        kap.setAttribute('data-kht-bagli', '1');
+        kap.addEventListener('click', _khtTik);
+        kap.addEventListener('change', _khtDegis);
+        kap.addEventListener('input', _khtGirdi);
+    }
+    if (_kht.yuk && !zorla && (Date.now() - _kht.zaman) < _KHT_SURE) { _khtCiz(); return; }
+    if (_kht.yukleniyor) return;
+    _kht.yukleniyor = true;
+    kap.innerHTML = '<p class="kht-bos">Yükleniyor…</p>';
+    try {
+        firebase.firestore().collection('mesajlar').where('tur', '==', 'kitapHata').limit(_KHT_SINIR).get()
+            .then(function (snap) {
+                var L = [], okunacak = [];
+                snap.forEach(function (d) {
+                    var m = d.data() || {};
+                    if (m.tur !== 'kitapHata') return;                 /* süzgeç sunucuda; istemcide de güvence */
+                    m._id = d.id;
+                    L.push(m);
+                    if (m.from === 'user' && m.readByAdmin === false) okunacak.push(d.ref);
+                });
+                L.sort(function (a, b) { return _khtSira(b) - _khtSira(a); });
+                _kht.liste = L; _kht.yuk = true; _kht.zaman = Date.now(); _kht.yukleniyor = false;
+                _kht.sinir = L.length >= _KHT_SINIR;
+                _khtCiz();
+                _khtOkundu(okunacak);
+            })
+            .catch(function (e) {
+                _kht.yukleniyor = false;
+                var k2 = document.getElementById('admin-kitaphata');
+                if (k2) k2.innerHTML = '<p class="kht-hata">Yüklenemedi: ' + _khtEsc(_khtHata(e)) + '</p>' +
+                    '<button type="button" class="kht-btn" data-kht="yenile">Tekrar dene</button>';
+            });
+    } catch (e) {
+        _kht.yukleniyor = false;
+        kap.innerHTML = '<p class="kht-hata">Firebase hazır değil.</p>';
+    }
+}
+function _khtOkundu(refs) {                                    /* ✉ noktası sönsün (eski liste gibi) */
+    if (!refs || !refs.length) return;
+    try {
+        var D = firebase.firestore();
+        for (var i = 0; i < refs.length; i += 400) {
+            var b = D.batch();
+            refs.slice(i, i + 400).forEach(function (r) { b.update(r, { readByAdmin: true }); });
+            b.commit().catch(function () { });
+        }
+        if (typeof checkUnreadMessages === 'function') setTimeout(checkUnreadMessages, 900);
+    } catch (e) { }
+}
+
+/* ---------- çizim ---------- */
+function _khtSayilar() {
+    var s = { yeni: 0, inceleniyor: 0, cozuldu: 0 };
+    _kht.liste.forEach(function (m) { var d = _KHT_DURUM[m.durum] ? m.durum : 'yeni'; s[d]++; });
+    s.hepsi = _kht.liste.length;
+    return s;
+}
+function _khtRozet(s) {
+    var r = document.getElementById('admin-kitaphata-badge');
+    if (r) r.innerHTML = s.yeni ? '<span class="kht-sayi">' + s.yeni + '</span>' : '';
+}
+function _khtUstHtml() {
+    var S = _kht.suz, say = _khtSayilar(), h = '';
+    var kitaplar = {};
+    _kht.liste.forEach(function (m) { if (m.kitap) kitaplar[m.kitap] = m.kitapAd || m.kitap; });
+    h += '<div class="kht-bar" role="group" aria-label="Duruma göre">';
+    [['yeni', 'Yeni'], ['inceleniyor', 'İnceleniyor'], ['cozuldu', 'Çözüldü'], ['hepsi', 'Hepsi']].forEach(function (x) {
+        h += '<button type="button" class="kht-chip' + (S.durum === x[0] ? ' on' : '') + '" data-kht="suz" data-d="' + x[0] + '" aria-pressed="' + (S.durum === x[0]) + '">' +
+             x[1] + ' <i>' + say[x[0]] + '</i></button>';
+    });
+    h += '</div><div class="kht-bar">';
+    h += '<select class="kht-sec" id="kht-kitap" aria-label="Kitap"><option value="">Tüm kitaplar</option>';
+    Object.keys(kitaplar).sort(function (a, b) { return String(kitaplar[a]).localeCompare(String(kitaplar[b]), 'tr'); }).forEach(function (k) {
+        h += '<option value="' + _khtEsc(k) + '"' + (S.kitap === k ? ' selected' : '') + '>' + _khtEsc(kitaplar[k]) + '</option>';
+    });
+    h += '</select>';
+    h += '<select class="kht-sec" id="kht-sira" aria-label="Sıralama"><option value="yeni"' + (S.sira === 'yeni' ? ' selected' : '') + '>En yeni önce</option>' +
+         '<option value="kitap"' + (S.sira === 'kitap' ? ' selected' : '') + '>Kitap ve sayfaya göre</option></select>';
+    h += '<input type="search" class="kht-ara" id="kht-ara" placeholder="Ara: sayfa, öğretmen, açıklama…" value="' + _khtEsc(S.ara) + '" aria-label="Ara" autocomplete="off">';
+    h += '<button type="button" class="btn" data-kht="yenile" style="font-size:0.9rem;">Yenile</button>';
+    h += '</div>';
+    return h;
+}
+function _khtKartHtml(m) {
+    var d = _KHT_DURUM[m.durum] ? m.durum : 'yeni';
+    var adres = (typeof m.adres === 'string' && /^\/kitap\/[\w.~%\/-]+(\?s=\d{1,4})?$/.test(m.adres)) ? (location.origin + m.adres) : '';
+    var seg = '';
+    ['yeni', 'inceleniyor', 'cozuldu'].forEach(function (k) {
+        seg += '<button type="button" class="kht-seg kht-' + k + (k === d ? ' on' : '') + '" data-kht="durum" data-d="' + k + '" aria-pressed="' + (k === d) + '">' + _KHT_DURUM[k] + '</button>';
+    });
+    var ust = [m.unite, m.ders].filter(Boolean).join(' · ');
+    var h = '<article class="kht-kart kht-d-' + d + '" data-id="' + _khtEsc(m._id) + '">';
+    /* DİKKAT: <header> DEĞİL — sitenin genel «header» kuralı (turuncu şerit, sticky) kartın üst satırına bulaşır */
+    h += '<div class="kht-ust"><b class="kht-kitap">' + _khtEsc(m.kitapAd || m.kitap || 'Kitap') + '</b>' +
+         '<span class="kht-sayfa">Sayfa ' + _khtEsc(m.sayfa || '—') + '</span>' +
+         '<span class="kht-tarih">' + _khtEsc(_khtTarih(_khtMs(m.createdAt))) + '</span></div>';
+    h += '<div class="kht-alt">' + (ust ? 'Ünite: ' + _khtEsc(ust) + ' · ' : '') + 'Tür: ' + _khtEsc(_KHT_TUR[m.hataTuru] || 'Diğer') + '</div>';
+    h += '<div class="kht-metin">' + _khtEsc(_khtAciklama(m)) + '</div>';
+    h += '<div class="kht-kim">Gönderen: <b>' + _khtEsc(m.ad || 'Öğretmen') + '</b>' + (m.email ? ' · ' + _khtEsc(m.email) : '') +
+         (m.yanitlandi ? '<em>Yanıtlandı</em>' : '') + '</div>';
+    h += '<div class="kht-islem">' + (adres ? '<a class="kht-link" href="' + _khtEsc(adres) + '" target="_blank" rel="noopener">Sayfayı aç</a>' : '') +
+         '<span class="kht-segs" role="group" aria-label="Durum">' + seg + '</span>' +
+         (m.uid ? '<button type="button" class="kht-btn" data-kht="yanit">Yanıtla</button>' : '') + '</div>';
+    h += '<div class="kht-yanit"' + (_kht.ac[m._id] ? '' : ' hidden') + '><textarea class="kht-ta" rows="3" maxlength="1000" placeholder="Öğretmene cevabın (Mesajlar kutusuna düşer)…"></textarea>' +
+         '<button type="button" class="kht-btn" data-kht="gonder">Cevabı gönder</button></div>';
+    return h + '</article>';
+}
+function _khtSuzulmus() {
+    var S = _kht.suz, ara = String(S.ara || '').toLowerCase().trim();
+    var L = _kht.liste.filter(function (m) {
+        var d = _KHT_DURUM[m.durum] ? m.durum : 'yeni';
+        if (S.durum !== 'hepsi' && d !== S.durum) return false;
+        if (S.kitap && m.kitap !== S.kitap) return false;
+        if (ara) {
+            var s = [m.kitapAd, m.kitap, m.sayfa, m.unite, m.ders, m.ad, m.email, _khtAciklama(m), _KHT_TUR[m.hataTuru]].join(' ').toLowerCase();
+            if (s.indexOf(ara) < 0) return false;
+        }
+        return true;
+    });
+    if (S.sira === 'kitap') {
+        L.sort(function (a, b) {
+            var k = String(a.kitapAd || a.kitap || '').localeCompare(String(b.kitapAd || b.kitap || ''), 'tr');
+            if (k) return k;
+            var p = (a.sayfaNo || 0) - (b.sayfaNo || 0);
+            if (p) return p;
+            return _khtSira(b) - _khtSira(a);
+        });
+    }
+    return L;
+}
+function _khtListeCiz() {
+    var kap = document.getElementById('kht-liste');
+    if (!kap) return;
+    var L = _khtSuzulmus(), h = '', son = null;
+    if (!L.length) {
+        kap.innerHTML = '<p class="kht-bos">' + (_kht.liste.length ? 'Bu süzgece uyan bildirim yok.' : 'Henüz kitap hata bildirimi yok.') + '</p>';
+        return;
+    }
+    L.forEach(function (m) {
+        if (_kht.suz.sira === 'kitap') {
+            var k = m.kitapAd || m.kitap || 'Kitap';
+            if (k !== son) {
+                son = k;
+                var n = L.filter(function (x) { return (x.kitapAd || x.kitap || 'Kitap') === k; }).length;
+                h += '<h4 class="kht-grup">' + _khtEsc(k) + ' <span>' + n + ' bildirim</span></h4>';
+            }
+        }
+        h += _khtKartHtml(m);
+    });
+    kap.innerHTML = h;
+}
+function _khtCiz() {
+    var kap = document.getElementById('admin-kitaphata');
+    if (!kap) return;
+    _khtRozet(_khtSayilar());
+    kap.innerHTML = '<div id="kht-ust">' + _khtUstHtml() + '</div>' +
+        '<div class="kht-not">Son okuma: ' + _khtEsc(_khtTarih(_kht.zaman)) + (_kht.sinir ? ' · en çok ' + _KHT_SINIR + ' kayıt okunur' : '') +
+        ' · Bölüm her açılışta yeniden okumaz (10 dk), «Yenile» tazeler.</div>' +
+        '<div id="kht-liste"></div>';
+    _khtListeCiz();
+}
+function _khtUstYenile() {                                     /* sayılar değişti: yalnız üst çubuk */
+    var u = document.getElementById('kht-ust');
+    if (u) u.innerHTML = _khtUstHtml();
+    _khtRozet(_khtSayilar());
+}
+function _khtKartYenile(id) {
+    var el = _khtKartBul(id), m = _khtBul(id);
+    if (!el || !m) return;
+    var t = document.createElement('div');
+    t.innerHTML = _khtKartHtml(m);
+    if (t.firstChild) el.parentNode.replaceChild(t.firstChild, el);
+}
+
+/* ---------- olaylar (yönlendirme) ---------- */
+function _khtTik(e) {
+    var t = e.target && e.target.closest ? e.target.closest('[data-kht]') : null;
+    if (!t) return;
+    var ey = t.getAttribute('data-kht'), kart = t.closest ? t.closest('.kht-kart') : null;
+    var id = kart ? kart.getAttribute('data-id') : '';
+    if (ey === 'suz') { _kht.suz.durum = t.getAttribute('data-d'); _khtUstYenile(); _khtListeCiz(); }
+    else if (ey === 'durum') kitapHataDurum(id, t.getAttribute('data-d'));
+    else if (ey === 'yanit') {
+        _kht.ac[id] = !_kht.ac[id];
+        var y = kart.querySelector('.kht-yanit');
+        if (y) { y.hidden = !_kht.ac[id]; if (_kht.ac[id]) { var ta = y.querySelector('.kht-ta'); if (ta) ta.focus(); } }
+    }
+    else if (ey === 'gonder') kitapHataYanit(id);
+    else if (ey === 'yenile') kitapHataYukle(true);
+}
+function _khtDegis(e) {
+    var t = e.target;
+    if (!t) return;
+    if (t.id === 'kht-kitap') { _kht.suz.kitap = t.value; _khtListeCiz(); }
+    else if (t.id === 'kht-sira') { _kht.suz.sira = t.value; _khtListeCiz(); }
+}
+function _khtGirdi(e) {
+    var t = e.target;
+    if (!t || t.id !== 'kht-ara') return;
+    _kht.suz.ara = t.value;
+    clearTimeout(_kht.zk);
+    _kht.zk = setTimeout(_khtListeCiz, 180);
+}
+
+/* ---------- durum ve cevap ---------- */
+function kitapHataDurum(id, yeni) {
+    if (!_aonYoneticiMi()) return;
+    var m = _khtBul(id);
+    if (!m || !_KHT_DURUM[yeni]) return;
+    var eski = _KHT_DURUM[m.durum] ? m.durum : 'yeni';
+    if (eski === yeni) return;
+    m.durum = yeni;                                            /* iyimser: kart yerinde değişir, süzgeçten sonraki çizimde çıkar */
+    _khtKartYenile(id); _khtUstYenile();
+    firebase.firestore().collection('mesajlar').doc(id)
+        .update({ durum: yeni, durumT: firebase.firestore.FieldValue.serverTimestamp() })
+        .catch(function (e) {
+            m.durum = eski;
+            _khtKartYenile(id); _khtUstYenile();
+            _khtUyar('Durum kaydedilemedi: ' + _khtHata(e));
+        });
+}
+function kitapHataYanit(id) {
+    if (!_aonYoneticiMi()) return;
+    var m = _khtBul(id), kart = _khtKartBul(id);
+    if (!m || !kart) return;
+    var ta = kart.querySelector('.kht-ta'), dg = kart.querySelector('[data-kht="gonder"]');
+    var t = String((ta && ta.value) || '').trim();
+    if (t.length < 2) { if (ta) ta.focus(); return; }
+    if (!m.uid) { _khtUyar('Bu bildirimde öğretmen kimliği yok; cevap gönderilemez.'); return; }
+    if (dg) { dg.disabled = true; dg.textContent = 'Gönderiliyor…'; }
+    var D = firebase.firestore(), ts = firebase.firestore.FieldValue.serverTimestamp();
+    var baslik = 'Hata bildirimin hakkında (' + (m.kitapAd || m.kitap || 'kitap') + ', sayfa ' + (m.sayfa || '—') + '):\n';
+    D.collection('mesajlar').add({
+        uid: m.uid, email: m.email || '', ad: m.ad || 'Öğretmen',
+        from: 'admin', kategori: 'Cevap', text: baslik + t,
+        createdAt: ts, readByAdmin: true, readByUser: false
+    }).then(function () {
+        m.yanitlandi = true; _kht.ac[id] = false;
+        D.collection('mesajlar').doc(id).update({ yanitlandi: true, yanitT: firebase.firestore.FieldValue.serverTimestamp() }).catch(function () { });
+        _khtKartYenile(id);
+    }).catch(function (e) {
+        if (dg) { dg.disabled = false; dg.textContent = 'Cevabı gönder'; }
+        _khtUyar('Cevap gönderilemedi: ' + _khtHata(e));
+    });
+}
+window.kitapHataYukle = kitapHataYukle;
+window.kitapHataDurum = kitapHataDurum;
+window.kitapHataYanit = kitapHataYanit;
+/* ==== KİTAP HATA BİLDİRİMLERİ — SON ==== */
