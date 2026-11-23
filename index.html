@@ -440,6 +440,10 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <!-- Karekodla giriş: callable Cloud Functions için functions bileşeni + karekod çizici -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js"></script>
+    <!-- MİSAFİR KALKANI (23.11.2026): «Sınıf materyalleri herkese açık» anahtarı açıkken giriş yapmamış ziyaretçinin buluta
+         yazması (Firestore, gerçek zamanlı veri, depolama, misafir kimlik) çağrı anında kapatılır; giriş yapmış hesapta ve
+         anahtar kapalıyken hiçbir şeye dokunmaz. Kitaplık az önce yüklendi: yamalar hemen takılır. sistem/misafirkalkan.js -->
+    <script src="sistem/misafirkalkan.js?v=99b43ac1"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <!-- KAREKOD YEDEĞİ (05.10.2026) — okul ağı cdnjs'i engellerse
          yukarıdaki kütüphane gelmiyor ve HİÇBİR karekod çizilmiyordu.
@@ -447,7 +451,7 @@
          girmiyor, gelmezse karekodlar yine çiziliyor. -->
     <script src="pano/qrcode.min.js?v=fbb6b69b"></script>
     <script src="sistem/karekodyedek.js?v=20a3ba23"></script>
-    <script src="sistem/kilit.js?v=60b3df4c"></script>
+    <script src="sistem/kilit.js?v=ef22336a"></script>
     <!-- Erişim katmanı: kilitli sitede öğrenci kategori kısıtı + öğretmen onay kapısı -->
     <script src="sistem/erisim.js?v=83372b2c"></script>
     <!-- ONAYDAN SONRA PAYLAŞILACAK MESAJ (07.10.2026) — öğretmen:
@@ -1987,7 +1991,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- İMAM HATİP — KİLİTLİ SİTEDE GÖRÜNÜM (26.10.2026): 🎓 Sadece Girişliler
          kipinde öğretmen ve öğrencilere gizli, yönetici görür. Bölümün hemen
          altında duruyor ki karar ilk boyamadan önce verilsin. -->
-    <script src="sistem/ihgorunum.js?v=58e417cb"></script>
+    <script src="sistem/ihgorunum.js?v=0608872a"></script>
+    <!-- SINIF MATERYALLERİ HERKESE AÇIK (23.11.2026): yönetici panelindeki anahtar açıkken giriş yapmamış ziyaretçiye bu bölüm
+         «Sınıf Materyalleri» adıyla açılır (kitaplar, belgeler, etkinlik kartları); giriş yapmış hesapta değişen bir şey yok.
+         Bölümün hemen altında duruyor ki karar ilk boyamadan önce verilsin. sistem/acikmateryal.js -->
+    <script src="sistem/acikmateryal.js?v=0150af95"></script>
     <!-- SINIF DAVETİ (01.11.2026): sınıfı olmayan onaylı öğretmene sol altta küçük kart — sınıf ekleyince
          açılan özellikler, «Sınıf ekle» / «Sonra» (3 gün). sistem/sinifdavet.js -->
     <script src="sistem/sinifdavet.js?v=eadab267"></script>
@@ -8332,18 +8340,18 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- DENEME HAKLARI (24.10.2026): destek vermeyen öğretmene bazı araçlarda
          5 deneme hakkı, bir kez (kartta 5 → 4; 25.10.2026'ya dek haftalıktı);
          Kelime Çarkı 25.10.2026'dan beri ücretsiz; durumu destek.js yazar -->
-    <script src="sistem/hak.js?v=d9d78375"></script>
-    <script src="hesap/destek.js?v=7b2f994c"></script>
+    <script src="sistem/hak.js?v=54160f2f"></script>
+    <script src="hesap/destek.js?v=713aa96f"></script>
     <script src="sistem/alarm.js?v=5af5693a"></script>
     <script src="hesap/live-lesson.js?v=663be102"></script>
     <!-- CANLI DERS: öğretmen ↔ kendi öğrencisi, site içi çağrı (05.11.2026) -->
-    <script src="hesap/canliders.js?v=2323f74e"></script>
+    <script src="hesap/canliders.js?v=769a115a"></script>
     <!-- CANLI DERS KULLANIMI (06.11.2026): yönetici panelinde ders/süre/veri gösterimi -->
     <script src="hesap/canlikullanim.js?v=36ea76d3"></script>
     <!-- Haftalık plan tavsiyesi verisi (Yöneticinin tavsiyesi penceresi) -->
     <script src="sistem/kazanimoneri.js?v=82c9b3e7"></script>
     <!-- Öğretmen profilindeki "sitede yenilikler" şeridi -->
-    <script src="sistem/yenilikler.js?v=519f5460"></script>
+    <script src="sistem/yenilikler.js?v=a1f8f6e6"></script>
     <!-- HAYIRLI CUMALAR (13.11.2026) — öğretmen: "Cuma günleri sitede hayırlı cumalar adında bi vugun veya bildirim
          yanıp sönebilir, cuma ile ilgili ayet verilebilir". Cuma günü (Türkiye saatiyle) sol altta yanıp sönen
          «Hayırlı Cumalar» düğmesi; basınca Cuma Suresi âyeti. Başka günlerde sayfaya hiçbir şey eklenmez.
@@ -8351,7 +8359,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sistem/cuma.js?v=52cd6032"></script>
     <!-- Güncellemeler ve Galeri bölümü: liste galeriYenile.py'den,
          duyurular yukarıdaki yenilikler.js'ten gelir. -->
-    <script src="sistem/siniftayeni.js?v=8865987b"></script>
+    <script src="sistem/siniftayeni.js?v=9ab82c48"></script>
     <!-- AYLIK YARIŞMA (24.10.2026) — ana sayfanın başındaki geri sayım kartı (#aylikYarisma);
          görev ayarı ayarlar/aylikYarisma, sayfa aylikyarisma.html -->
     <script defer src="sistem/aylikkart.js?v=f7bf99a7"></script>

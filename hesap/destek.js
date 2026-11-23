@@ -1866,7 +1866,9 @@
         { oz: 'muhadese', ad: 'Muhâdese', ik: '<path d="M4 4h11a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M20 9a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2v3l-4-3h-3"/>' },
         /* «Kitapta ders modu» çıktı (03.11.2026) — yönetici: "henüz kitapta ders modunu daha eklemedik onu kaldır" */
         { oz: 'kitapKalem', ad: 'Kitapta kalem', ik: '<path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/>' },
-        { oz: 'kitapIndir', ad: 'Kitap indirme', yalniz: 1, ik: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>' }
+        { oz: 'kitapIndir', ad: 'Kitap indirme', yalniz: 1, ik: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>' },
+        /* «Canlı ders» destek verenlere açıldı (23.11.2026) — yönetici: "canlı ders özelliğini de aktif edelim, sadece destek verenler kullanabilecek" */
+        { oz: 'canli', ad: 'Canlı ders', yalniz: 1, ik: '<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 9l3 2-3 2M12 13h5"/>' }
     ];
     /* BULUT HİZMETLERİ: destekçiye sınırsız; 1. dönemde destek vermeyene açık ama 2. dönemde kapanacak; kilitliyse kapalı */
     var _szH = null;                    /* kartın son çizildiği hesap (sinirsizBlok yazar) */
@@ -1895,8 +1897,8 @@
         var bas = destekci ? 'Destekçi olarak sınırsız açık' : 'Destek verince sınırsız';
         var alt = destekci ? 'Desteğin için teşekkürler.'
             : (h.durum === 'ilkay'
-                ? 'İlk ayında araçlar sınırsız, sonra her birinde 5 deneme hakkın olur; kitap indirme yalnız destekçilere.'
-                : 'Destek vermeden her aracı 5 kez deneyebilirsin; kitap indirme yalnız destekçilere.');
+                ? 'İlk ayında araçlar sınırsız, sonra her birinde 5 deneme hakkın olur; kitap indirme ve canlı ders yalnız destekçilere.'
+                : 'Destek vermeden her aracı 5 kez deneyebilirsin; kitap indirme ve canlı ders yalnız destekçilere.');
         if (dk) alt = 'Hesabın şu an yalnız MEB ders kitaplarına ve Pratik Sayfalar\'a açık: bu kitaplarda kalemi 5 kez deneyebilirsin; öbür araçlar ve bulut hizmetleri desteğinle açılır.';
         else if (!destekci && h.donem && h.donem.no === 1 && h.kisi > 0) alt += ' Bulut hizmetleri 1. dönem açık; destek vermezsen 2. dönemde kapanır, verilerin silinmez.';
         return '<div class="dst-sz" data-dst-sz><div class="dst-sz-bas"><svg ' + SZ_IK + '><path d="M12 3l2.6 5.5 6 .8-4.4 4.2 1 6-5.2-2.9-5.2 2.9 1-6L3.4 9.3l6-.8z"/></svg>' +

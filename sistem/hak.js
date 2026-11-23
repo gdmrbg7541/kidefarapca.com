@@ -44,6 +44,8 @@
                  (27.10.2026): deneme hakkı yok (YALNIZ, payli())
      kitapKalem  flipbookta Kalem (açarken; P tuşu da)
      ders        flipbookta Ders modu (açarken) — DERS MODU (29.10.2026)
+     canli       Canlı ders (hesap/canliders.js, hesap/canliOda.js) — YALNIZ DESTEKÇİYE (23.11.2026): deneme hakkı
+                 yok; dersi başlatan öğretmen destekçi olmalı, çağrılan öğrenci için destek gerekmez
      (Kelime Çarkı 25.10.2026'dan beri ücretsiz, kapı yok.)
    ORTAK HEDEF İLE AÇILAN İÇERİK
      Yöneticinin seçtiği bağlantılar (mufredat/_destek.hedefIcerik, destek.js
@@ -84,14 +86,14 @@
   var K_DURUM = 'kidefDestekDurum', K_HAK = 'kidefHak', K_HEDEF = 'kidefDestekHedef';
   var AD = {
     tahta: 'Tahtaya yansıt', defter: 'Defter PDF\'i ve geçmiş', kalip: 'Kalıplar tablosu', muhadese: 'Muhâdese',
-    kitapIndir: 'Flipbook indirme', kitapKalem: 'Flipbook kalemi', ders: 'Ders modu'
+    kitapIndir: 'Flipbook indirme', kitapKalem: 'Flipbook kalemi', ders: 'Ders modu', canli: 'Canlı ders'
   };
 
   /* YALNIZ DESTEKÇİYE (27.10.2026) — öğretmen: "kitap indirme özelliği tamamen ücretli olsun".
      Bu özelliklerde deneme hakkı yok. Açık olanlar: ödemesi onaylanan (dönemi tamam ya da kısmi),
      referansla ödemiş sayılan öğretmen ve yönetici (sebebi hesap/destek.js yazar). İlk ayındaki
      öğretmen, öğrenci ve durumu bu tarayıcıda bilinmeyen hesap «destekçilere açık» penceresini görür. */
-  var YALNIZ = { kitapIndir: 1 };
+  var YALNIZ = { kitapIndir: 1, canli: 1 };        /* canli: 23.11.2026 — «canlı ders destek verenlere» */
   var PAYLI = { odeme: 1, kismi: 1, referans: 1, yonetici: 1 };
   var KITAP_ARAC = { kitapKalem: 1, ders: 1, kitapIndir: 1 };     /* 2. DÖNEM KİLİDİ: flipbookun kendi araçları açık */
   function payli() {
@@ -375,9 +377,31 @@
       '<button type="button" class="kh-kapat">Kapat</button></div>' +
       refNot(), 'Deneme hakları bitti');
   }
+  /* CANLI DERS (23.11.2026) — yönetici: "canlı ders özelliğini de aktif edelim, sadece destek verenler kullanabilecek".
+     Dersi başlatan öğretmen destekçi olmalı; çağrılan öğrencinin katılması için destek gerekmez. */
+  function canliPencere(d) {
+    var ad = 'Canlı ders';
+    if (d.rol === 'student') {
+      return pencere('<div class="kh-ik">' + KILIT + '</div>' +
+        '<h3>Canlı dersi öğretmenin başlatır</h3>' +
+        '<p>Öğretmenin seni derse çağırınca ana sayfanda «Derse katıl» kartı çıkar; katılman için destek vermen gerekmez.</p>' +
+        '<div class="kh-tus"><button type="button" class="kh-kapat">Kapat</button></div>', ad + ' öğretmenlere açık');
+    }
+    return pencere('<div class="kh-ik">' + KILIT + '</div>' +
+      '<h3>' + ad + ' destekçilere açık</h3>' +
+      '<p>Öğrencini siteden canlı derse çağırıp açtığın kitap ve sayfaları onun ekranında sesli göstermek, Kidef\'e destek veren ' +
+        'öğretmenlere açık; bunun için deneme hakkı yok. Desteğin, sitenin yayın ve geliştirme giderlerini ve materyallerin ' +
+        'arkasındaki öğretmen emeğini karşılıyor.</p>' +
+      '<p class="kh-yesil"><b>Öğrencin ücretsiz katılır:</b> destek yalnız dersi başlatan öğretmen içindir.</p>' +
+      '<div class="kh-tus"><a class="kh-destek" href="' + esc(_destekAdres) + '">' + KALP + 'Destekle, canlı ders açılsın</a>' +
+      '<button type="button" class="kh-kapat">Kapat</button></div>' +
+      '<small>Destek verdiysen bu sayfayı bir kez yenile; destek durumun güncellenince canlı ders açılır.</small>' +
+      refNot(), ad + ' destekçilere açık');
+  }
   /* YALNIZ DESTEKÇİYE açık özellik (27.10.2026): deneme hakkı yok. Öğrenciye destek düğmesi yok. */
   function yalnizPencere(oz) {
     var d = al(K_DURUM, null) || {};
+    if (oz === 'canli') return canliPencere(d);
     var ad = oz === 'kitapIndir' ? 'Kitap indirme' : (AD[oz] || 'Bu araç');
     if (d.rol === 'student') {
       return pencere('<div class="kh-ik">' + KILIT + '</div>' +
@@ -400,7 +424,7 @@
      için tıklayınca destek istensin, hatta ... isteğe bağlı olduğunu
      vurgulayalım". Düğme sitenin «index.html#destek»ine gider: girişsizse orada
      giriş penceresi açılır, girince destek kartı (hesap/destek.js). */
-  var KISA = { kitapKalem: 'Kalem', kitapIndir: 'İndirme', ders: 'Ders modu' };
+  var KISA = { kitapKalem: 'Kalem', kitapIndir: 'İndirme', ders: 'Ders modu', canli: 'Canlı ders' };
   function girisPencere(oz) {
     var ad = KISA[oz] || AD[oz] || 'Bu araç';
     return pencere('<div class="kh-ik">' + KALP + '</div>' +
@@ -788,6 +812,7 @@
   };
   bagla(VARSAYILAN);
   rozetBagla({ '#tIndir': 'kitapIndir' });
+  rozetBagla({ '#tab-canli': 'canli', '#kcdListeTus': 'canli' });         /* canlı ders düğmeleri (hesap/canliders.js): kilit rozeti */
   TUSLAR.push({ tus: ['p', 'P'], s: '#tKalem', oz: 'kitapKalem', kosul: VARSAYILAN['#tKalem'].kosul });
 
   window.KidefHak = {

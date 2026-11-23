@@ -46,6 +46,10 @@
      yenilendi) yeniden. TURN gerekmez (SFU'nun açık adresi var; STUN stun.cloudflare.com). Çok öğrenci
      bu yolla açılabilir. Öğretmen kipi seçer (ses/ogt/kip: 'sfu' | 'p2p'); SFU işlevi yüklü değilse ya
      da hata verirse eşten eşe (P2P + TURN) yol. Ölçümde SFU'dan geçen her bayt «aktarıcı» sayılır.
+   · DESTEKÇİYE AÇIK (23.11.2026) — yönetici: "canlı ders özelliğini de aktif edelim, sadece destek verenler
+     kullanabilecek". Ana sayfadaki düğmeler (hesap/canliders.js) kapıdan geçirir; bu dosya ikinci kapıdır: öğretmen
+     görünümünde destekçi değilse (yönetici serbest) ses ve çağrı başlamaz, «Canlı ders destekçilere açık» ekranı çıkar.
+     Öğrenci görünümü etkilenmez.
    Veritabanı kuralı: sistem/tahta.js başlığında.
    ====================================================================== */
 (function () {
@@ -987,6 +991,41 @@
     kok.child('ses/ogt/aday').on('child_added', function (s) { adayGeldi(s.val()); }, function () { });
   }
 
+  /* DESTEKÇİYE AÇIK — İKİNCİ KAPI (23.11.2026): ders kabuğunu adresten açan öğretmen de destekçi olmalı (yönetici serbest).
+     Durum, ana sayfada yazılan kidefDestekDurum'dan (sistem/hak.js payli() ile aynı kural) ya da yöneticinin kapı biletinden okunur.
+     Öğrenci görünümü bu kapıya girmez. */
+  var PAYLI_SEBEP = { odeme: 1, kismi: 1, referans: 1, yonetici: 1 };
+  function destekciMi(uid) {
+    try {
+      var d = JSON.parse(localStorage.getItem('kidefDestekDurum') || 'null');
+      if (d && d.uid === uid) {
+        if (d.rol === 'admin') return true;
+        if (d.rol === 'teacher' && d.sinirsiz && PAYLI_SEBEP[d.sebep] && (!d.bit || d.bit > Date.now())) return true;
+      }
+      var b = JSON.parse(localStorage.getItem('kidefKapiBilet') || 'null');
+      if (b && b.uid === uid && b.rol === 'admin' && b.t && Date.now() - b.t < 24 * 3600000) return true;
+    } catch (e) { }
+    return false;
+  }
+  function destekEngel() {
+    if ($('cdDestekEngel')) return;
+    window.KidefCanliOda.engelli = true;
+    var p = document.createElement('div');
+    p.id = 'cdDestekEngel'; p.setAttribute('role', 'alertdialog'); p.setAttribute('aria-modal', 'true');
+    p.style.cssText = 'position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:18px;' +
+      'background:rgba(15,42,67,.82);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;';
+    p.innerHTML = '<div style="max-width:430px;width:100%;background:#fff;color:#1F2430;border-radius:18px;padding:26px 22px 20px;text-align:center;box-shadow:0 22px 60px rgba(0,0,0,.45)">' +
+      '<svg viewBox="0 0 24 24" width="44" height="44" aria-hidden="true" style="color:#C0392B"><rect x="5" y="10.5" width="14" height="10" rx="2.4" fill="currentColor"/>' +
+      '<path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>' +
+      '<h3 style="margin:10px 0 8px;font-size:1.25rem">Canlı ders destekçilere açık</h3>' +
+      '<p style="margin:0 0 10px;line-height:1.5;color:#44505E">Dersi başlatmak, Kidef\'e destek veren öğretmenlere açık. Öğrencinin katılması için destek gerekmez.</p>' +
+      '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0 10px">' +
+      '<a href="index.html#destek" style="padding:11px 16px;border-radius:11px;background:linear-gradient(135deg,#20C997,#16A085);color:#fff;font-weight:800;text-decoration:none">Destek ver</a>' +
+      '<a href="index.html" style="padding:11px 16px;border-radius:11px;border:1px solid #D5DEE6;color:#1F2430;font-weight:700;text-decoration:none">Ana sayfaya dön</a></div>' +
+      '<small style="display:block;color:#6B7886;line-height:1.45">Destek verdiysen Kidef ana sayfasını bu tarayıcıda bir kez aç, sonra canlı dersi yeniden başlat.</small></div>';
+    document.body.appendChild(p);
+  }
+
   function basla() {
     if (!window.firebase || !firebase.apps || !firebase.apps.length || !firebase.database) { setTimeout(basla, 150); return; }
     auth = firebase.auth(); vt = firebase.database(); kok = vt.ref('canli/' + ODA);
@@ -995,6 +1034,7 @@
       if (!u || u.isAnonymous || UID) return;                /* giriş yoksa kabuğun kendi ekranı var */
       UID = u.uid;
       if (!OGR && ODA !== 'ders_' + UID) return;             /* başkasının odası: tahta.js ana sayfaya yollar */
+      if (!OGR && !destekciMi(UID)) { destekEngel(); return; }   /* destekçi değil (23.11.2026) */
       if (OGR) ogrenciBasla(); else ogretmenBasla();
       ciz();
       olcumBasla();

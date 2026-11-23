@@ -25,6 +25,19 @@
 
     /* EN YENİSİ EN ÜSTTE */
     var LISTE = [
+        /* SINIFTA YENİ 23.11.2026 (canlı ders): ana sayfadaki g 'canliders' sayfasıyla aynı */
+        {
+            id: 40,
+            tarih: '2026-11-23',
+            baslik: 'Öğrencini siteden canlı derse çağır',
+            metin: 'Açtığın kitap ve sayfa, öğrencinin telefonunda ya da bilgisayarında aynı anda açılır; sen anlatırsın, o hem görür hem dinler. ' +
+                   'Canlı ders, Kidef\'e destek veren öğretmenlere açık; öğrencinin katılması için destek gerekmez. ' +
+                   'Üst çubuktaki canlı ders düğmesine ya da Listelerim\'deki «Canlı ders»e dokun; hesabıyla sana bağlı öğrencini çağır. ' +
+                   'Öğrenci ana sayfasında «Derse katıl» kartını görür; istersen katılım bağlantısını ona sen de gönderirsin. ' +
+                   'Sayfayı sen açarsın, kaydırırsın, lazerle gösterirsin; öğrencin hepsini kendi ekranında keskin görür. ' +
+                   'Konuşarak anlatırsın; kamerayı istersen açarsın, istemezsen ses yeter. ' +
+                   'Dersi bitirince öğrenci kendiliğinden ana sayfasına döner.'
+        },
         /* SINIFTA YENİ 15.11.2026 (başkan ve yardımcı, kendi profilinde): ana sayfadaki g 'baskanprofil' sayfasıyla aynı */
         {
             id: 39,

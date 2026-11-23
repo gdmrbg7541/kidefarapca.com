@@ -23,7 +23,7 @@
      kaydından (firebase:authUser) okunur — Firebase yüklenmeden.
 
    KİLİT DURUMU
-     localStorage siteKilitSon (+ siteKilitZaman). 60 sn'den eskiyse
+     localStorage siteKilitSon (+ siteKilitZaman; 23.11.2026: + siteMateryalAcik). 60 sn'den eskiyse
      ayarlar/site belgesi Firestore REST ile okunur (kurallar herkese
      okuma izni veriyor). Kilitli bilinen ya da hiç bilinmeyen sayfa
      karar verilene kadar görünmez; en çok 4 sn.
@@ -59,6 +59,27 @@
             (document.head || document.documentElement).appendChild(_ke);
         }
     } catch (e) { }
+
+    /* MİSAFİR KALKANI (23.11.2026) — yönetici: "sınıf materyallerinin herkese açık olduğu bi switch ekleyelim ... ama giriş yapmadan
+       kullanılırsa bulut hizmetlerine kaydedilmeyecek şekilde olsun". «Sınıf materyalleri herkese açık» anahtarı AÇIKKEN (yerel
+       önbellek siteMateryalAcik = '1', ya da aşağıdaki REST okuması öyle derse) sistem/misafirkalkan.js yüklenir: giriş yapmamış
+       ziyaretçinin Firebase'e yazması (Firestore, gerçek zamanlı veri, depolama, misafir kimlik) çağrı anında kapatılır. Anahtar
+       kapalıyken HİÇBİR dosya yüklenmez, hiçbir şey değişmez. Kapı her sayfanın ve çerçevenin başında çalıştığı için yükleme buradan;
+       aşağıdaki erken çıkışlardan ÖNCE (yerel denemede de yüklensin; ?oda= katılımını kalkanın kendisi dışarıda bırakır).
+       Damgayı surumle.py tazeler. */
+    var _ms = null;
+    try { _ms = document.currentScript && document.currentScript.src; } catch (e) { }
+    function kalkanYukle() {
+        try {
+            if (!_ms || !/sistem\/kapi\.js/.test(_ms) || window.KidefMisafirKalkan || document.getElementById('kidefKalkanJs')) return;
+            var _me = document.createElement('script');
+            _me.id = 'kidefKalkanJs';
+            _me.async = true;
+            _me.src = _ms.replace(/sistem\/kapi\.js[\s\S]*$/, 'sistem/misafirkalkan.js?v=99b43ac1');
+            (document.head || document.documentElement).appendChild(_me);
+        } catch (e) { }
+    }
+    try { if (localStorage.getItem('siteMateryalAcik') === '1') kalkanYukle(); } catch (e) { }
 
     var API = 'AIzaSyBGIQPJ_Bjm5I3-QmrrGpLR5MqmG3S5F8w';
     var KILIT = 'siteKilitSon', KILIT_ZAMAN = 'siteKilitZaman';
@@ -223,6 +244,10 @@
                 .then(function (j) {
                     var v = j && j.fields && j.fields.kilit && j.fields.kilit.stringValue;
                     v = kilitliMi(v) ? v : 'acik';
+                    /* 23.11.2026: «sınıf materyalleri herkese açık» anahtarı (misafir kalkanı bu önbelleği okur) */
+                    var _m = !!(j && j.fields && j.fields.materyalAcik && j.fields.materyalAcik.booleanValue === true);
+                    yerelYaz('siteMateryalAcik', _m ? '1' : '0');
+                    if (_m) kalkanYukle();
                     yerelYaz(KILIT, v); yerelYaz(KILIT_ZAMAN, String(Date.now()));
                     son(v);
                 })

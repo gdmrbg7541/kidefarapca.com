@@ -13,7 +13,7 @@
    kamera) kabukta küçük pencerede: hesap/canliOda.js (WebRTC, Cloudflare TURN).
 
    BU DOSYA (ana sayfa):
-   · Yetkili (şimdilik yalnız yönetici — KIMLER): başlıkta canlı ders düğmesi ve Listelerim'de
+   · Yetkili (yönetici ve DESTEK VEREN öğretmen — KIMLER + sistem/hak.js «canli» kapısı; 23.11.2026): başlıkta canlı ders düğmesi ve Listelerim'de
      «Canlı ders» → öğrenci listesi (listelerim verisi; yoksa ogrenciBaglari) sessionStorage'a
      yazılır (kidef_canli_liste, kidef_canli_ad), kabuk açılır. Öğrenci kabuktaki pencereden çağrılır.
    · Öğrenci: canlı veritabanında canliCagri/<uid> dinlenir (öğretmen yazar: { oda, ad, t }).
@@ -34,8 +34,17 @@
         return;
     } } catch (e) { }
     var C = window.KidefCanli = {};
-    /* ŞİMDİLİK YALNIZ YÖNETİCİ (05.11.2026): öğretmenlere açılınca 'teacher' eklenir */
-    var KIMLER = ['admin'];
+    /* ÖĞRETMENE AÇILDI, YALNIZ DESTEKÇİYE (23.11.2026) — yönetici: "canlı ders özelliğini de aktif edelim, sadece destek
+       verenler kullanabilecek". Düğmeleri öğretmen de görür; başlatma kapıdan geçer (kapidan): yönetici serbest, öğretmen
+       destekçi olmalı (sistem/hak.js YALNIZ.canli: ödemesi onaylı, referansla ödemiş sayılan). Destek vermeyen basınca
+       «Canlı ders destekçilere açık» penceresi çıkar. Çağrılan ÖĞRENCİ için destek gerekmez (öğrenci tarafı KIMLER'e bağlı değil). */
+    var KIMLER = ['admin', 'teacher'];
+    function kapidan(el) {
+        if (rol() === 'admin') return Promise.resolve(true);
+        var H = window.KidefHak;
+        if (H && typeof H.kullan === 'function' && H.YALNIZ && H.YALNIZ.canli) return H.kullan('canli', el || null);
+        return Promise.resolve(false);            /* kapı yüklenmediyse öğretmene açılmaz */
+    }
     /* sistem/tahta.js ve sistem/tahtagir.js'teki adresle aynı olmalı */
     var VT_ADRES = 'https://kidefarapca-98f9c-default-rtdb.europe-west1.firebasedatabase.app';
     var SDK = 'https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js';
@@ -161,9 +170,13 @@
         return bagdanOgrenciler().then(function (L2) { return (L2 && L2.length) ? L2 : (L || []); });
     };
     /* kabuğa geç: öğrenci listesi ve öğretmenin adı oturum deposunda (kabuk Firestore yüklemez) */
-    C.ac = function () {
+    C.ac = function (el) {
         var u = oturum();
         if (!u || !yetkili()) return;
+        if (C.aciliyor) return;
+        kapidan(el).then(function (ok) { if (ok) C.acGercek(u); });
+    };
+    C.acGercek = function (u) {
         if (C.aciliyor) return;
         C.aciliyor = true;
         var git = function (L) {
@@ -181,7 +194,7 @@
     C.yetkili = function () { return yetkili() && !!oturum(); };
     /* PANELDEKİ «CANLI DERS BAŞLAT» (06.11.2026) — yönetici: "yönetici panelinden açınca farklı ve eski olan
        açıldı". Yönetici/öğretmen panelindeki düğme (hesap/teacher-admin.js) bu yeni canlı dersi açar (yetki:
-       KIMLER); yetkisi henüz olmayan hesap (şimdilik öğretmen) eski odayla (hesap/live-lesson.js) sürer. */
+       KIMLER; öğretmende ayrıca destekçi kapısı); yetkisi olmayan hesap eski odayla (hesap/live-lesson.js) sürer. */
     window.kidefCanliBaslat = function () {
         if (C.yetkili()) { C.ac(); return; }
         if (typeof window.openLiveClassRoom === 'function') window.openLiveClassRoom();
@@ -286,6 +299,10 @@
     function biletHazir(u) {        /* sahibin öğretmen görünümü kapıdan geçer: ana sayfanın bileti yazılmış olsun */
         try { var b = JSON.parse(localStorage.getItem('kidefKapiBilet') || 'null'); return !!(b && b.uid === u.uid && b.t && Date.now() - b.t < 20 * 3600000); } catch (e) { return true; }
     }
+    /* destek durumu (sistem/hak.js kidefDestekDurum) bu hesap için yazıldı mı: canlı ders kapısı bilsin diye (23.11.2026) */
+    function durumHazir(u) {
+        try { var d = JSON.parse(localStorage.getItem('kidefDestekDurum') || 'null'); return !!(d && d.uid === u.uid); } catch (e) { return true; }
+    }
     function canliDonusKur() {
         var h = canliHedef();
         if (!h || C.donusKuruldu) return;
@@ -297,7 +314,7 @@
             if (C.donuldu) return;
             var sahip = h.oda === C.odaId(u.uid);
             if (sahip && h.yol === 'donus') return;
-            if (sahip && !biletHazir(u) && bekle++ < 20) { setTimeout(function () { git(u); }, 300); return; }
+            if (sahip && !(biletHazir(u) && durumHazir(u)) && bekle++ < 20) { setTimeout(function () { git(u); }, 300); return; }
             C.donuldu = true;
             var hedef = sahip ? 'tahta.html?rol=yansit&canli=' + encodeURIComponent(h.oda) + '&sayfa=index.html'
                               : 'tahta.html?rol=izle&canli=' + encodeURIComponent(h.oda);
@@ -327,7 +344,7 @@
                 d.href = '#'; d.id = 'tab-canli'; d.title = 'Canlı ders — öğrencini derse çağır, açtığın her şey onun ekranında'; d.setAttribute('aria-label', d.title);
                 d.innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;">' +
                               '<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 9l3 2-3 2M12 13h5"/></svg>';
-                d.onclick = function (e) { e.preventDefault(); C.ac(); };
+                d.onclick = function (e) { e.preventDefault(); C.ac(d); };
                 z.parentNode.insertBefore(d, z);
             }
         }
@@ -339,7 +356,7 @@
             lt = document.createElement('button'); lt.type = 'button'; lt.id = 'kcdListeTus';
             lt.title = 'Öğrencini canlı derse çağır: açtığın sayfalar onun cihazında, sesli';
             lt.innerHTML = SVG_DERS + '<span>Canlı ders</span>';
-            lt.onclick = function () { C.ac(); };
+            lt.onclick = function () { C.ac(lt); };
             it.parentNode.insertBefore(lt, it.nextSibling);
         } else if (lt && !gor && lt.parentNode) lt.parentNode.removeChild(lt);
         /* öğrenci: çağrı dinleyicisi */

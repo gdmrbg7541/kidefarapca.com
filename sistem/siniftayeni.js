@@ -34,6 +34,20 @@
    (öğretmen profilindeki "yenilik" şeridi).
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
+  /* SINIFTA YENİ 23.11.2026 — yönetici: "canlı ders özelliğini de aktif edelim, sadece destek verenler kullanabilecek, ayrıca
+     sitede yeni kısmına bu özelliği ekleyelim". Görseli dosyanın sonunda: g 'canliders'. Liste en fazla 20 kayıt tutar:
+     bu kayıt başa eklenince en eski kayıt (26.10.2026 «Akıllı tahta») silindi. */
+  { t: '2026-11-23', e: 'Canlı ders', g: 'canliders', b: 'Öğrencini siteden canlı derse çağır',
+    m: 'Açtığın kitap ve sayfa, öğrencinin telefonunda ya da bilgisayarında aynı anda açılır; sen anlatırsın, o hem görür hem dinler.',
+    L: [
+      'Canlı ders, Kidef\'e destek veren öğretmenlere açık; öğrencinin katılması için destek gerekmez.',
+      'Üst çubuktaki canlı ders düğmesine ya da Listelerim\'deki «Canlı ders»e dokun; hesabıyla sana bağlı öğrencini çağır.',
+      'Öğrenci ana sayfasında «Derse katıl» kartını görür; istersen katılım bağlantısını ona sen de gönderirsin.',
+      'Sayfayı sen açarsın, kaydırırsın, lazerle gösterirsin; öğrencin hepsini kendi ekranında keskin görür.',
+      'Konuşarak anlatırsın; kamerayı istersen açarsın, istemezsen ses yeter.',
+      'Dersi bitirince öğrenci kendiliğinden ana sayfasına döner.'
+    ] },
+
   /* SINIFTA YENİ 15.11.2026 — öğretmen: "sınıfta yeni kısmına başkan ve başkan yardımcısı ile ilgili bilgileri ekle,
      ayrıca sınıfta yeni kısmında 20 duyurudan sonrakileri silelim". Başkan ve yardımcı kendi profilinde ne görür;
      görseli dosyanın sonunda: g 'baskanprofil'. Liste artık en fazla 20 kayıt tutar. */
@@ -240,16 +254,6 @@ window.KIDEF_SINIFTA_YENI = [
       'Harfin dört yazılışı ve yazılış animasyonu defterde; tahtada da görünür.',
       'Sınıf materyallerindeki «Yazı Çalışması» kartını öğrenci kendi cihazında da açar.',
       '«Kalemle Üzerinden Geç» PDF\'i Alfabe\'de: 5–10. sınıf konuşma metinleri gri yazıyla.'
-    ] },
-
-  { t: '2026-10-26', e: 'Akıllı tahta', b: 'Tahtada, telefonda ve girişte kolaylıklar',
-    L: [
-      'Lazer ve büyüteç kumandada tahtanın oranında çalışır, kaydırma akıcı.',
-      'Defterde yazdığın tahtaya canlı yansır.',
-      'Kumandadan çıkınca Sınıf Ekranı da kendiliğinden kapanır.',
-      'Telefonda Kelime Listeleri ekrana sığar; Word, Excel ve PDF indirilir.',
-      'Videolarda ve etkinliklerde «Tam ekran» ve «Yeni sekmede» düğmeleri var.',
-      'Giriş hataları artık Türkçe; «Şifremi unuttum» ile yeni şifre alırsın.'
     ] }
 ];
 /* NOT (15.11.2026): g 'tahta' kaydı listeden silindi ama aşağıdaki «tahta» görsel bloğu SİLİNMEMELİ — öteki
@@ -1381,3 +1385,186 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
   } catch (e) { }
 })();
 /* <<< baskanprofil-gorsel <<< */
+
+/* >>> canliders-gorsel (23.11.2026) >>> */
+/* ---------------------------------------------------------------------------
+   CANLI DERS GÖRSELİ (23.11.2026) — yönetici: "canlı ders özelliğini de aktif edelim, sadece destek verenler
+   kullanabilecek, ayrıca sitede yeni kısmına bu özelliği ekleyelim".
+     g: 'canliders' — soldaki bilgisayarda öğretmenin açtığı sayfa; sağdaki telefonda önce «Derse katıl» çağrısı
+                      çalar, öğrenci katılınca aynı sayfa onun ekranında açılır; lazer ve vurgu iki ekranda birlikte
+                      gezer; ses iki yönde akar (12 sn döngü)
+   Biçim öteki görsellerle ortak (.ty-kutu, .ty-svg, .ty-cipler, .ty-cip, .ty-vurgu, .gy-kutu, .gy-yan);
+   bu görsele özgü olanlar cld- önekli. Görsel küçük gösterildiğinden içinde yazı yok: anlatım maddelerde.
+   «Hareketi azalt»ta son hâl durağan. _kaynak/uretici/canliDersGorsel.js — canliDestek.py gömer.
+   --------------------------------------------------------------------------- */
+(function () {
+  var G = window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
+  var SIM = function (ic) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ic + '</svg>'; };
+  var CIP = function (ic, yazi) { return '<span class="ty-cip">' + SIM(ic) + yazi + '</span>'; };
+  var OK = '<span class="gy-ok" aria-hidden="true">' + SIM('<path d="M3 12h15"/><path d="M14 7l5 5-5 5"/>') + '</span>';
+  var ADIM = function (n, ic, yazi) { return '<span class="cld-adim cld-adm' + n + '">' + SIM(ic) + yazi + '</span>'; };
+
+  /* ders sayfası (100 × 56): iki ekranda aynı çizilir; lazer ve vurgu aynı zaman çizelgesinde gezer */
+  var SAYFA = function (x, y, k) {
+    return '<g transform="translate(' + x + ' ' + y + ') scale(' + k + ')">' +
+      '<rect width="100" height="56" rx="4" fill="#fff" stroke="#DCE5EC" stroke-width="1"/>' +
+      '<path d="M0 4a4 4 0 0 1 4-4h92a4 4 0 0 1 4 4v5H0z" fill="#E8F6F2"/>' +
+      '<rect x="4" y="3" width="26" height="3.4" rx="1.7" fill="#16A085"/>' +
+      '<rect class="cld-vur" x="3" y="19.2" width="44" height="6.4" rx="2" fill="#FDE68A"/>' +
+      '<rect x="4" y="14" width="46" height="3.2" rx="1.6" fill="#CBD5E1"/>' +
+      '<rect x="4" y="21" width="40" height="3.2" rx="1.6" fill="#94A3B8"/>' +
+      '<rect x="4" y="28" width="44" height="3.2" rx="1.6" fill="#CBD5E1"/>' +
+      '<rect x="4" y="35" width="30" height="3.2" rx="1.6" fill="#CBD5E1"/>' +
+      '<rect x="4" y="43" width="38" height="3.2" rx="1.6" fill="#E2E8F0"/>' +
+      '<rect x="4" y="49" width="26" height="3.2" rx="1.6" fill="#E2E8F0"/>' +
+      '<rect x="58" y="14" width="38" height="6" rx="3" fill="#16324F"/>' +
+      '<rect x="70" y="22" width="26" height="3" rx="1.5" fill="#94A3B8"/>' +
+      '<rect x="56" y="30" width="40" height="20" rx="3" fill="#E8F6F2"/>' +
+      '<circle cx="66" cy="37.5" r="3.4" fill="#F6C878"/>' +
+      '<path d="M56 50l11-8.5 8 5.5 7-4.5 14 7.5z" fill="#A9DFCB"/>' +
+      '<g class="cld-lazer"><circle r="5.2" fill="#E74C3C" opacity=".25"/><circle r="2.4" fill="#E74C3C"/></g>' +
+      '</g>';
+  };
+  /* ses çubukları: kapsayıcı x,y; üç çubuk */
+  var SES = function (x, y, renk) {
+    var s = '';
+    for (var i = 0; i < 4; i++) {
+      s += '<rect class="cld-eq cld-eq' + i + '" x="' + (x + i * 6) + '" y="' + (y - 7) + '" width="3.6" height="14" rx="1.8" fill="' + renk + '"/>';
+    }
+    return s;
+  };
+
+  var SAHNE =
+    '<div class="ty-kutu gy-kutu"><svg class="ty-svg cld-svg" viewBox="0 0 480 214" role="img" aria-label="Öğretmenin bilgisayarında açtığı sayfa, öğrencinin telefonunda aynı anda açılıyor; ses iki yönde akıyor">' +
+    '<rect x="0" y="0" width="480" height="214" rx="16" fill="#F4F8FB"/>' +
+    '<path d="M0 176H480V198a16 16 0 0 1-16 16H16a16 16 0 0 1-16-16Z" fill="#E7F2EF"/>' +
+    '<path d="M0 176H480" stroke="#CFE3DD" stroke-width="2"/>' +
+    /* öğretmenin bilgisayarı */
+    '<rect x="10" y="154" width="190" height="9" rx="4.5" fill="#94A3B8"/>' +
+    '<rect x="22" y="30" width="166" height="126" rx="9" fill="#1F2937"/>' +
+    '<rect x="28" y="36" width="154" height="114" rx="5" fill="#F8FAFC"/>' +
+    '<rect x="28" y="36" width="154" height="17" rx="5" fill="#fff"/>' +
+    '<circle class="cld-halka" cx="40" cy="44.5" r="3.6" fill="#E74C3C"/><circle cx="40" cy="44.5" r="3.6" fill="#E74C3C"/>' +
+    '<rect x="49" y="42.5" width="24" height="4" rx="2" fill="#F5B7B1"/>' +
+    '<g class="cld-ses">' + SES(152, 44.5, '#16A085') + '</g>' +
+    SAYFA(40, 62, 1.3) +
+    /* öğrencinin telefonu */
+    '<rect x="338" y="10" width="104" height="194" rx="19" fill="#1F2937"/>' +
+    '<rect x="344" y="17" width="92" height="180" rx="14" fill="#fff"/>' +
+    '<rect x="368" y="21" width="44" height="4" rx="2" fill="#E2E8F0"/>' +
+    '<circle cx="354" cy="40" r="6" fill="#2563EB"/><rect x="364" y="36" width="34" height="4.6" rx="2.3" fill="#CBD5E1"/><rect x="364" y="43" width="22" height="3.6" rx="1.8" fill="#E2E8F0"/>' +
+    /* çağrı kartı: zil çalar, «Derse katıl» basılır */
+    '<g class="cld-cagri">' +
+      '<rect x="350" y="66" width="80" height="88" rx="12" fill="#FFF7ED" stroke="#F3D5BF"/>' +
+      '<circle cx="390" cy="92" r="15" fill="#FFE8CC"/>' +
+      '<g class="cld-zil"><g transform="translate(378 80) scale(1)" fill="none" stroke="#F39C12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></g></g>' +
+      '<rect x="362" y="114" width="56" height="5" rx="2.5" fill="#E5CDBB"/>' +
+      '<g class="cld-tus"><rect x="362" y="128" width="56" height="18" rx="9" fill="#16A085"/><rect x="376" y="135" width="28" height="4" rx="2" fill="#fff"/></g>' +
+      '<circle class="cld-dokun" cx="390" cy="137" r="7" fill="none" stroke="#16A085" stroke-width="2"/>' +
+    '</g>' +
+    /* öğrenci katılınca: aynı sayfa, altında ses çubukları */
+    '<g class="cld-sayfa2">' +
+      SAYFA(350, 56, .8) +
+      '<rect x="350" y="108" width="80" height="4.4" rx="2.2" fill="#E2E8F0"/><rect x="350" y="117" width="56" height="4.4" rx="2.2" fill="#E2E8F0"/>' +
+      '<rect x="354" y="160" width="72" height="24" rx="12" fill="#E8F6F2"/>' +
+      '<g class="cld-ses">' + SES(372, 172, '#16A085') + '</g>' +
+    '</g>' +
+    /* akışlar: sayfa (yeşil, öğretmenden öğrenciye) ve ses (turuncu, geri) */
+    '<g class="cld-akis" fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path class="cld-ileri" d="M198 82C236 40 296 40 332 82" stroke="#16A085" stroke-width="3"/>' +
+      '<path d="M325 74l7.5 8-9.4 3" stroke="#16A085" stroke-width="3"/>' +
+      '<path class="cld-geri" d="M336 128C298 164 238 164 202 128" stroke="#F39C12" stroke-width="3"/>' +
+      '<path d="M209 134l-7.5-6 9.4-3" stroke="#F39C12" stroke-width="3"/>' +
+      '<circle cx="267" cy="48" r="11" fill="#fff" stroke="#BFE8D8" stroke-width="1.6"/>' +
+      '<g transform="translate(257.5 38.5) scale(.8)" stroke="#16A085" stroke-width="2"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 20h8"/></g>' +
+      '<circle cx="269" cy="152" r="11" fill="#fff" stroke="#F6D7A1" stroke-width="1.6"/>' +
+      '<g transform="translate(259.5 142.5) scale(.8)" stroke="#F39C12" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></g>' +
+    '</g>' +
+    '</svg>';
+
+  var VURGU = '<div class="ty-vurgu gy-vurgu gy-yan"><span class="ty-gizli">Öğrencini çağır; katılınca açtığın sayfa onun ekranında açılır, ses iki yönde akar</span>' +
+    ADIM(1, '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>', 'Öğrencini çağır') + OK +
+    ADIM(2, '<rect x="6.5" y="2.5" width="11" height="19" rx="2.4"/><path d="M10.6 18.6h2.8"/>', 'Katılır') + OK +
+    ADIM(3, '<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>', 'Birlikte çalışın') + '</div>';
+
+  var CIPLER = '<div class="ty-cipler gy-cipler">' +
+    CIP('<rect class="cld-c-mik" x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>', 'Sesli ders') +
+    CIP('<rect x="2" y="4" width="13" height="10" rx="1.8"/><path d="M6 18h5"/><rect x="17" y="9" width="5" height="10" rx="1.4"/><path class="cld-c-akis" d="M15.6 9.2h1M15.6 12h1"/>', 'Ekranın öğrencinde') +
+    CIP('<circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/><path class="cld-c-arti" d="M11 8v6M8 11h6"/>', 'Kendi ekranında keskin') +
+    CIP('<rect x="2" y="6" width="14" height="12" rx="2.4"/><path class="cld-c-kam" d="M16 10.5l6-3.5v10l-6-3.5z"/>', 'Kamera isteğe bağlı') +
+    CIP('<path class="cld-c-kalp" d="M12 20.5C6 16.4 3.5 12.6 5.4 9.6c1.6-2.5 4.9-2.3 6.6.3 1.7-2.6 5-2.8 6.6-.3 1.9 3-.6 6.8-6.6 10.9z"/>', 'Destekçilere açık') +
+    '</div>';
+  G.canliders = SAHNE + VURGU + CIPLER + '</div>';
+
+  /* ------------------------------------------------------------------ biçim */
+  var RENK = [['#FFF1D6', '#B45309', '#F6C878'], ['#E8F6F2', '#0E7C66', '#A9DFCB'], ['#E0ECFF', '#1D4ED8', '#B6CEF8']];
+  var SONUK = 'background:#F1F5F9; color:#64748B; border-color:#E2E8F0; transform:none;';
+  var PARLAK = function (i) { return 'background:' + RENK[i][0] + '; color:' + RENK[i][1] + '; border-color:' + RENK[i][2] + '; transform:translateY(-2px);'; };
+  var S1 = 17, S2 = 25;        /* adımların bittiği yüzde: çağır → katılır → birlikte çalışın */
+  var STIL = [
+    '.cld-adim{ display:inline-flex; align-items:center; gap:7px; padding:6px 12px 6px 9px; border-radius:12px; background:#F1F5F9; color:#64748B;',
+    '  border:1.5px solid #E2E8F0; animation-duration:12s; animation-timing-function:ease-in-out; animation-iteration-count:infinite; }',
+    '.cld-adm1{ animation-name:cldA1; } .cld-adm2{ animation-name:cldA2; } .cld-adm3{ animation-name:cldA3; }',
+    '@keyframes cldA1{ 0%,' + (S1 - 3) + '%{ ' + PARLAK(0) + ' } ' + S1 + '%,96%{ ' + SONUK + ' } 100%{ ' + PARLAK(0) + ' } }',
+    '@keyframes cldA2{ 0%,' + (S1 - 3) + '%{ ' + SONUK + ' } ' + S1 + '%,' + (S2 - 3) + '%{ ' + PARLAK(1) + ' } ' + S2 + '%,100%{ ' + SONUK + ' } }',
+    '@keyframes cldA3{ 0%,' + (S2 - 3) + '%{ ' + SONUK + ' } ' + S2 + '%,93%{ ' + PARLAK(2) + ' } 97%,100%{ ' + SONUK + ' } }',
+    /* çağrı kartı: belirir, zil çalar, düğme basılır, kart kaybolur */
+    '.cld-cagri{ opacity:0; animation:cldCagri 12s ease-in-out infinite both; }',
+    '@keyframes cldCagri{ 0%{ opacity:0; transform:translateY(6px); } 3%,17%{ opacity:1; transform:none; } 22%,100%{ opacity:0; transform:translateY(-4px); } }',
+    '.cld-zil{ transform-box:fill-box; transform-origin:50% 12%; animation:cldZil 12s ease-in-out infinite both; }',
+    '@keyframes cldZil{ 0%,3%{ transform:rotate(0); } 5%{ transform:rotate(-16deg); } 7%{ transform:rotate(14deg); } 9%{ transform:rotate(-11deg); } 11%{ transform:rotate(8deg); } 13%{ transform:rotate(-4deg); } 15%,100%{ transform:rotate(0); } }',
+    '.cld-tus{ transform-box:fill-box; transform-origin:50% 50%; animation:cldTus 12s ease-in-out infinite both; }',
+    '@keyframes cldTus{ 0%,9%{ transform:none; } 11.5%{ transform:scale(1.1); } 14%{ transform:scale(1.04); } 15.5%{ transform:scale(.93); } 17%,100%{ transform:none; } }',
+    '.cld-dokun{ opacity:0; transform-box:fill-box; transform-origin:50% 50%; animation:cldDokun 12s ease-out infinite both; }',
+    '@keyframes cldDokun{ 0%,14.5%{ opacity:0; transform:scale(.4); } 15.5%{ opacity:.9; transform:scale(.8); } 19%,100%{ opacity:0; transform:scale(2.4); } }',
+    /* öğrenci katılınca aynı sayfa onun telefonunda açılır */
+    '.cld-sayfa2{ opacity:0; transform-box:fill-box; transform-origin:50% 30%; animation:cldSayfa2 12s ease-out infinite both; }',
+    '@keyframes cldSayfa2{ 0%,19%{ opacity:0; transform:scale(.94); } 25%,94%{ opacity:1; transform:none; } 98%,100%{ opacity:0; transform:none; } }',
+    /* akışlar */
+    '.cld-akis{ opacity:0; animation:cldAkis 12s ease-in-out infinite both; }',
+    '@keyframes cldAkis{ 0%,19%{ opacity:0; } 25%,94%{ opacity:1; } 98%,100%{ opacity:0; } }',
+    '.cld-ileri{ stroke-dasharray:3 9; animation:tyAkis 1s linear infinite; }',
+    '.cld-geri{ stroke-dasharray:3 9; animation:cldGeri 1s linear infinite; }',
+    '@keyframes cldGeri{ to{ stroke-dashoffset:12; } }',
+    /* lazer ve vurgu: iki ekranda aynı anda, sayfa koordinatında */
+    '.cld-lazer{ opacity:0; animation:cldLazer 12s ease-in-out infinite both; }',
+    '@keyframes cldLazer{ 0%,23%{ opacity:0; transform:translate(14px,20px); } 26%{ opacity:1; transform:translate(14px,20px); } 38%{ transform:translate(46px,22px); }',
+    '  52%{ transform:translate(76px,17px); } 66%{ transform:translate(76px,39px); } 80%{ transform:translate(28px,38px); } 94%{ opacity:1; transform:translate(28px,38px); } 98%,100%{ opacity:0; transform:translate(28px,38px); } }',
+    '.cld-vur{ opacity:0; animation:cldVur 12s ease-in-out infinite both; }',
+    '@keyframes cldVur{ 0%,31%{ opacity:0; } 35%,58%{ opacity:.9; } 62%,100%{ opacity:0; } }',
+    /* canlı işareti ve ses çubukları */
+    '.cld-halka{ transform-box:fill-box; transform-origin:50% 50%; animation:cldHalka 1.6s ease-out infinite; }',
+    '@keyframes cldHalka{ 0%{ transform:scale(1); opacity:.6; } 100%{ transform:scale(2.7); opacity:0; } }',
+    '.cld-ses{ opacity:0; animation:cldAkis 12s ease-in-out infinite both; }',
+    '.cld-eq{ transform-box:fill-box; transform-origin:50% 100%; animation:cldEq .9s ease-in-out infinite; }',
+    '.cld-eq1{ animation-delay:-.3s; } .cld-eq2{ animation-delay:-.6s; } .cld-eq3{ animation-delay:-.15s; }',
+    '@keyframes cldEq{ 0%,100%{ transform:scaleY(.3); } 50%{ transform:scaleY(1); } }',
+    /* seçim çipleri (küçük, sürekli) */
+    '.cld-c-mik{ transform-box:fill-box; transform-origin:50% 100%; animation:cldNefes 1.8s ease-in-out infinite; }',
+    '@keyframes cldNefes{ 0%,100%{ transform:scaleY(1); } 50%{ transform:scaleY(.8); } }',
+    '.cld-c-akis{ stroke-dasharray:1.4 1.6; animation:tyAkis 1s linear infinite; }',
+    '.cld-c-arti{ transform-box:fill-box; transform-origin:50% 50%; animation:cldArti 2.2s ease-in-out infinite; }',
+    '@keyframes cldArti{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.35); } }',
+    '.cld-c-kam{ fill:currentColor; fill-opacity:0; animation:cldKam 2s ease-in-out infinite; }',
+    '@keyframes cldKam{ 0%,60%,100%{ fill-opacity:0; } 80%{ fill-opacity:.9; } }',
+    '.cld-c-kalp{ transform-box:fill-box; transform-origin:50% 55%; fill:currentColor; fill-opacity:.15; animation:cldKalp 1.5s ease-in-out infinite; }',
+    '@keyframes cldKalp{ 0%,100%{ transform:scale(1); } 20%{ transform:scale(1.18); } 40%{ transform:scale(.98); } }',
+    /* hareketi azalt: son hâl durağan */
+    '@media (prefers-reduced-motion:reduce){',
+    '  .cld-svg *, .cld-adim, .ty-cip svg *{ animation:none !important; }',
+    '  .cld-svg .cld-cagri, .cld-svg .cld-dokun, .cld-svg .cld-halka{ opacity:0 !important; }',
+    '  .cld-svg .cld-sayfa2, .cld-svg .cld-akis, .cld-svg .cld-ses, .cld-svg .cld-lazer{ opacity:1 !important; transform:none !important; }',
+    '  .cld-svg .cld-lazer{ transform:translate(76px,39px) !important; } .cld-svg .cld-vur{ opacity:.9 !important; }',
+    '}'
+  ].join('\n');
+  try {
+    if (!document.getElementById('cldStil')) {
+      var s = document.createElement('style');
+      s.id = 'cldStil';
+      s.textContent = STIL;
+      (document.head || document.documentElement).appendChild(s);
+    }
+  } catch (e) { }
+})();
+/* <<< canliders-gorsel <<< */

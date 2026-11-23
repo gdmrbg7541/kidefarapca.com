@@ -12,6 +12,11 @@
                    ogretmen, yonetici). Ders verirken disariya kapali kip.
      🔒 yonetici : yalniz yonetici. Baskasi girisli olsa da perde iner.
 
+   SINIF MATERYALLERI HERKESE ACIK (23.11.2026): ayni belgede ikinci ayar  ->  { materyalAcik: true | false }
+     Yonetici panelinde 🌍 Acik kartinin altindaki anahtar. YALNIZ kilit 🌍 Acik iken isler: giris yapmamis ziyaretciye ana
+     sayfada «Sinif Materyalleri» (5-10. sinif kitaplari, belgeleri, etkinlik kartlari) acilir (sistem/acikmateryal.js) ve
+     girissiz kullanim buluta yazmaz (sistem/misafirkalkan.js). Giris yapmis hesaplar icin bir sey degismez.
+
    Son bilinen kilit localStorage'da saklanir: kilitli sitede sayfa acilirken
    icerik gorunup kaybolmaz (perde aninda iner), bulut cevabi gelince tazelenir.
 
@@ -25,6 +30,7 @@
     var VARSAYILAN = 'acik';
     var K = window.SiteKilit = window.SiteKilit || {};
     K.durum = null;                 /* buluttan gelen guncel kilit kademesi */
+    K.materyalAcik = null;          /* «sinif materyalleri herkese acik» anahtari (true/false; bulut gelene kadar null) */
 
     /* GOZLE kipi (or. indexyeni.html): kilit durumu OKUNUR ama perde HIC
        cizilmez — tanitim sayfasi her kademede acik kalir; sayfa yalniz
@@ -508,6 +514,17 @@
         }
         return kilit;
     }
+    /* SINIF MATERYALLERİ HERKESE AÇIK (23.11.2026) — yönetici: "sınıf materyallerinin herkese açık olduğu bi switch ekleyelim, bu
+       switch yönetici panelinde siteyi herkese açık olduğu yerde olsun ... ama giriş yapmadan kullanılırsa bulut hizmetlerine
+       kaydedilmeyecek şekilde olsun". Ayar aynı belgede: ayarlar/site.materyalAcik (bool); son bilinen değer localStorage
+       siteMateryalAcik ('1'/'0') — sistem/kapi.js ve sistem/misafirkalkan.js öbür sayfalarda bunu okur. YALNIZ 🌍 Açık kademede
+       işler (girişli/yönetici kilidinde misafir zaten kapıda). Ana sayfa parçası: sistem/acikmateryal.js. */
+    function materyalSon() {
+        if (K.materyalAcik === true || K.materyalAcik === false) return K.materyalAcik;
+        try { return localStorage.getItem('siteMateryalAcik') === '1'; } catch (e) { return false; }
+    }
+    K.materyalAcikMi = function () { return sonKilit() === 'acik' && materyalSon(); };
+    K.oturumVar = function () { return oturumOlasi; };      /* null: bakılıyor · true/false (tarayıcıda giriş yapmış hesabın izi) */
     /* Sayfalarin sorabilecegi tek soru: bu ziyaretci su an iceri girebilir mi? */
     K.izinliMi = function () {
         return K.karar(sonKilit(), kayitliMi(), rolOku()).izin;
@@ -574,10 +591,16 @@
                 .onSnapshot(function (doc) {
                     var v = (doc.exists && doc.data()) || {};
                     K.durum = (v.kilit === 'girisli' || v.kilit === 'yonetici') ? v.kilit : VARSAYILAN;
-                    try { localStorage.setItem('siteKilitSon', K.durum); localStorage.setItem('siteKilitZaman', String(Date.now())); } catch (e) { }
+                    K.materyalAcik = (v.materyalAcik === true);          /* 23.11.2026: sınıf materyalleri herkese açık anahtarı */
+                    try {
+                        localStorage.setItem('siteKilitSon', K.durum);
+                        localStorage.setItem('siteMateryalAcik', K.materyalAcik ? '1' : '0');
+                        localStorage.setItem('siteKilitZaman', String(Date.now()));
+                    } catch (e) { }
                     K._kilitCanli = true;            /* OKUMA AZALT 2 (14.11.2026) */
                     uygula();
                     kilitPanelTazele();
+                    try { window.dispatchEvent(new Event('kidefmateryalacik')); } catch (e) { }   /* sistem/acikmateryal.js */
                 }, function (e) { K._kilitCanli = false; console.warn('kilit ayari okunamadi:', e && (e.code || e.message)); });
             /* OKUMA AZALT 2 (14.11.2026): kilit canlı dinlenirken tarayıcıdaki bilgi tazedir — sistem/kapi.js öbür sayfalarda
                (kitap, oyun, defter…) ayarlar/site'yi yeniden okumasın. Damga 30 sn'de bir, en çok 90 sn ileriye yazılır
@@ -643,6 +666,35 @@
     }
 
     /* ------------------------------------------------ YONETICI PANELI */
+    /* SINIF MATERYALLERİ ANAHTARI (23.11.2026): 🌍 Açık kartının hemen altında. Kilit 🌍 Açık değilken de kaydedilir;
+       etkisi yalnız 🌍 Açık iken başlar (SiteKilit.materyalAcikMi). */
+    function materyalAnahtarHtml() {
+        var acik = materyalSon();
+        var kilitAcik = sonKilit() === 'acik';
+        return '<div id="tpMateryalKutu" style="margin:-4px 0 12px 16px; padding:11px 13px 11px 14px; border-left:3px solid ' +
+            (acik ? '#16A085' : '#F0C9A6') + '; border-radius:0 12px 12px 0; background:' + (acik ? '#F1FAF7' : '#FFFBF6') + ';">' +
+            '<button type="button" id="tpMateryalAnahtar" role="switch" aria-checked="' + (acik ? 'true' : 'false') + '"' +
+            ' data-kilit-materyal="' + (acik ? '0' : '1') + '" onclick="kilitMateryalSec(' + (acik ? 'false' : 'true') + ')"' +
+            ' style="display:flex; align-items:center; gap:12px; width:100%; text-align:left; border:0; background:transparent;' +
+            ' padding:0; cursor:pointer; font-family:inherit;">' +
+            '<span aria-hidden="true" style="position:relative; flex:none; width:46px; height:26px; border-radius:13px; background:' +
+            (acik ? '#16A085' : '#CDBBAA') + '; transition:background .2s;"><span style="position:absolute; top:3px; left:' +
+            (acik ? '23px' : '3px') + '; width:20px; height:20px; border-radius:50%; background:#fff;' +
+            ' box-shadow:0 1px 3px rgba(0,0,0,.28); transition:left .2s;"></span></span>' +
+            '<span style="flex:1; min-width:0;"><b style="display:block; font-size:.95rem; color:' + (acik ? '#0E7C66' : '#8B4A2B') + ';">' +
+            'Sınıf materyalleri herkese açık</b>' +
+            '<span style="display:block; margin-top:2px; font-size:.78rem; line-height:1.5; color:#8B6A57;">' +
+            (acik
+                ? 'Giriş yapmamış ziyaretçi de ana sayfada 5–10. sınıf kitaplarını, belgelerini ve etkinlik kartlarını kullanır. ' +
+                  'Giriş yapmadan yaptığı hiçbir şey buluta kaydedilmez. Giriş yapmış öğretmen ve öğrenciler için bir şey değişmez.'
+                : 'Kapalı: materyaller yalnız hesapla girenlere, sınıfın içinde görünür.') +
+            '</span></span>' +
+            '<span style="flex:none; font-size:.78rem; font-weight:800; color:' + (acik ? '#1E8449' : '#A0816C') + ';">' +
+            (acik ? 'AÇIK' : 'KAPALI') + '</span></button>' +
+            (kilitAcik ? '' : '<p style="margin:8px 0 0; font-size:.76rem; line-height:1.45; color:#B9770E;">Site şu an «Açık» kademede değil; ' +
+                'bu anahtar 🌍 Açık seçilince devreye girer (ayar kayıtlı kalır).</p>') +
+            '</div>';
+    }
     window.kilitPanelHtml = function () {
         var kademe = [
             { k: 'acik',     ad: '🌍 Açık',              acikla: 'Herkes girebilir (normal durum).' },
@@ -670,7 +722,8 @@
                         : ' border:1.5px solid #F0DACA; background:#fff;') + '">' +
                     '<span style="font-size:1.05rem; font-weight:800; color:' + (secili ? '#D84315' : '#8B6A57') + '; white-space:nowrap;">' + s.ad + '</span>' +
                     '<span style="flex:1; font-size:.8rem; color:#8B6A57; line-height:1.5;">' + s.acikla +
-                    (secili ? ' <b style="color:#1E8449;">— şu an bu kademe açık ✓</b>' : '') + '</span></button>';
+                    (secili ? ' <b style="color:#1E8449;">— şu an bu kademe açık ✓</b>' : '') + '</span></button>' +
+                    (s.k === 'acik' ? materyalAnahtarHtml() : '');
             }).join('') +
             '<p id="tpKilitNot" style="min-height:16px; margin:4px 0 0; font-size:.8rem; color:#16A085;"></p></div>';
     };
@@ -704,6 +757,31 @@
         } catch (e) { yaz('Kaydedilemedi.', true); }
     };
 
+    /* SINIF MATERYALLERİ ANAHTARI (23.11.2026): ayarlar/site.materyalAcik'ı yazar; kilit kademesine dokunmaz. */
+    window.kilitMateryalSec = function (acik) {
+        var simdi = Date.now();
+        if (K._sonMat && simdi - K._sonMat < 300) return;            /* çift tetiklenme kalkanı (kilitSec ile aynı) */
+        K._sonMat = simdi;
+        var not = document.getElementById('tpKilitNot');
+        var yaz = function (m, hata) { if (not) { not.style.color = hata ? '#E74C3C' : '#16A085'; not.textContent = m; } };
+        yaz('Kaydediliyor…');
+        var rol = rolOku();
+        if (rol !== 'admin') {
+            yaz('Bu işlem yönetici hesabı ister (şu anki rol: ' + (rol || 'yok') + ').', true);
+            return;
+        }
+        try {
+            firebase.firestore().collection('ayarlar').doc('site')
+                .set({ materyalAcik: !!acik, guncelleme: Date.now() }, { merge: true })
+                .then(function () { yaz(acik ? 'Sınıf materyalleri herkese açıldı.' : 'Sınıf materyalleri yalnız hesapla girenlere açık.'); })
+                .catch(function (e) {
+                    yaz(/permission/i.test(String(e && e.code))
+                        ? 'İzin hatası: firestore.rules güncellenip konsoldan yayınlanmalı.'
+                        : 'Kaydedilemedi: ' + ((e && (e.code || e.message)) || ''), true);
+                });
+        } catch (e) { yaz('Kaydedilemedi.', true); }
+    };
+
     /* Yedek tiklama yolu: inline onclick herhangi bir sebeple calismazsa
        panel tuslari data-kilit-kademe uzerinden yine islesin. */
     try {
@@ -712,6 +790,10 @@
             while (t && t !== document) {
                 if (t.getAttribute && t.getAttribute('data-kilit-kademe')) {
                     window.kilitSec(t.getAttribute('data-kilit-kademe'));
+                    return;
+                }
+                if (t.hasAttribute && t.hasAttribute('data-kilit-materyal')) {
+                    window.kilitMateryalSec(t.getAttribute('data-kilit-materyal') === '1');
                     return;
                 }
                 t = t.parentNode;

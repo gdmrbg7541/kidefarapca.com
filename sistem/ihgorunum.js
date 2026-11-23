@@ -196,7 +196,9 @@
     }
 
     /* ------------------------------------------------- #imam-hatip ADRESİ */
-    function gizliMi(d) { return d === 'tam' || d === 'ogt'; }
+    /* SINIF MATERYALLERİ HERKESE AÇIK (23.11.2026): anahtar açık + misafir → bölüm görünür (html.kd-acikmat, sistem/acikmateryal.js);
+       o zaman #imam-hatip bağlantısı gizli sayılmaz ve ihSinifAc eski işini yapar. */
+    function gizliMi(d) { return (d === 'tam' || d === 'ogt') && !H.classList.contains('kd-acikmat'); }
     function hedefBolum() {
         var d = durum(), r = rol();
         if (d === 'ogt') return 'siniflarim';
