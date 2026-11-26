@@ -3140,6 +3140,36 @@
     var HAK_ARA = 10 * 60e3;
     var _hakUid = null, _hakZaman = 0, _hakSoz = null, _hakSonraki = 0, _hedefZaman = 0, _hakBagsiz = false;
     /* ------------------------------------------------------------------
+       ROL YARIŞI (26.11.2026) — yönetici: "yöneticide canlı ders için kilit görünüyor ondan açılmıyor sandım".
+       Oturum bilindikten 400 ms sonra (aşağıda fbBekle) durum yazılırken rol çoğu kez henüz hesabın belgesinden
+       gelmemiş oluyordu: appState.userRole o an sistem/state.js'in başlangıç değeri 'guest' ya da ziyaretçinin
+       'student'ı (hesap/auth.js initAppAsGuest). Durum o rolle yazılıyor ({rol: 'guest', sinirsiz: true}), rol sonradan
+       'admin' / 'teacher' olunca da düzelmiyordu (yöneticide sayfa boyunca, öğretmende 10 dk — HAK_ARA): yönetici ve
+       destekçi öğretmen yalnız destekçiye açık özelliklerde (canlı ders, kitap indirme; sistem/hak.js payli()) kilit
+       görüyor, destek vermeyen öğretmen de o sürede sınırsız sayılıyordu. Artık:
+       · rol bu hesabın belgesinden gelene dek durum YAZILMAZ (rolKesin: girişi tamamlayan basariliGiris rolle
+         birlikte appState.currentUser'ı «Misafir Öğrenci»den hesabın e-postasına çevirir); o arada çeyrek saniyede
+         bir yeniden bakılır (hakBekle; yarım dakikadan sonra 2 sn'lik yoklama sürer), oturum bildirimindeki «zorla» saklanır;
+       · durumun hangi rolle yazıldığı tutulur (_hakRol): rol değişirse hemen yeniden yazılır / hesaplanır;
+       · çıkış yapmadan hesap değişirse (karekodla giriş) yeni hesaba öncekinin rolüyle durum yazılmaz (_hakCu).
+       ------------------------------------------------------------------ */
+    var _hakRol = '', _hakCu = null, _hakZorla = false, _hakBekleZ = null, _hakBekleBas = 0;
+    function rolKesin(u, r) {
+        if (!r || r === 'guest') return false;                           /* sistem/state.js'in başlangıç değeri */
+        var k = durum('currentUser');
+        if (k === 'Misafir Öğrenci') return false;                       /* misafir kabuğu rol sayılmaz (sistem/sinifim.js'teki gibi) */
+        /* çıkış yapmadan hesap değişti (karekodla giriş, öbür sekme): yeni hesabın girişi tamamlanana dek rol öncekinin */
+        if (_hakUid && _hakUid !== u.uid && k === _hakCu && !(_hakBekleBas && Date.now() - _hakBekleBas > 30e3)) return false;
+        return true;
+    }
+    function hakBekle(zorla) {
+        if (zorla) _hakZorla = true;
+        if (_hakBekleZ) return;
+        if (!_hakBekleBas) _hakBekleBas = Date.now();
+        if (Date.now() - _hakBekleBas > 30e3) return;                    /* sonrası 2 sn'lik yoklamaya kalır */
+        _hakBekleZ = setTimeout(function () { _hakBekleZ = null; hakTazele(); }, 250);
+    }
+    /* ------------------------------------------------------------------
        2. DÖNEM KİLİDİ (03.11.2026) — yönetici: "1. dönem ücretini vermeyenler sadece flipbook hariç diğer hiç bir
        özelliği kullanamayacaklar, fakat bulut için kaydedilen verileri silinmeyecek, ödeme yaptıklarında yine
        kaldıkları yerden devam edebilecekler" · seçim: yönetici ödemeyi onaylayınca kalksın; muafiyet anahtarı yok.
@@ -3209,11 +3239,15 @@
         if (!H) return;
         var u = benKim();
         if (!u || u.isAnonymous) {
-            if (_fbHazir && _hakUid !== '') { _hakUid = ''; H.uid(''); dkDinle(null); }     /* oturum kapandı */
+            if (_fbHazir && _hakUid !== '') { _hakUid = ''; _hakRol = ''; H.uid(''); dkDinle(null); }     /* oturum kapandı */
+            _hakZorla = false; _hakBekleBas = 0;
             return;
         }
         var r = rol();
-        if (!r) return;                                   /* rol henüz belli değil */
+        if (!rolKesin(u, r)) { hakBekle(zorla); return; }   /* rol henüz bu hesabın belgesinden gelmedi (ROL YARIŞI) */
+        if (_hakZorla) { zorla = true; _hakZorla = false; }
+        _hakBekleBas = 0;
+        var rolAyni = _hakUid === u.uid && _hakRol === r;    /* durum bu hesap ve bu rolle yazıldı */
         if (_hakUid !== u.uid) H.uid(u.uid);
         if (Date.now() - _hedefZaman > HAK_ARA) { _hedefZaman = Date.now(); ozetOku().catch(function () { }); }
         if (r !== 'teacher') {
@@ -3223,16 +3257,16 @@
                yoklamada yazılır; bağlanınca yine sınırsız. */
             var bb = (r === 'student' && window.OH) ? window.OH.bagBilgisi : null;
             var bagsiz = !!(bb && bb.uid === u.uid && bb.bagli === false);
-            if (_hakUid !== u.uid || zorla || bagsiz !== _hakBagsiz) {
+            if (!rolAyni || zorla || bagsiz !== _hakBagsiz) {
                 H.durumYaz(bagsiz
                     ? { uid: u.uid, rol: r, sinirsiz: false, bagsiz: true, sebep: 'ogrenci-bagsiz', z: Date.now() }
                     : { uid: u.uid, rol: r, sinirsiz: true, sebep: r === 'admin' ? 'yonetici' : r, z: Date.now() });
                 _hakBagsiz = bagsiz;
             }
-            _hakUid = u.uid; _hakZaman = Date.now();
+            _hakUid = u.uid; _hakZaman = Date.now(); _hakRol = r; _hakCu = durum('currentUser');
             return;
         }
-        if (_hakSoz || (!zorla && _hakUid === u.uid && Date.now() - _hakZaman < HAK_ARA)) return;
+        if (_hakSoz || (!zorla && rolAyni && Date.now() - _hakZaman < HAK_ARA)) return;
         if (!zorla && Date.now() < _hakSonraki) return;          /* okunamadıysa dakikada bir dene */
         if (_hakUid !== u.uid) _hakUid = null;
         _hakSoz = benimVerim().then(function (v) {
@@ -3240,7 +3274,7 @@
             var hd = hakDurumu(v);
             H.durumYaz(hd);
             dkDinle(hd.dk ? v.uid : null);                            /* 2. DÖNEM KİLİDİ: onayda anında kalksın */
-            _hakUid = v.uid; _hakZaman = Date.now();
+            _hakUid = v.uid; _hakZaman = Date.now(); _hakRol = 'teacher'; _hakCu = durum('currentUser');
         }).catch(function () { _hakSonraki = Date.now() + 60e3; }).then(function () { _hakSoz = null; });
     }
     /* oturum açılmadan önce currentUser null: «çıkış» sanılmasın diye
