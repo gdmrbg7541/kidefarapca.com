@@ -311,3 +311,6 @@ html.yanli .yan-zoom .sayac { color: #2563EB }
   /* panel çubuğun üstünde kalsın (çubuk z-index: 50) */
   html.yanli .panel.yan { z-index: 90 }
 }
+
+/* YAN PANEL %40 (25.11.2026) — öğretmen: "soldaki açılır menü daha geniş olsun açıldığında yatay olarak sayfanın %40 kadar olsun" */
+.panel.yan, .panel.yan.genis { width: min(max(40vw, 440px), 94vw) !important; }

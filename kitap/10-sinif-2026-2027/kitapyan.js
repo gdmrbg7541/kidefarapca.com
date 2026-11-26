@@ -1391,3 +1391,178 @@
 
   window.KitapHataBildir = { ac: ac, kapat: kapat };
 })();
+
+/* KİTAP KENARLARI (25.11.2026) — öğretmen: "sağ ve sol taraftaki fazla sayfa tasarımını daha profesyonel olsun, bu tasarımlar
+   tüm flipbooklarda ortak olacak motora ekleyelim". Açık kitabın iki yanında sayfa destesi: okunan sayfalar bir yanda,
+   kalanlar öbür yanda (sağdan sola kitapta okunan sağda). Kapakta / arka kapakta / tek sayfa görünümünde yok. */
+(function () {
+  if (window.__kitapKenar) return; window.__kitapKenar = 1;
+  var bekle = 0;
+  function kur() {
+    var k = document.querySelector('.kitap'), r = document.getElementById('kaydiracInput');
+    if (!k || !r) return;
+    var el = {};
+    ['sol', 'sag'].forEach(function (y) {
+      var e = k.querySelector(':scope > .kk-kenar.' + y);
+      if (!e) { e = document.createElement('div'); e.className = 'kk-kenar ' + y; e.setAttribute('aria-hidden', 'true'); e.innerHTML = '<i></i>'; k.appendChild(e); }
+      el[y] = e;
+    });
+    var mn = +r.min || 1, mx = +r.max || 1, v = +r.value || mn, n = Math.max(1, mx - mn);
+    var o = Math.max(0, Math.min(1, (v - mn) / n));
+    var M = Math.round(Math.max(6, Math.min(18, 4 + (mx - mn + 1) / 16)));   /* kalın kitap kalın deste */
+    var rtl = (r.getAttribute('dir') || getComputedStyle(r).direction) === 'rtl';
+    var kapak = v <= mn || v >= mx, tek = k.classList.contains('tekli');
+    k.classList.toggle('kk-kapakta', kapak && !tek);                 /* KAPAKTA GÖLGE YOK (25.11.2026) */
+    var okunan = kapak || tek ? 0 : Math.max(2, Math.round(M * o)), kalan = kapak || tek ? 0 : Math.max(2, Math.round(M * (1 - o)));
+    el[rtl ? 'sag' : 'sol'].style.setProperty('--kw', okunan + 'px');
+    el[rtl ? 'sol' : 'sag'].style.setProperty('--kw', kalan + 'px');
+  }
+  function sonra() { clearTimeout(bekle); bekle = setTimeout(kur, 60); }
+  function bagla() {
+    var r = document.getElementById('kaydiracInput'), s = document.getElementById('sayfaEt');
+    if (!r || !document.querySelector('.kitap')) { setTimeout(bagla, 300); return; }
+    r.addEventListener('input', sonra); r.addEventListener('change', sonra);
+    try { if (s) new MutationObserver(sonra).observe(s, { childList: true, characterData: true, subtree: true }); } catch (e) { }
+    try { new MutationObserver(sonra).observe(document.querySelector('.kitap'), { attributes: true, attributeFilter: ['class'] }); } catch (e) { }
+    window.addEventListener('resize', sonra);
+    kur(); setTimeout(kur, 600);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bagla); else bagla();
+})();
+
+/* VİDEO OYNATICI (25.11.2026) — öğretmen: "videolarda scroll yapılabiliyor, çok saçma tüm video görünsün, ayrıca yeni sekmede
+   açma özelliği olmasın, özel bi tuş vs özellikleri ekle, hatta videolar için ayar kısmı olsun". Video paneli kaymaz, video
+   bütünüyle görünür; İndir / yeni sekme yok; kendi düğmeleri (oynat, ±10 sn, ilerleme, ses, hız, ayarlar, tam ekran) ve
+   ayarlar (hız, tekrar oynat, otomatik başlat, kaldığı yerden devam, sığdır / doldur); tuşlar: boşluk, ←/→, ↑/↓, F, M. */
+(function () {
+  if (window.__kzVideo) return; window.__kzVideo = 1;
+  var AN = 'kitap_video', YER = 'kitap_videoYer';
+  function ayarOku() { var a = { hiz: 1, dongu: 0, oto: 1, devam: 1, dol: 0, ses: 1, sessiz: 0 }; try { var t = JSON.parse(localStorage.getItem(AN) || '{}'); for (var k in t) a[k] = t[k]; } catch (e) { } return a; }
+  function ayarYaz(a) { try { localStorage.setItem(AN, JSON.stringify(a)); } catch (e) { } }
+  function ik(d) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>'; }
+  var I = {
+    oyn: ik('<path d="M8 5.5v13l10.5-6.5z" class="kv-dolu"/>'), dur: ik('<path d="M8 5v14M16 5v14"/>'),
+    g10: ik('<path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4 4v4.5h4.5"/><text x="12.2" y="15.2" text-anchor="middle">10</text>'),
+    i10: ik('<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M20 4v4.5h-4.5"/><text x="11.8" y="15.2" text-anchor="middle">10</text>'),
+    ses: ik('<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" class="kv-dolu"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/>'),
+    sessiz: ik('<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" class="kv-dolu"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>'),
+    ayar: ik('<path d="M4 7h9M17 7h3M4 12h3M11 12h9M4 17h11M19 17h1"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17" r="2"/>'),
+    tam: ik('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>'), cik: ik('<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>')
+  };
+  function sure(s) { s = Math.max(0, Math.floor(s || 0)); var d = Math.floor(s / 60), n = s % 60; return d + ':' + (n < 10 ? '0' : '') + n; }
+  function kur() {
+    var P = document.getElementById('pVideo'), v = document.getElementById('videoOyn');
+    if (!P || !v) return;
+    var A = v.parentNode; if (!A || A.querySelector('.kv-bar')) return;
+    var S = ayarOku();
+    P.classList.add('kv-p');
+    v.controls = false; v.removeAttribute('controls');
+    v.setAttribute('disablepictureinpicture', ''); v.setAttribute('controlslist', 'nodownload noremoteplayback noplaybackrate');
+    v.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    var ind = document.getElementById('videoIndir'); if (ind) ind.setAttribute('aria-hidden', 'true');
+    var H = '<button type="button" class="kv-buyuk" aria-label="Oynat">' + I.oyn + '</button>' +
+      '<div class="kv-ayar" role="dialog" aria-label="Video ayarları" hidden>' +
+        '<div class="kv-ay-bas"><b>Video ayarları</b></div>' +
+        '<div class="kv-ay-sat"><span>Hız</span><span class="kv-cipler" data-ay="hiz">' + [0.5, 0.75, 1, 1.25, 1.5, 2].map(function (h) { return '<button type="button" data-d="' + h + '">' + String(h).replace('.', ',') + '×</button>'; }).join('') + '</span></div>' +
+        '<div class="kv-ay-sat"><span>Görüntü</span><span class="kv-cipler" data-ay="dol"><button type="button" data-d="0">Sığdır</button><button type="button" data-d="1">Doldur</button></span></div>' +
+        '<button type="button" class="kv-ay-sw" data-ay="dongu" role="switch"><span>Tekrar oynat<small>Bitince baştan başlar</small></span><i></i></button>' +
+        '<button type="button" class="kv-ay-sw" data-ay="oto" role="switch"><span>Otomatik başlat<small>Açılınca kendiliğinden oynar</small></span><i></i></button>' +
+        '<button type="button" class="kv-ay-sw" data-ay="devam" role="switch"><span>Kaldığı yerden devam<small>Videoyu yine açınca</small></span><i></i></button>' +
+      '</div>' +
+      '<div class="kv-bar">' +
+        '<input type="range" class="kv-ilerle" min="0" max="1000" step="1" value="0" aria-label="Videoda ilerle">' +
+        '<div class="kv-tuslar">' +
+          '<button type="button" class="kv-t" data-kv="g10" title="10 sn geri (←)" aria-label="10 saniye geri">' + I.g10 + '</button>' +
+          '<button type="button" class="kv-t kv-ana" data-kv="oyn" title="Oynat / duraklat (boşluk)" aria-label="Oynat">' + I.oyn + '</button>' +
+          '<button type="button" class="kv-t" data-kv="i10" title="10 sn ileri (→)" aria-label="10 saniye ileri">' + I.i10 + '</button>' +
+          '<span class="kv-sure">0:00 / 0:00</span><span class="kv-bosluk"></span>' +
+          '<button type="button" class="kv-t" data-kv="ses" title="Sesi kapat / aç (M)" aria-label="Ses">' + I.ses + '</button>' +
+          '<input type="range" class="kv-ses-r" min="0" max="1" step="0.05" aria-label="Ses düzeyi">' +
+          '<button type="button" class="kv-t kv-hiz" data-kv="hiz" title="Hız" aria-label="Hız">1×</button>' +
+          '<button type="button" class="kv-t" data-kv="ayar" title="Video ayarları" aria-label="Video ayarları">' + I.ayar + '</button>' +
+          '<button type="button" class="kv-t" data-kv="tam" title="Tam ekran (F)" aria-label="Tam ekran">' + I.tam + '</button>' +
+        '</div>' +
+      '</div>';
+    A.insertAdjacentHTML('beforeend', H);
+    var bar = A.querySelector('.kv-bar'), ilr = A.querySelector('.kv-ilerle'), sr = A.querySelector('.kv-ses-r'), su = A.querySelector('.kv-sure'),
+        oyn = A.querySelector('[data-kv="oyn"]'), byk = A.querySelector('.kv-buyuk'), hz = A.querySelector('[data-kv="hiz"]'), sesb = A.querySelector('[data-kv="ses"]'),
+        ay = A.querySelector('.kv-ayar'), tamb = A.querySelector('[data-kv="tam"]'), surukle = false, gz = 0, ysak = 0;
+    function uygula() {
+      v.playbackRate = +S.hiz || 1; v.defaultPlaybackRate = +S.hiz || 1; v.loop = !!S.dongu; v.volume = Math.max(0, Math.min(1, +S.ses)); v.muted = !!S.sessiz;
+      P.classList.toggle('kv-doldur', !!+S.dol);
+      hz.textContent = String(+S.hiz || 1).replace('.', ',') + '×';
+      [].forEach.call(ay.querySelectorAll('.kv-cipler'), function (c) { var k = c.getAttribute('data-ay'); [].forEach.call(c.children, function (b) { b.setAttribute('aria-pressed', +b.getAttribute('data-d') === +S[k] ? 'true' : 'false'); }); });
+      [].forEach.call(ay.querySelectorAll('.kv-ay-sw'), function (b) { b.setAttribute('aria-checked', S[b.getAttribute('data-ay')] ? 'true' : 'false'); });
+      sr.value = v.muted ? 0 : v.volume; sesb.innerHTML = (v.muted || v.volume === 0) ? I.sessiz : I.ses;
+    }
+    function durum() {
+      var d = v.duration || 0, c = v.currentTime || 0;
+      if (!surukle) ilr.value = d ? Math.round(c / d * 1000) : 0;
+      ilr.style.setProperty('--dolu', (d ? c / d * 100 : 0) + '%');
+      su.textContent = sure(c) + ' / ' + sure(d);
+      var dur = v.paused || v.ended;
+      oyn.innerHTML = dur ? I.oyn : I.dur; oyn.setAttribute('aria-label', dur ? 'Oynat' : 'Duraklat');
+      P.classList.toggle('kv-durdu', dur);
+    }
+    function goster() { P.classList.remove('kv-gizle'); clearTimeout(gz); gz = setTimeout(function () { if (!v.paused && ay.hidden) P.classList.add('kv-gizle'); }, 2600); }
+    function oynat() { if (v.paused || v.ended) { var p = v.play(); if (p && p.catch) p.catch(function () { }); } else v.pause(); goster(); }
+    function atla(s) { if (v.duration) v.currentTime = Math.max(0, Math.min(v.duration - 0.1, v.currentTime + s)); goster(); }
+    function tamMi() { return (document.fullscreenElement || document.webkitFullscreenElement) === A; }
+    function tamEkran() {
+      try {
+        if (tamMi()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        else if (A.requestFullscreen) A.requestFullscreen(); else if (A.webkitRequestFullscreen) A.webkitRequestFullscreen(); else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+      } catch (e) { }
+    }
+    function yerYaz() {
+      if (!S.devam || !v.currentSrc || !v.duration) return;
+      try { var M = JSON.parse(localStorage.getItem(YER) || '{}'); var c = v.currentTime; if (c > 5 && c < v.duration - 5) M[v.currentSrc] = Math.round(c); else delete M[v.currentSrc]; localStorage.setItem(YER, JSON.stringify(M)); } catch (e) { }
+    }
+    A.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); 
+      if (!b) { if (e.target === v) { if (!ay.hidden) { ay.hidden = true; return; } oynat(); } return; }
+      e.stopPropagation();
+      if (b === byk) return oynat();
+      var k = b.getAttribute('data-kv');
+      if (k === 'oyn') oynat(); else if (k === 'g10') atla(-10); else if (k === 'i10') atla(10);
+      else if (k === 'ses') { S.sessiz = v.muted || v.volume === 0 ? 0 : 1; if (!S.sessiz && !(+S.ses)) S.ses = 0.8; ayarYaz(S); uygula(); }
+      else if (k === 'hiz') { var L = [0.5, 0.75, 1, 1.25, 1.5, 2], i = L.indexOf(+S.hiz); S.hiz = L[(i + 1) % L.length]; ayarYaz(S); uygula(); }
+      else if (k === 'ayar') { ay.hidden = !ay.hidden; goster(); }
+      else if (k === 'tam') tamEkran();
+      else if (b.parentNode && b.parentNode.classList.contains('kv-cipler')) { S[b.parentNode.getAttribute('data-ay')] = +b.getAttribute('data-d'); ayarYaz(S); uygula(); }
+      else if (b.classList.contains('kv-ay-sw')) { var a = b.getAttribute('data-ay'); S[a] = S[a] ? 0 : 1; ayarYaz(S); uygula(); if (a === 'devam' && !S.devam) try { localStorage.removeItem(YER); } catch (x) { } }
+    });
+    ilr.addEventListener('input', function () { surukle = true; if (v.duration) { v.currentTime = ilr.value / 1000 * v.duration; } durum(); goster(); });
+    ilr.addEventListener('change', function () { surukle = false; });
+    sr.addEventListener('input', function () { S.ses = +sr.value; S.sessiz = +sr.value === 0 ? 1 : 0; ayarYaz(S); uygula(); goster(); });
+    ['play', 'pause', 'ended', 'timeupdate', 'durationchange', 'loadedmetadata'].forEach(function (o) { v.addEventListener(o, durum); });
+    v.addEventListener('play', goster); v.addEventListener('pause', function () { goster(); yerYaz(); });
+    v.addEventListener('timeupdate', function () { var t = Date.now(); if (t - ysak > 4000) { ysak = t; yerYaz(); } });
+    v.addEventListener('ratechange', function () { if (Math.abs(v.playbackRate - (+S.hiz || 1)) > 0.01) { v.playbackRate = +S.hiz || 1; } });
+    v.addEventListener('loadedmetadata', function () {
+      uygula();
+      if (S.devam) try { var M = JSON.parse(localStorage.getItem(YER) || '{}'), c = M[v.currentSrc]; if (c > 5 && c < v.duration - 5) v.currentTime = c; } catch (e) { }
+      if (S.oto) { var p = v.play(); if (p && p.catch) p.catch(function () { }); }
+      durum(); goster();
+    });
+    v.addEventListener('emptied', function () { ay.hidden = true; durum(); });
+    A.addEventListener('pointermove', goster); A.addEventListener('pointerdown', goster);
+    document.addEventListener('fullscreenchange', function () { tamb.innerHTML = tamMi() ? I.cik : I.tam; P.classList.toggle('kv-tamda', tamMi()); });
+    document.addEventListener('webkitfullscreenchange', function () { tamb.innerHTML = tamMi() ? I.cik : I.tam; });
+    window.addEventListener('keydown', function (e) {
+      if (!P.classList.contains('acik') || e.ctrlKey || e.metaKey || e.altKey) return;
+      var t = e.target; if (t && (t.tagName === 'INPUT' && t.type !== 'range' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+      var k = e.key, ok = true;
+      if (k === ' ' || k === 'k' || k === 'K') oynat();
+      else if (k === 'ArrowLeft') atla(-5); else if (k === 'ArrowRight') atla(5);
+      else if (k === 'ArrowUp') { S.ses = Math.min(1, (+S.ses || 0) + 0.1); S.sessiz = 0; ayarYaz(S); uygula(); goster(); }
+      else if (k === 'ArrowDown') { S.ses = Math.max(0, (+S.ses || 0) - 0.1); ayarYaz(S); uygula(); goster(); }
+      else if (k === 'f' || k === 'F') tamEkran();
+      else if (k === 'm' || k === 'M') { S.sessiz = S.sessiz ? 0 : 1; ayarYaz(S); uygula(); }
+      else ok = false;
+      if (ok) { e.preventDefault(); e.stopImmediatePropagation(); }
+    }, true);
+    uygula(); durum();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur); else kur();
+})();

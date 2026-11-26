@@ -465,6 +465,23 @@
        (ya da çift dokunan) kişinin ikinci tıklaması büyütmeyi hemen geri
        alıyordu; ekran bir an yakınlaşıp dönüyor, "yakınlaşmıyor" sanılıyordu. */
     var CIFT_ARALIK = 350, sonBolge = 0;
+    /* DOKUNUNCA BÜYÜT AÇ / KAPA (25.11.2026) — öğretmen: "motordan bi yere dokununca büyüme özelliğini açılıp kapanır yapalım,
+       isteyen açsın ama varsayılan kapalı olsun". Araç çubuğunda «Dokununca büyüt»; bu cihazda hatırlanır. */
+    var KZ_DB = 'kitap_dokunBuyut';
+    function kzDokunBuyut() { try { return localStorage.getItem(KZ_DB) !== '0'; } catch (e) { return true; } }   /* DERSTE DOKUNMA / OK (25.11.2026): varsayılan açık */
+    (function () {
+      var ip = document.getElementById('tIpucu'); if (!ip || document.getElementById('tDokunBuyut')) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'tus'; b.id = 'tDokunBuyut';
+      b.title = 'Sayfaya dokununca o bölgeyi büyüt (aç / kapa)'; b.setAttribute('aria-label', 'Dokununca büyüt');
+      b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.3 15.3 20.5 20.5"/><path d="M10.5 7.6v5.8M7.6 10.5h5.8"/></svg>';
+      function goster() { var a = kzDokunBuyut(); b.classList.toggle('aktif', a); b.setAttribute('aria-pressed', a ? 'true' : 'false'); }
+      goster();
+      b.addEventListener('click', function () {
+        var a = !kzDokunBuyut(); try { localStorage.setItem(KZ_DB, a ? '1' : '0'); } catch (e) { }
+        goster(); try { kkTost(a ? 'Dokununca büyütme açık: bir bölgeye dokun, büyür; yine dokun, küçülür' : 'Dokununca büyütme kapalı (Yaklaş / Uzaklaş düğmeleri ve iki parmak çalışır)'); } catch (e) { }
+      });
+      /* KALEM MENÜSÜ DÜZENİ (25.11.2026): yan çubukta değil, Kalem ayarlarında */
+    })();
     sahne.addEventListener('pointerdown', function (e) {
       if (panelAcik() || tanitimAcik || !kkGezinir(e) || e.button > 0 || e.isPrimary === false) { bolgeDokun = null; return; }
       bolgeDokun = { x: e.clientX, y: e.clientY, t: Date.now(), id: e.pointerId, h: bolgeHedefi(e) };
@@ -485,8 +502,8 @@
         var kp0 = dsKisimAltta(e.clientX, e.clientY);
         if (kp0) { dsKisimCal(kp0); sonBolge = Date.now(); return; }       /* o kısım çalar ve durur, büyütme yok */
       }
-      if (z.o > 1.02) { if (!e.target.closest(YOKSAY)) { zAyarla(1); sonBolge = Date.now(); } return; }
-      if (d.h && !DS.aktif) { bolgeyiBuyut(d.h); sonBolge = Date.now(); }   /* DERS MODUNDA TEK DOKUNUŞLA BÜYÜTME YOK (03.11.2026) */
+      if (z.o > 1.02) { if (kzDokunBuyut() && !(typeof DS !== 'undefined' && DS && DS.aktif) && !e.target.closest(YOKSAY)) {   /* DERSTE DOKUNMA: ders modunda dokunuş küçültmez */ zAyarla(1); sonBolge = Date.now(); } return; }   /* DOKUNUNCA BÜYÜT: kapalıysa küçültmez */
+      if (d.h && !DS.aktif && kzDokunBuyut()) { bolgeyiBuyut(d.h); sonBolge = Date.now(); }   /* DOKUNUNCA BÜYÜT: varsayılan kapalı */   /* DERS MODUNDA TEK DOKUNUŞLA BÜYÜTME YOK (03.11.2026) */
     });
     kok.addEventListener('pointercancel', function () { bolgeDokun = null; });
 
@@ -1541,6 +1558,8 @@
     var CE_RAKAM = ['١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩', '١٠'];
     var CE_BOY = { i: 44, o: 56, k: 72 };                   /* ✓ ✗ boyu (birim; sayfa eni 1000) */
     var CE_SAYI = { i: 40, o: 50, k: 64 };
+    var CE_NBOY = { k: 34, o: 50, b: 76 };                         /* KALEM MENÜSÜ DÜZENİ: rakamın 3 hazır boyu */
+    function ceNB() { try { var v = localStorage.getItem('kitap_ceNB'); return CE_NBOY[v] ? v : 'o'; } catch (e) { return 'o'; } }
     var CE_YAZI = { i: 28, o: 34, k: 44 };
     var CE_RENK = { ct: 3, cx: 2 };                         /* ✓ yeşil, ✗ kırmızı; ötekiler seçili renk */
     var CE_IK = {
@@ -1668,7 +1687,7 @@
     function ceYeni(C) {
       var a = KK.arac, w = KK.kal;
       if (a === 'ct' || a === 'cx') return ceDamga({ a: 'T', r: CE_RENK[a], w: w, d: a.charAt(1), x: kkR(C.x), y: kkR(C.y), s: CE_BOY[w] || 56 });
-      if (a === 'cn') return ceDamga({ a: 'T', r: KK.renk, w: w, d: 'n', x: kkR(C.x), y: kkR(C.y), s: CE_SAYI[w] || 50, n: KK.ceSayi || 1 });
+      if (a === 'cn') return ceDamga({ a: 'T', r: KK.renk, w: w, d: 'n', x: kkR(C.x), y: kkR(C.y), s: CE_NBOY[ceNB()] || CE_SAYI[w] || 50, n: KK.ceSayi || 1 });
       if (a === 'cc') {
         var dx = C.x - C.x0, dy = C.y - C.y0;
         if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return ceDamga({ a: 'T', r: KK.renk, w: w, d: 'c', x: kkR(C.x0), y: kkR(C.y0), rx: 62, ry: 36 });
@@ -1778,6 +1797,8 @@
         ceDug('co', 'Ok: eşleştir — parmağını izler; başta nokta, sonda ok', svg(CE_IK.co)) +
         ceDug('cy', 'Yazı: dokunduğun yere yaz (yüzen klavye)', svg(CE_IK.cy)) +
         '<span class="kk-ce-sayilar" role="menu" aria-label="Rakam seç" hidden>' +
+        '<span class="kk-ce-boylar" role="group" aria-label="Rakam boyu">' +   /* KALEM MENÜSÜ DÜZENİ: 3 hazır boy */
+        [['k', 'Küçük', 13], ['o', 'Orta', 19], ['b', 'Büyük', 27]].map(function (x) { return '<button type="button" class="kk-ce-nb" data-cnb="' + x[0] + '" title="' + x[1] + ' rakam" aria-label="' + x[1] + ' rakam" style="font-size:' + x[2] + 'px">١</button>'; }).join('') + '</span>' +
         CE_RAKAM.map(function (r, i) { return '<button type="button" class="kk-ce-sb" data-cn="' + (i + 1) + '" role="menuitemradio">' + r + '</button>'; }).join('') +
         '</span></span>';
     }
@@ -1787,6 +1808,7 @@
       var n = Math.max(1, Math.min(10, KK.ceSayi || 1)), b = p.querySelector('.kk-ce-n');
       if (b) b.textContent = CE_RAKAM[n - 1];
       [].forEach.call(p.querySelectorAll('[data-cn]'), function (x) { x.setAttribute('aria-checked', +x.getAttribute('data-cn') === n ? 'true' : 'false'); });
+      var nb = ceNB(); [].forEach.call(p.querySelectorAll('[data-cnb]'), function (x) { x.setAttribute('aria-checked', x.getAttribute('data-cnb') === nb ? 'true' : 'false'); });
     }
     function ceSayiMenu(ac) {
       var p = KK.palet, m = p && p.querySelector('.kk-ce-sayilar');
@@ -1804,6 +1826,7 @@
     function ceAracTik(k) {
       if (k === 'cn' && KK.arac === 'cn') { ceSayiMenu(!KK.ceSayiAcik); return; }
       kkAracSec(k);
+      if (k === 'cn') setTimeout(function () { ceSayiMenu(true); ceSayiGoster(); }, 0);   /* KALEM MENÜSÜ DÜZENİ: rakama basınca boy + rakam */
       if (k === 'cy') { CK.istem = true; kkTost('Yazı: sayfada yazacağın yere dokun · yüzen klavye açılır'); }
       else if (k === 'co') kkTost('Ok: eşleştirmeyi parmağınla çiz — başta nokta, sonda ok ucu');
       else if (k === 'cc') kkTost('Daire: şıkkın çevresini sürükle (dokunursan hazır boy)');
@@ -1874,7 +1897,7 @@
     }
     function ckBas(d) {
       var t = CK.hedef;
-      if (d === '__kapat') { ceKlavye(false); CK.istem = false; if (t) { t.removeAttribute('inputmode'); try { t.focus(); } catch (e) { } } return; }
+      if (d === '__kapat') { ceKlavye(false); /* KALEM MENÜSÜ DÜZENİ: ✕ yalnız şimdilik kapatır, yeni yere dokununca yine açılır */ if (t) { t.removeAttribute('inputmode'); try { t.focus(); } catch (e) { } } return; }
       if (d === '__dil') { CK.dil = CK.dil === 'tr' ? 'ar' : 'tr'; CK.rakam = false; ckCiz(); ceYaziYer(); return; }
       if (d === '__rakam') { CK.rakam = !CK.rakam; ckCiz(); return; }
       if (d === '__buyuk') { CK.buyuk = !CK.buyuk; ckCiz(); return; }
@@ -2684,6 +2707,9 @@
         '<button type="button" class="kk-ay-sat kk-takip" data-kk="takip" role="switch" aria-checked="true">' +
         '<span class="kk-ay-ad">Otomatik takip<small>Büyütünce şerit yazının yanında durur</small></span>' +
         '<i class="kk-anahtar" aria-hidden="true"></i></button>' +
+        '<button type="button" class="kk-ay-sat kk-takip kk-dokbuy" data-kk="dokbuy" role="switch" aria-checked="' + (kzDokunBuyut() ? 'true' : 'false') + '">' +   /* KALEM MENÜSÜ DÜZENİ: dokununca büyüt */
+        '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V3h4M21 7V3h-4M3 17v4h4"/><path d="M10 12.5V7a1.4 1.4 0 0 1 2.8 0v4.6"/><path d="M12.8 10.6a1.4 1.4 0 0 1 2.8 0v1.2"/><path d="M15.6 11.4a1.4 1.4 0 0 1 2.8 0V16a5 5 0 0 1-5 5h-.7a4.6 4.6 0 0 1-3.8-2l-2.3-3.3a1.4 1.4 0 0 1 2.2-1.7l1.2 1.5"/></svg><span class="kk-ay-ad">Dokununca büyüt<small>Sayfaya dokununca o bölge büyür</small></span>' +
+        '<i class="kk-anahtar" aria-hidden="true"></i></button>' +
         '<button type="button" class="kk-ay-sat kk-takip kk-parmak" data-kk="parmak" role="switch" aria-checked="false" hidden>' +
         '<span class="kk-ay-ad">Parmakla gez<small>Kalem ucu yazar, parmak sayfada gezer</small></span>' +
         '<i class="kk-anahtar" aria-hidden="true"></i></button>' +
@@ -3044,10 +3070,12 @@
       return L[0];
     }
     function kkTutBas(e) {
-      var t = e.target.closest && e.target.closest('[data-kk="tut"]');
+      /* KÜÇÜK ŞERİT TAŞINIR (25.11.2026) — öğretmen: "kalem popup ını küçültünce ekranda taşıyamıyorum": küçükken yuvarlak düğme tutamaktır */
+      var t = e.target.closest && (e.target.closest('[data-kk="tut"]') || (KK.kucuk && e.target.closest('[data-kk="kapa"]')));
       if (!t || !KK.palet || KK.palet.hidden || (e.pointerType === 'mouse' && e.button !== 0)) return;
-      e.preventDefault();
-      kkTas = { id: e.pointerId, x: e.clientX, y: e.clientY, oynadi: false, t: t };
+      var kp = t.getAttribute('data-kk') === 'kapa';
+      if (!kp) e.preventDefault();
+      kkTas = { id: e.pointerId, x: e.clientX, y: e.clientY, oynadi: false, t: t, kp: kp };
       try { t.setPointerCapture(e.pointerId); } catch (x) { }
     }
     function kkTutOynat(e) {
@@ -3074,8 +3102,9 @@
       if (!T || e.pointerId !== T.id) return;
       kkTas = null;
       if (p) p.classList.remove('kk-tasiniyor');
+      if (T.oynadi) KK.tasBitti = Date.now();                     /* KÜÇÜK ŞERİT TAŞINIR: sürükleme sonrası tıklama sayılmaz */
       if (!T.oynadi) {                                            /* dokunuş: çift dokunuş → yine kendisi yer seçer */
-        if (e.type !== 'pointerup') return;
+        if (e.type !== 'pointerup' || T.kp) return;
         var simdi = Date.now();
         if (simdi - kkTutSon < 420) {
           kkTutSon = 0;
@@ -3123,6 +3152,8 @@
       if (ac) KK.temizZ = setTimeout(function () { kkTemizOnay(b, false); }, 3200);
     }
     function kkPaletTik(e) {
+      var cnb = e.target.closest && e.target.closest('[data-cnb]');      /* KALEM MENÜSÜ DÜZENİ: rakam boyu */
+      if (cnb && KK.palet && KK.palet.contains(cnb)) { e.preventDefault(); try { localStorage.setItem('kitap_ceNB', cnb.getAttribute('data-cnb')); } catch (x) { } ceSayiGoster(); return; }
       var cn = e.target.closest && e.target.closest('[data-cn]');
       if (cn && KK.palet && KK.palet.contains(cn)) { e.preventDefault(); KK.ceSayi = +cn.getAttribute('data-cn') || 1; ceSayiMenu(false); ceSayiGoster(); return; }   /* CEVAPLA: rakam seçimi */
       var sm = e.target.closest && e.target.closest('[data-sm]');
@@ -3146,9 +3177,14 @@
         KK.parmak = !KK.parmak; KK.parmakT = KK.parmak ? 1 : 0; kkTercihYaz(); kkPaletGuncelle(); zUygula(false);
         kkTost(KK.parmak ? 'Parmakla gez açık: kalem ucu yazar, parmak sayfada gezer' : 'Parmakla gez kapalı: parmak da yazar');
       }
+      else if (k === 'dokbuy') {                                    /* KALEM MENÜSÜ DÜZENİ: dokununca büyüt aç / kapa */
+        var db = !kzDokunBuyut(); try { localStorage.setItem(KZ_DB, db ? '1' : '0'); } catch (x) { }
+        b.setAttribute('aria-checked', db ? 'true' : 'false');
+        kkTost(db ? 'Dokununca büyütme açık: bir bölgeye dokun, büyür; yine dokun, küçülür' : 'Dokununca büyütme kapalı (Yaklaş / Uzaklaş ve iki parmak çalışır)');
+      }
       else if (k === 'geri') { if (!kkYanki(e)) kkGeriAl(); }
       else if (k === 'ileri') { if (!kkYanki(e)) kkIleriAl(); }
-      else if (k === 'kapa') { KK.kucuk = !KK.kucuk; kkTercihYaz(); kkPaletGuncelle(); kkSeritYerlestir(); }
+      else if (k === 'kapa') { if (Date.now() - (KK.tasBitti || 0) < 500) return; KK.kucuk = !KK.kucuk; kkTercihYaz(); kkPaletGuncelle(); kkSeritYerlestir(); }
       else if (k === 'takip') {
         if (kkYanki(e)) return;                                 /* Sınıf Ekranı: kumandanın tıkı tahtanın tercihini değiştirmesin */
         if (KK.sabit) { KK.sabit = null; KK.takip = true; } else KK.takip = !KK.takip;   /* taşınmış şerit: açınca yine kendisi yer seçer */
@@ -3619,6 +3655,7 @@
     function ipAd(s) { return kkSayfaAdi(s); }
     /* bütün izler + cildin ucu */
     function ipCiz() {
+      try { ipYanGuncelle(); } catch (e) { }                         /* İPLİ SAYFAYA GİT */
       if (!flip.kitap) return;
       [].forEach.call(flip.kitap.querySelectorAll('.yuz > .kip'), function (b) {
         var s = +b.getAttribute('data-kip'), sec = s === IP.s;
@@ -3677,6 +3714,29 @@
       ipCiz();
     }
     function ipAnlik() { return IP ? { s: IP.s, z: IP.t } : null; }
+    /* İPLİ SAYFAYA GİT (25.11.2026) — öğretmen: "sidebar da ipin olduğu sayfaya git kısmı da olsun" */
+    var IP_YAN = null;
+    function ipYanGuncelle() {
+      var b = IP_YAN; if (!b) return;
+      var var_ = !!IP.s;
+      b.classList.toggle('kip-yok', !var_);
+      b.title = var_ ? 'Kırmızı ipin olduğu sayfaya git: ' + ipAd(IP.s) : 'İpli sayfa yok — sayfanın üstündeki gri ize dokununca ip konur';
+    }
+    (function () {
+      var ic = document.getElementById('tIcindekiler') || document.getElementById('tIpucu');
+      if (!ic || document.getElementById('tIpGit')) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'tus'; b.id = 'tIpGit';
+      b.setAttribute('aria-label', 'İpli sayfaya git');
+      b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 2.8h9.2v18.4L12 17.4l-4.6 3.8z" fill="#E5484D" stroke="#B4232A"/></svg>';
+      b.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (IP.s) ipGit(IP.s);
+        else kkTost('Henüz ip konmadı · sayfanın üstündeki gri ize dokununca kırmızı ip o sayfaya iner');
+      });
+      ic.parentNode.insertBefore(b, ic.nextSibling);
+      IP_YAN = b;
+      setTimeout(ipYanGuncelle, 0);
+    })();
     /* ---------- dokunuşlar ---------- */
     function ipDur(e) { e.stopPropagation(); }        /* yaprak sürüklenmesin, bölge büyümesin */
     function ipTik(e) {
@@ -3978,7 +4038,9 @@
       var yr = dsBantYonerge(s, x1, x2, y1, y2);                         /* YÖNERGE TAM SIĞSIN (04.11.2026): bandın içindeki yönerge satırı enine sığsın */
       if (yr) ob = Math.min(ob, g.w * 0.97 / Math.max(1, g.en * (yr[1] - yr[0]) / 100));
       var o = Math.max(ENAZ, Math.min(ENCOK, Math.max(og, ob)));
-      if (bh * o > g.h * 0.95 && !dsBantIzlenir(s, a)) o = Math.max(ENAZ, Math.min(o, g.h * 0.9 / Math.max(1, bh)));   /* UZUN BANT (12.11.2026): izlenecek ses kısmı yoksa bandın tamamı sığsın */
+      if (bh * o > g.h * 0.9) o = Math.max(ENAZ, Math.min(o, g.h * 0.9 / Math.max(1, bh)));   /* ZOOM MERKEZ (25.11.2026): bant hep bütünüyle sığar */
+      if (bw * o > g.w * 0.97) o = Math.max(ENAZ, Math.min(o, g.w * 0.97 / Math.max(1, bw)));   /* UZUN BANT (12.11.2026): izlenecek ses kısmı yoksa bandın tamamı sığsın */
+      o = Math.max(ENAZ, Math.min(ENCOK, Math.min(g.w * 0.97 / Math.max(1, bw), g.h * 0.9 / Math.max(1, bh))));   /* SEÇİLEN ALAN (25.11.2026): seçilen alanın tamamı ekranı doldurur */
       if (+a.yk > 0) o = Math.max(ENAZ, Math.min(ENCOK, o * (+a.yk) / 100));   /* YAKINLIK ELLE (12.11.2026): tezgâhta ayarlanan oran */
       var ox = g.x + g.en / 2;                                           /* yatay: sayfa ortası */
       if (o > og + 0.05) {
@@ -6418,6 +6480,7 @@
     function dsKisimYere(o) {                                          /* SARI KUTUYA DOKUNUNCA YAKLAŞ (03.11.2026) */
       try {
         var p = ksKisimlar(o.src)[o.i]; if (!ksVurguVar(p)) return;
+        if (!DS.aktif && !kzDokunBuyut()) return;                      /* DOKUNUNCA BÜYÜT kapalı: kısım çalar, yakınlaşmaz */
         if (DS.aktif) {                                                /* ÖLÇÜLÜ YAKLAŞMA (06.11.2026): küçük kutuya dev yakınlaşma yok */
           var Ly = dsAdimlar(o.s);
           for (var ky = Math.min(DS.i, Ly.length - 1); ky >= 0 && DS.s === o.s; ky--) {
@@ -6427,7 +6490,7 @@
           }
           var w = Math.max(p.x2 - p.x1, 55), h = Math.max(p.y2 - p.y1, 22), cx = (p.x1 + p.x2) / 2, cy = (p.y1 + p.y2) / 2;
           var x1 = Math.max(0, Math.min(100 - w, cx - w / 2)), y1 = Math.max(0, Math.min(100 - h, cy - h / 2));
-          DS_KY = ''; dsKutuyaYaklas(o.s, { x1: x1, x2: x1 + w, y1: y1, y2: y1 + h, sayfa: p.sayfa }); return;
+          return;                                                      /* DERSTE DOKUNMA: kısma dokununca kutusuna yakınlaşma yok, bant kalır */
         }
         DS_KY = ''; dsKutuyaYaklas(o.s, p);                          /* KUTU BÜYÜR (04.11.2026): kutu ekrana sığacak kadar */
       } catch (e) { }
@@ -6468,8 +6531,10 @@
       if (/^(INPUT|TEXTAREA|SELECT)$/.test(h.tagName || '') || h.isContentEditable) return;
       if (panelAcik() || tanitimAcik) return;
       if (e.ctrlKey || e.metaKey || e.altKey) return;
-      var k = e.key, ileri = k === (rtl ? 'ArrowLeft' : 'ArrowRight') || k === 'ArrowDown' || k === 'PageDown' || k === ' ' || k === 'Enter';   /* sağdan sola: ← ileri */
-      var geri = k === (rtl ? 'ArrowRight' : 'ArrowLeft') || k === 'ArrowUp' || k === 'PageUp' || k === 'Backspace';
+      var k = e.key;
+      if (k === 'ArrowUp' || k === 'ArrowDown') { e.preventDefault(); e.stopPropagation(); return; }   /* DERSTE DOKUNMA / OK: ↑ ↓ derste bir şey yapmaz */
+      var ileri = k === (rtl ? 'ArrowLeft' : 'ArrowRight') || k === 'PageDown' || k === ' ' || k === 'Enter';   /* sağdan sola: ← ileri */
+      var geri = k === (rtl ? 'ArrowRight' : 'ArrowLeft') || k === 'PageUp' || k === 'Backspace';
       if (!ileri && !geri && k !== 'Escape') return;
       if (!dsAdimlar(DS.s).length && z.o > 1.02 && /^Arrow/.test(k)) return;   /* adımsız sayfada büyükken oklar sayfada gezdirir */
       e.preventDefault(); e.stopPropagation();
@@ -8184,7 +8249,8 @@
       el.title = (p.ad || (vj + 1) + '. kısım') + ' — dokun: bu kısım yeniden çalsın';
       el.setAttribute('aria-label', el.title);
       el.classList.remove('ks-yeni'); void el.offsetWidth; el.classList.add('ks-yeni');   /* her yeni kısımda kısa parlama */
-      if (!DS.aktif && K.el && !K.el.paused && !dsIzleyen()) dsKisimYakin(K, p);   /* ŞERİT İKİ KENAR: kısım çalarken mutlaka yaklaş */
+      if (!DS.aktif && K.el && !K.el.paused && !dsIzleyen()) dsKisimYakin(K, p);
+      else if (DS.aktif && K.el && !K.el.paused && !K.sur) ksTakip(K, vj, false);   /* SARI VURGUYU TAKİP: çalarken ekran dışına çıktıysa */   /* ŞERİT İKİ KENAR: kısım çalarken mutlaka yaklaş */
     }
     /* BÖLÜM ARASI BEKLE (03.11.2026) — öğretmen: "bazı seslerde bölümler arasında istenen kadar gecikme ekleyebilelim":
        bölümün "bk" saniyesi varsa sonunda durur, geri sayar, sürer. */
@@ -8249,7 +8315,8 @@
       K.tekSon = Math.max(+p.b + 0.1, +p.s - 0.08);                    /* KISIM İLERİ: sonraki kısmın başına taşmasın (vurgu çalanda kalsın) */
       K.tekI = i;                                                       /* KISIM CEVAP: biten kısım */
       ksDongu();
-      if (!DS.aktif) dsKisimYakin(K, p);                               /* KISMA DOKUNUNCA YAKINLAŞMA (02.11.2026) */
+      if (DS.aktif) ksTakip(K, i, true);                               /* SARI VURGUYU TAKİP */
+      if (!DS.aktif && kzDokunBuyut()) dsKisimYakin(K, p);   /* DOKUNUNCA BÜYÜT */                               /* KISMA DOKUNUNCA YAKINLAŞMA (02.11.2026) */
     }
     /* KISMA DOKUNUNCA YAKINLAŞMA (02.11.2026) — öğretmen: "yakınlaştırma varsa o da
        çalışmalı". Ders kapalıyken: sayfanın adımlarında bu sesin kaynak adımından
@@ -8289,8 +8356,67 @@
       } catch (e) { }
       return null;
     }
+    /* KISIM BEKLE ŞERİTTE DE (25.11.2026) — öğretmen: "ilerleme tuşu yerine bu ses kısımlarına basınca cevaba tıklamayı vs
+       beklemeden diğerine geçiyor": bekleyen / çalan kısmın cevabı açılmadan sonraki kısma dokunuş «ileri» gibi */
+    function dsKcSeritEngel(K, i) {
+      try {
+        if (!dsKcGecerli() || !K || !K.el) return false;
+        var kay = K.el.currentSrc || K.el.getAttribute('src') || K.src || '';
+        if (ksAnah(kay) !== ksAnah(DS_KC.src)) return false;
+        var P = ksKisimlar(DS_KC.src), cur = DS_KC.bek;
+        if (cur < 0) { var t = K.el.currentTime || 0; for (var x = 0; x < P.length; x++) if (t >= +P[x].b - 0.05 && t < +P[x].s) cur = x; }
+        if (cur < 0 || i <= cur) return false;                       /* aynı / önceki kısım: yeniden dinlet */
+        var bekle = DS_KC.bek >= 0;
+        if (!bekle && P[cur] && P[cur].cb && DS_KC.j >= 0 && DS.i >= DS_KC.j && dsKcBirimler(cur).length && !dsKcTamam(cur)) bekle = true;
+        if (!bekle) return false;
+        dsIleri();
+        try { kkTost('Önce bu kısmın cevabı açılır · sonra sıradaki kısım'); } catch (e) { }
+        return true;
+      } catch (e) { return false; }
+    }
+    /* SARI VURGUYU TAKİP (25.11.2026) — öğretmen: "ses kısmından bi bölüme tıklanırsa oraya ait büyüme hemen değişsin sarı
+       vurguyu takip etsin": kısma dokununca o kısmın bandı (yoksa sarı vurguyu içeren bant, o da yoksa vurgunun kendisi);
+       derste çalarken vurgu ekran dışına çıkarsa onu içeren banda kayılır. */
+    var KS_TKP = 0;
+    function ksTakipBant(K, p, zorla) {
+      var s = p.sayfa, L = dsAdimlar(s), v = ksVurguVar(p), hd = null, j, x;
+      var icer = function (b) { return dsBantVar(b) && +b.y1 <= +p.y1 + 1 && +b.y2 >= +p.y2 - 1; };
+      if (L.length && zorla) hd = dsKisimHedef(K, p, L);
+      if (hd && v && !icer(hd)) hd = null;
+      if (!hd && v) {
+        for (j = 0; j < L.length; j++) { x = L[j]; if (x && icer(x) && (!hd || (+x.y2 - +x.y1) < (+hd.y2 - +hd.y1))) hd = x; }
+        if (!hd) hd = { x1: 0, x2: 100, y1: Math.max(0, +p.y1 - 3), y2: Math.min(100, +p.y2 + 3) };
+      }
+      return hd;
+    }
+    function ksTakip(K, i, zorla) {
+      if (zorla === undefined) zorla = true;
+      clearTimeout(KS_TKP);
+      KS_TKP = setTimeout(function () {                               /* sarma ve derste adım değişimi bitsin, sonra */
+        try {
+          var p = K.P[i]; if (!p || !(p.sayfa >= 1) || dsIzleyen() || !dsVeri()) return;
+          if (!DS.aktif && !kzDokunBuyut()) return;
+          if (!zorla && (!ksVurguVar(p) || dsYerGorunur(p.sayfa, p))) return;   /* çalarken: vurgu ekrandaysa dokunma */
+          var hd = ksTakipBant(K, p, zorla); if (!hd) return;
+          DS_KY = p.sayfa + ':' + [hd.x1, hd.y1, hd.x2, hd.y2].join(',');
+          dsYakinlas(p.sayfa, hd);
+        } catch (e) { }
+      }, zorla ? 260 : 60);
+    }
+    /* SES KAPANINCA DERS BİTER (25.11.2026) — öğretmen: "sesi kapatınca ders modundan çıksın": ses çubuğunun ✕'ine öğretmen
+       basınca ders modu kapanır (ders kendi içinde etkinlik değiştirirken sesi kapatması saymaz: yalnız gerçek dokunuş) */
+    document.addEventListener('click', function (e) {
+      try {
+        if (!e.isTrusted || !DS.aktif || dsIzleyen()) return;
+        var t = e.target; if (!t || !t.closest) return;
+        var kb = t.closest('#calarKapat') || (MD.calar && MD.calar.contains(t) ? t.closest('.kapat') : null);
+        if (kb) setTimeout(function () { if (DS.aktif) dsKapat(true); }, 0);
+      } catch (x) { }
+    }, true);
     function ksKisma(K, i) {                                          /* kısma dokunuldu: o kısmın başından çal */
       var p = K.P[i]; if (!p) return;
+      if (dsKcSeritEngel(K, i)) return;                              /* KISIM BEKLE ŞERİTTE DE */
+      ksTakip(K, i, true);                                           /* SARI VURGUYU TAKİP */
       if (K.konum && ZS.el === K.el && ZS.P[i]) { zsTek(i); ksGuncelle(K); return; }   /* konum: o parça, sonunda durur */
       ksGit(K, Math.max(0, p.b - 0.02), true);
     }

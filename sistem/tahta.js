@@ -115,23 +115,26 @@
    (d: goruldu | onay | red). Kural değişmedi (tahta/$uid sahibine açık). Ana sayfadaki hedef: sistem/tahtagir.js.
 
    CANLI DERS (05.11.2026, hesap/canliOda.js + hesap/canliders.js): aynı motor, kök
-   canli/<oda>/oda (oda = ders_<öğretmen uid>); öğretmen yazar, çağrılan öğrenci (davetli)
-   okur ve yalnız izleyici yollarına yazar. Kurala eklenecek bölüm:
-     "canli": { "$oda": {
-       ".read":  "auth != null && ($oda === 'ders_' + auth.uid || data.child('davetli').val() === auth.uid)",
-       ".write": "auth != null && $oda === 'ders_' + auth.uid",
-       "oda": {
-         "izle":      { "$c": { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" } },
-         "yokla":     { "$c": { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" } },
-         "gorus":     { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" },
-         "kanalIste": { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" },
-         "cikis":     { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" },
-         "ekran":     { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" } },
-       "ses": { "ogr": { ".write": "auth != null && root.child('canli/' + $oda + '/davetli').val() === auth.uid" } } } },
-     "canliCagri": { "$uid": {
-       ".read":  "auth != null && auth.uid === $uid",
-       ".write": "auth != null && ((auth.uid === $uid && !newData.exists()) || root.child('canli/ders_' + auth.uid + '/davetli').val() === $uid || (!newData.exists() && data.child('oda').val() === 'ders_' + auth.uid))" } }
-   Veri yolu: canli/<oda>/ davetli · davetliAd · davetT · oda/(motor) · ses/ogt · ses/ogr ; canliCagri/<öğrenci uid> = { oda, ad, t }
+   canli/<oda>/oda (oda = ders_<öğretmen uid>); öğretmen yazar, çağrılan öğrenciler okur ve
+   yalnız izleyici yollarına yazar.
+   ÇOK ÖĞRENCİ + SÖZ (26.11.2026) — yönetici: "canlı derste iken herhangi bi öğrencinin ekranını
+   ve siteyi kullanma özelliğini aktif edelim, çoklu öğrenci olabilsin sistemde". Çağrılanlar
+   canli/<oda>/davetliler/<uid> = { ad, t } (ilk çağrılan ayrıca «davetli»: eski kuralla tek
+   öğrencili ders çalışsın). Öğretmen SÖZÜ bir öğrenciye verir: oda/ayar/soz = <uid>. Söz alan
+   öğrencinin cihazı akıllı tahtadaki «Tahtadan da kullan» gibi davranır: sayfaya dokununca
+   lider olur (yayın, olaylar, kaydırma ondan gider), öğretmen ve öbür öğrenciler onu izler;
+   öğretmen dokununca kontrol yine öğretmende, «Sözü al» deyince öğrenci yeniden yalnız izler.
+   Her öğrencinin tek cihazı: oda/ekran/<uid>. Kuralın TAMAMI (Firebase konsolu › Realtime
+   Database › Kurallar; eski «canli» ve «canliCagri» bölümlerinin yerine, «canliSurum» yeni):
+     _kaynak/rtdb-kurallar-2026-11-26.json
+   Özeti: canli/$oda okuma = odanın sahibi | davetli | davetliler/<uid> var; yazma = sahibi.
+     oda/izle/$c · yokla/$c · gorus · kanalIste · cikis · ekran/$u (kendi uid'i) → çağrılan öğrenci
+     oda/yayin · olay · kay · alan · kanal → söz kimdeyse (oda/ayar/soz === auth.uid)
+     ses/ogr/$u → kendi uid'i ve çağrılmış · canliCagri/$uid → öğretmen (davetli | davetliler), öğrenci yalnız siler
+     canliSurum (okuma: girişli) → sayfa yeni kuralın kurulu olduğunu buradan anlar (kurulu değilse
+     çok öğrenci ve söz kapalı, tek öğrencili ders eskisi gibi).
+   Veri yolu: canli/<oda>/ davetli · davetliAd · davetliler/<uid> · davetT · bitti · oda/(motor; ayar/soz, ayar/sozAd, ekran/<uid>) ·
+     ses/ogt · ses/ogtk/<uid> · ses/ogr/<uid> ; canliCagri/<öğrenci uid> = { oda, ad, t }
    ===================================================================== */
 (function () {
   'use strict';
@@ -164,7 +167,10 @@
      Öğretmen tahta.html?rol=yansit&canli=<oda>, çağrılan öğrenci tahta.html?rol=izle&canli=<oda>.
      Öğrenci yalnız İZLER: lider ve vekil olmaz, Sınıf Ekranı işareti (kidef_tahta_cihaz) ve
      kumanda dönüş kaydı yazılmaz, öğrenci-hesabı kapısı bu kipte açık (okuma izni veritabanı
-     kuralında: canli/<oda>/davetli === uid). Ses ve çağrı: hesap/canliOda.js. */
+     kuralında: canli/<oda>/davetli === uid). Ses ve çağrı: hesap/canliOda.js.
+     26.11.2026 — ÇOK ÖĞRENCİ + SÖZ: birden çok öğrenci izler; öğretmenin SÖZ verdiği öğrenci
+     (oda/ayar/soz === uid) sayfaya dokununca lider olur — «Tahtadan da kullan»daki tahta gibi
+     (cift()); öbürleri ve öğretmen onu izler. Vekil yine olmaz. */
   var CANLI = (function () { var m = /[?&]canli=(ders_[A-Za-z0-9]{1,64})(?:&|$)/.exec(location.search); return m ? m[1] : ''; })();
   var CANLI_OGR = !!(CANLI && ROL === 'izle');
   var CANLI_METIN = !CANLI ? {} : CANLI_OGR ? {
@@ -172,6 +178,8 @@
       'th.z_bagli': 'Öğretmen bağlı', 'th.z_bekle': 'Öğretmen bekleniyor', 'th.z_yok': 'Öğretmen bağlı değil', 'th.z_durak': 'Öğretmen duraklattı',
       'th.bilgisayar_bagli': 'Öğretmen bağlı', 'th.bilgisayar_yok': 'Öğretmen bağlı değil.', 'th.bilgisayar_durak': 'Öğretmen dersi duraklattı.',
       'th.yalniz_gosterir': 'Öğretmenin açtığı sayfa burada görünür.',
+      'th.cift_metin': 'Söz sende: sayfayı kullanabilirsin, öğretmenin ve arkadaşların seni izliyor.',
+      'th.tahtadan': 'Söz sende — sen kullanıyorsun', 'th.z_soz': 'Söz: {ad}',
       'th.z_esitle_ip': 'Sayfayı öğretmenden yeniden iste', 'th.b_z_esitle': 'Sayfa öğretmenden yeniden isteniyor…',
       'th.serit_ayrildi': 'Öğretmen ayrıldı — son görüntü', 'th.serit_durak': 'Öğretmen dersi duraklattı',
       'th.kumanda_uyku': 'Öğretmenin cihazı şu an bağlı değil (uykuda). Ders son görüntüde bekliyor.',
@@ -184,7 +192,8 @@
       'th.kumanda_tus': 'Ekran yansıtma', 'th.canli_giris': 'Giriş yap'
     } : {
       'th.yansitiliyor': 'Canlı ders', 'th.sinif_ekrani': 'Canlı ders',
-      'th.tahta_bekleniyor': 'Öğrenci bekleniyor…', 'th.tahta_bagli': 'Öğrenci bağlı', 'th.tahta_cok': '{n} cihaz bağlı',
+      'th.tahta_bekleniyor': 'Öğrenci bekleniyor…', 'th.tahta_bagli': 'Öğrenci bağlı', 'th.tahta_cok': '{n} öğrenci bağlı',
+      'th.tahtadan': 'Söz öğrencide — o kullanıyor', 'th.b_tahtadan': 'Söz verdiğin öğrenci siteyi kullanıyor; sen dokununca kontrol yeniden sende.',
       'th.b_tahta_geldi': 'Öğrenci bağlandı.', 'th.hedef_bekleniyor': '{ad} bekleniyor…',
       'th.bitir': 'Dersi bitir', 'th.bitir_ip': 'Canlı dersi bitir, bu sayfada kal',
       'th.durak_ip': 'Öğrenci son görüntüde dursun; sen burada serbestçe gez',
@@ -368,14 +377,18 @@
     hedefTahta: null, hedefTahtaAd: '',       /* seçili tahta (kimlik) — boş: bütün tahtalar */
     kok: null, lider: false, yayin: null, belge: null, s0: 0, baglanti: true,
     izle: {}, isteGoruldu: {}, tahtadanDendi: false,
-    ayar: { kip: 'cift', perde: false, kg: false },
+    ayar: { kip: 'cift', perde: false, kg: false, soz: null, sozAd: '' },
     /* kumanda dönüşü (18.10.2026): devam = tahtadaki dersle eşitleniyor (perde
        açık, dokunuş kontrolü almaz); esitBekle = sayfanın geçmişi henüz gelmedi;
        donus = bağlantının en son geri geldiği an */
     uid: null, bas: null, devam: false, esitBekle: false, donus: 0, karar: false
   };
   function oturumVar() { return !!(S.yayin && S.yayin.cevrimici); }
-  function cift() { return !CANLI && S.ayar.kip !== 'tek'; }          /* canlı ders: öğrenci yalnız izler */
+  /* canlı ders (26.11.2026): yalnız SÖZ verilen öğrenci kullanabilir (öğretmende: söz birindeyse «çift») */
+  function cift() {
+    if (CANLI) return CANLI_OGR ? !!(S.uid && S.ayar.soz && S.ayar.soz === S.uid) : !!S.ayar.soz;
+    return S.ayar.kip !== 'tek';
+  }
   function takipte() { return !S.lider && oturumVar(); }      /* başka cihazı izliyor */
 
   /* görünürlük: telefon kilitlenince / uyanınca (medya süzgeci, bağlantı yoklama) */
@@ -905,7 +918,7 @@
       if (k) k.child('yayin').onDisconnect().cancel();
       if (k && CIHAZ === 'bilgisayar') {
         /* "Bitir": ders bitti (bitir) — tahta onu üstlenmez, ana sayfa kumandaya geri dönmez */
-        k.update({ 'yayin/cevrimici': false, 'yayin/bitir': true, 'yayin/vekil': null, 'yayin/ts': TS(), 'olay': null, 'kay': null, 'alan': null, 'ayar/perde': false, 'ayar/kg': false, 'isaret': null, 'gorus': null, 'kanal': null, 'kanalIste': null });
+        k.update({ 'yayin/cevrimici': false, 'yayin/bitir': true, 'yayin/vekil': null, 'yayin/ts': TS(), 'olay': null, 'kay': null, 'alan': null, 'ayar/perde': false, 'ayar/kg': false, 'ayar/soz': null, 'ayar/sozAd': null, 'isaret': null, 'gorus': null, 'kanal': null, 'kanalIste': null });
         k.child('izle/' + BEN).remove();
         try { localStorage.removeItem(SON_ANAHTAR); } catch (e) { }
       } else if (k) {
@@ -1118,6 +1131,7 @@
       var v = { cevrimici: true, cihaz: CIHAZ, ts: TS(), gecikme: zOrtalama(), d: S.lider ? Y.d : Z.d };
       if (CIHAZ === 'tahta') { var tk = tahtaKaydi(); for (var ta in tk) if (has(tk, ta)) v[ta] = tk[ta]; }
       else { v.kimlik = KIMLIK; v.ad = cihazAdi(); }
+      if (CANLI_OGR && S.uid) v.uid = S.uid;                              /* canlı ders: katılımcı listesi cihazı öğrenciyle eşler */
       if (iste) {
         Z.esitJeton = rastgeleId(); v.iste = Z.esitJeton; v.isteZ = TS();
         /* bu sayfa için yapılmış bütün istekler: hangisinin cevabı önce gelirse o uygulanır, öbürleri atlanır */
@@ -2152,6 +2166,17 @@
     if (Y.belge && Y.belge.readyState !== 'loading') alanTara();
     arayuzTazele();
   }
+  /* CANLI DERS — SÖZ (26.11.2026): öğretmen sözü bir öğrenciye verir (uid) ya da geri alır (null). Söz değişirken
+     kontrol öğretmene döner (eski söz sahibi artık yazamaz); yeni söz sahibi sayfasına dokununca lider olur. */
+  function sozVer(uid, ad) {
+    if (!CANLI || CANLI_OGR || !S.kok) return false;
+    uid = uid ? String(uid) : null;
+    if (!S.lider && !S.devam && oturumVar()) liderOl();
+    S.ayar.soz = uid; S.ayar.sozAd = uid ? String(ad || '').slice(0, 40) : '';
+    try { S.kok.child('ayar').update({ soz: uid, sozAd: uid ? (S.ayar.sozAd || null) : null }); } catch (e) { return false; }
+    arayuzTazele();
+    return true;
+  }
   function liderBirak(y) {
     if (!S.lider) return;
     S.lider = false;
@@ -2688,6 +2713,8 @@
   function ekranSahiplen() {
     if (CIHAZ !== 'tahta' || !S.kok || S.ekranBirakti) return;
     S.ekran = { id: BEN, kimlik: KIMLIK, ad: cihazAdi() };
+    /* canlı ders (26.11.2026): çok öğrenci — her öğrencinin TEK cihazı: ekran/<uid> */
+    if (CANLI_OGR) { if (S.uid) { try { S.kok.child('ekran/' + S.uid).set({ id: BEN, kimlik: KIMLIK, ad: cihazAdi(), ts: TS() }); } catch (e) { } } return; }
     try { S.kok.child('ekran').set({ id: BEN, kimlik: KIMLIK, ad: cihazAdi(), ts: TS() }); } catch (e) { }
   }
   function ekranBirak(v) {
@@ -2701,6 +2728,16 @@
     setTimeout(function () { cik('index.html'); }, 1500);
   }
   function ekranGeldi(v) {
+    if (CANLI) {
+      /* canlı ders: ekran/<öğrenci uid>. Öğrenci aynı dersi başka cihazında açtıysa bu cihaz çıkar; öbür öğrencilerin kaydı
+         bu cihazı ilgilendirmez. Öğretmende «tek Sınıf Ekranı» süzgeci yok (bağlı bütün öğrenciler sayılır). */
+      if (CANLI_OGR) {
+        var be = (v && typeof v === 'object' && S.uid) ? v[S.uid] : null;
+        if (S.kok && !S.ekranBirakti && be && be.id && be.id !== BEN) ekranBirak(be);
+      } else S.ekran = null;
+      arayuzTazele();
+      return;
+    }
     var once = S.ekran;
     S.ekran = v || null;
     if (CIHAZ === 'tahta') {
@@ -2953,6 +2990,7 @@
         yazi = kd('th.tahta_bagli', 'Tahta bağlı');
       } else if (S.yayin.cihaz === 'tahta') {
         yazi = kd('th.tahtadan', 'Tahtadan kullanılıyor');
+        if (CANLI && S.yayin.cihazAd) yazi = S.yayin.cihazAd + ' kullanıyor';        /* canlı ders: söz kimdeyse */
         var zg = zOrtalama();
         if (zg != null) yazi += ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, zg) });
       } else {
@@ -3236,7 +3274,8 @@
       : S.lider ? kd('th.tahtadan', 'Tahtadan kullanılıyor')
       : (y && y.cevrimici
           ? (y.durak ? kd('th.z_durak', 'Kumanda duraklattı')
-                     : kd('th.z_bagli', 'Kumanda bağlı') + (y.cihaz === 'bilgisayar' && y.cihazAd ? ' · ' + y.cihazAd : '') + (g != null ? ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, g) }) : ''))
+                     : (CANLI_OGR && y.cihaz === 'tahta' ? kd('th.z_soz', 'Söz: {ad}', { ad: y.cihazAd || 'öğrenci' })      /* canlı ders: başka öğrenci kullanıyor */
+                        : kd('th.z_bagli', 'Kumanda bağlı') + (y.cihaz === 'bilgisayar' && y.cihazAd ? ' · ' + y.cihazAd : '')) + (g != null ? ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, g) }) : ''))
           : (y && y.baska ? kd('th.z_baska', 'Yansıtma başka tahtada: {ad}', { ad: y.baskaAd || y.baska })
                           : kd('th.z_bekle', 'Kumanda bekleniyor')));
     ['thNokta', 'thKNokta', 'thZNokta'].forEach(function (id) { var n = $(id); if (n) n.className = 'th-nokta ' + sinif; });
@@ -3950,9 +3989,27 @@
   /* tahta: kumandanın TAHTA ALANI için ekran boyutu ve kaydırma — yalnız kumandada
      araç açıkken (bu dersin isaret kaydı varken), en çok ~7 kez/sn */
   var GR = { z: null, son: 0, imza: '', kw: null, kf: null };
+  /* canlı ders, çok öğrenci (26.11.2026): «öğrenci ekranı» alanını tek cihaz besler — söz kimdeyse o (derste ise),
+     yoksa bağlı öğrenci cihazlarının ilki (kimliği en küçük olan) */
+  function gorusSirasi() {
+    if (!CANLI_OGR) return true;
+    var k, t, sozBurada = false;
+    if (S.ayar.soz) {
+      if (S.ayar.soz === S.uid) return true;
+      for (k in S.izle) { if (has(S.izle, k)) { t = S.izle[k]; if (t && t.cevrimici && t.uid === S.ayar.soz) sozBurada = true; } }
+      if (sozBurada) return false;
+    }
+    for (k in S.izle) {
+      if (!has(S.izle, k) || k === BEN) continue;
+      t = S.izle[k];
+      if (t && t.cevrimici && t.cihaz === 'tahta' && k < BEN) return false;
+    }
+    return true;
+  }
   function gorusGerekli() {
     var v = IZ.kayit;
     if (CIHAZ !== 'tahta' || !S.kok || !v || !v.a || v.i === BEN) return false;
+    if (!gorusSirasi()) return false;
     if (v.b && S.yayin && S.yayin.bas && v.b !== S.yayin.bas) return false;
     return oturumVar() || uzaktaMi();
   }
@@ -4669,7 +4726,11 @@
     kok.child('kanalIste').on('value', function (s) { KN.istek = s.val(); kanalIstekBak(); });
     kok.child('ayar').on('value', function (s) {
       var v = s.val() || {};
-      S.ayar = { kip: v.kip === 'tek' ? 'tek' : 'cift', perde: !!v.perde, kg: !!v.kg };
+      S.ayar = { kip: v.kip === 'tek' ? 'tek' : 'cift', perde: !!v.perde, kg: !!v.kg,
+                 soz: CANLI && v.soz ? String(v.soz) : null, sozAd: CANLI && v.soz ? String(v.sozAd || '').slice(0, 40) : '' };
+      /* canlı ders: söz bu öğrenciden alındı (ya da başkasına verildi) — artık yazamaz: hemen izlemeye döner;
+         öğretmenin yayını gelince onu izler (öğretmen sözü değiştirirken kontrolü kendine alır) */
+      if (CANLI_OGR && S.lider && !cift()) { try { liderBirak(null); } catch (e) { } }
       arayuzTazele();
     });
     kok.child('izle').on('value', izleGeldi);
@@ -4849,7 +4910,10 @@
     setInterval(function () {
       if (!S.kok) return;
       var g = zOrtalama(), d = S.lider ? Y.d : Z.d, v = null;
-      if (g != null && g !== Z.sonBildirilen && !S.lider) { Z.sonBildirilen = g; v = { gecikme: g }; }
+      if (g != null && g !== Z.sonBildirilen && !S.lider &&
+          (!CANLI || Z.sonBildirilen == null || (Math.abs(g - Z.sonBildirilen) >= 150 && SIMDI() - (Z.sonBildirimZ || 0) > 20000))) {
+        Z.sonBildirilen = g; Z.sonBildirimZ = SIMDI(); v = { gecikme: g };      /* canlı ders: yalnız belirgin değişimde, en çok 20 sn'de bir */
+      }
       if (d !== Z.sonBildirilenD) { Z.sonBildirilenD = d; v = v || {}; v.d = d; }
       if (CIHAZ === 'tahta') {
         var tk = tahtaKaydi(), tkImza = JSON.stringify(tk);
@@ -4959,6 +5023,7 @@
     canli: CANLI, canliOgr: CANLI_OGR, bildir: bildir, cik: cik,
     rol: ROL, cihaz: CIHAZ, id: BEN, S: S, Y: Y, Z: Z, yolAl: yolAl, yolBul: yolBul, VT_ADRES: VT_ADRES,
     liderOl: liderOl, lider: function () { return S.lider; },
+    soz: { ver: sozVer, kim: function () { return S.ayar.soz || null; }, bende: function () { return CANLI_OGR && cift(); } },
     arac: function (a) { aracSec(a); return IA.arac; }, IA: IA, IZ: IZ, noktaBilgisi: noktaBilgisi, isaretNokta: isaretNokta,
     kanal: { kur: kanalKur, durum: kanalDurum }
   };

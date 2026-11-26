@@ -1961,3 +1961,30 @@ html.ds-ders .ds-ebd > .ds-yon.aktif { background: rgba(250, 204, 21, .14); box-
 .hs-calisma .mc-aksil[hidden] { display: none !important; }
 .hs-calisma .mc-aksil { color: #B45309; }
 .hs-calisma .mc-aksil svg { width: 1.15em; height: 1.15em; }
+
+/* KÜÇÜK ŞERİT TAŞINIR (25.11.2026): küçük şeridin yuvarlak düğmesi sürüklenir */
+.kk-serit.kk-kucuk .kk-kapa { touch-action: none; cursor: grab; }
+.kk-serit.kk-kucuk.kk-tasiniyor .kk-kapa { cursor: grabbing; }
+/* SAYFAYA YAZILANLAR İNCE (25.11.2026) — öğretmen: "bold olmasın kitapta hiçbir yazı · rakamlar da": kalemle konan rakam ve yazı, ders işaretleri Arakom, normal kalınlık */
+.kk-m .kk-ce-ar, .ds-isaret .kk-ce-ar, .yuz > .kk-ce-girdi, .kk-m .kk-ce-tr, .ds-isaret .kk-ce-tr, .yuz > .kk-ce-girdi[dir="ltr"] { font-family: Arakom, 'Geeza Pro', serif !important; font-weight: 400 !important; font-synthesis: none; }
+.kk-s.kk-ce .kk-ce-n { font-family: Arakom, 'Geeza Pro', serif !important; font-weight: 400 !important; font-synthesis: none; }
+.ds-dv > i > .dvm-sayi text { font-family: Arakom, 'Geeza Pro', serif !important; font-weight: 400 !important; font-synthesis: none; }
+
+/* KALEM MENÜSÜ DÜZENİ (25.11.2026) — «Nasıl kullanılır» yok · rakamın 3 hazır boyu */
+.kz-yardim, #tNasil { display: none !important; }
+.kk-ce-boylar { grid-column: 1 / -1; display: flex; gap: 4px; padding-bottom: 6px; margin-bottom: 2px; border-bottom: 1px solid #E2E8F0; }
+.kk-ce-nb { -webkit-appearance: none; appearance: none; flex: 1 1 0; height: 42px; border: 0; border-radius: 10px; background: #F1F5F9; color: #1F2430; cursor: pointer;
+  display: grid; place-items: center; font-family: Arakom, 'Geeza Pro', serif; font-weight: 400; line-height: 1; touch-action: manipulation; }
+.kk-ce-nb:hover { background: #E2E8F0; }
+.kk-ce-nb[aria-checked="true"] { background: #16A085; color: #fff; }
+
+/* DERS MOR DÜĞME YOK (25.11.2026) — öğretmen: "mor oynatma svg si olan tuşu kaldıralım, sanki video açılacakmış gibi duruyor;
+   sadece sarı vurgulu yönergeler kalsın şimdilik" */
+.ds-ebd > .ds-eb { display: none !important; }
+
+/* İPLİ SAYFAYA GİT (25.11.2026) */
+#tIpGit.kip-yok { opacity: .55; }
+#tIpGit.kip-yok svg path { fill: none; stroke: currentColor; }
+
+/* DERSTE ↑↓ DÜĞMESİ YOK (25.11.2026) — öğretmen: "sunum modunda alt üst ok kaybolmuyor": derste ↑ ↓ çalışmadığı için ekrandaki düğmeleri de gizli */
+html.ds-ders .zOk-yukari, html.ds-ders .zOk-asagi { display: none !important; }
