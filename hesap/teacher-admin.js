@@ -986,6 +986,7 @@ function _aosHazirla(kap, L, bagSnap, ogtAd, ogtSinif) {
                   paket: Array.isArray(v.packages) ? v.packages.length : 0,
                   sure: +kul.toplamSn || 0, son: son, gun: Object.keys(gun).length, hafta: _aosHaftaSn(gun, simdi),
                   alan: kul.alan || {}, oturum: +kul.oturum || 0, kayit: _aogKayitMs(v),
+                  gunSn: son ? (+gun[_aosGunAd(son)] || 0) : 0,                    /* GÜNLÜK KULLANIM (26.11.2026): son kullanım günündeki süre */
                   baglar: baglar, durum: durum, aktif: !!son && son >= hafta, doc: v };
         baglar.forEach(function (b) {
             var t = ogtler[b.ogt] = ogtler[b.ogt] || { ad: b.ad, n: 0, bek: 0 };
@@ -1036,6 +1037,7 @@ function _aosKart(o) {
         ' data-aos-ad="' + _aosAttr(siraAd) + '" data-aos-sure="' + o.sure + '" data-aos-son="' + o.son + '" data-aos-kayit="' + o.kayit + '"' +
         ' data-aos-hafta="' + (o.aktif ? 1 : 0) + '" data-aos-ogt=" ' + _aosAttr(o.baglar.map(function (b) { return b.ogt; }).join(' ')) + ' "' +
         ' data-aos-ogtad="' + _aosAttr(ilkOgt) + '"' +
+        ' data-aos-uid="' + _aosAttr(o.uid) + '"' +                               /* GÜNLÜK KULLANIM (26.11.2026) */
         ' onclick="openStudentCard(\'' + encodeURIComponent(o.uid) + '\')" title="Öğrenci bilgileri ve düzenleme">' +
           '<span class="aog-avatar" style="background:hsl(' + ton + ',60%,92%); color:hsl(' + ton + ',40%,30%);">' + _fbEsc(harf) + '</span>' +
           '<span class="aog-govde">' +
@@ -1044,6 +1046,7 @@ function _aosKart(o) {
             '<span class="aog-alt aos-ogt-satir">' + _aosOgtYazi(o) + '</span>' +
             '<span class="aog-alt aos-kul-satir">' + (kul.length ? kul.join(' · ') : 'kullanım kaydı yok') + '</span>' +
             '<span class="aog-kayit">' + (o.kayit ? 'kayıt ' + _aogGun(o.kayit) : 'kayıt tarihi yok') + '</span>' +
+            '<span class="aog-gunsure">' + (o.gunSn ? 'o gün <b>' + _sureBicim(o.gunSn) + '</b>' : '') + '</span>' +
           '</span>' +
           '<span class="aog-ok" aria-hidden="true">›</span>' +
         '</button>';
@@ -1130,6 +1133,11 @@ function adminOgrenciSuz(yeni) {
     [].forEach.call(document.querySelectorAll('#admin-student-list [data-aos-suz]'), function (b) {
         b.classList.toggle('sec', b.getAttribute('data-aos-suz') === _aos.suzgec);
     });
+    /* GÜNLÜK KULLANIM (26.11.2026): «Son kullanan»daki gün başlıklarının sayıları görünen kartlara göre */
+    _aogGunBasliklariDoldur(document.getElementById('aosGrid'), '.aos-kart', function (k) {
+        var o = _aos.veri[k.getAttribute('data-aos-uid')];
+        return o ? { son: o.son, gun: (o.doc && o.doc.kullanim && o.doc.kullanim.gun) || {} } : null;
+    }, 'öğrenci', (!gorunen || ara) ? 0 : ((_aos.suzgec !== 'hepsi' || _aos.ogtSec) ? 1 : 2));
     var bos = document.getElementById('aosBos');
     if (bos) bos.style.display = gorunen ? 'none' : '';
 }
@@ -1156,6 +1164,10 @@ function adminOgrenciSirala(yeni) {
         return f || ad(a).localeCompare(ad(b), 'tr');
     });
     var bos = document.getElementById('aosBos'), sonBaslik = null;
+    if (S === 'son') {                                       /* GÜNLÜK KULLANIM (26.11.2026): gün başlıkları */
+        _aogGunBasliklariKur(grid, kartlar, bos, function (k) { return say(k, 'data-aos-son'); });
+        kartlar = [];
+    }
     kartlar.forEach(function (k) {
         var baslik = null, sinif = 'aog-harf';
         if (S === 'ad') {
@@ -1172,6 +1184,7 @@ function adminOgrenciSirala(yeni) {
         grid.insertBefore(k, bos);
     });
     grid.classList.toggle('aog-sira-kayit', S === 'kayit');
+    grid.classList.toggle('aog-sira-son', S === 'son');                        /* GÜNLÜK KULLANIM (26.11.2026): kartta o günün süresi */
     [].forEach.call(document.querySelectorAll('#admin-student-list [data-aos-sira]'), function (b) {
         b.classList.toggle('sec', b.getAttribute('data-aos-sira') === S);
     });
@@ -2009,6 +2022,31 @@ function _ogtStil() {
         /* kayıt tarihi: yalnız «Kayıt tarihi» sıralamasında görünür */
         '#aogGrid .aog-kayit, #aosGrid .aog-kayit{display:none; font-size:.76rem; color:#8A94A3;}',
         '#aogGrid.aog-sira-kayit .aog-kayit, #aosGrid.aog-sira-kayit .aog-kayit{display:block;}',
+        /* GÜNLÜK KULLANIM (26.11.2026): «Son kullanan»da gün başlıkları — o gün kullanan sayısı ve saat dilimleri */
+        '#aogGrid .aog-gun, #aosGrid .aog-gun{display:flex; flex-wrap:wrap; align-items:center; gap:5px 10px; margin:10px 0 -2px; padding:8px 12px;',
+        '  border:1px solid #D3E2FB; border-radius:12px; background:#F4F8FF; letter-spacing:0; color:#55606D; font-weight:700;}',
+        '#aosGrid .aog-gun{border-color:#CDEBE2; background:#F1FAF7;}',
+        '#aogGrid .aog-gun:first-child, #aosGrid .aog-gun:first-child{margin-top:0;}',
+        '.aog-gun .aog-gun-ad{font-size:.92rem; font-weight:900; color:#1B4F9C;}',
+        '#aosGrid .aog-gun .aog-gun-ad{color:#0E7C66;}',
+        '.aog-gun .aog-gun-say{font-size:.86rem; font-weight:700; color:#2c3e50;}',
+        '.aog-gun .aog-gun-say b{font-size:1.35rem; line-height:1; font-weight:900; color:#1B4F9C; font-variant-numeric:tabular-nums;}',
+        '#aosGrid .aog-gun .aog-gun-say b{color:#0E7C66;}',
+        '.aog-gun .aog-gun-say.sifir{font-weight:600; color:#A9B2BD;}',
+        '.aog-gun .aog-gun-dilim{display:inline-flex; flex-wrap:wrap; gap:5px; margin-inline-start:auto;}',
+        '.aog-gun .aog-gd{display:inline-flex; align-items:baseline; gap:5px; padding:2px 9px; border-radius:999px; background:#fff;',
+        '  border:1px solid #D5DEE8; font-size:.76rem; font-weight:700; color:#55606D; white-space:nowrap;}',
+        '.aog-gun .aog-gd b{font-size:.95rem; font-weight:900; color:#1F2430; font-variant-numeric:tabular-nums;}',
+        '.aog-gun .aog-gd.sifir{opacity:.55;}',
+        '.aog-gun .aog-gd.sifir b{color:#A9B2BD;}',
+        '.aog-gun .aog-gun-not{flex:1 1 100%; font-size:.76rem; font-weight:600; color:#8A94A3;}',
+        '#aogGrid .aog-gun.aog-gun-bos, #aosGrid .aog-gun.aog-gun-bos{padding:4px 12px; background:transparent; border-style:dashed;}',
+        '#aogGrid .aog-gun.aog-gun-yok, #aosGrid .aog-gun.aog-gun-yok{background:#F7F9FC; border-color:#E6EBF2;}',
+        '#aogGrid .aog-gun-yok .aog-gun-ad, #aosGrid .aog-gun-yok .aog-gun-ad{color:#8A94A3;}',
+        '#aogGrid .aog-gun-yok .aog-gun-say b, #aosGrid .aog-gun-yok .aog-gun-say b{color:#55606D;}',
+        '#aogGrid .aog-gunsure, #aosGrid .aog-gunsure{display:none; font-size:.76rem; font-weight:700; color:#1B4F9C;}',
+        '#aosGrid .aog-gunsure{color:#0E7C66;}',
+        '#aogGrid.aog-sira-son .aog-gunsure:not(:empty), #aosGrid.aog-sira-son .aog-gunsure:not(:empty){display:block;}',
         /* öğrenci listesi (05.11.2026): öğretmen seçimi, kart satırları, öğretmen başlıkları */
         '#admin-student-list .aos-ogt{border:1.5px solid #E1E7EF; border-radius:999px; padding:6px 10px; font-family:inherit; font-size:.82rem;',
         '  font-weight:800; color:#55606D; background:#fff; max-width:260px;}',
@@ -2077,6 +2115,132 @@ function _aogAy(ms) {
     if (!ms) return 'Kayıt tarihi bilinmeyen';
     var d = new Date(ms);
     return _AOG_AYLAR[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+/* ==========================================================================
+   GÜNLÜK KULLANIM (26.11.2026) — yönetici: "yönetici panelinde öğretmen öğrenci kısmında son kullanan
+   kısmında o gün kaç öğretmenin kullandığını rakamla belirt, saat bazlı şöyle bi şey olsun mesela 1 saat
+   kullanan 5 saat üstü kullanan". Seçimleri: gün başlıkları · saat saat dilimler.
+   «Son kullanan» sıralamasında iki listede de (öğretmen · öğrenci) kartlar SON KULLANIM GÜNÜNE göre
+   başlıklara ayrılır: Bugün · Dün · 24 Kasım Salı … Her başlıkta O GÜN siteyi kullananların sayısı
+   (kullanim.gun'da o günün saniyesi olan ya da son görülmesi o gün olan herkes; yalnız o başlığın
+   altındaki kartlar değil) ve o günkü etkin süreye göre altı dilim: 1 saatten az · 1–2 · 2–3 · 3–4 ·
+   4–5 · 5 saat üstü (alt sınır dahil: tam 1 saat «1–2 sa»).
+   · Sonraki günlerde yeniden girenin kartı kendi son gününün altındadır; başlık bunu yazar
+     («bugün de giren 8, yukarıda»): başlıktaki sayı = altındaki kartlar + yukarıdakiler.
+   · Bugün ve önceki 6 gün her zaman başlık olur (altında kart kalmasa da, o günün sayısı görünsün);
+     daha eski günler yalnız kartı varsa. Hiç kaydı olmayanlar en sonda «Kullanım kaydı yok».
+   · Sayılar ekrandaki süzgece ve aramaya uyar (yalnız GÖRÜNEN kartların sahipleri sayılır). Altında kart
+     kalmayan sabit gün başlığı: süzgeç yokken hep görünür; bir süzgeç seçiliyken yalnız o gün kullananı
+     varsa; arama yazılıyken ya da hiçbir kart uymuyorken gizlenir.
+   · Kartta, yalnız bu sıralamada, o kişinin son kullanım günündeki süresi: «o gün 1 sa 20 dk».
+   · Gün = kullanıcının cihazındaki tarih (sistem/kullanimsure.js → kullanim.gun anahtarı); son görülme
+     sunucu damgası, yöneticinin saatine göre güne çevrilir. Ek sorgu yok.
+   ========================================================================== */
+var _AOG_DILIM = ['1 sa’ten az', '1–2 sa', '2–3 sa', '3–4 sa', '4–5 sa', '5 sa üstü'];
+var _AOG_DILIM_UZUN = ['o gün 1 saatten az kullanan', 'o gün 1 saat ile 2 saat arası kullanan', 'o gün 2 saat ile 3 saat arası kullanan',
+                       'o gün 3 saat ile 4 saat arası kullanan', 'o gün 4 saat ile 5 saat arası kullanan', 'o gün 5 saat ve üstü kullanan'];
+var _AOG_HAFTA = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+var _AOG_SABIT_GUN = 7;                                   /* bugün + önceki 6 gün her zaman başlık */
+/* bugünden i gün öncesinin anahtarı (YYYY-AA-GG; takvimle — yaz saati kaymasından etkilenmez) */
+function _aogGunGeri(i) {
+    var t = new Date();
+    return _aosGunAd(new Date(t.getFullYear(), t.getMonth(), t.getDate() - i).getTime());
+}
+function _aogDilimNo(sn) {
+    var s = Math.floor(Math.max(0, +sn || 0) / 3600);
+    return s > 5 ? 5 : s;
+}
+/* gün başlığının adı: «Bugün · 26 Kasım Perşembe» · «Dün · …» · «24 Kasım Salı» (başka yılsa yılıyla) */
+function _aogGunBaslikAd(anahtar) {
+    var p = String(anahtar).split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]);
+    if (isNaN(d.getTime())) return String(anahtar);
+    var ad = d.getDate() + ' ' + _AOG_AYLAR[d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? ' ' + d.getFullYear() : '') +
+             ' ' + _AOG_HAFTA[d.getDay()];
+    if (anahtar === _aogGunGeri(0)) return 'Bugün · ' + ad;
+    if (anahtar === _aogGunGeri(1)) return 'Dün · ' + ad;
+    return ad;
+}
+/* kişiler [{ son: ms, gun: { gün: saniye } }] → { gün: { n, d: [altı dilim], sonra } }
+   n: o gün kullanan · d: o günkü süreye göre dilimler · sonra: o günden SONRA da girmiş olanlar (kartı yukarıda) */
+function _aogGunSay(K) {
+    var S = {};
+    (K || []).forEach(function (k) {
+        var son = k.son ? _aosGunAd(k.son) : '', gun = k.gun || {}, gor = {};
+        Object.keys(gun).forEach(function (g) { if ((+gun[g] || 0) > 0) gor[g] = +gun[g]; });
+        if (son && !(son in gor)) gor[son] = 0;          /* son görülmesi o gün: saniyesi henüz yazılmamış olsa da kullandı */
+        Object.keys(gor).forEach(function (g) {
+            var s = S[g] = S[g] || { n: 0, d: [0, 0, 0, 0, 0, 0], sonra: 0 };
+            s.n++; s.d[_aogDilimNo(gor[g])]++;
+            if (son && g < son) s.sonra++;
+        });
+    });
+    return S;
+}
+/* başlığın içi. st: _aogGunSay'ın o günü (yoksa kullanan yok) · kisiAd: 'öğretmen' | 'öğrenci' · kartSay: altındaki görünen kart */
+function _aogGunBaslikHtml(anahtar, st, kisiAd, kartSay) {
+    if (!anahtar) return '<span class="aog-gun-ad">Kullanım kaydı yok</span><span class="aog-gun-say"><b>' + kartSay + '</b> ' + kisiAd + '</span>';
+    var bugun = _aogGunGeri(0), h = '<span class="aog-gun-ad">' + _fbEsc(_aogGunBaslikAd(anahtar)) + '</span>';
+    if (!st || !st.n) return h + '<span class="aog-gun-say sifir">' + (anahtar === bugun ? 'henüz kullanan yok' : 'kullanan yok') + '</span>';
+    h += '<span class="aog-gun-say"><b>' + st.n + '</b> ' + kisiAd + ' kullandı</span><span class="aog-gun-dilim">';
+    for (var i = 0; i < _AOG_DILIM.length; i++) {
+        h += '<span class="aog-gd' + (st.d[i] ? '' : ' sifir') + '" data-aog-dilim="' + i + '" title="' + _AOG_DILIM_UZUN[i] + ' ' + kisiAd + ' sayısı">' +
+             _AOG_DILIM[i] + ' <b>' + st.d[i] + '</b></span>';
+    }
+    h += '</span>';
+    if (st.sonra) {
+        var ne = anahtar === _aogGunGeri(1) ? 'bugün de' : 'sonra da';
+        h += '<span class="aog-gun-not">' + (st.sonra >= st.n ? 'hepsi ' + ne + ' girdi' : ne + ' giren ' + st.sonra) + ', yukarıda</span>';
+    }
+    return h;
+}
+/* «Son kullanan» sıralaması: kartları (yeniden eskiye sıralı) gün başlıklarıyla ızgaraya dizer. sonAl(kart) → ms */
+function _aogGunBasliklariKur(grid, kartlar, bos, sonAl) {
+    var sabit = [], basildi = {}, si = 0, i;
+    for (i = 0; i < _AOG_SABIT_GUN; i++) sabit.push(_aogGunGeri(i));
+    var koy = function (anahtar, sabitMi) {
+        if (basildi[anahtar]) return;
+        basildi[anahtar] = 1;
+        var b = document.createElement('div');
+        b.className = 'aog-harf aog-gun' + (sabitMi ? ' aog-gun-sabit' : '') + (anahtar ? '' : ' aog-gun-yok');
+        b.setAttribute('data-aog-gun', anahtar);
+        grid.insertBefore(b, bos);
+    };
+    kartlar.forEach(function (k) {
+        var ms = sonAl(k), a = ms ? _aosGunAd(ms) : '';
+        /* bu karttan önce gelen sabit günler (kartın gününden yeni ya da aynı; kayıtsız karttan önce hepsi) */
+        while (si < sabit.length && (!a || sabit[si] >= a)) { koy(sabit[si], true); si++; }
+        koy(a, false);
+        grid.insertBefore(k, bos);
+    });
+    while (si < sabit.length) { koy(sabit[si], true); si++; }
+}
+/* gün başlıklarının sayıları — yalnız GÖRÜNEN kartların sahipleri sayılır (süzgeç + arama). kisiAl(kart) → { son, gun }.
+   sabitKip — altında kart kalmayan sabit gün başlıkları: 2 = hepsi görünür (süzgeç yok) · 1 = yalnız o gün kullananı
+   olanlar (bir süzgeç seçili) · 0 = hiçbiri (arama yazılı ya da hiçbir kart uymuyor) */
+function _aogGunBasliklariDoldur(grid, kartSecici, kisiAl, kisiAd, sabitKip) {
+    if (!grid) return;
+    var bas = grid.querySelectorAll('.aog-gun');
+    if (!bas.length) return;
+    var K = [];
+    [].forEach.call(grid.querySelectorAll(kartSecici), function (k) {
+        if (k.style.display === 'none') return;
+        var o = kisiAl(k);
+        if (o) K.push(o);
+    });
+    var S = _aogGunSay(K);
+    [].forEach.call(bas, function (b) {
+        var a = b.getAttribute('data-aog-gun') || '', n = 0, e = b.nextElementSibling;
+        while (e && !e.classList.contains('aog-harf')) {
+            if (e.classList.contains('aog-kart') && e.style.display !== 'none') n++;
+            e = e.nextElementSibling;
+        }
+        b.innerHTML = _aogGunBaslikHtml(a, S[a], kisiAd, n);
+        b.setAttribute('data-aog-n', (a && S[a]) ? S[a].n : 0);
+        b.classList.toggle('aog-gun-bos', !!a && !(S[a] && S[a].n));          /* o gün kullanan yok: ince satır */
+        var kullanan = (a && S[a]) ? S[a].n : 0;
+        b.style.display = (n || (b.classList.contains('aog-gun-sabit') && (sabitKip === 2 || (sabitKip === 1 && kullanan > 0)))) ? '' : 'none';
+    });
 }
 
 /* ==========================================================================
@@ -2421,6 +2585,9 @@ function renderAdminTeacherList(kaynak) {
                 var ara = (ad + ' ' + (o.email || '') + ' ' + kod + ' ' + (o.phone || '')).toLocaleLowerCase('tr-TR');
                 var sonMs = 0;
                 try { if (kul.sonGoruldu && kul.sonGoruldu.toDate) sonMs = kul.sonGoruldu.toDate().getTime() || 0; else if (typeof kul.sonGoruldu === 'number') sonMs = kul.sonGoruldu; } catch (e) { }
+                /* GÜNLÜK KULLANIM (26.11.2026): damga yoksa sitede görüldüğü son gün (öğrenci listesindeki gibi); o günün süresi */
+                if (!sonMs) sonMs = _aosSonGun(kul.gun);
+                var gunSn = sonMs ? (+((kul.gun || {})[_aosGunAd(sonMs)]) || 0) : 0;
                 /* isimsizler en sonda, «#» başlığı altında (U+FFFF her harften sonra dizilir) */
                 var siraAd = ad ? ad.trim().toLocaleLowerCase('tr-TR') : ('￿' + (o.email || '').toLocaleLowerCase('tr-TR'));
                 var durumAd = onay === 'bekliyor' ? 'bekliyor' : (onay === 'reddedildi' ? 'reddedildi' : 'onayli');
@@ -2431,6 +2598,7 @@ function renderAdminTeacherList(kaynak) {
                     ' data-aog-ad="' + _fbEsc(siraAd) + '" data-aog-sure="' + (kul.toplamSn || 0) + '" data-aog-son="' + sonMs + '"' +
                     ' data-aog-ogrenci="' + (say.ogrenci || 0) + '" data-aog-sinif="' + (say.sinif || 0) + '"' +
                     ' data-aog-kayit="' + kayitMs + '" data-aog-oturum="' + _aogOturumSayi(kul.oturum) + '"' +
+                    ' data-aog-uid="' + _fbEsc(uid) + '"' +
                     ' onclick="adminOgretmenDetay(\'' + uid + '\')" title="Ayrıntılar, ücret durumu, takvim ve anket">' +
                       '<span class="aog-avatar" style="background:hsl(' + ton + ',70%,93%); color:hsl(' + ton + ',45%,32%);">' + _fbEsc(harf) + '</span>' +
                       '<span class="aog-govde">' +
@@ -2438,6 +2606,7 @@ function renderAdminTeacherList(kaynak) {
                         '<span class="aog-eposta">' + _fbEsc(o.email || '—') + '</span>' +
                         '<span class="aog-alt">' + ozet.join(' · ') + '</span>' +
                         '<span class="aog-kayit">' + (kayitMs ? 'kayıt ' + _aogGun(kayitMs) : 'kayıt tarihi yok') + '</span>' +
+                        '<span class="aog-gunsure">' + (gunSn ? 'o gün <b>' + _sureBicim(gunSn) + '</b>' : '') + '</span>' +
                         '<span data-dst-rozet="' + uid + '"></span>' +
                       '</span>' +
                       '<span class="aog-ok" aria-hidden="true">›</span>' +
@@ -2581,6 +2750,11 @@ function adminOgretmenSuz(yeni) {
     [].forEach.call(document.querySelectorAll('#admin-teacher-list .aog-otr'), function (b) {     /* OTURUM SÜZGECİ (08.11.2026) */
         b.classList.toggle('sec', b.getAttribute('data-aog-otr') === _aogOturum);
     });
+    /* GÜNLÜK KULLANIM (26.11.2026): «Son kullanan»daki gün başlıklarının sayıları görünen kartlara göre */
+    _aogGunBasliklariDoldur(document.getElementById('aogGrid'), '.aog-kart', function (k) {
+        var o = _adminOgretmenler[k.getAttribute('data-aog-uid')];
+        return { son: parseFloat(k.getAttribute('data-aog-son')) || 0, gun: (o && o.kullanim && o.kullanim.gun) || {} };
+    }, 'öğretmen', (!gorunen || ara) ? 0 : ((_aogSuzgec !== 'hepsi' || _aogOturum !== 'hepsi') ? 1 : 2));
     var bos = document.getElementById('aogBos');
     if (bos) bos.style.display = gorunen ? 'none' : '';
 }
@@ -2614,6 +2788,10 @@ function adminOgretmenSirala(yeni) {
         return f || ad(a).localeCompare(ad(b), 'tr');
     });
     var bos = document.getElementById('aogBos'), sonHarf = null;
+    if (_aogSira === 'son') {                                /* GÜNLÜK KULLANIM (26.11.2026): gün başlıkları */
+        _aogGunBasliklariKur(grid, kartlar, bos, function (k) { return say(k, 'data-aog-son'); });
+        kartlar = [];
+    }
     kartlar.forEach(function (k) {
         if (_aogSira === 'ad') {
             var h = (ad(k).charAt(0) || '#').toLocaleUpperCase('tr-TR');
@@ -2636,6 +2814,7 @@ function adminOgretmenSirala(yeni) {
         grid.insertBefore(k, bos);
     });
     grid.classList.toggle('aog-sira-kayit', _aogSira === 'kayit');
+    grid.classList.toggle('aog-sira-son', _aogSira === 'son');                 /* GÜNLÜK KULLANIM (26.11.2026): kartta o günün süresi */
     [].forEach.call(document.querySelectorAll('#admin-teacher-list .aog-sir'), function (b) {
         b.classList.toggle('sec', b.getAttribute('data-aog-sira') === _aogSira);
     });
